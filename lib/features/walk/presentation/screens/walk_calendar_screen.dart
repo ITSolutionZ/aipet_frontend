@@ -25,17 +25,50 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
   DateTime? _selectedDay;
   CalendarFormat _calendarFormat = CalendarFormat.month;
   String? _selectedPetFilter; // 펫 필터
+  
+  // 스크롤 관련 변수
+  late ScrollController _scrollController;
+  double _calendarFlex = 2.0; // 캘린더의 flex 값
 
   @override
   void initState() {
     super.initState();
     _controller = WalkController(ref);
     _selectedDay = _focusedDay;
+    _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
     _loadWalkRecords();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadWalkRecords() async {
     await _controller.loadWalkRecords();
+  }
+
+  /// 스크롤 리스너 - 스크롤 위치에 따라 캘린더 크기 조절
+  void _onScroll() {
+    final scrollOffset = _scrollController.offset;
+    final maxScrollExtent = _scrollController.position.maxScrollExtent;
+    
+    if (maxScrollExtent > 0) {
+      // 스크롤 진행률 계산 (0.0 ~ 1.0)
+      final scrollProgress = (scrollOffset / maxScrollExtent).clamp(0.0, 1.0);
+      
+      // 스크롤에 따라 캘린더 flex 값 조절 (2.0 ~ 0.5)
+      final newFlex = 2.0 - (scrollProgress * 1.5);
+      
+      if ((_calendarFlex - newFlex).abs() > 0.1) {
+        setState(() {
+          _calendarFlex = newFlex.clamp(0.5, 2.0);
+        });
+      }
+    }
   }
 
   @override
@@ -81,7 +114,7 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
         children: [
           // 달력 (포맷에 따라 높이 조절)
           Flexible(
-            flex: 2,
+            flex: _calendarFlex.round(),
             child: Container(
               margin: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.md,
@@ -207,7 +240,7 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
             ),
           ),
 
-          const SizedBox(height: AppSpacing.sm),
+          const SizedBox(height: AppSpacing.xs),
 
           // 통계 및 산책 기록 리스트 (데이터 없으면 empty 위젯)
           Expanded(child: _buildStatisticsAndRecords(walkRecords)),
