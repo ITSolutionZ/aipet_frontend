@@ -3,7 +3,8 @@ import 'package:aipet_frontend/shared/shared.dart';
 import '../repositories/onboarding_repository.dart';
 
 /// 온보딩 재시작 UseCase
-class RestartOnboardingUseCase extends RepositoryUseCaseNoParams<void, OnboardingRepository> {
+class RestartOnboardingUseCase
+    extends RepositoryUseCaseNoParams<void, OnboardingRepository> {
   RestartOnboardingUseCase(super.repository);
 
   @override

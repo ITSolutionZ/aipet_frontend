@@ -20,7 +20,7 @@ class NotificationsNotifier extends _$NotificationsNotifier {
     // TODO: 캘린더 이벤트 연동 (추후 구현)
     // 현재는 빈 리스트 반환
     debugPrint('🔔 알림 리스트 로드 (현재는 빈 리스트)');
-    
+
     return [];
   }
 
