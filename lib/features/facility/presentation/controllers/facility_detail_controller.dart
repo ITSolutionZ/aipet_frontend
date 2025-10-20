@@ -11,12 +11,17 @@ class FacilityDetailController extends BaseFacilityController {
   Future<Facility?> loadFacilityById(String facilityId) async {
     try {
       final facilityListAsync = await ref.read(facilityListProvider.future);
-      return facilityListAsync.firstWhere(
-        (facility) => facility.id == facilityId,
-        orElse: () => FacilityFactory.createDefault(facilityId),
-      );
+      try {
+        return facilityListAsync.firstWhere(
+          (facility) => facility.id == facilityId,
+        );
+      } catch (e) {
+        // 시설을 찾을 수 없으면 null 반환
+        debugPrint('시설을 찾을 수 없습니다: $facilityId');
+        return null;
+      }
     } catch (error) {
-      FacilityErrorHandler.handleLoadError(error, context);
+      handleError(error);
       return null;
     }
   }
@@ -32,7 +37,7 @@ class FacilityDetailController extends BaseFacilityController {
       }
     } catch (error) {
       if (context.mounted) {
-        FacilityErrorHandler.handleContactError(error, context);
+        handleError(error);
       }
     }
   }
@@ -43,7 +48,7 @@ class FacilityDetailController extends BaseFacilityController {
       // 예약 화면으로 이동 또는 예약 로직 실행
       showSuccessMessage('${facility.name}の予約ページに移動します。');
     } catch (error) {
-      FacilityErrorHandler.handleBookingError(error, context);
+      handleError(error);
     }
   }
 
@@ -62,7 +67,7 @@ class FacilityDetailController extends BaseFacilityController {
       }
     } catch (error) {
       if (context.mounted) {
-        FacilityErrorHandler.handleFavoriteError(error, context);
+        handleError(error);
       }
     }
   }
@@ -73,7 +78,7 @@ class FacilityDetailController extends BaseFacilityController {
       // 실제 구현에서는 url_launcher를 사용해서 전화 걸기
       showInfoMessage('電話をかける: $phoneNumber');
     } catch (error) {
-      FacilityErrorHandler.handleContactError(error, context);
+      handleError(error);
     }
   }
 
@@ -83,7 +88,7 @@ class FacilityDetailController extends BaseFacilityController {
       // 실제 구현에서는 url_launcher를 사용해서 이메일 앱 열기
       showInfoMessage('メールを送信: $email');
     } catch (error) {
-      FacilityErrorHandler.handleContactError(error, context);
+      handleError(error);
     }
   }
 
@@ -93,7 +98,7 @@ class FacilityDetailController extends BaseFacilityController {
       // 실제 구현에서는 지도 앱으로 이동하거나 내장 지도 표시
       showInfoMessage('${facility.name}の位置を地図で確認します。');
     } catch (error) {
-      FacilityErrorHandler.handleMapError(error, context);
+      handleError(error);
     }
   }
 

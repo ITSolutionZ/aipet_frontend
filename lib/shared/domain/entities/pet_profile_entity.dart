@@ -2,6 +2,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'pet_status.dart';
 
+export 'pet_status.dart'; // PetStatus를 함께 export
+
 part 'pet_profile_entity.freezed.dart';
 part 'pet_profile_entity.g.dart';
 

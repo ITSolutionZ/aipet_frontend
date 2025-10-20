@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
-import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/domain/entities/pet_profile_entity.dart';
 import 'package:aipet_frontend/shared/services/image_storage_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
@@ -734,7 +734,8 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
 
     // 상대 경로를 절대 경로로 변환
     final storageService = ImageStorageService();
-    final absolutePath = storageService.getAbsolutePath(pet.imagePath!) ?? pet.imagePath!;
+    final absolutePath =
+        storageService.getAbsolutePath(pet.imagePath!) ?? pet.imagePath!;
     debugPrint('🖼️ PetManagementScreen - absolutePath: $absolutePath');
 
     final imageType = ImageService.getImageType(absolutePath);
@@ -747,7 +748,9 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
         debugPrint('🖼️ PetManagementScreen - File exists: $fileExists');
 
         if (!fileExists) {
-          debugPrint('❌ PetManagementScreen - File does not exist: $absolutePath');
+          debugPrint(
+            '❌ PetManagementScreen - File does not exist: $absolutePath',
+          );
           return const Icon(Icons.pets, color: AppColors.pointGray, size: 30);
         }
 
