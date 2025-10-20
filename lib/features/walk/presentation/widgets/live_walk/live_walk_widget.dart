@@ -6,7 +6,7 @@ import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.
 import 'package:aipet_frontend/features/walk/presentation/widgets/map/walk_map_camera_controller.dart';
 import 'package:aipet_frontend/features/walk/presentation/widgets/map/walk_map_marker_builder.dart';
 import 'package:aipet_frontend/features/walk/presentation/widgets/map/walk_map_polyline_builder.dart';
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/shared.dart' hide State;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
@@ -307,6 +307,24 @@ class LiveWalkController extends _$LiveWalkController {
       final position = await LiveWalkLocationTracker.getCurrentPosition();
       if (position == null) return;
 
+      // 위치가 실제로 변경되었는지 확인 (최소 이동 거리: 5m)
+      if (state.currentPosition != null) {
+        final distance = _calculateDistance(
+          state.currentPosition!.latitude,
+          state.currentPosition!.longitude,
+          position.latitude,
+          position.longitude,
+        );
+
+        // 5m 이하 이동은 무시 (GPS 오차 범위 내)
+        if (distance < 5) {
+          debugPrint('🚶 위치 변화 무시: ${distance.toStringAsFixed(2)}m (최소 5m 필요)');
+          return;
+        }
+
+        debugPrint('🚶 위치 업데이트: ${distance.toStringAsFixed(2)}m 이동');
+      }
+
       final newLocation = WalkLocation(
         latitude: position.latitude,
         longitude: position.longitude,
@@ -426,20 +444,25 @@ class LiveWalkController extends _$LiveWalkController {
   }
 }
 
-class LiveWalkWidget extends ConsumerWidget {
+class LiveWalkWidget extends ConsumerStatefulWidget {
   final String? petId;
   final String? petName;
 
   const LiveWalkWidget({super.key, this.petId, this.petName});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<LiveWalkWidget> createState() => _LiveWalkWidgetState();
+}
+
+class _LiveWalkWidgetState extends ConsumerState<LiveWalkWidget> {
+  @override
+  Widget build(BuildContext context) {
     final walkState = ref.watch(liveWalkControllerProvider);
     final walkController = ref.read(liveWalkControllerProvider.notifier);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(petName != null ? '$petName의 산책' : '실시간 산책'),
+        title: Text(widget.petName != null ? '${widget.petName}の散歩' : '実時間 散歩'),
         backgroundColor: Colors.white,
         elevation: 0,
       ),
@@ -484,23 +507,23 @@ class LiveWalkWidget extends ConsumerWidget {
     }
 
     return GoogleMap(
+      key: const ValueKey('live_walk_map'),
       onMapCreated: (GoogleMapController controller) {
         walkController.setMapController(controller);
         // 초기 위치로 이동
-        if (walkState.currentPosition != null) {
-          WalkMapCameraController.moveToCurrentLocation(
-            controller,
-            walkState.currentPosition!,
-            zoom: 16.0,
-          );
-        }
+        WalkMapCameraController.moveToCurrentLocation(
+          controller,
+          walkState.currentPosition!,
+          zoom: 16.0,
+        );
       },
-      initialCameraPosition:
-          WalkMapCameraController.createDefaultCameraPosition(
-            latitude: walkState.currentPosition!.latitude,
-            longitude: walkState.currentPosition!.longitude,
-            zoom: 16.0,
-          ),
+      initialCameraPosition: CameraPosition(
+        target: LatLng(
+          walkState.currentPosition!.latitude,
+          walkState.currentPosition!.longitude,
+        ),
+        zoom: 16.0,
+      ),
       markers: walkState.markers,
       polylines: walkState.polylines,
       myLocationEnabled: true,
