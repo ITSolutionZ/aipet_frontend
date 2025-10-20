@@ -32,6 +32,7 @@ export 'foundation/types/types.dart' hide Success, Failure, State;
 export 'foundation/utils/utils.dart';
 export 'services/base_logging_service.dart';
 export 'services/weather_icon_service.dart';
+export 'utils/id_generator.dart';
 export 'utils/summary_card_utils.dart';
 
 // Feature-specific files have been moved:

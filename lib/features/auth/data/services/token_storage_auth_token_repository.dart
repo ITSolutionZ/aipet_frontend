@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:aipet_frontend/app/config/app_config.dart';
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/core/services/auth_token_repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 

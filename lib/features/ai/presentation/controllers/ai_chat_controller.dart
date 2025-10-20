@@ -8,6 +8,8 @@ import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../walk/domain/services/walk_recommendation_service.dart';
+import '../../../walk/domain/usecases/compute_walk_recommendation_usecase.dart';
 import '../../data/data.dart';
 import '../../domain/domain.dart';
 

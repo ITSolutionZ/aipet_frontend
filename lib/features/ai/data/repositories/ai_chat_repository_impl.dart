@@ -1,6 +1,4 @@
-import 'package:aipet_frontend/shared/core/domain/result.dart';
-import 'package:aipet_frontend/shared/domain/entities/entities.dart';
-import 'package:aipet_frontend/shared/utils/id_generator.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 
 import '../../domain/domain.dart';
 import '../services/ai_local_storage_service.dart';
