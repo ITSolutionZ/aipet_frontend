@@ -25,10 +25,11 @@ import 'package:aipet_frontend/features/scheduling/presentation/screens/today_ap
 import 'package:aipet_frontend/features/settings/presentation/screens/biometric_security_screen.dart';
 import 'package:aipet_frontend/features/settings/presentation/screens/database_dashboard_screen.dart';
 import 'package:aipet_frontend/features/settings/presentation/screens/settings_screens.dart';
-import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
-import 'package:aipet_frontend/features/walk/presentation/screens/walk_calendar_screen.dart';
-import 'package:aipet_frontend/features/walk/presentation/screens/walk_detail_screen.dart';
-import 'package:aipet_frontend/features/walk/presentation/screens/walk_list_screen.dart';
+// DISABLED: Walk feature imports (임시 비활성화)
+// import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
+// import 'package:aipet_frontend/features/walk/presentation/screens/walk_calendar_screen.dart';
+// import 'package:aipet_frontend/features/walk/presentation/screens/walk_detail_screen.dart';
+// import 'package:aipet_frontend/features/walk/presentation/screens/walk_list_screen.dart';
 import 'package:aipet_frontend/shared/widgets/navigation/main_navigation_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -408,42 +409,43 @@ class ShellRoutes {
         ],
       ),
 
-      // 산책 탭
-      GoRoute(
-        path: RouteConstants.walkRoute,
-        name: 'walk',
-        builder: (context, state) =>
-            const WalkListScreen(showBackButton: false),
-        routes: [
-          // 산책 상세 화면
-          GoRoute(
-            path: 'detail',
-            name: 'walk-detail',
-            builder: (context, state) {
-              final walkRecord = state.extra as WalkRecordEntity?;
-              if (walkRecord == null) {
-                return const Scaffold(
-                  body: Center(child: Text('산책 기록을 찾을 수 없습니다.')),
-                );
-              }
-              return WalkDetailScreen(walkRecord: walkRecord);
-            },
-          ),
-          // 산책 기록 달력 화면
-          GoRoute(
-            path: 'calendar',
-            name: 'walk-calendar',
-            builder: (context, state) => const WalkCalendarScreen(),
-          ),
-        ],
-      ),
-
-      // 홈에서 산책 카드로 이동하는 라우트
-      GoRoute(
-        path: RouteConstants.walkFromHomeRoute,
-        name: 'walk-from-home',
-        builder: (context, state) => const WalkListScreen(showBackButton: true),
-      ),
+      // 산책 탭 - DISABLED (1초 rebuild 및 pause crash 이슈로 임시 비활성화)
+      // TODO: Walk feature properly reimplement후 활성화
+      // GoRoute(
+      //   path: RouteConstants.walkRoute,
+      //   name: 'walk',
+      //   builder: (context, state) =>
+      //       const WalkListScreen(showBackButton: false),
+      //   routes: [
+      //     // 산책 상세 화면
+      //     GoRoute(
+      //       path: 'detail',
+      //       name: 'walk-detail',
+      //       builder: (context, state) {
+      //         final walkRecord = state.extra as WalkRecordEntity?;
+      //         if (walkRecord == null) {
+      //           return const Scaffold(
+      //             body: Center(child: Text('산책 기록을 찾을 수 없습니다.')),
+      //           );
+      //         }
+      //         return WalkDetailScreen(walkRecord: walkRecord);
+      //       },
+      //     ),
+      //     // 산책 기록 달력 화면
+      //     GoRoute(
+      //       path: 'calendar',
+      //       name: 'walk-calendar',
+      //       builder: (context, state) => const WalkCalendarScreen(),
+      //     ),
+      //   ],
+      // ),
+      //
+      // // 홈에서 산책 카드로 이동하는 라우트
+      // GoRoute(
+      //   path: RouteConstants.walkFromHomeRoute,
+      //   name: 'walk-from-home',
+      //   builder: (context, state) => const WalkListScreen(showBackButton: true),
+      // ),
 
       // 캘린더 탭
       GoRoute(
