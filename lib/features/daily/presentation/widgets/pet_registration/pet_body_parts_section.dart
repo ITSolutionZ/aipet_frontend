@@ -46,11 +46,18 @@ class _PetBodyPartsSectionState extends State<PetBodyPartsSection> {
 
   void _loadSelectedBodyParts() {
     if (widget.bodyPartsToManage.isNotEmpty) {
-      final parts = widget.bodyPartsToManage.split(',').map((e) => e.trim()).toList();
-      _selectedBodyParts = parts.where((p) => _predefinedBodyParts.contains(p)).toList();
-      
+      final parts = widget.bodyPartsToManage
+          .split(',')
+          .map((e) => e.trim())
+          .toList();
+      _selectedBodyParts = parts
+          .where((p) => _predefinedBodyParts.contains(p))
+          .toList();
+
       // 커스텀 항목 로드
-      final customParts = parts.where((p) => !_predefinedBodyParts.contains(p)).toList();
+      final customParts = parts
+          .where((p) => !_predefinedBodyParts.contains(p))
+          .toList();
       if (customParts.isNotEmpty) {
         _customControllers[0].text = customParts[0];
       }
@@ -138,7 +145,9 @@ class _PetBodyPartsSectionState extends State<PetBodyPartsSection> {
               selectedColor: AppColors.pointGreen.withValues(alpha: 0.2),
               checkmarkColor: AppColors.pointGreen,
               labelStyle: AppFonts.bodyMedium.copyWith(
-                color: isSelected ? AppColors.pointGreen : AppColors.textPrimary,
+                color: isSelected
+                    ? AppColors.pointGreen
+                    : AppColors.textPrimary,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
               side: BorderSide(
@@ -165,7 +174,7 @@ class _PetBodyPartsSectionState extends State<PetBodyPartsSection> {
           ),
         ),
         const SizedBox(height: AppSpacing.sm),
-        
+
         // 기타 항목 1
         CommonFormField(
           controller: _customControllers[0],
@@ -174,7 +183,7 @@ class _PetBodyPartsSectionState extends State<PetBodyPartsSection> {
           onChanged: (_) => _saveSelection(),
         ),
         const SizedBox(height: AppSpacing.sm),
-        
+
         // 기타 항목 2
         CommonFormField(
           controller: _customControllers[1],
@@ -186,8 +195,8 @@ class _PetBodyPartsSectionState extends State<PetBodyPartsSection> {
         const SizedBox(height: AppSpacing.lg),
 
         // 선택된 항목 표시
-        if (_selectedBodyParts.isNotEmpty || 
-            _customControllers[0].text.isNotEmpty || 
+        if (_selectedBodyParts.isNotEmpty ||
+            _customControllers[0].text.isNotEmpty ||
             _customControllers[1].text.isNotEmpty) ...[
           Container(
             width: double.infinity,
@@ -221,7 +230,7 @@ class _PetBodyPartsSectionState extends State<PetBodyPartsSection> {
             ),
           ),
           const SizedBox(height: AppSpacing.md),
-          
+
           // 클리어 버튼
           SizedBox(
             width: double.infinity,
@@ -278,9 +287,9 @@ class _PetBodyPartsSectionState extends State<PetBodyPartsSection> {
   void _saveSelection() {
     final allParts = <String>[
       ..._selectedBodyParts,
-      if (_customControllers[0].text.trim().isNotEmpty) 
+      if (_customControllers[0].text.trim().isNotEmpty)
         _customControllers[0].text.trim(),
-      if (_customControllers[1].text.trim().isNotEmpty) 
+      if (_customControllers[1].text.trim().isNotEmpty)
         _customControllers[1].text.trim(),
     ];
     widget.onUpdateBodyParts(allParts.join(', '));
@@ -289,9 +298,9 @@ class _PetBodyPartsSectionState extends State<PetBodyPartsSection> {
   String _getSelectedBodyPartsText() {
     final allParts = <String>[
       ..._selectedBodyParts,
-      if (_customControllers[0].text.trim().isNotEmpty) 
+      if (_customControllers[0].text.trim().isNotEmpty)
         _customControllers[0].text.trim(),
-      if (_customControllers[1].text.trim().isNotEmpty) 
+      if (_customControllers[1].text.trim().isNotEmpty)
         _customControllers[1].text.trim(),
     ];
     return allParts.join('、');
