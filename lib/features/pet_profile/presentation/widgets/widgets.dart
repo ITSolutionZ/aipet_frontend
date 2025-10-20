@@ -1,3 +1,5 @@
+// Drawer 위젯
+export 'drawer/pet_card_section_widget.dart';
 // 기존 위젯들
 export 'health_widgets.dart';
 // 새로 분리된 위젯들

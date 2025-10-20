@@ -1,6 +1,13 @@
+import 'package:aipet_frontend/features/pet_profile/presentation/widgets/widgets.dart';
+import 'package:aipet_frontend/features/settings/presentation/widgets/settings_widgets.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'drawer_controller.dart';
+import 'drawer_info_banner_widget.dart';
+import 'logout_button_widget.dart';
+import 'service_inquiry_section_widget.dart';
 
 /// アプリドロワー
 /// アプリ全体のナビゲーションとユーザー情報を提供

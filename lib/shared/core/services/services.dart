@@ -21,7 +21,6 @@ export 'snackbar_service.dart';
 // MockDataService moved to shared/testing.dart
 export 'ui_notification_service.dart';
 export 'ui_service.dart';
-export 'unified_error_handler.dart';
 export 'unified_validation_service.dart';
 export 'user_experience_service.dart';
 export 'validation_service.dart';

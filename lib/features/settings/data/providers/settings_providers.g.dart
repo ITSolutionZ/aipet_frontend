@@ -493,7 +493,7 @@ String _$clearAppCacheUseCaseHash() =>
 const userProfileProvider = UserProfileNotifierProvider._();
 
 final class UserProfileNotifierProvider
-    extends $AsyncNotifierProvider<UserProfileNotifier, Map<String, dynamic>> {
+    extends $AsyncNotifierProvider<UserProfileNotifier, UserProfileEntity> {
   const UserProfileNotifierProvider._()
     : super(
         from: null,
@@ -514,26 +514,21 @@ final class UserProfileNotifierProvider
 }
 
 String _$userProfileNotifierHash() =>
-    r'60cf08ac9bad8b9ec97de65eb297f59126ee53f9';
+    r'61c2849d3760b9eb27eef6969f2159a65af12e15';
 
-abstract class _$UserProfileNotifier
-    extends $AsyncNotifier<Map<String, dynamic>> {
-  FutureOr<Map<String, dynamic>> build();
+abstract class _$UserProfileNotifier extends $AsyncNotifier<UserProfileEntity> {
+  FutureOr<UserProfileEntity> build();
   @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
     final ref =
-        this.ref
-            as $Ref<AsyncValue<Map<String, dynamic>>, Map<String, dynamic>>;
+        this.ref as $Ref<AsyncValue<UserProfileEntity>, UserProfileEntity>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<
-                AsyncValue<Map<String, dynamic>>,
-                Map<String, dynamic>
-              >,
-              AsyncValue<Map<String, dynamic>>,
+              AnyNotifier<AsyncValue<UserProfileEntity>, UserProfileEntity>,
+              AsyncValue<UserProfileEntity>,
               Object?,
               Object?
             >;
@@ -545,7 +540,7 @@ abstract class _$UserProfileNotifier
 const appSettingsProvider = AppSettingsNotifierProvider._();
 
 final class AppSettingsNotifierProvider
-    extends $AsyncNotifierProvider<AppSettingsNotifier, Map<String, dynamic>> {
+    extends $AsyncNotifierProvider<AppSettingsNotifier, AppSettingsEntity> {
   const AppSettingsNotifierProvider._()
     : super(
         from: null,
@@ -566,26 +561,21 @@ final class AppSettingsNotifierProvider
 }
 
 String _$appSettingsNotifierHash() =>
-    r'bfa26820abe310cf50e52dd472d4b7da549aaab0';
+    r'90ca63118663b0a26d32f0c72da5c848756ea503';
 
-abstract class _$AppSettingsNotifier
-    extends $AsyncNotifier<Map<String, dynamic>> {
-  FutureOr<Map<String, dynamic>> build();
+abstract class _$AppSettingsNotifier extends $AsyncNotifier<AppSettingsEntity> {
+  FutureOr<AppSettingsEntity> build();
   @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
     final ref =
-        this.ref
-            as $Ref<AsyncValue<Map<String, dynamic>>, Map<String, dynamic>>;
+        this.ref as $Ref<AsyncValue<AppSettingsEntity>, AppSettingsEntity>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<
-                AsyncValue<Map<String, dynamic>>,
-                Map<String, dynamic>
-              >,
-              AsyncValue<Map<String, dynamic>>,
+              AnyNotifier<AsyncValue<AppSettingsEntity>, AppSettingsEntity>,
+              AsyncValue<AppSettingsEntity>,
               Object?,
               Object?
             >;

@@ -32,8 +32,6 @@ export 'dialogs/dialogs.dart';
 // Displays
 export 'displays/image_display.dart';
 export 'displays/progress_bar.dart';
-// Drawer
-export 'drawer/drawer.dart';
 // Feedback
 export 'feedback/feedback.dart';
 // Forms
