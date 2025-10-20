@@ -372,20 +372,24 @@ class LiveWalkController extends _$LiveWalkController {
         // GPS 정확도와 최소 이동 거리를 동적으로 계산
         final accuracy = location.accuracy ?? 10.0; // 기본값 10m
         final minDistance = _calculateMinimumDistance(accuracy);
-        
+
         // GPS 오차 범위 내 이동은 무시
         if (distance < minDistance) {
-          debugPrint('🚶 위치 변화 무시: ${distance.toStringAsFixed(2)}m (최소 ${minDistance.toStringAsFixed(1)}m 필요, 정확도: ${accuracy.toStringAsFixed(1)}m)');
+          debugPrint(
+            '🚶 위치 변화 무시: ${distance.toStringAsFixed(2)}m (최소 ${minDistance.toStringAsFixed(1)}m 필요, 정확도: ${accuracy.toStringAsFixed(1)}m)',
+          );
           return;
         }
 
-        debugPrint('🚶 위치 업데이트: ${distance.toStringAsFixed(2)}m 이동 (정확도: ${accuracy.toStringAsFixed(1)}m)');
+        debugPrint(
+          '🚶 위치 업데이트: ${distance.toStringAsFixed(2)}m 이동 (정확도: ${accuracy.toStringAsFixed(1)}m)',
+        );
       }
 
       // WalkTrackingOptimizer를 사용한 위치 평활화 (선택적)
-      final smoothedLocation = state.route.length >= 3 
-        ? WalkTrackingOptimizer.smoothLocation(location, state.route)
-        : location;
+      final smoothedLocation = state.route.length >= 3
+          ? WalkTrackingOptimizer.smoothLocation(location, state.route)
+          : location;
 
       final newRoute = [...state.route, smoothedLocation];
       final newDistance = _calculateTotalDistance(newRoute);
@@ -473,12 +477,12 @@ class LiveWalkController extends _$LiveWalkController {
   double _calculateMinimumDistance(double accuracy) {
     // 기본 최소 거리: 3m
     const double baseMinDistance = 3.0;
-    
+
     // GPS 정확도가 10m 이하: 정확도 * 1.5
     // GPS 정확도가 10m 초과: 정확도 * 2.0 (더 보수적)
     final double accuracyMultiplier = accuracy <= 10.0 ? 1.5 : 2.0;
     final double calculatedDistance = accuracy * accuracyMultiplier;
-    
+
     // 최소 3m, 최대 20m로 제한
     return math.max(baseMinDistance, math.min(calculatedDistance, 20.0));
   }
@@ -618,70 +622,75 @@ class _LiveWalkWidgetState extends ConsumerState<LiveWalkWidget> {
 }
 
 /// 컨트롤 섹션 - 거리/상태 변경 시만 리빌드 (타이머는 ValueListenableBuilder로 독립)
-class _ControlSection extends ConsumerWidget {
+class _ControlSection extends StatelessWidget {
   final LiveWalkController walkController;
 
   const _ControlSection({required this.walkController});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // 🚀 거리와 상태만 감시 (타이머는 제외)
-    final distance = ref.watch(
-      liveWalkControllerProvider.select((state) => state.distance),
-    );
-    final timerState = ref.watch(
-      liveWalkControllerProvider.select((state) => state.timerState),
-    );
-    final routeLength = ref.watch(
-      liveWalkControllerProvider.select((state) => state.route.length),
-    );
-    final currentWalkRecord = ref.watch(
-      liveWalkControllerProvider.select((state) => state.currentWalkRecord),
-    );
+  Widget build(BuildContext context) {
+    // 🚀 Consumer로 필요한 상태만 선택적으로 감시
+    return Consumer(
+      builder: (context, ref, child) {
+        // 거리와 상태만 감시 (타이머는 제외)
+        final distance = ref.watch(
+          liveWalkControllerProvider.select((state) => state.distance),
+        );
+        final timerState = ref.watch(
+          liveWalkControllerProvider.select((state) => state.timerState),
+        );
+        final routeLength = ref.watch(
+          liveWalkControllerProvider.select((state) => state.route.length),
+        );
+        final currentWalkRecord = ref.watch(
+          liveWalkControllerProvider.select((state) => state.currentWalkRecord),
+        );
 
-    debugPrint(
-      '📊 _ControlSection rebuild - distance: $distance, state: $timerState',
-    );
+        debugPrint(
+          '📊 _ControlSection rebuild - distance: $distance, state: $timerState',
+        );
 
-    final formattedDistance = '${(distance / 1000).toStringAsFixed(2)} km';
+        final formattedDistance = '${(distance / 1000).toStringAsFixed(2)} km';
 
-    return Container(
-      width: double.infinity,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 10,
-            offset: Offset(0, -2),
-          ),
-        ],
-      ),
-      child: SafeArea(
-        top: false,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSpacing.md),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildStatsRow(
-                distance: formattedDistance,
-                timerState: timerState,
-                routeLength: routeLength,
-                currentWalkRecord: currentWalkRecord,
-                elapsedTimeNotifier: walkController.elapsedTimeNotifier,
-              ),
-              const SizedBox(height: AppSpacing.md),
-              _buildControlButtons(
-                context,
-                timerState: timerState,
-                walkController: walkController,
+        return Container(
+          width: double.infinity,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 10,
+                offset: Offset(0, -2),
               ),
             ],
           ),
-        ),
-      ),
+          child: SafeArea(
+            top: false,
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildStatsRow(
+                    distance: formattedDistance,
+                    timerState: timerState,
+                    routeLength: routeLength,
+                    currentWalkRecord: currentWalkRecord,
+                    elapsedTimeNotifier: walkController.elapsedTimeNotifier,
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  _buildControlButtons(
+                    context,
+                    timerState: timerState,
+                    walkController: walkController,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
