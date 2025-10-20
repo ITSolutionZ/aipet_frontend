@@ -468,72 +468,15 @@ class _LiveWalkWidgetState extends ConsumerState<LiveWalkWidget> {
       ),
       body: Column(
         children: [
-          Expanded(flex: 3, child: _buildMapSection(walkState, walkController)),
+          // 맵: 위치/마커/폴리라인 변경 시만 리빌드
+          Expanded(flex: 3, child: _MapSection(walkController: walkController)),
+          // 컨트롤: 타이머/거리 변경 시만 리빌드
           Expanded(
             flex: 1,
             child: _buildControlSection(context, walkState, walkController),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildMapSection(
-    LiveWalkState walkState,
-    LiveWalkController walkController,
-  ) {
-    if (walkState.currentPosition == null) {
-      return Container(
-        color: Colors.grey[100]!,
-        child: const Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircularProgressIndicator(),
-              SizedBox(height: 16),
-              Text(
-                '위치 정보를 가져오는 중...',
-                style: TextStyle(fontSize: 16, color: Colors.grey),
-              ),
-              SizedBox(height: 8),
-              Text(
-                'GPS를 켜주세요',
-                style: TextStyle(fontSize: 14, color: Colors.grey),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-
-    return GoogleMap(
-      key: const ValueKey('live_walk_map'),
-      onMapCreated: (GoogleMapController controller) {
-        walkController.setMapController(controller);
-        // 초기 위치로 이동
-        WalkMapCameraController.moveToCurrentLocation(
-          controller,
-          walkState.currentPosition!,
-          zoom: 16.0,
-        );
-      },
-      initialCameraPosition: CameraPosition(
-        target: LatLng(
-          walkState.currentPosition!.latitude,
-          walkState.currentPosition!.longitude,
-        ),
-        zoom: 16.0,
-      ),
-      markers: walkState.markers,
-      polylines: walkState.polylines,
-      myLocationEnabled: true,
-      myLocationButtonEnabled: false,
-      zoomControlsEnabled: false,
-      mapToolbarEnabled: false,
-      compassEnabled: true,
-      buildingsEnabled: true,
-      indoorViewEnabled: false,
-      trafficEnabled: false,
     );
   }
 
@@ -944,5 +887,78 @@ class _LiveWalkWidgetState extends ConsumerState<LiveWalkWidget> {
         Navigator.of(context).pop();
       }
     });
+  }
+}
+
+/// 맵 섹션 - 위치 변경 시만 리빌드
+class _MapSection extends ConsumerWidget {
+  final LiveWalkController walkController;
+
+  const _MapSection({required this.walkController});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // 위치, 마커, 폴리라인만 감시 (타이머 변경 무시)
+    final currentPosition = ref.watch(
+      liveWalkControllerProvider.select((state) => state.currentPosition),
+    );
+    final markers = ref.watch(
+      liveWalkControllerProvider.select((state) => state.markers),
+    );
+    final polylines = ref.watch(
+      liveWalkControllerProvider.select((state) => state.polylines),
+    );
+
+    if (currentPosition == null) {
+      return Container(
+        color: Colors.grey[100]!,
+        child: const Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(height: 16),
+              Text(
+                '位置情報を取得中...',
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+              SizedBox(height: 8),
+              Text(
+                'GPSをオンにしてください',
+                style: TextStyle(fontSize: 14, color: Colors.grey),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    debugPrint('🗺️ _MapSection rebuild');
+
+    return GoogleMap(
+      key: const ValueKey('live_walk_map'),
+      onMapCreated: (GoogleMapController controller) {
+        walkController.setMapController(controller);
+        WalkMapCameraController.moveToCurrentLocation(
+          controller,
+          currentPosition,
+          zoom: 16.0,
+        );
+      },
+      initialCameraPosition: CameraPosition(
+        target: LatLng(currentPosition.latitude, currentPosition.longitude),
+        zoom: 16.0,
+      ),
+      markers: markers,
+      polylines: polylines,
+      myLocationEnabled: true,
+      myLocationButtonEnabled: false,
+      zoomControlsEnabled: false,
+      mapToolbarEnabled: false,
+      compassEnabled: true,
+      buildingsEnabled: true,
+      indoorViewEnabled: false,
+      trafficEnabled: false,
+    );
   }
 }
