@@ -58,7 +58,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 
   void _nextPage() {
-    final currentPage = ref.read(onboardingProvider).currentPage;
+    // PageController에서 직접 현재 페이지 가져오기 (ref.read 사용 안함)
+    final currentPage = _pageController.page?.round() ?? 0;
     if (currentPage < OnboardingData.pages.length - 1) {
       _pageController.nextPage(
         duration: OnboardingConstants.pageTransitionDuration,
