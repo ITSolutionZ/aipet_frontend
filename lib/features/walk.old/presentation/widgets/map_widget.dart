@@ -1,4 +1,6 @@
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
+import 'package:aipet_frontend/features/walk/presentation/widgets/map/walk_map_marker_builder.dart';
+import 'package:aipet_frontend/features/walk/presentation/widgets/map/walk_map_polyline_builder.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
