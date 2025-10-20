@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/app/services/unified_error_handler.dart';
 import 'package:flutter/material.dart';
 
 import '../../domain/domain.dart';

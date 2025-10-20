@@ -1,6 +1,9 @@
+import 'package:aipet_frontend/app/widgets/widgets.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../data/data.dart';
 import '../../domain/domain.dart';
@@ -9,8 +12,6 @@ import '../mixins/scroll_tracking_mixin.dart';
 import '../widgets/auto_banner_carousel.dart';
 import '../widgets/pet_profile_banner.dart';
 import '../widgets/widgets.dart';
-import 'package:go_router/go_router.dart';
-import 'package:lottie/lottie.dart';
 
 /// 🏠 홈 스크린
 ///

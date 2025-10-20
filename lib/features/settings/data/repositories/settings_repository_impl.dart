@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:aipet_frontend/features/settings/data/services/local_user_service.dart';
 import 'package:aipet_frontend/features/settings/domain/entities/settings_entity.dart';
 import 'package:aipet_frontend/features/settings/domain/repositories/settings_repository.dart';
 import 'package:aipet_frontend/shared/shared.dart';
@@ -39,107 +40,49 @@ class SettingsRepositoryImpl implements SettingsRepository {
   };
 
   @override
-  Future<Result<Map<String, dynamic>>> getUserProfile() async {
+  Future<Result<UserProfileEntity>> getUserProfile() async {
     try {
       // LocalUserService를 사용하여 SQLite에서 프로필 로드
       final profile = await _userService.loadUserProfile();
 
       if (profile != null) {
-        // UserProfileEntity를 Map으로 변환
-        final profileMap = {
-          'id': profile.id,
-          'name': profile.userName,
-          'email': profile.email,
-          'avatarPath': profile.profileImage,
-          'nameKatakana': profile.nameKatakana,
-          'contact': profile.contact,
-          'createdAt': profile.createdAt,
-          'lastLoginAt': profile.updatedAt, // lastLoginAt 대신 updatedAt 사용
-        };
-        return Result.success('ユーザープロフィールを取得しました', profileMap);
+        return Result.success('ユーザープロフィールを取得しました', profile);
       }
 
-      return Result.success('デフォルトプロフィールを取得しました', _defaultUserProfile);
+      // 기본 프로필 생성
+      final defaultProfile = await _userService.createUserProfile(
+        userName: _defaultUserProfile['name'] as String,
+        email: _defaultUserProfile['email'] as String,
+      );
+      return Result.success('デフォルトプロフィールを取得しました', defaultProfile);
     } catch (e) {
       return Result.failure('プロフィールの取得に失敗しました: ${e.toString()}');
     }
   }
 
   @override
-  Future<Result<Map<String, dynamic>>> updateUserProfile(
-    Map<String, dynamic> profile,
+  Future<Result<UserProfileEntity>> updateUserProfile(
+    UserProfileEntity profile,
   ) async {
     try {
-      // 기존 프로필 로드
-      final existingProfile = await _userService.loadUserProfile();
-
-      if (existingProfile != null) {
-        // 기존 프로필 업데이트
-        final updatedProfile = existingProfile.copyWith(
-          userName: (profile['name'] as String?) ?? existingProfile.userName,
-          email: (profile['email'] as String?) ?? existingProfile.email,
-          profileImage: profile['avatarPath'] as String?,
-          nameKatakana: profile['nameKatakana'] as String?,
-          contact: profile['contact'] as String?,
-          updatedAt: DateTime.now(),
-        );
-
-        await _userService.saveUserProfile(updatedProfile);
-
-        // 업데이트된 프로필을 Map으로 반환
-        final resultMap = {
-          'id': updatedProfile.id,
-          'name': updatedProfile.userName,
-          'email': updatedProfile.email,
-          'avatarPath': updatedProfile.profileImage,
-          'nameKatakana': updatedProfile.nameKatakana,
-          'contact': updatedProfile.contact,
-          'createdAt': updatedProfile.createdAt,
-          'lastLoginAt': updatedProfile.updatedAt,
-        };
-
-        return Result.success('プロフィールが更新されました', resultMap);
-      } else {
-        // 새 프로필 생성
-        final newProfile = await _userService.createUserProfile(
-          userName: profile['name'] as String,
-          email: profile['email'] as String,
-          nameKatakana: profile['nameKatakana'] as String?,
-          contact: profile['contact'] as String?,
-          profileImage: profile['avatarPath'] as String?,
-        );
-
-        await _userService.saveUserProfile(newProfile);
-
-        final resultMap = {
-          'id': newProfile.id,
-          'name': newProfile.userName,
-          'email': newProfile.email,
-          'avatarPath': newProfile.profileImage,
-          'nameKatakana': newProfile.nameKatakana,
-          'contact': newProfile.contact,
-          'createdAt': newProfile.createdAt,
-          'lastLoginAt': newProfile.updatedAt,
-        };
-
-        return Result.success('プロフィールが作成されました', resultMap);
-      }
+      await _userService.saveUserProfile(profile);
+      return Result.success('プロフィールが更新されました', profile);
     } catch (e) {
       return Result.failure('プロフィールの更新に失敗しました: ${e.toString()}');
     }
   }
 
   @override
-  Future<Result<void>> changePassword(Map<String, dynamic> request) async {
+  Future<Result<void>> changePassword(PasswordChangeRequest request) async {
     try {
       // 비밀번호 유효성 검사
-      if (request['isValid'] != true) {
+      if (!request.isValid) {
         return Result.failure('無効なパスワード変更リクエストです');
       }
 
       // 로컬에서 비밀번호 변경 처리 (실제로는 암호화 필요)
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(_keyUserPassword, request['newPassword'] as String);
+      await prefs.setString(_keyUserPassword, request.newPassword);
 
       return Result.success('パスワードが変更されました', null);
     } catch (e) {
@@ -166,49 +109,60 @@ class SettingsRepositoryImpl implements SettingsRepository {
   }
 
   @override
-  Future<Result<Map<String, dynamic>>> getAppSettings() async {
+  Future<Result<AppSettingsEntity>> getAppSettings() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final settingsJson = prefs.getString(_keyAppSettings);
 
       if (settingsJson != null) {
         final settingsMap = jsonDecode(settingsJson) as Map<String, dynamic>;
-        final settings = {
-          'language': settingsMap['language'] as String,
-          'theme': ThemeMode.values.firstWhere(
+        final settings = AppSettingsEntity(
+          language: settingsMap['language'] as String,
+          theme: ThemeMode.values.firstWhere(
             (e) => e.name == settingsMap['theme'],
             orElse: () => ThemeMode.light,
           ),
-          'notificationsEnabled': settingsMap['notificationsEnabled'] as bool,
-          'autoBackup': settingsMap['autoBackup'] as bool,
-          'biometricLogin': settingsMap['biometricLogin'] as bool,
-          'syncFrequency': DataSyncFrequency.values.firstWhere(
+          notificationsEnabled: settingsMap['notificationsEnabled'] as bool,
+          autoBackup: settingsMap['autoBackup'] as bool,
+          biometricLogin: settingsMap['biometricLogin'] as bool,
+          syncFrequency: DataSyncFrequency.values.firstWhere(
             (e) => e.name == settingsMap['syncFrequency'],
             orElse: () => DataSyncFrequency.daily,
           ),
-        };
+        );
         return Result.success('アプリ設定を取得しました', settings);
       }
 
-      return Result.success('デフォルト設定を取得しました', _defaultAppSettings);
+      // 기본 설정 Entity 생성
+      final defaultSettings = AppSettingsEntity(
+        language: _defaultAppSettings['language'] as String,
+        theme: _defaultAppSettings['theme'] as ThemeMode,
+        notificationsEnabled:
+            _defaultAppSettings['notificationsEnabled'] as bool,
+        autoBackup: _defaultAppSettings['autoBackup'] as bool,
+        biometricLogin: _defaultAppSettings['biometricLogin'] as bool,
+        syncFrequency:
+            _defaultAppSettings['syncFrequency'] as DataSyncFrequency,
+      );
+      return Result.success('デフォルト設定を取得しました', defaultSettings);
     } catch (e) {
       return Result.failure('アプリ設定の取得に失敗しました: ${e.toString()}');
     }
   }
 
   @override
-  Future<Result<Map<String, dynamic>>> saveAppSettings(
-    Map<String, dynamic> settings,
+  Future<Result<AppSettingsEntity>> saveAppSettings(
+    AppSettingsEntity settings,
   ) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final settingsMap = {
-        'language': settings['language'],
-        'theme': (settings['theme'] as ThemeMode).name,
-        'notificationsEnabled': settings['notificationsEnabled'],
-        'autoBackup': settings['autoBackup'],
-        'biometricLogin': settings['biometricLogin'],
-        'syncFrequency': (settings['syncFrequency'] as DataSyncFrequency).name,
+        'language': settings.language,
+        'theme': settings.theme.name,
+        'notificationsEnabled': settings.notificationsEnabled,
+        'autoBackup': settings.autoBackup,
+        'biometricLogin': settings.biometricLogin,
+        'syncFrequency': settings.syncFrequency.name,
       };
 
       await prefs.setString(_keyAppSettings, jsonEncode(settingsMap));
@@ -219,7 +173,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
   }
 
   @override
-  Future<Result<Result<dynamic>>> exportAppData() async {
+  Future<Result<DataExportResult>> exportAppData() async {
     try {
       final prefs = await SharedPreferences.getInstance();
 
@@ -233,11 +187,11 @@ class SettingsRepositoryImpl implements SettingsRepository {
       // SharedPreferences에 임시 저장
       await prefs.setString(_keyExportedData, jsonEncode(exportData));
 
-      final exportResult = Result.success('エクスポートが完了しました', {
-        'success': true,
-        'filePath': 'local://exported_data.json',
-        'exportedAt': DateTime.now(),
-      });
+      final exportResult = DataExportResult(
+        success: true,
+        filePath: 'local://exported_data.json',
+        exportedAt: DateTime.now(),
+      );
       return Result.success('アプリデータがエクスポートされました', exportResult);
     } catch (e) {
       return Result.failure('アプリデータのエクスポートに失敗しました: ${e.toString()}');

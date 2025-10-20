@@ -1,6 +1,6 @@
+import 'package:aipet_frontend/app/services/current_user_service.dart';
 import 'package:aipet_frontend/features/pet_feeding/data/data.dart';
 import 'package:aipet_frontend/features/pet_feeding/domain/domain.dart';
-import 'package:aipet_frontend/shared/core/services/current_user_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

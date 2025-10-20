@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../data/providers/notification_providers.dart';
 import '../../domain/entities/entities.dart';
+import '../utils/notification_ui_utils.dart';
 
 /// 알림 목록 위젯
 ///

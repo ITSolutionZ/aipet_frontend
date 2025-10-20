@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/features/settings/data/repositories/settings_repository_impl.dart';
+import 'package:aipet_frontend/features/settings/domain/entities/settings_entity.dart';
 import 'package:aipet_frontend/features/settings/domain/usecases/change_password_usecase.dart';
 import 'package:aipet_frontend/features/settings/domain/usecases/clear_app_cache_usecase.dart';
 import 'package:aipet_frontend/features/settings/domain/usecases/delete_account_usecase.dart';
@@ -79,7 +80,7 @@ ClearAppCacheUseCase clearAppCacheUseCase(Ref ref) {
 @riverpod
 class UserProfileNotifier extends _$UserProfileNotifier {
   @override
-  Future<Map<String, dynamic>> build() async {
+  Future<UserProfileEntity> build() async {
     final useCase = ref.watch(getUserProfileUseCaseProvider);
     final result = await useCase();
     if (result.isSuccess) {
@@ -104,7 +105,7 @@ class UserProfileNotifier extends _$UserProfileNotifier {
   }
 
   /// 프로필 업데이트
-  Future<bool> updateProfile(Map<String, dynamic> profile) async {
+  Future<bool> updateProfile(UserProfileEntity profile) async {
     final useCase = ref.read(updateUserProfileUseCaseProvider);
     final result = await useCase(profile);
     if (result.isSuccess) {
@@ -120,7 +121,7 @@ class UserProfileNotifier extends _$UserProfileNotifier {
 @riverpod
 class AppSettingsNotifier extends _$AppSettingsNotifier {
   @override
-  Future<Map<String, dynamic>> build() async {
+  Future<AppSettingsEntity> build() async {
     final useCase = ref.watch(getAppSettingsUseCaseProvider);
     final result = await useCase();
     if (result.isSuccess) {
@@ -145,7 +146,7 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
   }
 
   /// 설정 저장
-  Future<bool> saveSettings(Map<String, dynamic> settings) async {
+  Future<bool> saveSettings(AppSettingsEntity settings) async {
     final useCase = ref.read(saveAppSettingsUseCaseProvider);
     final result = await useCase(settings);
     if (result.isSuccess) {

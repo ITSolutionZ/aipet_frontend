@@ -1,3 +1,4 @@
+import 'package:aipet_frontend/features/settings/domain/entities/settings_entity.dart';
 import 'package:aipet_frontend/features/settings/domain/repositories/settings_repository.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
 
@@ -7,9 +8,7 @@ class SaveAppSettingsUseCase {
   const SaveAppSettingsUseCase(this._repository);
 
   /// 앱 설정 저장
-  Future<Result<Map<String, dynamic>>> call(
-    Map<String, dynamic> settings,
-  ) async {
+  Future<Result<AppSettingsEntity>> call(AppSettingsEntity settings) async {
     final result = await _repository.saveAppSettings(settings);
     if (result.isSuccess) {
       return Result.success('アプリ設定を保存しました', result.dataOrNull);

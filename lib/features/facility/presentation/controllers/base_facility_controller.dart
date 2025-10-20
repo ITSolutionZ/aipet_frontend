@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/app/services/unified_error_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../core/services/unified_error_handler.dart';
 
 /// 🎯 Facility 기능 전용 BaseController
 ///

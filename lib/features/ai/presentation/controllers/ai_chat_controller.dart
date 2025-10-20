@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:aipet_frontend/app/controllers/base_controller.dart';
+import 'package:aipet_frontend/app/services/local_storage_service.dart';
 import 'package:aipet_frontend/features/home/home.dart';
 import 'package:aipet_frontend/features/walk/walk.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../../shared/domain/entities/pet_profile_entity.dart';
 import '../../data/data.dart';
 import '../../domain/domain.dart';
 

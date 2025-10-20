@@ -40,8 +40,8 @@ class SettingsController extends BaseController {
   );
 
   /// 사용자 프로필 로드
-  Future<Result<Map<String, dynamic>>> loadUserProfile() async {
-    final result = await safeExecute<Result<Map<String, dynamic>>>(() async {
+  Future<Result<UserProfileEntity>> loadUserProfile() async {
+    final result = await safeExecute<Result<UserProfileEntity>>(() async {
       final useCaseResult = await _getUserProfileUseCase.call();
       if (useCaseResult.isSuccess) {
         return Result.success(useCaseResult.message, useCaseResult.dataOrNull);
@@ -54,10 +54,10 @@ class SettingsController extends BaseController {
   }
 
   /// 프로필 업데이트
-  Future<Result<Map<String, dynamic>>> updateProfile(
-    Map<String, dynamic> profile,
+  Future<Result<UserProfileEntity>> updateProfile(
+    UserProfileEntity profile,
   ) async {
-    final result = await safeExecute<Result<Map<String, dynamic>>>(() async {
+    final result = await safeExecute<Result<UserProfileEntity>>(() async {
       final useCaseResult = await _updateUserProfileUseCase.call(profile);
       if (useCaseResult.isSuccess) {
         return Result.success(useCaseResult.message, useCaseResult.dataOrNull!);
@@ -85,11 +85,11 @@ class SettingsController extends BaseController {
     }
 
     final result = await safeExecute<Result<void>>(() async {
-      final request = {
-        'currentPassword': currentPassword,
-        'newPassword': newPassword,
-        'confirmPassword': confirmPassword,
-      };
+      final request = PasswordChangeRequest(
+        currentPassword: currentPassword,
+        newPassword: newPassword,
+        confirmPassword: confirmPassword,
+      );
 
       final useCaseResult = await _changePasswordUseCase.call(request);
       if (useCaseResult.isSuccess) {
@@ -117,8 +117,8 @@ class SettingsController extends BaseController {
   }
 
   /// 앱 설정 로드
-  Future<Result<Map<String, dynamic>>> loadAppSettings() async {
-    final result = await safeExecute<Result<Map<String, dynamic>>>(() async {
+  Future<Result<AppSettingsEntity>> loadAppSettings() async {
+    final result = await safeExecute<Result<AppSettingsEntity>>(() async {
       final useCaseResult = await _getAppSettingsUseCase.call();
       if (useCaseResult.isSuccess) {
         return Result.success(useCaseResult.message, useCaseResult.dataOrNull!);
@@ -131,10 +131,10 @@ class SettingsController extends BaseController {
   }
 
   /// 앱 설정 저장
-  Future<Result<Map<String, dynamic>>> saveAppSettings(
-    Map<String, dynamic> settings,
+  Future<Result<AppSettingsEntity>> saveAppSettings(
+    AppSettingsEntity settings,
   ) async {
-    final result = await safeExecute<Result<Map<String, dynamic>>>(() async {
+    final result = await safeExecute<Result<AppSettingsEntity>>(() async {
       final useCaseResult = await _saveAppSettingsUseCase.call(settings);
       if (useCaseResult.isSuccess) {
         return Result.success(useCaseResult.message, useCaseResult.dataOrNull!);
@@ -147,8 +147,8 @@ class SettingsController extends BaseController {
   }
 
   /// 앱 데이터 내보내기
-  Future<Result<Result>> exportAppData() async {
-    final result = await safeExecute<Result<Result>>(() async {
+  Future<Result<DataExportResult>> exportAppData() async {
+    final result = await safeExecute<Result<DataExportResult>>(() async {
       final useCaseResult = await _exportAppDataUseCase.call();
       if (useCaseResult.isSuccess) {
         return Result.success(useCaseResult.message, useCaseResult.dataOrNull!);

@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:aipet_frontend/shared/services/image_storage_service.dart';
-import 'package:aipet_frontend/shared/shared.dart' hide State;
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
 /// 범용 이미지 표시 위젯 - 메모리 최적화 버전

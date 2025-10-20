@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aipet_frontend/app/widgets/widgets.dart';
 import 'package:aipet_frontend/features/walk/data/providers/walk_providers.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/pet_info.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';

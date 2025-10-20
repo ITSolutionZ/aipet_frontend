@@ -1,5 +1,5 @@
+import 'package:aipet_frontend/app/services/local_storage_service.dart';
 import 'package:flutter/foundation.dart';
-import 'local_storage_service.dart';
 
 /// 로컬 데이터 저장 검증 서비스
 /// 모든 로컬 데이터가 제대로 저장되었는지 확인
@@ -174,13 +174,14 @@ class DataVerificationService {
       debugPrint('   총 펫 개수: ${pets.length}');
       debugPrint('   활성 펫: ${pets.where((p) => p['is_active'] == 1).length}');
       debugPrint('   총 스케줄: ${schedules.length}');
-      debugPrint('   활성 스케줄: ${schedules.where((s) => s['is_enabled'] == 1).length}');
+      debugPrint(
+        '   활성 스케줄: ${schedules.where((s) => s['is_enabled'] == 1).length}',
+      );
       debugPrint('   사용자 프로필: ${profile != null ? '있음' : '없음'}');
 
       debugPrint('\n📝 저장소 경로: 로컬 SQLite DB');
       debugPrint('   DB 파일: aipet_local.db');
       debugPrint('   위치: 앱 내부 저장소');
-
     } catch (e, stackTrace) {
       debugPrint('❌ 통계 출력 실패: $e');
       debugPrint('📍 StackTrace: $stackTrace');

@@ -1,5 +1,6 @@
-import 'package:aipet_frontend/shared/data/datasources/drawer_local_datasource.dart';
 import 'package:flutter/material.dart';
+
+import 'drawer_local_datasource.dart';
 
 /// ドロワー情報バナーウィジェット
 /// 情報登録の案内とボタンを表示

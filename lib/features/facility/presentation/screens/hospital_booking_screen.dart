@@ -63,9 +63,9 @@ class _HospitalBookingScreenState extends ConsumerState<HospitalBookingScreen> {
     final userProfileAsync = ref.read(userProfileProvider);
     userProfileAsync.whenData((profile) {
       setState(() {
-        _nameController.text = profile['name'] ?? '';
+        _nameController.text = profile.userName;
         // 전화번호는 프로필에 없을 수 있으므로 기본값 사용
-        _phoneController.text = profile['phone'] ?? '010-0000-0000';
+        _phoneController.text = profile.contact ?? '010-0000-0000';
       });
     });
   }

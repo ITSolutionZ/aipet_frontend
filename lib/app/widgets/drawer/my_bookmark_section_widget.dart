@@ -1,6 +1,7 @@
-import 'package:aipet_frontend/shared/data/datasources/drawer_local_datasource.dart';
 import 'package:aipet_frontend/shared/design/design.dart';
 import 'package:flutter/material.dart';
+
+import 'drawer_local_datasource.dart';
 
 /// マイブックマークセクションウィジェット
 /// 各種ブックマーク機能へのアクセスを提供
