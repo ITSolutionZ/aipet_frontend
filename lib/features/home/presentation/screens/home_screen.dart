@@ -30,7 +30,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   AnimationController? _drawerAnimationController;
   Animation<Offset>? _drawerSlideAnimation;
   bool _isDrawerOpen = false;
-  final HomeCacheManager _cacheManager = HomeCacheManager();
 
   @override
   void initState() {
@@ -62,9 +61,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
 
-    // 앱이 백그라운드에서 포그라운드로 돌아왔을 때 캐시 정리
+    // 앱이 백그라운드에서 포그라운드로 돌아왔을 때
     if (state == AppLifecycleState.resumed) {
-      _cacheManager.cleanupExpiredCache();
+      // TODO: 캐시 정리 로직 추가 필요시 구현
+      debugPrint('앱이 포그라운드로 돌아왔습니다');
     }
   }
 
@@ -422,9 +422,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   /// Pull-to-Refresh 핸들러
   Future<void> _handleRefresh() async {
     // debugPrint('🔄 HomeScreen: Pull-to-Refresh 시작');
-
-    // 캐시 새로고침
-    await _cacheManager.refreshHomeDashboard();
 
     // 대시보드 데이터 다시 로드
     ref.invalidate(homeDashboardProvider);
