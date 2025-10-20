@@ -656,23 +656,28 @@ class LiveWalkController extends _$LiveWalkController {
   }
 }
 
-class LiveWalkWidget extends StatelessWidget {
+class LiveWalkWidget extends ConsumerStatefulWidget {
   final String? petId;
   final String? petName;
 
   const LiveWalkWidget({super.key, this.petId, this.petName});
 
   @override
+  ConsumerState<LiveWalkWidget> createState() => _LiveWalkWidgetState();
+}
+
+class _LiveWalkWidgetState extends ConsumerState<LiveWalkWidget> {
+  @override
   Widget build(BuildContext context) {
     debugPrint('👨‍👧‍👦 LiveWalkWidget.build() - 한 번만 호출되어야 함');
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(petName != null ? '${petName}の散歩' : '実時間 散歩'),
+        title: Text(widget.petName != null ? '${widget.petName}の散歩' : '実時間 散歩'),
         backgroundColor: Colors.white,
         elevation: 0,
       ),
-      body: const Column(
+      body: Column(
         children: [
           // 맵: 위치 변경 시만 리빌드 (완전 독립)
           Expanded(flex: 3, child: _MapSection()),
