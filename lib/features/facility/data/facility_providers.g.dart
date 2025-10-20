@@ -304,7 +304,7 @@ final class FacilityRepositoryNotifierProvider
 }
 
 String _$facilityRepositoryNotifierHash() =>
-    r'3bed20d65f2ec26f1d5432073bbe93d04100415c';
+    r'2d75ab9c0cbe186e872f40714c047dd319704977';
 
 abstract class _$FacilityRepositoryNotifier
     extends $Notifier<FacilityRepository> {

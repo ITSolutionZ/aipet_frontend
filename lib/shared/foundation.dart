@@ -13,7 +13,6 @@ export 'core/utils/loading_state.dart';
 export 'core/utils/string_utils.dart';
 export 'core/utils/utils.dart';
 export 'core/utils/validation_utils.dart';
-export 'foundation/controllers/base_facility_controller.dart';
 export 'foundation/controllers/crud_controller.dart';
 export 'foundation/controllers/form_controller.dart';
 export 'foundation/controllers/unified_state_controller.dart';
@@ -33,6 +32,9 @@ export 'foundation/types/types.dart' hide Success, Failure, State;
 export 'foundation/utils/utils.dart';
 export 'services/base_logging_service.dart';
 export 'services/weather_icon_service.dart';
-export 'utils/notification_ui_utils.dart';
 export 'utils/summary_card_utils.dart';
-export 'utils/weather_utils.dart';
+
+// Feature-specific files have been moved:
+// - base_facility_controller → facility/presentation/controllers/
+// - notification_ui_utils → notification/presentation/utils/
+// - weather_utils → home/domain/utils/
