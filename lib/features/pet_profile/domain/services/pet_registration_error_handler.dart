@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// 펫 등록 관련 에러 처리 서비스
+/// Pet Profile - 펫 등록 관련 에러 처리 서비스
 /// 사용자 친화적인 에러 메시지 제공 및 에러 상황 처리
 class PetRegistrationErrorHandler {
   /// 에러를 사용자 친화적인 메시지로 변환
