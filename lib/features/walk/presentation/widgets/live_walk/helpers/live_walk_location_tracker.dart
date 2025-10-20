@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:aipet_frontend/features/walk/domain/entities/walk_location_entity.dart';
+import 'package:aipet_frontend/features/walk/domain/services/walk_tracking_optimizer.dart' hide LocationAccuracy;
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -17,14 +18,23 @@ class LiveWalkLocationTracker {
     // 기존 추적 정지
     stopTracking();
 
-    // 주기적 위치 업데이트 (3초마다)
-    _locationTimer = Timer.periodic(const Duration(seconds: 3), (timer) async {
+    // 최적화된 위치 추적 설정 사용
+    final config = WalkTrackingOptimizer.getAdaptiveTrackingConfig(
+      batteryLevel: 1.0, // 배터리 레벨은 추후 실제 값으로 대체
+      isCharging: false,
+      walkDuration: Duration.zero,
+      currentSpeed: 0.0,
+    );
+
+    // 적응형 위치 업데이트 간격 사용
+    _locationTimer = Timer.periodic(config.updateInterval, (timer) async {
       try {
         final position = await Geolocator.getCurrentPosition(
-          locationSettings: const LocationSettings(
-            accuracy: LocationAccuracy.high,
+          locationSettings: LocationSettings(
+            accuracy: LocationAccuracy.high, // 기본값 사용
+            distanceFilter: config.distanceFilter,
           ),
-        ).timeout(const Duration(seconds: 5));
+        ).timeout(const Duration(seconds: 8));
 
         final location = WalkLocation(
           latitude: position.latitude,
@@ -36,7 +46,12 @@ class LiveWalkLocationTracker {
           heading: position.heading,
         );
 
-        onLocationUpdate(location);
+        // 위치 데이터 유효성 검증
+        if (WalkTrackingOptimizer.isValidLocation(location)) {
+          onLocationUpdate(location);
+        } else {
+          debugPrint('🚶 유효하지 않은 위치 데이터 무시: 정확도 ${location.accuracy}m');
+        }
       } catch (e) {
         debugPrint('위치 업데이트 실패: $e');
         onError();
