@@ -29,6 +29,12 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
   String _eventDescription = '';
   String _eventLocation = '';
   bool _isAllDay = false;
+  
+  // 인라인 입력 상태
+  bool _isEditingHour = false;
+  bool _isEditingMinute = false;
+  final TextEditingController _hourController = TextEditingController();
+  final TextEditingController _minuteController = TextEditingController();
 
   @override
   void initState() {
@@ -161,6 +167,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
                     );
                   });
                 },
+                isMinute: true,
               ),
             ],
           ),
@@ -221,6 +228,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
     required int min,
     required int max,
     required ValueChanged<int> onChanged,
+    bool isMinute = false,
   }) {
     return Container(
       height: 140,
@@ -249,22 +257,12 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
 
           // 현재 값
           Expanded(
-            child: GestureDetector(
-              onTap: () => _showNumberInputDialog(value, min, max, onChanged),
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Center(
-                  child: Text(
-                    value.toString().padLeft(2, '0'),
-                    style: const TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.pointDark,
-                      height: 1.2,
-                    ),
-                  ),
-                ),
-              ),
+            child: _buildTimeValue(
+              value: value,
+              min: min,
+              max: max,
+              onChanged: onChanged,
+              isEditing: isMinute ? _isEditingMinute : _isEditingHour,
             ),
           ),
 
@@ -379,7 +377,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
         // 공휴일 제외
         Row(
           children: [
-            Text('공휴일에는 끄기', style: AppFonts.bodySmall),
+            Text('祝日はオフにする', style: AppFonts.titleMedium),
             const Spacer(),
             Switch(
               value: _excludeHolidays,
@@ -797,61 +795,93 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
     }
   }
 
-  /// 숫자 입력 다이얼로그 표시
-  Future<void> _showNumberInputDialog(
-    int currentValue,
-    int min,
-    int max,
-    ValueChanged<int> onChanged,
-  ) async {
-    final TextEditingController controller = TextEditingController(
-      text: currentValue.toString(),
-    );
-
-    final result = await showDialog<int>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('数値を入力'),
-          content: TextField(
-            controller: controller,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-              hintText: '$min から $max の間で入力してください',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(AppRadius.medium),
+  /// 시간 값 표시/입력 위젯
+  Widget _buildTimeValue({
+    required int value,
+    required int min,
+    required int max,
+    required ValueChanged<int> onChanged,
+    required bool isEditing,
+  }) {
+    final isMinute = _isEditingMinute;
+    final controller = isMinute ? _minuteController : _hourController;
+    
+    if (isEditing) {
+      // 편집 모드: TextField 표시
+      return Container(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: TextField(
+          controller: controller,
+          keyboardType: TextInputType.number,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.w600,
+            color: AppColors.pointDark,
+            height: 1.2,
+          ),
+          decoration: const InputDecoration(
+            border: InputBorder.none,
+            contentPadding: EdgeInsets.zero,
+          ),
+          onSubmitted: (text) {
+            final input = int.tryParse(text);
+            if (input != null && input >= min && input <= max) {
+              onChanged(input);
+              setState(() {
+                if (isMinute) {
+                  _isEditingMinute = false;
+                } else {
+                  _isEditingHour = false;
+                }
+              });
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('$min から $max の間で入力してください'),
+                  backgroundColor: AppColors.pointRed,
+                ),
+              );
+            }
+          },
+          onTap: () {
+            controller.text = value.toString();
+            controller.selection = TextSelection(
+              baseOffset: 0,
+              extentOffset: controller.text.length,
+            );
+          },
+        ),
+      );
+    } else {
+      // 표시 모드: 터치 가능한 텍스트
+      return GestureDetector(
+        onTap: () {
+          setState(() {
+            if (isMinute) {
+              _isEditingMinute = true;
+              _minuteController.text = value.toString();
+            } else {
+              _isEditingHour = true;
+              _hourController.text = value.toString();
+            }
+          });
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Center(
+            child: Text(
+              value.toString().padLeft(2, '0'),
+              style: const TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.w600,
+                color: AppColors.pointDark,
+                height: 1.2,
               ),
             ),
-            autofocus: true,
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('キャンセル'),
-            ),
-            TextButton(
-              onPressed: () {
-                final input = int.tryParse(controller.text);
-                if (input != null && input >= min && input <= max) {
-                  Navigator.of(context).pop(input);
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('$min から $max の間で入力してください'),
-                      backgroundColor: AppColors.pointRed,
-                    ),
-                  );
-                }
-              },
-              child: const Text('確定'),
-            ),
-          ],
-        );
-      },
-    );
-
-    if (result != null) {
-      onChanged(result);
+        ),
+      );
     }
   }
 }
