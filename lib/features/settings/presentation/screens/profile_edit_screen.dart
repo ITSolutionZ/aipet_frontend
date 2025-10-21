@@ -60,24 +60,27 @@ class ProfileEditFormController extends _$ProfileEditFormController {
           .updateField('contact', contactController.text);
     });
 
-    // 프로필 데이터가 있으면 컨트롤러에 값 설정
-    final profileState = ref.read(userProfileControllerProvider);
-    if (profileState.profile != null) {
-      final profile = profileState.profile!;
-      userNameController.text = profile.userName;
-      emailController.text = profile.email;
-      nameKatakanaController.text = profile.nameKatakana ?? '';
-      contactController.text = profile.contact ?? '';
-      debugPrint('📝 초기화 시 프로필 데이터 설정: ${profile.userName}');
-    }
+    // 빌드 완료 후 상태 업데이트
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // 프로필 데이터가 있으면 컨트롤러에 값 설정
+      final profileState = ref.read(userProfileControllerProvider);
+      if (profileState.profile != null) {
+        final profile = profileState.profile!;
+        userNameController.text = profile.userName;
+        emailController.text = profile.email;
+        nameKatakanaController.text = profile.nameKatakana ?? '';
+        contactController.text = profile.contact ?? '';
+        debugPrint('📝 초기화 시 프로필 데이터 설정: ${profile.userName}');
+      }
 
-    state = state.copyWith(
-      formKey: formKey,
-      userNameController: userNameController,
-      emailController: emailController,
-      nameKatakanaController: nameKatakanaController,
-      contactController: contactController,
-    );
+      state = state.copyWith(
+        formKey: formKey,
+        userNameController: userNameController,
+        emailController: emailController,
+        nameKatakanaController: nameKatakanaController,
+        contactController: contactController,
+      );
+    });
   }
 
   /// 선택된 이미지 업데이트
