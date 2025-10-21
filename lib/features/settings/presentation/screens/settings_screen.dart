@@ -83,7 +83,7 @@ class SettingsScreen extends ConsumerWidget {
             title: 'プロフィール編集',
             backgroundColor: const Color(0xFFA88B5A),
             tileColor: AppColors.pureWhite,
-            onTap: () => context.push(AppRouter.profileEditRoute),
+            onTap: () => Scaffold.of(context).openDrawer(),
           ),
           const SizedBox(height: AppSpacing.xs),
           SettingsTileWidget(
