@@ -85,6 +85,7 @@ class SettingsScreen extends ConsumerWidget {
             tileColor: AppColors.pureWhite,
             onTap: () => context.push(AppRouter.profileEditRoute),
           ),
+          const SizedBox(height: AppSpacing.xs),
           SettingsTileWidget(
             icon: Icons.pets,
             title: 'ペット情報編集',
@@ -95,6 +96,7 @@ class SettingsScreen extends ConsumerWidget {
               context.push(AppRouter.petEditRoute);
             },
           ),
+          const SizedBox(height: AppSpacing.xs),
           SettingsTileWidget(
             icon: Icons.lock,
             title: 'セキュリティ設定',
@@ -102,6 +104,7 @@ class SettingsScreen extends ConsumerWidget {
             tileColor: AppColors.pureWhite,
             onTap: () => context.push('/settings/biometric-security'),
           ),
+          const SizedBox(height: AppSpacing.xs),
           SettingsTileWidget(
             icon: Icons.delete,
             title: 'アカウント削除',
@@ -121,6 +124,7 @@ class SettingsScreen extends ConsumerWidget {
             tileColor: AppColors.pureWhite,
             onTap: () => context.push(AppRouter.pushNotificationRoute),
           ),
+          const SizedBox(height: AppSpacing.xs),
           SettingsTileWidget(
             icon: Icons.star,
             title: 'プレミアム管理',
@@ -128,6 +132,7 @@ class SettingsScreen extends ConsumerWidget {
             tileColor: AppColors.pureWhite,
             onTap: () {},
           ),
+          const SizedBox(height: AppSpacing.xs),
           SettingsTileWidget(
             icon: Icons.lightbulb,
             title: 'テーマ設定',
@@ -147,6 +152,7 @@ class SettingsScreen extends ConsumerWidget {
             tileColor: AppColors.pureWhite,
             onTap: () => context.push('/settings/database-dashboard'),
           ),
+          const SizedBox(height: AppSpacing.xs),
           SettingsTileWidget(
             icon: Icons.help,
             title: 'お問い合わせ',
@@ -154,6 +160,7 @@ class SettingsScreen extends ConsumerWidget {
             tileColor: AppColors.pureWhite,
             onTap: () {},
           ),
+          const SizedBox(height: AppSpacing.xs),
           SettingsTileWidget(
             icon: Icons.info,
             title: 'アプリ情報',
