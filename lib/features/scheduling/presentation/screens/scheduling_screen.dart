@@ -94,21 +94,6 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
                 ),
                 markersMaxCount: 3,
               ),
-              builders: CalendarBuilders(
-                // 토요일만 파란색으로 설정
-                saturdayBuilder: (context, day, focusedDay) {
-                  return Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      '${day.day}',
-                      style: const TextStyle(
-                        color: AppColors.pointBlue,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  );
-                },
-              ),
               headerStyle: const HeaderStyle(
                 formatButtonVisible: true,
                 titleCentered: true,
