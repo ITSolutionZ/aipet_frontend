@@ -37,6 +37,10 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
   final TextEditingController _hourController = TextEditingController();
   final TextEditingController _minuteController = TextEditingController();
 
+  // Focus nodes for inline time input
+  final FocusNode _hourFocusNode = FocusNode();
+  final FocusNode _minuteFocusNode = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -53,6 +57,110 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
       _selectedTime.hour,
       _selectedTime.minute,
     );
+
+    _hourFocusNode.addListener(_onHourFocusChange);
+    _minuteFocusNode.addListener(_onMinuteFocusChange);
+  }
+
+  @override
+  void dispose() {
+    _hourController.dispose();
+    _minuteController.dispose();
+    _hourFocusNode.removeListener(_onHourFocusChange);
+    _hourFocusNode.dispose();
+    _minuteFocusNode.removeListener(_onMinuteFocusChange);
+    _minuteFocusNode.dispose();
+    super.dispose();
+  }
+
+  // Focus change handlers
+  void _onHourFocusChange() {
+    if (!_hourFocusNode.hasFocus && _isEditingHour) {
+      _handleTimeInputSubmission(
+        controller: _hourController,
+        min: 1,
+        max: 12,
+        onChanged: (value) {
+          setState(() {
+            final hour = _selectedTime.hour >= 12
+                ? (value == 12 ? 12 : value + 12)
+                : (value == 12 ? 0 : value);
+            _selectedTime = DateTime(
+              _selectedTime.year,
+              _selectedTime.month,
+              _selectedTime.day,
+              hour,
+              _selectedTime.minute,
+            );
+          });
+        },
+        isMinute: false,
+      );
+    }
+  }
+
+  void _onMinuteFocusChange() {
+    if (!_minuteFocusNode.hasFocus && _isEditingMinute) {
+      _handleTimeInputSubmission(
+        controller: _minuteController,
+        min: 0,
+        max: 59,
+        onChanged: (value) {
+          setState(() {
+            _selectedTime = DateTime(
+              _selectedTime.year,
+              _selectedTime.month,
+              _selectedTime.day,
+              _selectedTime.hour,
+              value,
+            );
+          });
+        },
+        isMinute: true,
+      );
+    }
+  }
+
+  // Helper method to handle time input submission (both onSubmitted and onFocusChange)
+  void _handleTimeInputSubmission({
+    required TextEditingController controller,
+    required int min,
+    required int max,
+    required ValueChanged<int> onChanged,
+    required bool isMinute,
+  }) {
+    final text = controller.text;
+    final input = int.tryParse(text);
+
+    if (input != null && input >= min && input <= max) {
+      onChanged(input); // Update _selectedTime
+      setState(() {
+        if (isMinute) {
+          _isEditingMinute = false;
+        } else {
+          _isEditingHour = false;
+        }
+      });
+    } else {
+      // If invalid, revert to the current _selectedTime value and exit editing mode
+      final currentValue = isMinute
+          ? _selectedTime.minute
+          : (_selectedTime.hour % 12 == 0 ? 12 : _selectedTime.hour % 12);
+      controller.text = currentValue.toString().padLeft(2, '0');
+      setState(() {
+        if (isMinute) {
+          _isEditingMinute = false;
+        } else {
+          _isEditingHour = false;
+        }
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('$min から $max の間で入力してください'),
+          backgroundColor: AppColors.pointRed,
+        ),
+      );
+    }
   }
 
   @override
@@ -791,8 +899,12 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
     required ValueChanged<int> onChanged,
     required bool isEditing,
   }) {
-    final isMinute = _isEditingMinute;
+    final isMinute =
+        min == 0 && max == 59; // Determine if it's the minute wheel
     final controller = isMinute ? _minuteController : _hourController;
+    final focusNode = isMinute
+        ? _minuteFocusNode
+        : _hourFocusNode; // Use focus node
 
     if (isEditing) {
       // 편집 모드: TextField 표시
@@ -800,6 +912,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: TextField(
           controller: controller,
+          focusNode: focusNode, // Assign focus node
           keyboardType: TextInputType.number,
           textAlign: TextAlign.center,
           style: const TextStyle(
@@ -813,27 +926,17 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
             contentPadding: EdgeInsets.zero,
           ),
           onSubmitted: (text) {
-            final input = int.tryParse(text);
-            if (input != null && input >= min && input <= max) {
-              onChanged(input);
-              setState(() {
-                if (isMinute) {
-                  _isEditingMinute = false;
-                } else {
-                  _isEditingHour = false;
-                }
-              });
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('$min から $max の間で入力してください'),
-                  backgroundColor: AppColors.pointRed,
-                ),
-              );
-            }
+            _handleTimeInputSubmission(
+              controller: controller,
+              min: min,
+              max: max,
+              onChanged: onChanged,
+              isMinute: isMinute,
+            );
           },
           onTap: () {
-            controller.text = value.toString();
+            // When tapping the TextField, ensure it's pre-filled with the current value
+            controller.text = value.toString().padLeft(2, '0');
             controller.selection = TextSelection(
               baseOffset: 0,
               extentOffset: controller.text.length,
@@ -848,10 +951,12 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
           setState(() {
             if (isMinute) {
               _isEditingMinute = true;
-              _minuteController.text = value.toString();
+              _minuteController.text = value.toString().padLeft(2, '0');
+              _minuteFocusNode.requestFocus(); // Request focus
             } else {
               _isEditingHour = true;
-              _hourController.text = value.toString();
+              _hourController.text = value.toString().padLeft(2, '0');
+              _hourFocusNode.requestFocus(); // Request focus
             }
           });
         },
