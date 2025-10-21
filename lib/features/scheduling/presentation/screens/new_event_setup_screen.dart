@@ -5,6 +5,7 @@ import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 class NewEventSetupScreen extends ConsumerStatefulWidget {
   final DateTime? initialDate;
@@ -29,7 +30,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
   String _eventDescription = '';
   String _eventLocation = '';
   bool _isAllDay = false;
-  
+
   // 인라인 입력 상태
   bool _isEditingHour = false;
   bool _isEditingMinute = false;
@@ -211,14 +212,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
               : AppColors.pointGray.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(AppRadius.medium),
         ),
-        child: Text(
-          isAm ? '오전' : '오후',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: isSelected ? AppColors.pureWhite : AppColors.pointGray,
-          ),
-        ),
+        child: Text(isAm ? 'ごぜ' : 'PM午前', style: AppFonts.titleMedium),
       ),
     );
   }
@@ -353,7 +347,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
             ),
             const SizedBox(width: AppSpacing.sm),
             Text(
-              '${_selectedDate.month}월 ${_selectedDate.day}일 (${_getWeekdayName(_selectedDate.weekday)})',
+              DateFormat('M月d日 (E)', 'ja_JP').format(_selectedDate),
               style: AppFonts.titleMedium,
             ),
             const Spacer(),
@@ -683,10 +677,6 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
     );
   }
 
-  String _getWeekdayName(int weekday) {
-    const weekdays = ['月', '火', '水', '木', '金', '土', '日'];
-    return weekdays[weekday - 1];
-  }
 
   Future<void> _selectDate() async {
     final date = await showDatePicker(
@@ -805,7 +795,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
   }) {
     final isMinute = _isEditingMinute;
     final controller = isMinute ? _minuteController : _hourController;
-    
+
     if (isEditing) {
       // 편집 모드: TextField 표시
       return Container(
