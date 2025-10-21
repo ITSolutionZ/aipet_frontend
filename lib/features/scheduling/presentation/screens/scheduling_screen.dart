@@ -79,6 +79,7 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
                 outsideDaysVisible: false,
                 weekendTextStyle: const TextStyle(color: AppColors.pointRed),
                 holidayTextStyle: const TextStyle(color: AppColors.pointRed),
+                defaultTextStyle: const TextStyle(color: AppColors.pointDark),
                 selectedDecoration: const BoxDecoration(
                   color: AppColors.pointBrown,
                   shape: BoxShape.circle,
@@ -92,6 +93,21 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
                   shape: BoxShape.circle,
                 ),
                 markersMaxCount: 3,
+              ),
+              builders: CalendarBuilders(
+                // 토요일만 파란색으로 설정
+                saturdayBuilder: (context, day, focusedDay) {
+                  return Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      '${day.day}',
+                      style: const TextStyle(
+                        color: AppColors.pointBlue,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  );
+                },
               ),
               headerStyle: const HeaderStyle(
                 formatButtonVisible: true,
@@ -550,7 +566,7 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
     final result = await context.push(
       '/scheduling/new-event?date=${_selectedDay?.toIso8601String()}',
     );
-    
+
     // 새 이벤트가 추가되었을 때 이벤트 목록 새로고침
     if (result == true) {
       await _loadEventsFromDatabase();
