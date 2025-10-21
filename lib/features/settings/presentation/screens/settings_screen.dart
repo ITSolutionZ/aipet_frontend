@@ -82,12 +82,14 @@ class SettingsScreen extends ConsumerWidget {
             icon: Icons.person,
             title: 'プロフィール編集',
             backgroundColor: const Color(0xFFA88B5A),
+            tileColor: AppColors.pureWhite,
             onTap: () => context.push(AppRouter.profileEditRoute),
           ),
           SettingsTileWidget(
             icon: Icons.pets,
             title: 'ペット情報編集',
             backgroundColor: const Color(0xFFA88B5A),
+            tileColor: AppColors.pureWhite,
             onTap: () {
               // 管理中の反応動物画面へ移動
               context.push(AppRouter.petEditRoute);
@@ -97,12 +99,14 @@ class SettingsScreen extends ConsumerWidget {
             icon: Icons.lock,
             title: 'セキュリティ設定',
             backgroundColor: const Color(0xFFA88B5A),
+            tileColor: AppColors.pureWhite,
             onTap: () => context.push('/settings/biometric-security'),
           ),
           SettingsTileWidget(
             icon: Icons.delete,
             title: 'アカウント削除',
             backgroundColor: const Color(0xFFB85A5A),
+            tileColor: AppColors.pureWhite,
             onTap: () => context.push(AppRouter.accountDeleteRoute),
           ),
 
@@ -114,18 +118,21 @@ class SettingsScreen extends ConsumerWidget {
             icon: Icons.notifications,
             title: 'アラーム設定',
             backgroundColor: const Color(0xFF7A9CC6),
+            tileColor: AppColors.pureWhite,
             onTap: () => context.push(AppRouter.pushNotificationRoute),
           ),
           SettingsTileWidget(
             icon: Icons.star,
             title: 'プレミアム管理',
             backgroundColor: const Color(0xFF7A9CC6),
+            tileColor: AppColors.pureWhite,
             onTap: () {},
           ),
           SettingsTileWidget(
             icon: Icons.lightbulb,
             title: 'テーマ設定',
             backgroundColor: const Color(0xFF7A9CC6),
+            tileColor: AppColors.pureWhite,
             onTap: () {},
           ),
 
@@ -137,18 +144,21 @@ class SettingsScreen extends ConsumerWidget {
             icon: Icons.dashboard,
             title: 'データベースダッシュボード (開発用)',
             backgroundColor: const Color(0xFF6B73FF),
+            tileColor: AppColors.pureWhite,
             onTap: () => context.push('/settings/database-dashboard'),
           ),
           SettingsTileWidget(
             icon: Icons.help,
             title: 'お問い合わせ',
             backgroundColor: const Color(0xFFB8A5A5),
+            tileColor: AppColors.pureWhite,
             onTap: () {},
           ),
           SettingsTileWidget(
             icon: Icons.info,
             title: 'アプリ情報',
             backgroundColor: const Color(0xFFB8A5A5),
+            tileColor: AppColors.pureWhite,
             onTap: () {},
           ),
 
