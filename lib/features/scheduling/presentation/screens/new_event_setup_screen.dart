@@ -67,7 +67,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
     return Scaffold(
       backgroundColor: AppColors.pointGray.withValues(alpha: 0.1),
       appBar: AppBar(
-        backgroundColor: AppColors.pureWhite,
+        backgroundColor: AppColors.pointGray,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.close, color: AppColors.pointDark),
@@ -106,23 +106,11 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
           ),
         ],
       ),
-      child: Column(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // AM/PM 선택
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _buildAmPmButton(true),
-              const SizedBox(width: AppSpacing.lg),
-              _buildAmPmButton(false),
-            ],
-          ),
-
-          const SizedBox(height: AppSpacing.lg),
-
           // 시간 선택기
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _buildTimeWheel(
                 value: _selectedTime.hour % 12 == 0
@@ -169,6 +157,17 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
                   });
                 },
               ),
+            ],
+          ),
+          
+          const SizedBox(width: AppSpacing.lg),
+          
+          // AM/PM 선택
+          Column(
+            children: [
+              _buildAmPmButton(true),
+              const SizedBox(height: AppSpacing.sm),
+              _buildAmPmButton(false),
             ],
           ),
         ],
