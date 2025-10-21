@@ -5,7 +5,6 @@ import 'package:aipet_frontend/features/pet_profile/presentation/widgets/tabs/pe
 import 'package:aipet_frontend/features/pet_profile/presentation/widgets/tabs/pet_basic_info_tab.dart';
 import 'package:aipet_frontend/features/pet_profile/presentation/widgets/tabs/pet_health_tab.dart';
 import 'package:aipet_frontend/features/pet_profile/presentation/widgets/tabs/pet_nutrition_tab.dart';
-import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -144,8 +143,10 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
   }
 
   Widget _buildBody(BuildContext context, PetProfileUnifiedState state) {
-    debugPrint('🔍 PetProfileScreen _buildBody: isLoading=${state.isLoading}, errorMessage=${state.errorMessage}, selectedPet=${state.selectedPet?.name}');
-    
+    debugPrint(
+      '🔍 PetProfileScreen _buildBody: isLoading=${state.isLoading}, errorMessage=${state.errorMessage}, selectedPet=${state.selectedPet?.name}',
+    );
+
     if (state.isLoading) {
       debugPrint('🔍 Showing loading widget');
       return const _LoadingWidget();
@@ -164,7 +165,9 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
       return const _PetNotFoundWidget();
     }
 
-    debugPrint('🔍 Showing pet profile content for: ${state.selectedPet!.name}');
+    debugPrint(
+      '🔍 Showing pet profile content for: ${state.selectedPet!.name}',
+    );
 
     return Column(
       children: [

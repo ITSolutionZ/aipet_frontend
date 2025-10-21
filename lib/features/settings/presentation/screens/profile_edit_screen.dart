@@ -18,7 +18,6 @@ class ProfileEditFormController extends _$ProfileEditFormController {
     return const ProfileEditFormState();
   }
 
-
   void initialize() {
     final formKey = GlobalKey<FormState>();
     final userNameController = TextEditingController();
