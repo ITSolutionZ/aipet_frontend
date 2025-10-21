@@ -38,48 +38,49 @@ class ProfileEditFormController extends _$ProfileEditFormController {
     final nameKatakanaController = TextEditingController();
     final contactController = TextEditingController();
 
-    // 실시간 필드 업데이트
-    userNameController.addListener(() {
-      ref
-          .read(userProfileControllerProvider.notifier)
-          .updateField('userName', userNameController.text);
-    });
-    emailController.addListener(() {
-      ref
-          .read(userProfileControllerProvider.notifier)
-          .updateField('email', emailController.text);
-    });
-    nameKatakanaController.addListener(() {
-      ref
-          .read(userProfileControllerProvider.notifier)
-          .updateField('nameKatakana', nameKatakanaController.text);
-    });
-    contactController.addListener(() {
-      ref
-          .read(userProfileControllerProvider.notifier)
-          .updateField('contact', contactController.text);
-    });
+    // 프로필 데이터가 있으면 컨트롤러에 값 설정 (리스너 설정 전에)
+    final profileState = ref.read(userProfileControllerProvider);
+    if (profileState.profile != null) {
+      final profile = profileState.profile!;
+      userNameController.text = profile.userName;
+      emailController.text = profile.email;
+      nameKatakanaController.text = profile.nameKatakana ?? '';
+      contactController.text = profile.contact ?? '';
+      debugPrint('📝 초기화 시 프로필 데이터 설정: ${profile.userName}');
+    }
 
-    // 빌드 완료 후 상태 업데이트
+    // 상태 업데이트 (리스너 설정 전에)
+    state = state.copyWith(
+      formKey: formKey,
+      userNameController: userNameController,
+      emailController: emailController,
+      nameKatakanaController: nameKatakanaController,
+      contactController: contactController,
+    );
+
+    // 빌드 완료 후 리스너 설정
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // 프로필 데이터가 있으면 컨트롤러에 값 설정
-      final profileState = ref.read(userProfileControllerProvider);
-      if (profileState.profile != null) {
-        final profile = profileState.profile!;
-        userNameController.text = profile.userName;
-        emailController.text = profile.email;
-        nameKatakanaController.text = profile.nameKatakana ?? '';
-        contactController.text = profile.contact ?? '';
-        debugPrint('📝 초기화 시 프로필 데이터 설정: ${profile.userName}');
-      }
-
-      state = state.copyWith(
-        formKey: formKey,
-        userNameController: userNameController,
-        emailController: emailController,
-        nameKatakanaController: nameKatakanaController,
-        contactController: contactController,
-      );
+      // 실시간 필드 업데이트
+      userNameController.addListener(() {
+        ref
+            .read(userProfileControllerProvider.notifier)
+            .updateField('userName', userNameController.text);
+      });
+      emailController.addListener(() {
+        ref
+            .read(userProfileControllerProvider.notifier)
+            .updateField('email', emailController.text);
+      });
+      nameKatakanaController.addListener(() {
+        ref
+            .read(userProfileControllerProvider.notifier)
+            .updateField('nameKatakana', nameKatakanaController.text);
+      });
+      contactController.addListener(() {
+        ref
+            .read(userProfileControllerProvider.notifier)
+            .updateField('contact', contactController.text);
+      });
     });
   }
 
