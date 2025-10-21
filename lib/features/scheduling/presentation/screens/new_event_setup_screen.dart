@@ -61,7 +61,6 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: const Text('새 일정 추가'),
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
