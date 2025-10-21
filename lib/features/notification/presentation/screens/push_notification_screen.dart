@@ -144,8 +144,11 @@ class _PushNotificationScreenState
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: const SoftGradientAppBar(title: 'プッシュ通知'),
-      body: SingleChildScrollView(
+      appBar: const SoftGradientAppBar(),
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -261,18 +264,20 @@ class _PushNotificationScreenState
               },
             ),
 
-            const SizedBox(height: AppSpacing.xl * 3),
-
-            ActionButton.primary(
-              text: '修正完了',
-              onPressed: _saveNotificationSettings,
-              isEnabled: true,
-            ),
-
             const SizedBox(height: AppSpacing.xl),
           ],
         ),
       ),
+    ),
+    ),
+    bottomNavigationBar: Container(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      child: ActionButton.primary(
+        text: '修正完了',
+        onPressed: _saveNotificationSettings,
+        isEnabled: true,
+      ),
+    ),
     );
   }
 }
