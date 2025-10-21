@@ -25,7 +25,6 @@ import 'package:aipet_frontend/features/scheduling/presentation/screens/today_ap
 import 'package:aipet_frontend/features/settings/presentation/screens/biometric_security_screen.dart';
 import 'package:aipet_frontend/features/settings/presentation/screens/database_dashboard_screen.dart';
 import 'package:aipet_frontend/features/settings/presentation/screens/settings_screens.dart';
-import 'package:aipet_frontend/features/settings/presentation/screens/profile_edit_screen.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 import 'package:aipet_frontend/features/walk/presentation/screens/walk_calendar_screen.dart';
 import 'package:aipet_frontend/features/walk/presentation/screens/walk_detail_screen.dart';
