@@ -1,11 +1,11 @@
 import 'package:aipet_frontend/features/daily/domain/entities/daily_health_record.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 /// Daily Health Logic
 ///
 /// **역할**: 일일 건강 화면의 UI 로직 및 헬퍼 함수 모음
-/// - 날짜/시간 포맷팅
 /// - 화면 네비게이션 (GoRouter)
 /// - UI 상수 및 메시지
 /// - 빠른 액션 데이터 생성
@@ -14,6 +14,7 @@ import 'package:go_router/go_router.dart';
 /// - 상태를 가지지 않는 순수 함수 중심
 /// - UI 표시와 관련된 로직만 포함
 /// - 비즈니스 로직은 DailyHealthController에서 처리
+/// - 날짜/시간 포맷팅은 shared/DateFormatService 사용
 ///
 /// **사용 위치**: DailyHealthScreen에서 사용
 /// **관련 파일**: DailyHealthController (상태 관리 및 비즈니스 로직)
@@ -31,15 +32,14 @@ class DailyHealthLogic {
     return null;
   }
 
-  /// 날짜 포맷팅
+  /// 날짜 포맷팅 (shared 서비스 사용)
   String formatDate(DateTime date) {
-    return '${date.year}年${date.month}月${date.day}日';
+    return DateFormatService.formatDateJapanese(date);
   }
 
-  /// 요일 이름 가져오기
+  /// 요일 이름 가져오기 (shared 서비스 사용)
   String getWeekdayName(int weekday) {
-    const weekdays = ['月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日', '日曜日'];
-    return weekdays[weekday - 1];
+    return DateFormatService.getWeekdayNameJapanese(weekday);
   }
 
   /// 퀵 액션 데이터 생성
