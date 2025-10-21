@@ -66,9 +66,8 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.pointGray.withValues(alpha: 0.1),
-      appBar: AppBar(
-        backgroundColor: AppColors.pointGray,
-        elevation: 0,
+      appBar: SoftGradientAppBar(
+        title: '',
         leading: IconButton(
           icon: const Icon(Icons.close, color: AppColors.pointDark),
           onPressed: () => context.pop(),
@@ -117,9 +116,9 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
               _buildAmPmButton(false),
             ],
           ),
-          
+
           const SizedBox(width: AppSpacing.lg),
-          
+
           // 시간 선택기
           Row(
             children: [
