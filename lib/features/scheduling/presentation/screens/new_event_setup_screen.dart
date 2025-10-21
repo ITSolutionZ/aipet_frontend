@@ -207,7 +207,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
         ),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppColors.pointBlue
+              ? AppColors.pointPink
               : AppColors.pointGray.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(AppRadius.medium),
         ),
@@ -344,7 +344,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
             const Icon(
               Icons.calendar_today,
               size: 20,
-              color: AppColors.pointBlue,
+              color: AppColors.pointPink,
             ),
             const SizedBox(width: AppSpacing.sm),
             Text(
@@ -356,7 +356,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
               onPressed: _selectDate,
               icon: const Icon(
                 Icons.calendar_month,
-                color: AppColors.pointBlue,
+                color: AppColors.pointPink,
               ),
             ),
           ],
@@ -377,7 +377,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
             Switch(
               value: _excludeHolidays,
               onChanged: (value) => setState(() => _excludeHolidays = value),
-              activeColor: AppColors.pointBlue,
+              activeColor: AppColors.pointPink,
             ),
           ],
         ),
@@ -411,7 +411,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
             height: 40,
             decoration: BoxDecoration(
               color: isSelected
-                  ? AppColors.pointBlue
+                  ? AppColors.pointPink
                   : AppColors.pointGray.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
@@ -519,7 +519,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,
                                 color: isSelected
-                                    ? AppColors.pointBlue
+                                    ? AppColors.pointPink
                                     : AppColors.pointDark,
                               ),
                             ),
@@ -527,7 +527,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
                           if (isSelected)
                             const Icon(
                               Icons.check,
-                              color: AppColors.pointBlue,
+                              color: AppColors.pointPink,
                               size: 20,
                             ),
                         ],
@@ -633,7 +633,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
         Switch(
           value: _isAllDay,
           onChanged: (value) => setState(() => _isAllDay = value),
-          activeColor: AppColors.pointBlue,
+          activeColor: AppColors.pointPink,
         ),
       ],
     );
@@ -664,7 +664,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
             child: ElevatedButton(
               onPressed: _saveEvent,
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.pointBlue,
+                backgroundColor: AppColors.pointPink,
                 foregroundColor: AppColors.pureWhite,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppRadius.large),
