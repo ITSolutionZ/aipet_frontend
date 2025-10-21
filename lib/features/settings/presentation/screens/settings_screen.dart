@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:aipet_frontend/app/router/app_router.dart';
 import 'package:aipet_frontend/app/widgets/widgets.dart';
-import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
 import 'package:aipet_frontend/features/settings/presentation/controllers/user_profile_controller.dart';
 import 'package:aipet_frontend/features/settings/presentation/widgets/settings_tile_widget.dart';
 import 'package:aipet_frontend/shared/services/image_storage_service.dart';
@@ -168,7 +167,7 @@ class SettingsScreen extends ConsumerWidget {
             title: 'アプリ情報',
             backgroundColor: const Color(0xFFB8A5A5),
             tileColor: AppColors.pureWhite,
-            onTap: () {},
+            onTap: () => context.push('/settings/app-info'),
           ),
 
           const SizedBox(height: AppSpacing.xl),
