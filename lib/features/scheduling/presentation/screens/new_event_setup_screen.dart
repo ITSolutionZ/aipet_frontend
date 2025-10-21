@@ -223,7 +223,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
     required ValueChanged<int> onChanged,
   }) {
     return Container(
-      height: 120,
+      height: 140,
       width: 80,
       decoration: BoxDecoration(
         color: AppColors.pointGray.withValues(alpha: 0.1),
@@ -233,38 +233,50 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
       child: Column(
         children: [
           // 위쪽 화살표
-          IconButton(
-            onPressed: value < max ? () => onChanged(value + 1) : null,
-            icon: Icon(
-              Icons.keyboard_arrow_up,
-              color: value < max
-                  ? AppColors.pointGray
-                  : AppColors.pointGray.withValues(alpha: 0.3),
+          Container(
+            height: 32,
+            child: IconButton(
+              onPressed: value < max ? () => onChanged(value + 1) : null,
+              icon: Icon(
+                Icons.keyboard_arrow_up,
+                color: value < max
+                    ? AppColors.pointGray
+                    : AppColors.pointGray.withValues(alpha: 0.3),
+                size: 20,
+              ),
             ),
           ),
 
           // 현재 값
           Expanded(
-            child: Center(
-              child: Text(
-                value.toString().padLeft(2, '0'),
-                style: const TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.pointDark,
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Center(
+                child: Text(
+                  value.toString().padLeft(2, '0'),
+                  style: const TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.pointDark,
+                    height: 1.2,
+                  ),
                 ),
               ),
             ),
           ),
 
           // 아래쪽 화살표
-          IconButton(
-            onPressed: value > min ? () => onChanged(value - 1) : null,
-            icon: Icon(
-              Icons.keyboard_arrow_down,
-              color: value > min
-                  ? AppColors.pointGray
-                  : AppColors.pointGray.withValues(alpha: 0.3),
+          Container(
+            height: 32,
+            child: IconButton(
+              onPressed: value > min ? () => onChanged(value - 1) : null,
+              icon: Icon(
+                Icons.keyboard_arrow_down,
+                color: value > min
+                    ? AppColors.pointGray
+                    : AppColors.pointGray.withValues(alpha: 0.3),
+                size: 20,
+              ),
             ),
           ),
         ],
@@ -426,8 +438,8 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          '펫 선택',
+        Text(
+          'pettoset',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
         ),
         const SizedBox(height: AppSpacing.sm),
@@ -474,21 +486,23 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
             children: CalendarEventType.values.map((type) {
               final isSelected = _selectedEventType == type;
               final isLast = type == CalendarEventType.values.last;
-              
+
               return Container(
                 decoration: BoxDecoration(
-                  border: isLast ? null : Border(
-                    bottom: BorderSide(
-                      color: AppColors.pointGray.withValues(alpha: 0.2),
-                      width: 0.5,
-                    ),
-                  ),
+                  border: isLast
+                      ? null
+                      : Border(
+                          bottom: BorderSide(
+                            color: AppColors.pointGray.withValues(alpha: 0.2),
+                            width: 0.5,
+                          ),
+                        ),
                 ),
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: () => setState(() => _selectedEventType = type),
-                    borderRadius: isLast 
+                    borderRadius: isLast
                         ? const BorderRadius.only(
                             bottomLeft: Radius.circular(AppRadius.medium),
                             bottomRight: Radius.circular(AppRadius.medium),
@@ -508,14 +522,14 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,
-                                color: isSelected 
-                                    ? AppColors.pointBlue 
+                                color: isSelected
+                                    ? AppColors.pointBlue
                                     : AppColors.pointDark,
                               ),
                             ),
                           ),
                           if (isSelected)
-                            Icon(
+                            const Icon(
                               Icons.check,
                               color: AppColors.pointBlue,
                               size: 20,
