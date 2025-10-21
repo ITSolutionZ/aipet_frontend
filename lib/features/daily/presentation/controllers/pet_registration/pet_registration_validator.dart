@@ -1,101 +1,97 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
 
 /// 펫 등록 폼 검증 서비스
 ///
-/// 모든 검증 로직을 담당하는 클래스
-class PetRegistrationValidator {
-  /// 펫 이름 검증
+/// **역할**: Pet registration form validation
+/// - ValidationMixin을 사용하여 공통 검증 로직 재사용
+/// - Pet registration 특화 검증 로직 포함
+///
+/// **특징**:
+/// - shared/ValidationMixin 사용으로 DRY 원칙 준수
+/// - 필수 필드, 길이, 범위, 형식 검증
+class PetRegistrationValidator with ValidationMixin {
+  /// 펫 이름 검증 (shared ValidationMixin 사용)
+  @override
   String? validatePetName(String? value) {
     debugPrint('🔍 Validating pet name: "$value"');
-    if (value == null || value.trim().isEmpty) {
-      debugPrint('❌ Pet name validation failed: empty');
-      return 'ペットの名前を入力してください';
-    }
-    if (value.length < 2 || value.length > 10) {
-      debugPrint('❌ Pet name validation failed: length ${value.length}');
-      return '2〜10文字で入力してください';
-    }
-    debugPrint('✅ Pet name validation passed');
-    return null;
+    final result = validateMultiple(value, [
+      (v) => validateRequired(v, fieldName: 'ペットの名前'),
+      (v) => validateLength(v, minLength: 2, maxLength: 10, fieldName: 'ペットの名前'),
+    ]);
+    debugPrint(result == null ? '✅ Pet name validation passed' : '❌ Pet name validation failed');
+    return result;
   }
 
-  /// 생년월일 검証
+  /// 생년월일 검증 (shared ValidationMixin 사용)
   String? validateBirthDate(String? value) {
     debugPrint('🔍 Validating birth date: "$value"');
-    if (value == null || value.trim().isEmpty) {
-      debugPrint('❌ Birth date validation failed: empty');
-      return '生年月日を入力してください';
-    }
-    final dateRegex = RegExp(r'^\d{4}-\d{2}-\d{2}$');
-    if (!dateRegex.hasMatch(value)) {
-      debugPrint('❌ Birth date validation failed: invalid format');
-      return 'YYYY-MM-DD形式で入力してください';
-    }
-    debugPrint('✅ Birth date validation passed');
-    return null;
+    final result = validateMultiple(value, [
+      (v) => validateRequired(v, fieldName: '生年月日'),
+      (v) => validateRegex(
+            v,
+            RegExp(r'^\d{4}-\d{2}-\d{2}$'),
+            fieldName: '生年月日',
+            errorMessage: 'YYYY-MM-DD形式で入力してください',
+          ),
+    ]);
+    debugPrint(result == null ? '✅ Birth date validation passed' : '❌ Birth date validation failed');
+    return result;
   }
 
-  /// 입양일 검증 (선택사항)
+  /// 입양일 검증 (선택사항, shared ValidationMixin 사용)
   String? validateAdoptionDate(String? value) {
     // 집에 온 날은 선택사항이므로 빈 값이어도 됩니다
     if (value == null || value.trim().isEmpty) {
       return null;
     }
-    final dateRegex = RegExp(r'^\d{4}-\d{2}-\d{2}$');
-    if (!dateRegex.hasMatch(value)) {
-      return 'YYYY-MM-DD形式で入力してください';
-    }
-    return null;
+    return validateRegex(
+      value,
+      RegExp(r'^\d{4}-\d{2}-\d{2}$'),
+      fieldName: '家にきた日',
+      errorMessage: 'YYYY-MM-DD形式で入力してください',
+    );
   }
 
-  /// 체중 검증
+  /// 체중 검증 (shared ValidationMixin 사용)
   String? validateWeight(String? value) {
     debugPrint('🔍 Validating weight: "$value"');
-    if (value == null || value.trim().isEmpty) {
-      debugPrint('❌ Weight validation failed: empty');
-      return '体重を入力してください';
-    }
-    final weight = double.tryParse(value);
-    if (weight == null || weight <= 0 || weight > 100) {
-      debugPrint('❌ Weight validation failed: invalid value $weight');
-      return '有効な体重を入力してください';
-    }
-    debugPrint('✅ Weight validation passed');
-    return null;
+    final result = validateMultiple(value, [
+      (v) => validateRequired(v, fieldName: '体重'),
+      (v) => validateNumberRange(
+            v,
+            min: 0.1,
+            max: 100,
+            fieldName: '体重',
+          ),
+    ]);
+    debugPrint(result == null ? '✅ Weight validation passed' : '❌ Weight validation failed');
+    return result;
   }
 
-  /// 외견 검증 (선택사항)
+  /// 외견 검증 (선택사항, shared ValidationMixin 사용)
   String? validateAppearance(String? value) {
     // 외견은 선택사항이므로 빈 값이어도 됩니다
     if (value == null || value.trim().isEmpty) {
       return null;
     }
-    if (value.length > 500) {
-      return '500文字以内で入力してください';
-    }
-    return null;
+    return validateLength(value, maxLength: 500, fieldName: '外見');
   }
 
-  /// 품종 검증
+  /// 품종 검증 (shared ValidationMixin 사용)
   String? validateBreed(String breed) {
     debugPrint('🔍 Validating breed: "$breed" (empty: ${breed.isEmpty})');
-    if (breed.isEmpty) {
-      debugPrint('❌ Breed validation failed: breed is empty');
-      return '品種を選択してください';
-    }
-    debugPrint('✅ Breed validation passed');
-    return null;
+    final result = validateRequired(breed, fieldName: '品種');
+    debugPrint(result == null ? '✅ Breed validation passed' : '❌ Breed validation failed');
+    return result;
   }
 
-  /// 성별 검증
+  /// 성별 검증 (shared ValidationMixin 사용)
   String? validateGender(String gender) {
     debugPrint('🔍 Validating gender: "$gender" (empty: ${gender.isEmpty})');
-    if (gender.isEmpty) {
-      debugPrint('❌ Gender validation failed: gender is empty');
-      return '性別を選択してください';
-    }
-    debugPrint('✅ Gender validation passed');
-    return null;
+    final result = validateRequired(gender, fieldName: '性別');
+    debugPrint(result == null ? '✅ Gender validation passed' : '❌ Gender validation failed');
+    return result;
   }
 
   /// 폼 전체 유효성 검사

@@ -30,4 +30,15 @@ class DateFormatService {
   static String formatDateTime(DateTime dateTime) {
     return '${formatDate(dateTime)} ${formatTime(dateTime)}';
   }
+
+  /// 일본어 날짜 형식화 (YYYY年MM月DD日)
+  static String formatDateJapanese(DateTime date) {
+    return '${date.year}年${date.month}月${date.day}日';
+  }
+
+  /// 일본어 요일 이름 가져오기
+  static String getWeekdayNameJapanese(int weekday) {
+    const weekdays = ['月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日', '日曜日'];
+    return weekdays[weekday - 1];
+  }
 }

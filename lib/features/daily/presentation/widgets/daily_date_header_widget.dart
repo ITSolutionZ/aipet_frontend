@@ -85,13 +85,14 @@ class DailyDateHeaderWidget extends StatelessWidget {
     );
   }
 
+  /// 날짜 포맷팅 (shared 서비스 사용)
   String _formatDate(DateTime date) {
-    return '${date.year}年${date.month}月${date.day}日';
+    return DateFormatService.formatDateJapanese(date);
   }
 
+  /// 요일 이름 가져오기 (shared 서비스 사용)
   String _getWeekdayName(int weekday) {
-    const weekdays = ['月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日', '日曜日'];
-    return weekdays[weekday - 1];
+    return DateFormatService.getWeekdayNameJapanese(weekday);
   }
 
   /// 해당 날짜가 그 해의 몇 번째 주인지 계산
