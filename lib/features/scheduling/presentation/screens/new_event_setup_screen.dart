@@ -892,7 +892,8 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
             backgroundColor: AppColors.pointGreen,
           ),
         );
-        context.pop();
+        // 캘린더 화면으로 돌아가면서 이벤트 새로고침을 위한 결과 전달
+        context.pop(true);
       }
     } catch (e) {
       if (mounted) {
