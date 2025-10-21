@@ -93,22 +93,32 @@ class SettingsScreen extends ConsumerWidget {
             backgroundColor: const Color(0xFFA88B5A),
             tileColor: AppColors.pureWhite,
             onTap: () async {
+              debugPrint('🔍 ペット情報編集 버튼 클릭됨');
               // ペット一覧を取得して最初のペットの編集画面へ移動
               final petsAsync = ref.read(petProfilesProvider);
+              debugPrint('🔍 petsAsync 상태: ${petsAsync.runtimeType}');
+              
               petsAsync.when(
                 data: (pets) {
+                  debugPrint('🔍 펫 목록 데이터: ${pets.length}개');
                   if (pets.isNotEmpty) {
+                    final petId = pets.first.id;
+                    final route = '/daily-pet-registration?petId=$petId';
+                    debugPrint('🔍 이동할 라우트: $route');
                     // 最初のペットの編集画面へ移動
-                    context.push('/daily-pet-registration?petId=${pets.first.id}');
+                    context.push(route);
                   } else {
+                    debugPrint('🔍 펫이 없음, 펫 등록 화면으로 이동');
                     // ペットが登録されていない場合はペット登録画面へ
                     context.push('/daily-pet-registration');
                   }
                 },
                 loading: () {
+                  debugPrint('🔍 펫 목록 로딩 중');
                   // ローディング中は何もしない
                 },
                 error: (error, _) {
+                  debugPrint('🔍 펫 목록 에러: $error');
                   // エラーの場合はペット登録画面へ
                   context.push('/daily-pet-registration');
                 },

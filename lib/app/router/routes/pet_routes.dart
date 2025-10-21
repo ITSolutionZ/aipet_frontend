@@ -11,7 +11,6 @@ import 'route_constants.dart';
 /// 이 라우트들은 Shell 밖에서 독립적으로 실행되며, 펫 관리 기능을 담당합니다.
 class PetRoutes {
   static List<RouteBase> get routes => [
-
     // ===== PET PROFILE & HEALTH =====
     GoRoute(
       path: RouteConstants.vaccinesRoute,
