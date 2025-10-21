@@ -136,12 +136,7 @@ class _BiometricSecurityScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: AppBar(
-        title: const Text('セキュリティ設定'),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        foregroundColor: Colors.black,
-      ),
+      appBar: const SoftGradientAppBar(),
       body: ListView(
         padding: const EdgeInsets.all(AppSpacing.lg),
         children: [
