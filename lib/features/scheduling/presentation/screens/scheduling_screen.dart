@@ -546,9 +546,14 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
   }
 
   /// 알람 설정 화면 열기
-  void _openAlarmSetup() {
-    context.push(
+  void _openAlarmSetup() async {
+    final result = await context.push(
       '/scheduling/new-event?date=${_selectedDay?.toIso8601String()}',
     );
+    
+    // 새 이벤트가 추가되었을 때 이벤트 목록 새로고침
+    if (result == true) {
+      await _loadEventsFromDatabase();
+    }
   }
 }
