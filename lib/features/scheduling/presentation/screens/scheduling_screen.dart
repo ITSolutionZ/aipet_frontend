@@ -48,8 +48,7 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: DynamicAppBarStyles.brown(
-        scrollController: _scrollController,
+      appBar: SoftGradientAppBar(
         title: '',
         actions: [
           IconButton(
