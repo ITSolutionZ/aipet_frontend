@@ -62,6 +62,15 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
     _minuteFocusNode.addListener(_onMinuteFocusChange);
   }
 
+  // 펫이 1마리일 때 자동 선택
+  void _autoSelectPetIfOnlyOne(List<PetProfileEntity> pets) {
+    if (pets.length == 1 && _selectedPet == null) {
+      setState(() {
+        _selectedPet = pets.first;
+      });
+    }
+  }
+
   @override
   void dispose() {
     _hourController.dispose();
@@ -167,7 +176,13 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
   Widget build(BuildContext context) {
     final petsAsync = ref.watch(petProfilesProvider);
     final pets = petsAsync.when(
-      data: (data) => data,
+      data: (data) {
+        // 펫이 1마리일 때 자동 선택
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _autoSelectPetIfOnlyOne(data);
+        });
+        return data;
+      },
       loading: () => <PetProfileEntity>[],
       error: (_, __) => <PetProfileEntity>[],
     );
