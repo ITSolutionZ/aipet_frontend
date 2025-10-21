@@ -70,7 +70,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
         backgroundColor: AppColors.pureWhite,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.close),
+          icon: const Icon(Icons.close, color: AppColors.pointDark),
           onPressed: () => context.pop(),
         ),
       ),
@@ -224,7 +224,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
   }) {
     // 분 휠인지 시간 휠인지 구분 (min이 0이고 max가 59이면 분 휠)
     final isMinute = min == 0 && max == 59;
-    
+
     return Container(
       height: 140,
       width: 80,
@@ -495,7 +495,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
                         ),
                 ),
                 child: Material(
-                  color: Colors.transparent,
+                  color: AppColors.pureWhite.withValues(alpha: 0),
                   child: InkWell(
                     onTap: () => setState(() => _selectedEventType = type),
                     borderRadius: isLast
