@@ -168,7 +168,6 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
                     );
                   });
                 },
-                isMinute: true,
               ),
             ],
           ),
@@ -212,7 +211,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
               : AppColors.pointGray.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(AppRadius.medium),
         ),
-        child: Text(isAm ? 'ごぜ' : 'PM午前', style: AppFonts.titleMedium),
+        child: Text(isAm ? '午前' : '午後', style: AppFonts.titleMedium),
       ),
     );
   }
@@ -222,8 +221,10 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
     required int min,
     required int max,
     required ValueChanged<int> onChanged,
-    bool isMinute = false,
   }) {
+    // 분 휠인지 시간 휠인지 구분 (min이 0이고 max가 59이면 분 휠)
+    final isMinute = min == 0 && max == 59;
+    
     return Container(
       height: 140,
       width: 80,
@@ -676,7 +677,6 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
       ),
     );
   }
-
 
   Future<void> _selectDate() async {
     final date = await showDatePicker(
