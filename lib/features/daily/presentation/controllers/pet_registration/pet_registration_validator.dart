@@ -17,9 +17,14 @@ class PetRegistrationValidator with ValidationMixin {
     debugPrint('🔍 Validating pet name: "$value"');
     final result = validateMultiple(value, [
       (v) => validateRequired(v, fieldName: 'ペットの名前'),
-      (v) => validateLength(v, minLength: 2, maxLength: 10, fieldName: 'ペットの名前'),
+      (v) =>
+          validateLength(v, minLength: 2, maxLength: 10, fieldName: 'ペットの名前'),
     ]);
-    debugPrint(result == null ? '✅ Pet name validation passed' : '❌ Pet name validation failed');
+    debugPrint(
+      result == null
+          ? '✅ Pet name validation passed'
+          : '❌ Pet name validation failed',
+    );
     return result;
   }
 
@@ -29,13 +34,17 @@ class PetRegistrationValidator with ValidationMixin {
     final result = validateMultiple(value, [
       (v) => validateRequired(v, fieldName: '生年月日'),
       (v) => validateRegex(
-            v,
-            RegExp(r'^\d{4}-\d{2}-\d{2}$'),
-            fieldName: '生年月日',
-            errorMessage: 'YYYY-MM-DD形式で入力してください',
-          ),
+        v,
+        RegExp(r'^\d{4}-\d{2}-\d{2}$'),
+        fieldName: '生年月日',
+        errorMessage: 'YYYY-MM-DD形式で入力してください',
+      ),
     ]);
-    debugPrint(result == null ? '✅ Birth date validation passed' : '❌ Birth date validation failed');
+    debugPrint(
+      result == null
+          ? '✅ Birth date validation passed'
+          : '❌ Birth date validation failed',
+    );
     return result;
   }
 
@@ -58,14 +67,13 @@ class PetRegistrationValidator with ValidationMixin {
     debugPrint('🔍 Validating weight: "$value"');
     final result = validateMultiple(value, [
       (v) => validateRequired(v, fieldName: '体重'),
-      (v) => validateNumberRange(
-            v,
-            min: 0.1,
-            max: 100,
-            fieldName: '体重',
-          ),
+      (v) => validateNumberRange(v, min: 0.1, max: 100, fieldName: '体重'),
     ]);
-    debugPrint(result == null ? '✅ Weight validation passed' : '❌ Weight validation failed');
+    debugPrint(
+      result == null
+          ? '✅ Weight validation passed'
+          : '❌ Weight validation failed',
+    );
     return result;
   }
 
@@ -82,7 +90,11 @@ class PetRegistrationValidator with ValidationMixin {
   String? validateBreed(String breed) {
     debugPrint('🔍 Validating breed: "$breed" (empty: ${breed.isEmpty})');
     final result = validateRequired(breed, fieldName: '品種');
-    debugPrint(result == null ? '✅ Breed validation passed' : '❌ Breed validation failed');
+    debugPrint(
+      result == null
+          ? '✅ Breed validation passed'
+          : '❌ Breed validation failed',
+    );
     return result;
   }
 
@@ -90,7 +102,11 @@ class PetRegistrationValidator with ValidationMixin {
   String? validateGender(String gender) {
     debugPrint('🔍 Validating gender: "$gender" (empty: ${gender.isEmpty})');
     final result = validateRequired(gender, fieldName: '性別');
-    debugPrint(result == null ? '✅ Gender validation passed' : '❌ Gender validation failed');
+    debugPrint(
+      result == null
+          ? '✅ Gender validation passed'
+          : '❌ Gender validation failed',
+    );
     return result;
   }
 
