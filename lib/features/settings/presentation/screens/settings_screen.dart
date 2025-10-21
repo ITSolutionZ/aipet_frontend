@@ -93,13 +93,13 @@ class SettingsScreen extends ConsumerWidget {
             backgroundColor: const Color(0xFFA88B5A),
             tileColor: AppColors.pureWhite,
             onTap: () async {
-              // ペット一覧を取得して最初のペットのプロフィールへ移動
+              // ペット一覧を取得して最初のペットの編集画面へ移動
               final petsAsync = ref.read(petProfilesProvider);
-              await petsAsync.when(
+              petsAsync.when(
                 data: (pets) {
                   if (pets.isNotEmpty) {
-                    // 最初のペットのプロフィールへ移動
-                    context.push('/home/pet-profile/${pets.first.id}');
+                    // 最初のペットの編集画面へ移動
+                    context.push('/daily-pet-registration?petId=${pets.first.id}');
                   } else {
                     // ペットが登録されていない場合はペット登録画面へ
                     context.push('/daily-pet-registration');
