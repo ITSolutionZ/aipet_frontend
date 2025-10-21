@@ -109,6 +109,17 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          // AM/PM 선택
+          Column(
+            children: [
+              _buildAmPmButton(true),
+              const SizedBox(height: AppSpacing.sm),
+              _buildAmPmButton(false),
+            ],
+          ),
+          
+          const SizedBox(width: AppSpacing.lg),
+          
           // 시간 선택기
           Row(
             children: [
@@ -157,17 +168,6 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
                   });
                 },
               ),
-            ],
-          ),
-          
-          const SizedBox(width: AppSpacing.lg),
-          
-          // AM/PM 선택
-          Column(
-            children: [
-              _buildAmPmButton(true),
-              const SizedBox(height: AppSpacing.sm),
-              _buildAmPmButton(false),
             ],
           ),
         ],
