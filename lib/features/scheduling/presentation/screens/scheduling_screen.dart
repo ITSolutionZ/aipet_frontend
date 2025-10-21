@@ -147,10 +147,37 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _showAddEventDialog,
-        backgroundColor: AppColors.pointBrown,
-        child: const Icon(Icons.add, color: AppColors.pureWhite),
+      floatingActionButton: Container(
+        decoration: BoxDecoration(
+          color: AppColors.pointBrown,
+          borderRadius: BorderRadius.circular(16.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.2),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: _showAddEventDialog,
+            borderRadius: BorderRadius.circular(16.0),
+            child: Container(
+              width: 56,
+              height: 56,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              child: const Icon(
+                Icons.add,
+                color: AppColors.pureWhite,
+                size: 24,
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -249,13 +276,41 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
               style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
             ),
             const SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: _showAddEventDialog,
-              icon: const Icon(Icons.add),
-              label: const Text('일정 추가'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.pointBrown,
-                foregroundColor: AppColors.pureWhite,
+            Container(
+              decoration: BoxDecoration(
+                color: AppColors.pointBrown,
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: _showAddEventDialog,
+                  borderRadius: BorderRadius.circular(16.0),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 8.0,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.add,
+                          color: AppColors.pureWhite,
+                          size: 16,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '일정 추가',
+                          style: AppFonts.bodySmall.copyWith(
+                            color: AppColors.pureWhite,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
           ],
