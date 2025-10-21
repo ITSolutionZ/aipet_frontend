@@ -147,36 +147,18 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
           ),
         ],
       ),
-      floatingActionButton: Container(
-        decoration: BoxDecoration(
-          color: AppColors.pointBrown,
-          borderRadius: BorderRadius.circular(16.0),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.2),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: _showAddEventDialog,
+      floatingActionButton: IconButton(
+        onPressed: _openAlarmSetup,
+        icon: const Icon(Icons.add, color: Colors.white),
+        tooltip: '새 일정 추가',
+        style: IconButton.styleFrom(
+          backgroundColor: AppColors.pointBrown,
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16.0),
-            child: Container(
-              width: 56,
-              height: 56,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16.0),
-              ),
-              child: const Icon(
-                Icons.add,
-                color: AppColors.pureWhite,
-                size: 24,
-              ),
-            ),
           ),
+          elevation: 4,
+          shadowColor: Colors.black.withValues(alpha: 0.2),
         ),
       ),
     );
