@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:aipet_frontend/app/router/app_router.dart';
 import 'package:aipet_frontend/app/widgets/widgets.dart';
+import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
 import 'package:aipet_frontend/features/settings/presentation/controllers/user_profile_controller.dart';
 import 'package:aipet_frontend/features/settings/presentation/widgets/settings_tile_widget.dart';
 import 'package:aipet_frontend/shared/services/image_storage_service.dart';
@@ -91,9 +92,27 @@ class SettingsScreen extends ConsumerWidget {
             title: 'ペット情報編集',
             backgroundColor: const Color(0xFFA88B5A),
             tileColor: AppColors.pureWhite,
-            onTap: () {
-              // 管理中の反応動物画面へ移動
-              context.push(AppRouter.petEditRoute);
+            onTap: () async {
+              // ペット一覧を取得して最初のペットのプロフィールへ移動
+              final petsAsync = ref.read(petProfilesProvider);
+              await petsAsync.when(
+                data: (pets) {
+                  if (pets.isNotEmpty) {
+                    // 最初のペットのプロフィールへ移動
+                    context.push('/home/pet-profile/${pets.first.id}');
+                  } else {
+                    // ペットが登録されていない場合はペット登録画面へ
+                    context.push('/daily-pet-registration');
+                  }
+                },
+                loading: () {
+                  // ローディング中は何もしない
+                },
+                error: (error, _) {
+                  // エラーの場合はペット登録画面へ
+                  context.push('/daily-pet-registration');
+                },
+              );
             },
           ),
           const SizedBox(height: AppSpacing.xs),
