@@ -15,20 +15,9 @@ part 'profile_edit_screen.g.dart';
 class ProfileEditFormController extends _$ProfileEditFormController {
   @override
   ProfileEditFormState build() {
-    // Dispose 시 컨트롤러 정리
-    ref.onDispose(() {
-      _disposeControllers();
-    });
     return const ProfileEditFormState();
   }
 
-  void _disposeControllers() {
-    state.formKey?.currentState?.dispose();
-    state.userNameController?.dispose();
-    state.emailController?.dispose();
-    state.nameKatakanaController?.dispose();
-    state.contactController?.dispose();
-  }
 
   void initialize() {
     final formKey = GlobalKey<FormState>();
@@ -36,6 +25,15 @@ class ProfileEditFormController extends _$ProfileEditFormController {
     final emailController = TextEditingController();
     final nameKatakanaController = TextEditingController();
     final contactController = TextEditingController();
+
+    // Dispose 시 컨트롤러 정리 등록
+    ref.onDispose(() {
+      formKey.currentState?.dispose();
+      userNameController.dispose();
+      emailController.dispose();
+      nameKatakanaController.dispose();
+      contactController.dispose();
+    });
 
     // 실시간 필드 업데이트
     userNameController.addListener(() {
