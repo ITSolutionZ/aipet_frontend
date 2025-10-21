@@ -38,7 +38,7 @@ class SettingsScreen extends ConsumerWidget {
             margin: const EdgeInsets.only(bottom: AppSpacing.xl),
             padding: const EdgeInsets.all(AppSpacing.lg),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppColors.pureWhite,
               borderRadius: BorderRadius.circular(AppRadius.medium),
               boxShadow: [
                 BoxShadow(
