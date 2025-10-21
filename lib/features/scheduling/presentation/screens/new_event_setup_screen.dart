@@ -1,7 +1,6 @@
 import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
 import 'package:aipet_frontend/features/scheduling/data/services/calendar_event_service.dart';
 import 'package:aipet_frontend/features/scheduling/domain/entities/calendar_event_entity.dart';
-import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -59,9 +58,9 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
     );
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.pointGray.withValues(alpha: 0.1),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.pureWhite,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.close),
@@ -90,11 +89,11 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
       margin: const EdgeInsets.all(AppSpacing.md),
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.pureWhite,
         borderRadius: BorderRadius.circular(AppRadius.large),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: AppColors.pointDark.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -144,7 +143,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
                 style: TextStyle(
                   fontSize: 48,
                   fontWeight: FontWeight.w300,
-                  color: Colors.black87,
+                  color: AppColors.pointDark,
                 ),
               ),
               _buildTimeWheel(
@@ -200,7 +199,9 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
           vertical: AppSpacing.sm,
         ),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.pointBlue : Colors.grey[100],
+          color: isSelected
+              ? AppColors.pointBlue
+              : AppColors.pointGray.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(AppRadius.medium),
         ),
         child: Text(
@@ -208,7 +209,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w500,
-            color: isSelected ? Colors.white : Colors.grey[600],
+            color: isSelected ? AppColors.pureWhite : AppColors.pointGray,
           ),
         ),
       ),
@@ -225,9 +226,9 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
       height: 120,
       width: 80,
       decoration: BoxDecoration(
-        color: Colors.grey[50],
+        color: AppColors.pointGray.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppRadius.medium),
-        border: Border.all(color: Colors.grey[300]!),
+        border: Border.all(color: AppColors.pointGray.withValues(alpha: 0.3)),
       ),
       child: Column(
         children: [
@@ -236,7 +237,9 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
             onPressed: value < max ? () => onChanged(value + 1) : null,
             icon: Icon(
               Icons.keyboard_arrow_up,
-              color: value < max ? Colors.grey[600] : Colors.grey[300],
+              color: value < max
+                  ? AppColors.pointGray
+                  : AppColors.pointGray.withValues(alpha: 0.3),
             ),
           ),
 
@@ -248,7 +251,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
                 style: const TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.w600,
-                  color: Colors.black87,
+                  color: AppColors.pointDark,
                 ),
               ),
             ),
@@ -259,7 +262,9 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
             onPressed: value > min ? () => onChanged(value - 1) : null,
             icon: Icon(
               Icons.keyboard_arrow_down,
-              color: value > min ? Colors.grey[600] : Colors.grey[300],
+              color: value > min
+                  ? AppColors.pointGray
+                  : AppColors.pointGray.withValues(alpha: 0.3),
             ),
           ),
         ],
@@ -272,11 +277,11 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
       margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.pureWhite,
         borderRadius: BorderRadius.circular(AppRadius.large),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: AppColors.pointDark.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -359,7 +364,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
         // 공휴일 제외
         Row(
           children: [
-            const Text('공휴일에는 끄기'),
+            Text('공휴일에는 끄기', style: AppFonts.bodySmall),
             const Spacer(),
             Switch(
               value: _excludeHolidays,
@@ -368,16 +373,13 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
             ),
           ],
         ),
-        const Text(
-          '대체 공휴일 및 임시공휴일 제외',
-          style: TextStyle(fontSize: 12, color: Colors.grey),
-        ),
+        Text('대체 공휴일 및 임시공휴일 제외', style: AppFonts.bodySmall),
       ],
     );
   }
 
   Widget _buildDaySelection() {
-    final days = ['일', '월', '화', '수', '목', '금', '토'];
+    final days = ['日', '月', '火', '水', '木', '金', '土'];
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: days.asMap().entries.map((entry) {
@@ -400,14 +402,16 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: isSelected ? AppColors.pointBlue : Colors.grey[100],
+              color: isSelected
+                  ? AppColors.pointBlue
+                  : AppColors.pointGray.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: Center(
               child: Text(
                 day,
                 style: TextStyle(
-                  color: isSelected ? Colors.white : Colors.grey[600],
+                  color: isSelected ? AppColors.pureWhite : AppColors.pointGray,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -458,31 +462,72 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
         ),
         const SizedBox(height: AppSpacing.sm),
-        Wrap(
-          spacing: AppSpacing.sm,
-          children: CalendarEventType.values.map((type) {
-            final isSelected = _selectedEventType == type;
-            return GestureDetector(
-              onTap: () => setState(() => _selectedEventType = type),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: AppColors.pointGray.withValues(alpha: 0.3),
+              width: 1,
+            ),
+            borderRadius: BorderRadius.circular(AppRadius.medium),
+          ),
+          child: Column(
+            children: CalendarEventType.values.map((type) {
+              final isSelected = _selectedEventType == type;
+              final isLast = type == CalendarEventType.values.last;
+              
+              return Container(
                 decoration: BoxDecoration(
-                  color: isSelected ? AppColors.pointBlue : Colors.grey[100],
-                  borderRadius: BorderRadius.circular(AppRadius.large),
-                ),
-                child: Text(
-                  type.displayName,
-                  style: TextStyle(
-                    color: isSelected ? Colors.white : AppColors.pointGray,
-                    fontWeight: FontWeight.w500,
+                  border: isLast ? null : Border(
+                    bottom: BorderSide(
+                      color: AppColors.pointGray.withValues(alpha: 0.2),
+                      width: 0.5,
+                    ),
                   ),
                 ),
-              ),
-            );
-          }).toList(),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () => setState(() => _selectedEventType = type),
+                    borderRadius: isLast 
+                        ? const BorderRadius.only(
+                            bottomLeft: Radius.circular(AppRadius.medium),
+                            bottomRight: Radius.circular(AppRadius.medium),
+                          )
+                        : null,
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.md,
+                        vertical: AppSpacing.md,
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              type.displayName,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: isSelected 
+                                    ? AppColors.pointBlue 
+                                    : AppColors.pointDark,
+                              ),
+                            ),
+                          ),
+                          if (isSelected)
+                            Icon(
+                              Icons.check,
+                              color: AppColors.pointBlue,
+                              size: 20,
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
         ),
       ],
     );
@@ -588,8 +633,13 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: const BoxDecoration(
-        color: Colors.white,
-        border: Border(top: BorderSide(color: Colors.grey, width: 0.5)),
+        color: AppColors.pureWhite,
+        border: Border(
+          top: BorderSide(
+            color: AppColors.pointGray.withValues(alpha: 0.5),
+            width: 0.5,
+          ),
+        ),
       ),
       child: Row(
         children: [
@@ -605,7 +655,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
               onPressed: _saveEvent,
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.pointBlue,
-                foregroundColor: Colors.white,
+                foregroundColor: AppColors.pureWhite,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppRadius.large),
                 ),
