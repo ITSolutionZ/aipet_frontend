@@ -268,7 +268,7 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  onTap: _showAddEventDialog,
+                  onTap: _openAlarmSetup,
                   borderRadius: BorderRadius.circular(16.0),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
