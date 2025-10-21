@@ -233,7 +233,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
       child: Column(
         children: [
           // 위쪽 화살표
-          Container(
+          SizedBox(
             height: 32,
             child: IconButton(
               onPressed: value < max ? () => onChanged(value + 1) : null,
@@ -249,16 +249,19 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
 
           // 현재 값
           Expanded(
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Center(
-                child: Text(
-                  value.toString().padLeft(2, '0'),
-                  style: const TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.pointDark,
-                    height: 1.2,
+            child: GestureDetector(
+              onTap: () => _showNumberInputDialog(value, min, max, onChanged),
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Center(
+                  child: Text(
+                    value.toString().padLeft(2, '0'),
+                    style: const TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.pointDark,
+                      height: 1.2,
+                    ),
                   ),
                 ),
               ),
@@ -266,7 +269,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
           ),
 
           // 아래쪽 화살표
-          Container(
+          SizedBox(
             height: 32,
             child: IconButton(
               onPressed: value > min ? () => onChanged(value - 1) : null,
@@ -385,7 +388,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
             ),
           ],
         ),
-        Text('대체 공휴일 및 임시공휴일 제외', style: AppFonts.bodySmall),
+        Text('代替祝日や臨時、祝日を除く', style: AppFonts.bodySmall),
       ],
     );
   }
@@ -438,14 +441,14 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'pettoset',
+        const Text(
+          'ペットを選択',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
         ),
         const SizedBox(height: AppSpacing.sm),
         if (pets.isEmpty)
           const Text(
-            '등록된 펫이 없습니다',
+            '登録されたペットがありません',
             style: TextStyle(color: AppColors.pointGray),
           )
         else
@@ -455,7 +458,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
               border: OutlineInputBorder(),
               contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             ),
-            hint: const Text('펫을 선택하세요'),
+            hint: const Text('ペットを選択してください'),
             items: pets.map((pet) {
               return DropdownMenuItem(value: pet, child: Text(pet.name));
             }).toList(),
@@ -470,7 +473,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          '일정 카테고리',
+          'イベントカテゴリ',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
         ),
         const SizedBox(height: AppSpacing.sm),
@@ -552,13 +555,13 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          '일정 이름',
+          'イベント名',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
         ),
         const SizedBox(height: AppSpacing.sm),
         TextField(
           decoration: InputDecoration(
-            hintText: '일정 이름을 입력하세요',
+            hintText: 'イベント名を入力してください',
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppRadius.medium),
             ),
@@ -578,14 +581,14 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          '설명',
+          '説明',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
         ),
         const SizedBox(height: AppSpacing.sm),
         TextField(
           maxLines: 3,
           decoration: InputDecoration(
-            hintText: '일정 설명을 입력하세요 (선택사항)',
+            hintText: 'イベントの説明を入力してください (任意)',
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppRadius.medium),
             ),
@@ -605,13 +608,13 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          '위치',
+          '場所',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
         ),
         const SizedBox(height: AppSpacing.sm),
         TextField(
           decoration: InputDecoration(
-            hintText: '위치를 입력하세요 (선택사항)',
+            hintText: '場所を入力してください (任意)',
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppRadius.medium),
             ),
@@ -630,7 +633,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
     return Row(
       children: [
         const Text(
-          '하루 종일',
+          '一日中',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
         ),
         const Spacer(),
@@ -646,7 +649,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
   Widget _buildBottomBar() {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: AppColors.pureWhite,
         border: Border(
           top: BorderSide(
@@ -660,7 +663,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
           Expanded(
             child: OutlinedButton(
               onPressed: () => context.pop(),
-              child: const Text('취소'),
+              child: const Text('キャンセル'),
             ),
           ),
           const SizedBox(width: AppSpacing.md),
@@ -674,7 +677,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
                   borderRadius: BorderRadius.circular(AppRadius.large),
                 ),
               ),
-              child: Text('저장', style: AppFonts.titleMedium),
+              child: Text('保存', style: AppFonts.titleMedium),
             ),
           ),
         ],
@@ -723,7 +726,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
     if (_eventName.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('일정 이름을 입력해주세요'),
+          content: Text('イベント名を入力してください'),
           backgroundColor: AppColors.pointRed,
         ),
       );
@@ -776,7 +779,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('일정이 저장되었습니다'),
+            content: Text('イベントが保存されました'),
             backgroundColor: AppColors.pointGreen,
           ),
         );
@@ -786,11 +789,69 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('일정 저장에 실패했습니다: $e'),
+            content: Text('イベントの保存に失敗しました: $e'),
             backgroundColor: AppColors.pointRed,
           ),
         );
       }
+    }
+  }
+
+  /// 숫자 입력 다이얼로그 표시
+  Future<void> _showNumberInputDialog(
+    int currentValue,
+    int min,
+    int max,
+    ValueChanged<int> onChanged,
+  ) async {
+    final TextEditingController controller = TextEditingController(
+      text: currentValue.toString(),
+    );
+
+    final result = await showDialog<int>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('数値を入力'),
+          content: TextField(
+            controller: controller,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              hintText: '$min から $max の間で入力してください',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppRadius.medium),
+              ),
+            ),
+            autofocus: true,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('キャンセル'),
+            ),
+            TextButton(
+              onPressed: () {
+                final input = int.tryParse(controller.text);
+                if (input != null && input >= min && input <= max) {
+                  Navigator.of(context).pop(input);
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('$min から $max の間で入力してください'),
+                      backgroundColor: AppColors.pointRed,
+                    ),
+                  );
+                }
+              },
+              child: const Text('確定'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (result != null) {
+      onChanged(result);
     }
   }
 }
