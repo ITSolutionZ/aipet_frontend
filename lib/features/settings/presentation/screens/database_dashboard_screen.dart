@@ -1,7 +1,6 @@
 import 'package:aipet_frontend/shared/services/data_cleanup_service.dart';
 import 'package:aipet_frontend/shared/services/database_visualization_service.dart';
 import 'package:aipet_frontend/shared/services/local_database_service.dart';
-import 'package:aipet_frontend/shared/core/services/snackbar_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -116,10 +115,7 @@ class _DatabaseDashboardScreenState
             _loadDatabaseInfo();
           } else {
             // ✅ Shared SnackBarService 사용
-            SnackBarService.showError(
-              context,
-              'データクリーンアップ中にエラーが発生しました',
-            );
+            SnackBarService.showError(context, 'データクリーンアップ中にエラーが発生しました');
           }
         }
       } catch (e) {
@@ -197,10 +193,7 @@ class _DatabaseDashboardScreenState
         if (mounted) {
           Navigator.pop(context); // 로딩 다이얼로그 닫기
           // ✅ Shared SnackBarService 사용
-          SnackBarService.showError(
-            context,
-            'データ削除中にエラーが発生しました: $e',
-          );
+          SnackBarService.showError(context, 'データ削除中にエラーが発生しました: $e');
         }
       }
     }

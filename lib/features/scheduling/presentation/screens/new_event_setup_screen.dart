@@ -1,6 +1,7 @@
 import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
 import 'package:aipet_frontend/features/scheduling/data/services/calendar_event_service.dart';
 import 'package:aipet_frontend/features/scheduling/domain/entities/calendar_event_entity.dart';
+import 'package:aipet_frontend/shared/core/services/snackbar_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -163,7 +164,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
           _isEditingHour = false;
         }
       });
-      ScaffoldMessenger.of(context).showSnackBar(
+      SnackBarService.showWarning(context, ""(
         SnackBar(
           content: Text('$min から $max の間で入力してください'),
           backgroundColor: AppColors.pointRed,
@@ -823,7 +824,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
 
   Future<void> _saveEvent() async {
     if (_selectedPet == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      SnackBarService.showWarning(context, ""(
         const SnackBar(
           content: Text('ペットを選択してください'),
           backgroundColor: AppColors.pointRed,
@@ -833,7 +834,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
     }
 
     if (_eventName.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      SnackBarService.showWarning(context, ""(
         const SnackBar(
           content: Text('イベント名を入力してください'),
           backgroundColor: AppColors.pointRed,
@@ -886,7 +887,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
       await CalendarEventService.instance.saveCalendarEvent(event);
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        SnackBarService.showWarning(context, ""(
           const SnackBar(
             content: Text('イベントが保存されました'),
             backgroundColor: AppColors.pointGreen,
@@ -897,7 +898,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        SnackBarService.showWarning(context, ""(
           SnackBar(
             content: Text('イベントの保存に失敗しました: $e'),
             backgroundColor: AppColors.pointRed,
