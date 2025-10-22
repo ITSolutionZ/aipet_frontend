@@ -317,12 +317,13 @@ class PetRegistrationController extends _$PetRegistrationController {
   // ================================
 
   /// 이미지 선택 및 OCR 처리
-  Future<void> selectAndProcessRegistrationImage() async {
+  /// ✅ ImageService 사용을 위해 context 파라미터 추가
+  Future<void> selectAndProcessRegistrationImage(BuildContext context) async {
     try {
       setProcessingOCR(true);
 
       // OCR 서비스를 사용하여 이미지 선택 및 처리
-      final result = await _ocrService.selectAndProcessImage();
+      final result = await _ocrService.selectAndProcessImage(context);
 
       if (result.isCancelled) {
         return;

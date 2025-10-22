@@ -2,7 +2,6 @@ import 'package:aipet_frontend/features/pet_profile/presentation/controllers/pet
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
 
 /// Pet Profile 이미지 선택 다이얼로그
 class PetProfileImagePicker {
@@ -183,76 +182,44 @@ class _ImagePickerBottomSheet extends StatelessWidget {
   }
 
   void _selectFromGallery(BuildContext context) async {
-    // 실제 갤러리 선택 구현
+    // ✅ ImageService 사용으로 중복 제거
     final formController = ref.read(petProfileFormControllerProvider.notifier);
 
-    try {
-      // image_picker 패키지를 사용한 갤러리 선택
-      final ImagePicker picker = ImagePicker();
-      final XFile? image = await picker.pickImage(
-        source: ImageSource.gallery,
-        maxWidth: 1024,
-        maxHeight: 1024,
-        imageQuality: 85,
+    final imagePath = await ImageService.pickFromGallery(
+      context,
+      maxWidth: 1024,
+      maxHeight: 1024,
+      imageQuality: 85,
+    );
+
+    if (imagePath != null && context.mounted) {
+      formController.updateImagePath(imagePath);
+      SnackBarService.showSuccess(
+        context,
+        '画像を選択しました',
+        duration: const Duration(seconds: 2),
       );
-
-      if (image != null) {
-        // 선택된 이미지 경로 업데이트
-        formController.updateImagePath(image.path);
-
-        // 성공 메시지 표시
-        if (context.mounted) {
-          // ✅ Shared SnackBarService 사용
-          SnackBarService.showSuccess(
-            context,
-            '画像を選択しました',
-            duration: const Duration(seconds: 2),
-          );
-        }
-      }
-    } catch (error) {
-      // 에러 처리
-      if (context.mounted) {
-        // ✅ Shared SnackBarService 사용
-        SnackBarService.showError(context, '画像の選択に失敗しました: $error');
-      }
     }
   }
 
   void _takePhoto(BuildContext context) async {
-    // 실제 카메라 촬영 구현
+    // ✅ ImageService 사용으로 중복 제거
     final formController = ref.read(petProfileFormControllerProvider.notifier);
 
-    try {
-      // image_picker 패키지를 사용한 카메라 촬영
-      final ImagePicker picker = ImagePicker();
-      final XFile? image = await picker.pickImage(
-        source: ImageSource.camera,
-        maxWidth: 1024,
-        maxHeight: 1024,
-        imageQuality: 85,
+    final imagePath = await ImageService.pickFromCamera(
+      context,
+      maxWidth: 1024,
+      maxHeight: 1024,
+      imageQuality: 85,
+    );
+
+    if (imagePath != null && context.mounted) {
+      formController.updateImagePath(imagePath);
+      SnackBarService.showSuccess(
+        context,
+        '写真を撮影しました',
+        duration: const Duration(seconds: 2),
       );
-
-      if (image != null) {
-        // 촬영된 이미지 경로 업데이트
-        formController.updateImagePath(image.path);
-
-        // 성공 메시지 표시
-        if (context.mounted) {
-          // ✅ Shared SnackBarService 사용
-          SnackBarService.showSuccess(
-            context,
-            '写真を撮影しました',
-            duration: const Duration(seconds: 2),
-          );
-        }
-      }
-    } catch (error) {
-      // 에러 처리
-      if (context.mounted) {
-        // ✅ Shared SnackBarService 사용
-        SnackBarService.showError(context, '写真の撮影に失敗しました: $error');
-      }
     }
   }
 

@@ -117,7 +117,7 @@ class RegistrationFormHandlers {
   /// 등록증 이미지 선택 및 OCR 처리
   Future<void> handleRegistrationImageSelection() async {
     try {
-      await controller.selectAndProcessRegistrationImage();
+      await controller.selectAndProcessRegistrationImage(context);
 
       if (context.mounted) {
         SnackBarService.showSuccess(context, '登録証情報を自動で入力しました。確認後修正してください。');
