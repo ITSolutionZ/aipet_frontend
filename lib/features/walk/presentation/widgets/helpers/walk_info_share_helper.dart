@@ -1,5 +1,6 @@
 import 'package:aipet_frontend/features/walk/data/providers/walk_share_providers.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
+import 'package:aipet_frontend/shared/core/services/snackbar_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,14 +17,12 @@ class WalkInfoShareHelper {
     final result = await useCase(text);
 
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(result.message),
-          backgroundColor: result.isSuccess
-              ? AppColors.pointGreen
-              : AppColors.pointPink,
-        ),
-      );
+      // ✅ Shared SnackBarService 사용
+      if (result.isSuccess) {
+        SnackBarService.showSuccess(context, result.message);
+      } else {
+        SnackBarService.showError(context, result.message);
+      }
     }
   }
 
@@ -37,14 +36,12 @@ class WalkInfoShareHelper {
     final result = await useCase(walkRecord);
 
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(result.message),
-          backgroundColor: result.isSuccess
-              ? AppColors.pointGreen
-              : AppColors.pointPink,
-        ),
-      );
+      // ✅ Shared SnackBarService 사용
+      if (result.isSuccess) {
+        SnackBarService.showSuccess(context, result.message);
+      } else {
+        SnackBarService.showError(context, result.message);
+      }
     }
   }
 
@@ -58,14 +55,12 @@ class WalkInfoShareHelper {
     final result = await useCase(text, subject: '散歩記録を共有');
 
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(result.message),
-          backgroundColor: result.isSuccess
-              ? AppColors.pointGreen
-              : AppColors.pointPink,
-        ),
-      );
+      // ✅ Shared SnackBarService 사용
+      if (result.isSuccess) {
+        SnackBarService.showSuccess(context, result.message);
+      } else {
+        SnackBarService.showError(context, result.message);
+      }
     }
   }
 }
