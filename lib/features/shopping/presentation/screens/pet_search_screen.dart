@@ -1,6 +1,7 @@
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../data/models/rakuten_pet_product_model.dart';
 import '../../data/providers/rakuten_products_provider.dart';
@@ -350,141 +351,145 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Container(
-          decoration: BoxDecoration(
-            color: Colors.grey[100],
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: TextField(
-            controller: _searchController,
-            decoration: InputDecoration(
-              hintText: '検索ワードを入力してください',
-              border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 12,
-              ),
-              suffixIcon: GestureDetector(
-                onTap: () {
-                  // 検索アイコンタップで検索実行
-                  _applyFilters();
-                },
-                child: const Icon(Icons.search, color: Colors.grey),
-              ),
-            ),
-            onSubmitted: (value) {
-              // Enterキーで検索実行
-              _applyFilters();
-            },
-          ),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // カテゴリータブ
-            Container(
-              color: Colors.white,
-              child: TabBar(
-                controller: _tabController,
-                isScrollable: true,
-                indicatorColor: Colors.red,
-                labelColor: Colors.red,
-                unselectedLabelColor: Colors.grey,
-                tabs: _categories
-                    .map((category) => Tab(text: category))
-                    .toList(),
-              ),
-            ),
-
-            // フィルターセクション
-            Padding(
-              padding: const EdgeInsets.all(16),
+      backgroundColor: AppColors.pointOffWhite,
+      appBar: const SoftGradientAppBar(title: ''),
+      body: Column(
+        children: [
+          // 검색바
+          _buildSearchBar(),
+          
+          // 카테고리 탭
+          _buildCategoryTabs(),
+          
+          // 메인 콘텐츠
+          Expanded(
+            child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // 健康心配フィルター
-                  _buildFilterSection('うちの子の健康が気になりますか？', _healthFilters),
-                  const SizedBox(height: 24),
+                  // 필터 섹션
+                  Padding(
+                    padding: const EdgeInsets.all(AppSpacing.lg),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // 건강 관련 필터
+                        _buildFilterSection('うちの子の健康が気になりますか？', _healthFilters),
+                        const SizedBox(height: AppSpacing.xl),
 
-                  // 製造国別フィルター
-                  _buildFilterSection('フード製造国別で見る', _countryFilters),
-                  const SizedBox(height: 24),
+                        // 제조국별 필터
+                        _buildFilterSection('フード製造国別で見る', _countryFilters),
+                        const SizedBox(height: AppSpacing.xl),
 
-                  // 原料成分フィルター
-                  _buildFilterSection('原料成分でフードを見る', _ingredientFilters),
-                  const SizedBox(height: 24),
+                        // 원료 성분 필터
+                        _buildFilterSection('原料成分でフードを見る', _ingredientFilters),
+                        const SizedBox(height: AppSpacing.xl),
 
-                  // フィルターボタン
-                  Row(
-                    children: [
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: _applyFilters,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF1E3A8A),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: const Text(
-                              'フィルターを適用して検索',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: _clearAllFilters,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            decoration: BoxDecoration(
-                              color: Colors.grey[300],
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: const Text(
-                              'フィルターをクリア',
-                              style: TextStyle(
-                                color: Colors.black87,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                        // 액션 버튼들
+                        _buildActionButtons(),
+                        const SizedBox(height: AppSpacing.xl),
+
+                        // 인기 브랜드
+                        _buildPopularBrandsSection(),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 32),
 
-                  // 人気ブランド
-                  _buildPopularBrandsSection(),
+                  // 상품 리스트
+                  _buildProductList(),
                 ],
               ),
             ),
-
-            // 商品リスト
-            _buildProductList(),
-          ],
-        ),
+          ),
+        ],
       ),
+    );
+  }
+
+  /// 검색바 구성
+  Widget _buildSearchBar() {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      child: Row(
+        children: [
+          // 뒤로가기 버튼
+          IconButton(
+            onPressed: () => context.pop(),
+            icon: const Icon(Icons.arrow_back, color: AppColors.pointBrown),
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          
+          // 검색 입력 필드
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppColors.pureWhite,
+                borderRadius: BorderRadius.circular(AppRadius.medium),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.pointBrown.withValues(alpha: 0.1),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: TextField(
+                controller: _searchController,
+                decoration: const InputDecoration(
+                  hintText: '検索ワードを入力してください',
+                  hintStyle: const TextStyle(color: AppColors.pointGray),
+                  prefixIcon: const Icon(Icons.search, color: AppColors.pointGray),
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.lg,
+                    vertical: AppSpacing.md,
+                  ),
+                ),
+                onSubmitted: (value) => _applyFilters(),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 카테고리 탭 구성
+  Widget _buildCategoryTabs() {
+    return Container(
+      color: AppColors.pureWhite,
+      child: TabBar(
+        controller: _tabController,
+        isScrollable: true,
+        indicatorColor: AppColors.pointBrown,
+        labelColor: AppColors.pointBrown,
+        unselectedLabelColor: AppColors.pointGray,
+        indicatorWeight: 3,
+        tabs: _categories.map((category) => Tab(text: category)).toList(),
+      ),
+    );
+  }
+
+  /// 액션 버튼들 구성
+  Widget _buildActionButtons() {
+    return Row(
+      children: [
+        Expanded(
+          child: ActionButton.primary(
+            text: 'フィルターを適用して検索',
+            onPressed: _applyFilters,
+            isEnabled: true,
+          ),
+        ),
+        const SizedBox(width: AppSpacing.md),
+        Expanded(
+          child: ActionButton.secondary(
+            text: 'フィルターをクリア',
+            onPressed: _clearAllFilters,
+            isEnabled: true,
+          ),
+        ),
+      ],
     );
   }
 
@@ -880,49 +885,48 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
       children: [
         Text(
           title,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: Colors.black87,
+          style: AppFonts.bodyLarge.copyWith(
+            fontWeight: FontWeight.bold,
+            color: AppColors.pointBrown,
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.md),
         Wrap(
-          spacing: 8,
-          runSpacing: 8,
+          spacing: AppSpacing.sm,
+          runSpacing: AppSpacing.sm,
           children: filters.map((filter) {
+            final isSelected = filter['isSelected'] == true;
             return GestureDetector(
               onTap: () {
                 setState(() {
                   filter['isSelected'] = !filter['isSelected'];
                 });
-                // フィルターを適用
+                // 필터를 적용
                 _applyFilters();
               },
               child: Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.sm,
                 ),
                 decoration: BoxDecoration(
-                  color: filter['isSelected']
-                      ? Colors.blue[100]
-                      : Colors.grey[200],
-                  borderRadius: BorderRadius.circular(20),
-                  border: filter['isSelected']
-                      ? Border.all(color: Colors.blue, width: 1)
-                      : null,
+                  color: isSelected 
+                      ? AppColors.pointBrown 
+                      : AppColors.pureWhite,
+                  borderRadius: BorderRadius.circular(AppRadius.large),
+                  border: Border.all(
+                    color: isSelected 
+                        ? AppColors.pointBrown 
+                        : AppColors.pointGray.withValues(alpha: 0.3),
+                  ),
                 ),
                 child: Text(
                   filter['name'],
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: filter['isSelected']
-                        ? Colors.blue[800]
-                        : Colors.black87,
-                    fontWeight: filter['isSelected']
-                        ? FontWeight.w600
-                        : FontWeight.normal,
+                  style: AppFonts.bodySmall.copyWith(
+                    color: isSelected 
+                        ? AppColors.pureWhite 
+                        : AppColors.pointGray,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ),
@@ -937,88 +941,83 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           '人気ブランド',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: Colors.black87,
+          style: AppFonts.bodyLarge.copyWith(
+            fontWeight: FontWeight.bold,
+            color: AppColors.pointBrown,
           ),
         ),
-        const SizedBox(height: 16),
-        GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 4,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
-            childAspectRatio: 0.8,
-          ),
-          itemCount: _popularBrands.length,
-          itemBuilder: (context, index) {
-            final brand = _popularBrands[index];
-            final isSelected = brand['isSelected'] == true;
+        const SizedBox(height: AppSpacing.md),
+        SizedBox(
+          height: 120,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: _popularBrands.length,
+            itemBuilder: (context, index) {
+              final brand = _popularBrands[index];
+              final isSelected = brand['isSelected'] == true;
 
-            return GestureDetector(
-              onTap: () {
-                setState(() {
-                  brand['isSelected'] = !isSelected;
-                });
-                // フィルターを適用
-                _applyFilters();
-              },
-              child: Column(
-                children: [
-                  Container(
-                    width: 60,
-                    height: 60,
+              return Container(
+                width: 100,
+                margin: const EdgeInsets.only(right: AppSpacing.md),
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      brand['isSelected'] = !isSelected;
+                    });
+                    // 필터를 적용
+                    _applyFilters();
+                  },
+                  child: Container(
                     decoration: BoxDecoration(
-                      color: isSelected ? Colors.blue[100] : Colors.grey[200],
-                      borderRadius: BorderRadius.circular(30),
-                      border: isSelected
-                          ? Border.all(color: Colors.blue, width: 2)
-                          : null,
+                      color: isSelected 
+                          ? AppColors.pointBrown.withValues(alpha: 0.1)
+                          : AppColors.pureWhite,
+                      borderRadius: BorderRadius.circular(AppRadius.medium),
+                      border: Border.all(
+                        color: isSelected 
+                            ? AppColors.pointBrown 
+                            : AppColors.pointGray.withValues(alpha: 0.3),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.pointBrown.withValues(alpha: 0.1),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
                     ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(30),
-                      child: brand['logo'] != null
-                          ? Image.asset(
-                              brand['logo'],
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return const Icon(
-                                  Icons.pets,
-                                  size: 30,
-                                  color: Colors.grey,
-                                );
-                              },
-                            )
-                          : const Icon(
-                              Icons.pets,
-                              size: 30,
-                              color: Colors.grey,
-                            ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.pets,
+                          color: isSelected 
+                              ? AppColors.pointBrown 
+                              : AppColors.pointGray,
+                          size: 32,
+                        ),
+                        const SizedBox(height: AppSpacing.sm),
+                        Text(
+                          brand['japaneseName'],
+                          style: AppFonts.bodySmall.copyWith(
+                            color: isSelected 
+                                ? AppColors.pointBrown 
+                                : AppColors.pointGray,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    brand['japaneseName'],
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: isSelected ? Colors.blue[800] : Colors.black87,
-                      fontWeight: isSelected
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                    ),
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-            );
-          },
+                ),
+              );
+            },
+          ),
         ),
       ],
     );
