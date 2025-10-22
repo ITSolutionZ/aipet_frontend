@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import '../../domain/domain.dart';
 import 'package:flutter/foundation.dart';
 
+import '../../domain/domain.dart';
 import 'helpers/notification_analytics_calculator_helper.dart';
 import 'helpers/notification_analytics_storage_helper.dart';
 import 'helpers/notification_analytics_trend_helper.dart';

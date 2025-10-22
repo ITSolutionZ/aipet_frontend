@@ -1,6 +1,7 @@
-import '../../../domain/domain.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+
+import '../../../domain/domain.dart';
 
 /// 알림 상세 메타데이터 컴포넌트
 class NotificationDetailMetadataComponent extends StatelessWidget {

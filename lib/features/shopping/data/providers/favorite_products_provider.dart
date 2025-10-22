@@ -12,7 +12,7 @@ class FavoriteProductsNotifier extends _$FavoriteProductsNotifier {
 
   @override
   Future<List<FavoriteProduct>> build() async {
-    return await _favoriteService.getFavoriteProducts();
+    return _favoriteService.getFavoriteProducts();
   }
 
   /// お気に入りに追加
@@ -41,7 +41,7 @@ class FavoriteProductsNotifier extends _$FavoriteProductsNotifier {
 
   /// 商品がお気に入りかチェック
   Future<bool> isFavorite(String itemCode) async {
-    return await _favoriteService.isFavorite(itemCode);
+    return _favoriteService.isFavorite(itemCode);
   }
 
   /// すべてクリア

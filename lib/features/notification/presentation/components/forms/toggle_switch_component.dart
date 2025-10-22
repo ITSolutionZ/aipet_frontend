@@ -1,5 +1,4 @@
 import 'package:aipet_frontend/shared/shared.dart';
-import 'package:aipet_frontend/shared/widgets/layout/card.dart';
 import 'package:flutter/material.dart';
 
 /// 순수 UI 전용 토글 스위치 위젯

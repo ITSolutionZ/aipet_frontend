@@ -12,7 +12,6 @@ import 'package:aipet_frontend/features/facility/presentation/screens/facility_t
 import 'package:aipet_frontend/features/facility/presentation/screens/hospital_list_screen.dart';
 import 'package:aipet_frontend/features/home/presentation/presentation.dart';
 import 'package:aipet_frontend/features/notification/presentation/screens/notification_screens.dart';
-import 'package:aipet_frontend/features/pet_activities/pet_activities.dart';
 import 'package:aipet_frontend/features/pet_profile/presentation/screens/link_registration_screen.dart';
 import 'package:aipet_frontend/features/pet_profile/presentation/screens/pet_profile_screen.dart';
 import 'package:aipet_frontend/features/pet_profile/presentation/screens/qr_scanner_screen.dart';
@@ -103,11 +102,11 @@ class ShellRoutes {
             builder: (context, state) => const LinkRegistrationScreen(),
           ),
 
-          GoRoute(
-            path: 'tricks',
-            name: 'tricks',
-            builder: (context, state) => const TricksScreen(),
-          ),
+          // GoRoute(
+          //   path: 'tricks',
+          //   name: 'tricks',
+          //   builder: (context, state) => const TricksScreen(),
+          // ),
           GoRoute(
             path: 'qr',
             name: 'qr-code',

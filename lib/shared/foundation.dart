@@ -18,8 +18,6 @@ export 'foundation/controllers/form_controller.dart';
 export 'foundation/controllers/unified_state_controller.dart';
 // 공통 에러 핸들러 (고급 복구 전략 포함)
 export 'foundation/error_handler/error_handler.dart';
-// 공통 Mixin
-export 'mixins/mixins.dart';
 // 공통 에러 처리 시스템
 export 'foundation/errors/errors.dart';
 export 'foundation/providers/base_providers.dart';
@@ -32,6 +30,8 @@ export 'foundation/testing/testing.dart';
 export 'foundation/types/types.dart' hide Success, Failure, State;
 // 고급 유틸리티 및 확장 메서드
 export 'foundation/utils/utils.dart';
+// 공통 Mixin
+export 'mixins/mixins.dart';
 export 'services/base_logging_service.dart';
 export 'services/weather_icon_service.dart';
 export 'utils/id_generator.dart';

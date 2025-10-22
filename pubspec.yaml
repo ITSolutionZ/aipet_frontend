@@ -22,7 +22,7 @@ dependencies:
   riverpod_annotation: ^3.0.3
   go_router: ^16.2.5
   shared_preferences: ^2.2.2
-  webview_flutter: ^4.8.0
+  # webview_flutter: ^4.8.0  # iOS 시뮬레이터 호환성 문제로 임시 비활성화
   flutter_svg: ^2.2.1
   lottie: ^3.1.3
   fl_chart: ^0.69.0
@@ -32,7 +32,7 @@ dependencies:
   flutter_local_notifications: ^19.4.2
   url_launcher: ^6.2.4
   share_plus: ^12.0.0
-  youtube_player_flutter: ^9.0.3
+  # youtube_player_flutter: ^9.0.3  # iOS 시뮬레이터 WebKit 호환성 문제로 임시 비활성화
   # mobile_scanner: ^4.0.1  # 호환성 문제로 임시 비활성화
   permission_handler: ^12.0.1
   flutter_secure_storage: ^9.2.2

@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
-import 'package:aipet_frontend/shared/domain/entities/pet_profile_entity.dart';
 import 'package:aipet_frontend/shared/services/image_storage_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
@@ -52,9 +51,7 @@ class HospitalPetProfileHeader extends ConsumerWidget {
                         ),
                       ],
                     ),
-                    child: ClipOval(
-                      child: _buildPetImage(currentPet),
-                    ),
+                    child: ClipOval(child: _buildPetImage(currentPet)),
                   ),
                   const SizedBox(width: AppSpacing.lg),
                   // 펫 정보
@@ -107,7 +104,8 @@ class HospitalPetProfileHeader extends ConsumerWidget {
 
     // 상대 경로를 절대 경로로 변환
     final storageService = ImageStorageService();
-    final absolutePath = storageService.getAbsolutePath(pet.imagePath!) ?? pet.imagePath!;
+    final absolutePath =
+        storageService.getAbsolutePath(pet.imagePath!) ?? pet.imagePath!;
     debugPrint('🖼️ HospitalPetProfileHeader - absolutePath: $absolutePath');
 
     final imageType = ImageService.getImageType(absolutePath);
@@ -120,7 +118,9 @@ class HospitalPetProfileHeader extends ConsumerWidget {
         debugPrint('🖼️ HospitalPetProfileHeader - File exists: $fileExists');
 
         if (!fileExists) {
-          debugPrint('❌ HospitalPetProfileHeader - File does not exist: $absolutePath');
+          debugPrint(
+            '❌ HospitalPetProfileHeader - File does not exist: $absolutePath',
+          );
           return Container(
             color: Colors.grey[300],
             child: const Icon(Icons.pets, size: 40, color: Colors.grey),
@@ -131,7 +131,9 @@ class HospitalPetProfileHeader extends ConsumerWidget {
           file,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🖼️ HospitalPetProfileHeader - File image error: $error');
+            debugPrint(
+              '🖼️ HospitalPetProfileHeader - File image error: $error',
+            );
             return Container(
               color: Colors.grey[300],
               child: const Icon(Icons.pets, size: 40, color: Colors.grey),
@@ -143,7 +145,9 @@ class HospitalPetProfileHeader extends ConsumerWidget {
           absolutePath,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🖼️ HospitalPetProfileHeader - Network image error: $error');
+            debugPrint(
+              '🖼️ HospitalPetProfileHeader - Network image error: $error',
+            );
             return Container(
               color: Colors.grey[300],
               child: const Icon(Icons.pets, size: 40, color: Colors.grey),
@@ -155,7 +159,9 @@ class HospitalPetProfileHeader extends ConsumerWidget {
           absolutePath,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🖼️ HospitalPetProfileHeader - Asset image error: $error');
+            debugPrint(
+              '🖼️ HospitalPetProfileHeader - Asset image error: $error',
+            );
             return Container(
               color: Colors.grey[300],
               child: const Icon(Icons.pets, size: 40, color: Colors.grey),

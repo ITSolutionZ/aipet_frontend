@@ -11,13 +11,9 @@ import 'package:aipet_frontend/features/facility/presentation/screens/hospital_d
 import 'package:aipet_frontend/features/home/presentation/screens/favorites_screen.dart';
 import 'package:aipet_frontend/features/notification/presentation/screens/notification_detail_screen.dart';
 import 'package:aipet_frontend/features/notification/presentation/screens/notification_list_screen.dart';
-import 'package:aipet_frontend/features/pet_activities/domain/entities/video_bookmark_entity.dart';
-import 'package:aipet_frontend/features/pet_activities/domain/entities/youtube_timeline_entity.dart';
-import 'package:aipet_frontend/features/pet_activities/domain/entities/youtube_video_entity.dart';
-import 'package:aipet_frontend/features/pet_activities/presentation/screens/all_tricks_screen.dart';
-import 'package:aipet_frontend/features/pet_activities/presentation/screens/learn_trick_screen.dart';
-import 'package:aipet_frontend/features/pet_activities/presentation/screens/youtube_player_screen.dart';
-import 'package:aipet_frontend/features/pet_activities/presentation/screens/youtube_training_videos_screen.dart';
+// import 'package:aipet_frontend/features/pet_activities/presentation/screens/all_tricks_screen.dart';
+// import 'package:aipet_frontend/features/pet_activities/presentation/screens/learn_trick_screen.dart';
+// import 'package:aipet_frontend/features/pet_activities/presentation/screens/youtube_training_videos_screen.dart';
 import 'package:aipet_frontend/features/pet_health/presentation/screens/weight_tracking_screen.dart';
 import 'package:aipet_frontend/features/pet_profile/presentation/screens/pet_profile_screen.dart';
 import 'package:aipet_frontend/features/scheduling/domain/entities/calendar_event_entity.dart';
@@ -178,49 +174,24 @@ class StandaloneRoutes {
       builder: (context, state) =>
           const Scaffold(body: Center(child: Text('イベント詳細画面 - 近日公開'))),
     ),
-    GoRoute(
-      path: RouteConstants.allTricksRoute,
-      name: 'all-tricks',
-      builder: (context, state) => const LearnTrickScreen(),
-    ),
-    GoRoute(
-      path: RouteConstants.allTricksDetailRoute,
-      name: 'all-tricks-detail',
-      builder: (context, state) => const AllTricksScreen(),
-    ),
-    GoRoute(
-      path: RouteConstants.trainingVideosRoute,
-      name: 'training-videos',
-      builder: (context, state) {
-        final petId = state.uri.queryParameters['petId'] ?? 'pet1';
-        return YouTubeTrainingVideosScreen(petId: petId);
-      },
-    ),
-    GoRoute(
-      path: RouteConstants.youtubePlayerRoute,
-      name: 'youtube-player',
-      builder: (context, state) {
-        // extra에서 비디오, 타임라인, 북마크 데이터 가져오기
-        final extra = state.extra as Map<String, dynamic>?;
-        final video = extra?['video'] as YouTubeVideoEntity?;
-        final startTimeSec = extra?['startTimeSec'] as int?;
-        final timelineSections = extra?['timelineSections'] as List<YouTubeTimelineEntity>? ?? [];
-        final bookmarks = extra?['bookmarks'] as List<VideoBookmarkEntity>? ?? [];
-
-        if (video == null) {
-          return const Scaffold(
-            body: Center(child: Text('ビデオが見つかりません')),
-          );
-        }
-
-        return YouTubePlayerScreen(
-          video: video,
-          startTimeSec: startTimeSec,
-          timelineSections: timelineSections,
-          bookmarks: bookmarks,
-        );
-      },
-    ),
+    // GoRoute(
+    //   path: RouteConstants.allTricksRoute,
+    //   name: 'all-tricks',
+    //   builder: (context, state) => const LearnTrickScreen(),
+    // ),
+    // GoRoute(
+    //   path: RouteConstants.allTricksDetailRoute,
+    //   name: 'all-tricks-detail',
+    //   builder: (context, state) => const AllTricksScreen(),
+    // ),
+    // GoRoute(
+    //   path: RouteConstants.trainingVideosRoute,
+    //   name: 'training-videos',
+    //   builder: (context, state) {
+    //     final petId = state.uri.queryParameters['petId'] ?? 'pet1';
+    //     return YouTubeTrainingVideosScreen(petId: petId);
+    //   },
+    // ),
     GoRoute(
       path: RouteConstants.liveWalkRoute,
       name: 'live-walk',

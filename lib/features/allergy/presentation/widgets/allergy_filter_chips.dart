@@ -1,6 +1,7 @@
-import '../../domain/domain.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+
+import '../../domain/domain.dart';
 
 /// 알레르기 타입 필터 칩
 class AllergyFilterChips extends StatelessWidget {

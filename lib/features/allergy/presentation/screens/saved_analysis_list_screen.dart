@@ -1,10 +1,11 @@
-import '../../data/data.dart';
-import '../../domain/domain.dart';
-import 'allergy_analysis_result_screen.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+
+import '../../data/data.dart';
+import '../../domain/domain.dart';
+import 'allergy_analysis_result_screen.dart';
 
 /// 저장된 분석 결과 전체 리스트 화면
 class SavedAnalysisListScreen extends ConsumerStatefulWidget {
