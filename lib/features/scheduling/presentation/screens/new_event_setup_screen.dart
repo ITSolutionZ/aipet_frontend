@@ -1,7 +1,6 @@
 import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
 import 'package:aipet_frontend/features/scheduling/data/services/calendar_event_service.dart';
 import 'package:aipet_frontend/features/scheduling/domain/entities/calendar_event_entity.dart';
-import 'package:aipet_frontend/shared/core/services/snackbar_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -165,10 +164,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
         }
       });
       // ✅ Shared SnackBarService 사용
-      SnackBarService.showWarning(
-        context,
-        '$min から $max の間で入力してください',
-      );
+      SnackBarService.showWarning(context, '$min から $max の間で入力してください');
     }
   }
 

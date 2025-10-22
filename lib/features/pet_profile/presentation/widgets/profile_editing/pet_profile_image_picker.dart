@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/features/pet_profile/presentation/controllers/pet_profile_form_controller.dart';
+import 'package:aipet_frontend/shared/core/services/snackbar_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -202,23 +203,19 @@ class _ImagePickerBottomSheet extends StatelessWidget {
 
         // 성공 메시지 표시
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('画像を選択しました'),
-              duration: Duration(seconds: 2),
-            ),
+          // ✅ Shared SnackBarService 사용
+          SnackBarService.showSuccess(
+            context,
+            '画像を選択しました',
+            duration: const Duration(seconds: 2),
           );
         }
       }
     } catch (error) {
       // 에러 처리
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('画像の選択に失敗しました: $error'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showError(context, '画像の選択に失敗しました: $error');
       }
     }
   }
@@ -243,23 +240,19 @@ class _ImagePickerBottomSheet extends StatelessWidget {
 
         // 성공 메시지 표시
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('写真を撮影しました'),
-              duration: Duration(seconds: 2),
-            ),
+          // ✅ Shared SnackBarService 사용
+          SnackBarService.showSuccess(
+            context,
+            '写真を撮影しました',
+            duration: const Duration(seconds: 2),
           );
         }
       }
     } catch (error) {
       // 에러 처리
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('写真の撮影に失敗しました: $error'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showError(context, '写真の撮影に失敗しました: $error');
       }
     }
   }

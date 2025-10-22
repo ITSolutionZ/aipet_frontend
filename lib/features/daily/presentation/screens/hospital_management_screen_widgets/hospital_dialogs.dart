@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/features/daily/data/providers/hospital_registration_provider.dart';
+import 'package:aipet_frontend/shared/core/services/snackbar_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -69,12 +70,8 @@ class HospitalDialogs {
 
                 if (!context.mounted) return;
                 Navigator.of(context).pop();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('病院が登録されました'),
-                    backgroundColor: AppColors.pointGreen,
-                  ),
-                );
+                // ✅ Shared SnackBarService 사용
+                SnackBarService.showSuccess(context, '病院が登録されました');
               }
             },
             style: ElevatedButton.styleFrom(
