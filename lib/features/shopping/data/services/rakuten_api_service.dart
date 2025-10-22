@@ -4,8 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
-import '../models/rakuten_pet_product_model.dart';
 import '../models/rakuten_brand_model.dart';
+import '../models/rakuten_pet_product_model.dart';
 
 /// ラクテン API サービス
 class RakutenApiService {
@@ -479,7 +479,9 @@ class RakutenApiService {
         'formatVersion': '2',
       };
 
-      final uri = Uri.parse(_itemSearchUrl).replace(queryParameters: queryParams);
+      final uri = Uri.parse(
+        _itemSearchUrl,
+      ).replace(queryParameters: queryParams);
 
       debugPrint('🔍 Brand Search URL: ${uri.toString()}');
 
@@ -503,7 +505,7 @@ class RakutenApiService {
           final itemData = item['Item'] as Map<String, dynamic>? ?? {};
           final shopName = _safeGetString(itemData, 'shopName');
           final shopCode = _safeGetString(itemData, 'shopCode');
-          
+
           if (shopName.isNotEmpty && shopCode.isNotEmpty) {
             // 既存のブランドかチェック
             if (!brandMap.containsKey(shopCode)) {
@@ -527,7 +529,7 @@ class RakutenApiService {
 
         final brands = brandMap.values.toList();
         debugPrint('🏷️ Found ${brands.length} brands');
-        
+
         return brands;
       } else {
         debugPrint('❌ Brand search failed: ${response.statusCode}');
@@ -541,7 +543,7 @@ class RakutenApiService {
 
   /// デフォルトブランドリスト
   List<RakutenBrand> _getDefaultBrands() {
-    return [
+    return const [
       RakutenBrand(
         brandId: 'royal_canin',
         brandName: 'ROYAL CANIN',
