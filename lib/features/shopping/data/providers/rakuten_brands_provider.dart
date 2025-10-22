@@ -10,14 +10,17 @@ part 'rakuten_brands_provider.g.dart';
 class RakutenBrandsNotifier extends _$RakutenBrandsNotifier {
   @override
   RakutenBrandsStateData build() {
-    return const RakutenBrandsStateData();
+    // 初期状態でデフォルトブランドを表示
+    return RakutenBrandsStateData(
+      brands: _apiService.getDefaultBrandsPublic(),
+    );
   }
 
   final RakutenApiService _apiService = RakutenApiService();
 
   /// 人気ブランドを検索
   Future<void> searchPopularBrands({
-    String keyword = 'ペットフード',
+    String keyword = 'ドッグフード',
     bool reset = true,
   }) async {
     if (reset) {
@@ -30,7 +33,7 @@ class RakutenBrandsNotifier extends _$RakutenBrandsNotifier {
       final brands = await _apiService.searchPopularBrands(
         keyword: keyword,
         page: 1,
-        hits: 20,
+        hits: 30,
       );
 
       state = state.copyWith(isLoading: false, brands: brands, error: null);

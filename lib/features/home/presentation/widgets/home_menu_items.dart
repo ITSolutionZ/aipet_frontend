@@ -9,7 +9,7 @@ import 'qr_code_bottom_sheet.dart';
 class HomeMenuItems {
   static List<MenuItem> getMenuItems(BuildContext context) {
     return [
-      // 첫 번째 줄 (5개): 데일리케어 / QR코드 / 알레르기 / 펫수첩 / 병원기록
+      // 첫 번째 줄 (5개): 데일리케어 / 펫관리 / 알레르기 / 펫수첩 / 병원기록
       MenuItem(
         title: '毎日ケア',
         iconPath: 'assets/icons/home_menu/daily.png',
@@ -18,10 +18,11 @@ class HomeMenuItems {
         },
       ),
       MenuItem(
-        title: 'QRコード',
-        iconPath: 'assets/icons/home_menu/qr.png',
+        title: 'ペット管理',
+        iconPath: 'assets/icons/home_menu/note.png',
         onTap: () {
-          QRCodeBottomSheet.show(context);
+          // 펫 관리 화면으로 이동 (펫 목록 또는 펫 등록)
+          context.push(RouteConstants.petManagementRoute);
         },
       ),
       MenuItem(
@@ -46,7 +47,7 @@ class HomeMenuItems {
           context.push('/facility-type-selection');
         },
       ),
-      // 두 번째 줄 (5개): 나머지 메뉴들
+      // 두 번째 줄 (5개): 예약기록 / 산책 / 게시판 / 카트 / QR코드
       MenuItem(
         title: '予約記録',
         iconPath: 'assets/icons/home_menu/booking.png',
@@ -65,12 +66,7 @@ class HomeMenuItems {
         title: '掲示板',
         iconPath: 'assets/icons/home_menu/community.png',
         onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('掲示板機能は準備中です'),
-              duration: Duration(seconds: 2),
-            ),
-          );
+          context.push(RouteConstants.boardListRoute);
         },
       ),
       MenuItem(
@@ -81,11 +77,10 @@ class HomeMenuItems {
         },
       ),
       MenuItem(
-        title: 'ペット管理',
-        iconPath: 'assets/icons/home_menu/note.png',
+        title: 'QRコード',
+        iconPath: 'assets/icons/home_menu/qr.png',
         onTap: () {
-          // 펫 관리 화면으로 이동 (펫 목록 또는 펫 등록)
-          context.push(RouteConstants.petManagementRoute);
+          QRCodeBottomSheet.show(context);
         },
       ),
       // Pet Activities 메뉴 - 개발 중으로 인해 임시 숨김

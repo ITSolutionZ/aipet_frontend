@@ -1,6 +1,5 @@
 import 'package:aipet_frontend/shared/shared.dart';
 
-import '../../../../shared/domain/entities/pet_profile_entity.dart';
 import '../entities/ai_category_entity.dart';
 import '../entities/ai_suggested_question_entity.dart';
 import '../repositories/ai_repository.dart';

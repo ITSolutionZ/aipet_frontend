@@ -1,7 +1,6 @@
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../shared/domain/entities/pet_profile_entity.dart';
 import '../../domain/domain.dart';
 
 /// AI 후속 질문 제안 버블
