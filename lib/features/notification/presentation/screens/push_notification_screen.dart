@@ -347,7 +347,10 @@ class _PushNotificationScreenState
                                 isEnabled: true,
                                 onPressed: () {
                                   ref
-                                      .read(alarmTimeSettingsControllerProvider.notifier)
+                                      .read(
+                                        alarmTimeSettingsControllerProvider
+                                            .notifier,
+                                      )
                                       .loadAlarmTimes('default_user_id');
                                 },
                               ),
@@ -357,7 +360,8 @@ class _PushNotificationScreenState
                       }
 
                       // データがロードされていない場合のフォールバック
-                      if (alarmState.morningTime.hour == 0 && alarmState.morningTime.minute == 0) {
+                      if (alarmState.morningTime.hour == 0 &&
+                          alarmState.morningTime.minute == 0) {
                         return Container(
                           padding: const EdgeInsets.all(AppSpacing.lg),
                           child: Column(

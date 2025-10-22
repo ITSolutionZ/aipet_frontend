@@ -1,8 +1,9 @@
 import 'package:aipet_frontend/features/notification/data/providers/notification_controller_providers.dart';
-import '../../domain/domain.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../domain/domain.dart';
 
 part 'alarm_time_settings_controller.g.dart';
 
@@ -24,7 +25,7 @@ class AlarmTimeSettingsController extends _$AlarmTimeSettingsController {
     try {
       // ローディング状態を開始
       state = state.copyWith(isLoading: true, error: null);
-      
+
       await _getNotificationSettingsUseCase(userId);
 
       // SharedPreferences에서 저장된 시간 정보 로드
@@ -52,10 +53,7 @@ class AlarmTimeSettingsController extends _$AlarmTimeSettingsController {
         error: null,
       );
     } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        error: e.toString(),
-      );
+      state = state.copyWith(isLoading: false, error: e.toString());
     }
   }
 
