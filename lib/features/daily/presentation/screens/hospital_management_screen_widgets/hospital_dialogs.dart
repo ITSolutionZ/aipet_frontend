@@ -107,12 +107,7 @@ class HospitalDialogs {
 
               if (!context.mounted) return;
               Navigator.of(context).pop();
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('病院が削除されました'),
-                  backgroundColor: Colors.orange,
-                ),
-              );
+              SnackBarService.showSuccess(context, '病院が削除されました');
             },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             child: const Text('削除'),

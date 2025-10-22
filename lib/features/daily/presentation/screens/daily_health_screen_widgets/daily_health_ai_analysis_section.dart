@@ -168,15 +168,10 @@ class DailyHealthAIAnalysisSection extends ConsumerWidget {
 
         // 성공 메시지
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                _getSuccessMessage(format),
-                style: AppFonts.bodySmall.copyWith(color: Colors.white),
-              ),
-              backgroundColor: AppColors.pointGreen,
-              duration: const Duration(seconds: 2),
-            ),
+          SnackBarService.showSuccess(
+            context,
+            _getSuccessMessage(format),
+            duration: const Duration(seconds: 2),
           );
         }
       }
@@ -186,36 +181,10 @@ class DailyHealthAIAnalysisSection extends ConsumerWidget {
 
       // 에러 메시지 표시
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'レポート生成に失敗しました',
-              style: AppFonts.bodySmall.copyWith(color: Colors.white),
-            ),
-            backgroundColor: AppColors.error,
-            duration: const Duration(seconds: 3),
-            action: SnackBarAction(
-              label: '詳細',
-              textColor: Colors.white,
-              onPressed: () {
-                debugPrint('Error details: $e\n$stackTrace');
-                // 에러 상세 정보를 다이얼로그로 표시
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text('エラー詳細'),
-                    content: SingleChildScrollView(child: Text(e.toString())),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: const Text('閉じる'),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
+        SnackBarService.showError(
+          context,
+          'レポート生成に失敗しました',
+          duration: const Duration(seconds: 3),
         );
       }
     } finally {

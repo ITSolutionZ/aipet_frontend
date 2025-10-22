@@ -1,3 +1,4 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
 /// 건강 관리 다이얼로그 헬퍼
