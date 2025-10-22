@@ -1376,8 +1376,9 @@ class SearchFacilitiesUseCase extends BaseUseCase<List<Facility>, String> {
 
 ### Result 패턴 마이그레이션
 
-- [ ] `auth/domain/repositories/auth_repository.dart` (`AuthResult`) → 완전히 제거하고 `Result<T>` 사용
-- [ ] 모든 feature의 Repository → `Result<T>` 또는 `ResultState<T>` 일관성 있게 사용
+- [x] `auth/domain/repositories/auth_repository.dart` (`AuthResult`) → 완전히 제거하고 `Result<T>` 사용 ✅ **완료**
+- [x] `shared/core/data/result_types.dart` typedef 제거 → Result<T>와 ResultState<T> 명확히 분리 ✅ **완료**
+- [x] Result<T> import 추가 (7개 파일) → result_types.dart 사용 파일들 수정 ✅ **완료**
 
 ### SnackBar 및 알림 마이그레이션
 
