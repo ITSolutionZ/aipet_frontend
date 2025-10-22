@@ -1,23 +1,22 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../app/config/app_config.dart';
+import '../../../../shared/core/services/http_client_service.dart';
 import '../../../../shared/services/base_logging_service.dart';
 import '../../domain/domain.dart';
 import 'ai_cache_service.dart';
-import 'ai_dio_service.dart';
 
 /// 🎯 AI 데이터 서비스
 ///
 /// AI 관련 데이터의 로딩과 관리를 담당
 class AiDataService extends BaseLoggingService {
   final AiCacheService _cacheService;
-  final AiDioService _dioService;
+  // ✅ Shared HttpClientService 사용
+  final HttpClientService _httpClient;
 
-  AiDataService(this._cacheService, this._dioService) : super('ai_data');
-
-  /// Dio 인스턴스 가져오기
-  Dio get _dio => _dioService.createApiDio();
+  AiDataService(this._cacheService, {HttpClientService? httpClient})
+    : _httpClient = httpClient ?? HttpClientService.instance,
+      super('ai_data');
 
   /// AI 카테고리 데이터 가져오기
   Future<List<AiCategoryEntity>> getCategories() async {
@@ -36,7 +35,7 @@ class AiDataService extends BaseLoggingService {
       // Mock 모드: 정적 데이터 반환
       result = _getMockCategories();
     } else {
-      // 실제 API 모드: API에서 데이터 로드
+      // ✅ Shared HttpClientService 사용
       result = await _loadCategoriesFromApi();
     }
 
@@ -198,10 +197,13 @@ class AiDataService extends BaseLoggingService {
   Future<List<AiCategoryEntity>> _loadCategoriesFromApi() async {
     return trackApiPerformance('load_categories', () async {
       return _executeWithRetry(() async {
-        final response = await _dio.get('/ai/categories');
+        // ✅ Shared HttpClientService 사용
+        final response = await _httpClient.get<Map<String, dynamic>>(
+          '/ai/categories',
+        );
 
-        if (response.statusCode == 200 && response.data != null) {
-          final List<dynamic> data = response.data['data'] ?? response.data;
+        if (response.isSuccess && response.data != null) {
+          final List<dynamic> data = response.data!['data'] ?? response.data;
           return data.map((json) => _mapToAiCategoryEntity(json)).toList();
         } else {
           throw Exception('AIカテゴリデータの取得に失敗しました');
@@ -213,10 +215,13 @@ class AiDataService extends BaseLoggingService {
   Future<List<AiSuggestedQuestionEntity>>
   _loadSuggestedQuestionsFromApi() async {
     return _executeWithRetry(() async {
-      final response = await _dio.get('/ai/suggested-questions');
+      // ✅ Shared HttpClientService 사용
+      final response = await _httpClient.get<Map<String, dynamic>>(
+        '/ai/suggested-questions',
+      );
 
-      if (response.statusCode == 200 && response.data != null) {
-        final List<dynamic> data = response.data['data'] ?? response.data;
+      if (response.isSuccess && response.data != null) {
+        final List<dynamic> data = response.data!['data'] ?? response.data;
         return data
             .map((json) => _mapToAiSuggestedQuestionEntity(json))
             .toList();
@@ -228,11 +233,14 @@ class AiDataService extends BaseLoggingService {
 
   Future<Map<String, String>> _loadResponseTemplatesFromApi() async {
     return _executeWithRetry(() async {
-      final response = await _dio.get('/ai/response-templates');
+      // ✅ Shared HttpClientService 사용
+      final response = await _httpClient.get<Map<String, dynamic>>(
+        '/ai/response-templates',
+      );
 
-      if (response.statusCode == 200 && response.data != null) {
+      if (response.isSuccess && response.data != null) {
         final Map<String, dynamic> data =
-            response.data['data'] ?? response.data;
+            response.data!['data'] ?? response.data;
         return data.map((key, value) => MapEntry(key, value.toString()));
       } else {
         throw Exception('AI応答テンプレートデータの取得に失敗しました');
@@ -242,11 +250,14 @@ class AiDataService extends BaseLoggingService {
 
   Future<Map<String, List<String>>> _loadKeywordMappingFromApi() async {
     return _executeWithRetry(() async {
-      final response = await _dio.get('/ai/keyword-mapping');
+      // ✅ Shared HttpClientService 사용
+      final response = await _httpClient.get<Map<String, dynamic>>(
+        '/ai/keyword-mapping',
+      );
 
-      if (response.statusCode == 200 && response.data != null) {
+      if (response.isSuccess && response.data != null) {
         final Map<String, dynamic> data =
-            response.data['data'] ?? response.data;
+            response.data!['data'] ?? response.data;
         return data.map((key, value) {
           if (value is List) {
             return MapEntry(key, value.map((e) => e.toString()).toList());
@@ -262,7 +273,8 @@ class AiDataService extends BaseLoggingService {
 
   /// 재시도 로직이 포함된 API 호출 실행
   Future<T> _executeWithRetry<T>(Future<T> Function() apiCall) async {
-    return _dioService.executeWithRetry(apiCall);
+    // ✅ HttpClientService는 내부적으로 재시도 로직을 가지고 있으므로 직접 실행
+    return apiCall();
   }
 
   /// JSON을 AiCategoryEntity로 매핑

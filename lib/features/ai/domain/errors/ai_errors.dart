@@ -188,83 +188,24 @@ class AiBusinessLogicException extends AiException {
       'AiBusinessLogicException: $message${operation != null ? ' (Operation: $operation)' : ''}';
 }
 
-/// AI 에러 핸들러 (공통 시스템 확장)
-class AiErrorHandler {
-  /// AI 에러를 공통 시스템으로 변환
-  static AppException convertToAppException(AiException error) {
-    // AI 에러는 이미 AppException을 상속하므로 그대로 반환
-    return error;
-  }
+// ✅ AiErrorHandler 클래스 제거 완료
+// 대신 다음을 사용:
+// - Shared ErrorHandlingService: 일반 에러 처리
+// - Shared ApiErrorHandler: API 에러 처리
+// - AiException: AI feature 특화 에러 타입 유지 (AppException 상속)
+// - Result<T> 패턴: 타입 안전한 에러 핸들링
 
-  /// 에러를 적절한 AiException 타입으로 변환
-  static AiException? convertToAiException(dynamic error) {
-    if (error is AiException) {
-      return error;
-    }
-
-    if (error is Exception) {
-      final message = error.toString();
-
-      // 네트워크 관련 에러 판별
-      if (message.contains('network') ||
-          message.contains('connection') ||
-          message.contains('timeout')) {
-        return AiNetworkException(message, originalError: error);
-      }
-
-      // OpenAI API 관련 에러 판별
-      if (message.contains('OpenAI') ||
-          message.contains('API key') ||
-          message.contains('401') ||
-          message.contains('429')) {
-        return AiOpenAIException(message, originalError: error);
-      }
-
-      // 콘텐츠 검증 관련 에러 판별
-      if (message.contains('content') ||
-          message.contains('validation') ||
-          message.contains('pet')) {
-        return AiContentValidationException(message);
-      }
-    }
-    return null;
-  }
-
-  /// 에러 메시지를 사용자 친화적으로 변환
-  static String getUserFriendlyMessage(AiException error) {
-    switch (error.runtimeType) {
-      case AiNetworkException _:
-        return AiErrorCode.openaiApiServerError.userFriendlyMessage;
-      case AiOpenAIException _:
-        return AiErrorCode.openaiApiServerError.userFriendlyMessage;
-      case AiContentValidationException _:
-        return AiErrorCode.contentNotPetRelated.userFriendlyMessage;
-      case AiLocalStorageException _:
-        return AiErrorCode.chatHistoryLoadFailed.userFriendlyMessage;
-      case AiCacheException _:
-        return AppErrorCode.cacheMiss.userFriendlyMessage;
-      case AiConfigException _:
-        return AppErrorCode.configurationMissing.userFriendlyMessage;
-      case AiDataParsingException _:
-        return AppErrorCode.parsingFailed.userFriendlyMessage;
-      case AiInputValidationException _:
-        return AppErrorCode.validationFailed.userFriendlyMessage;
-      case AiBusinessLogicException _:
-        return AppErrorCode.businessRuleViolation.userFriendlyMessage;
-      default:
-        return AppErrorCode.unexpectedError.userFriendlyMessage;
-    }
-  }
-
-  /// 에러 로깅용 상세 정보 추출
-  static Map<String, dynamic> getErrorDetails(AiException error) {
-    return {
-      'type': error.runtimeType.toString(),
-      'message': error.message,
-      'code': error.code,
-      'timestamp': error.timestamp.toIso8601String(),
-      'context': error.context,
-      'originalError': error.originalError?.toString(),
-    };
-  }
-}
+/// AI feature에서 에러 처리 시 다음 패턴 사용:
+/// ```dart
+/// import 'package:aipet_frontend/shared/core/services/error_handling_service.dart';
+///
+/// try {
+///   // AI 작업
+/// } catch (error, stackTrace) {
+///   await ErrorHandlingService.handleAsync(
+///     Future.error(error, stackTrace),
+///     context: 'AI.Operation',
+///     showUserMessage: true,
+///   );
+/// }
+/// ```
