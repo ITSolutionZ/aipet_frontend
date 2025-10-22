@@ -1,3 +1,4 @@
+import 'package:aipet_frontend/shared/core/services/snackbar_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -17,22 +18,14 @@ class FacilityContactSection extends StatelessWidget {
         await launchUrl(phoneUri);
       } else {
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('電話アプリを開けません。'),
-              backgroundColor: Colors.red,
-            ),
-          );
+          // ✅ Shared SnackBarService 사용
+          SnackBarService.showError(context, '電話アプリを開けません。');
         }
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('電話をかけることができません: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showError(context, '電話をかけることができません: $e');
       }
     }
   }
@@ -47,22 +40,14 @@ class FacilityContactSection extends StatelessWidget {
         await launchUrl(emailUri);
       } else {
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('メールアプリを開けません。'),
-              backgroundColor: Colors.red,
-            ),
-          );
+          // ✅ Shared SnackBarService 사용
+          SnackBarService.showError(context, 'メールアプリを開けません。');
         }
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('メールを送信できません: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showError(context, 'メールを送信できません: $e');
       }
     }
   }

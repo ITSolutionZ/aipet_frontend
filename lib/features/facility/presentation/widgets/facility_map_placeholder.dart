@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/shared/shared.dart';
+import 'package:aipet_frontend/shared/core/services/snackbar_service.dart';
 import 'package:flutter/material.dart';
 
 import '../../domain/domain.dart';
@@ -263,11 +264,11 @@ class _FullScreenMapDialog extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.my_location, color: Colors.white, size: 20),
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('現在位置に移動'),
-                  duration: Duration(seconds: 1),
-                ),
+              // ✅ Shared SnackBarService 사용
+              SnackBarService.showInfo(
+                context,
+                '現在位置に移動',
+                duration: const Duration(seconds: 1),
               );
             },
           ),
@@ -304,20 +305,20 @@ class _FullScreenMapDialog extends StatelessWidget {
                 child: Column(
                   children: [
                     _buildZoomButton(Icons.add, () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('地図を拡大'),
-                          duration: Duration(seconds: 1),
-                        ),
+                      // ✅ Shared SnackBarService 사용
+                      SnackBarService.showInfo(
+                        context,
+                        '地図を拡大',
+                        duration: const Duration(seconds: 1),
                       );
                     }),
                     const SizedBox(height: 8),
                     _buildZoomButton(Icons.remove, () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('地図を縮小'),
-                          duration: Duration(seconds: 1),
-                        ),
+                      // ✅ Shared SnackBarService 사용
+                      SnackBarService.showInfo(
+                        context,
+                        '地図を縮小',
+                        duration: const Duration(seconds: 1),
                       );
                     }),
                   ],
