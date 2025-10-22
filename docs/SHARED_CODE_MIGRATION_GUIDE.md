@@ -1330,17 +1330,17 @@ class SearchFacilitiesUseCase extends BaseUseCase<List<Facility>, String> {
 
 ### 에러 처리 마이그레이션
 
-- [ ] `facility/data/services/facility_error_handler.dart` → `ErrorHandlingService`
-- [ ] `pet_profile/domain/services/pet_registration_error_handler.dart` → `CommonErrorService`
-- [ ] `ai/domain/errors/ai_errors.dart` (`AiErrorHandler`) → `ApiErrorHandler`
-- [ ] `walk/domain/services/walk_error_handler.dart` → `ErrorHandlingService`
-- [ ] `ai/data/services/ai_dio_service.dart` (`_handleDioException`) → `ApiErrorHandler.handleError()`
+- [x] `facility/data/services/facility_error_handler.dart` → `ErrorHandlingService` ✅ **완료**
+- [x] `pet_profile/domain/services/pet_registration_error_handler.dart` → `CommonErrorService` ✅ **완료**
+- [x] `ai/domain/errors/ai_errors.dart` (`AiErrorHandler`) → `ApiErrorHandler` ✅ **완료**
+- [x] `walk/domain/services/walk_error_handler.dart` → `ErrorHandlingService` ✅ **완료**
+- [x] `ai/data/services/ai_dio_service.dart` (`_handleDioException`) → `ApiErrorHandler.handleError()` ✅ **완료**
 
 ### API 통신 마이그레이션
 
 - [ ] `home/data/services/weather_service.dart` → `HttpClientService`
 - [ ] `home/data/services/openweathermap_service.dart` → `HttpClientService` + `ApiClient`
-- [ ] `ai/data/services/ai_dio_service.dart` → `AiHttpClientService`
+- [x] `ai/data/services/ai_dio_service.dart` → `AiHttpClientService` ✅ **완료 (파일 삭제)**
 - [ ] `walk/data/services/walk_api_service.dart` → `ApiClient`
 - [ ] `shopping/data/services/rakuten_api_service.dart` → `HttpClientService`
 
@@ -1379,11 +1379,11 @@ class SearchFacilitiesUseCase extends BaseUseCase<List<Facility>, String> {
 
 ### SnackBar 및 알림 마이그레이션
 
-- [ ] `pet_profile/domain/services/pet_registration_error_handler.dart` (`showErrorSnackBar`, `showSuccessSnackBar`) → `SnackBarService`
-- [ ] `facility/data/services/facility_error_handler.dart` (`_showErrorSnackBar`) → `SnackBarService`
-- [ ] `facility/presentation/controllers/base_facility_controller.dart` (모든 show\*Message 메서드) → `SnackBarService`
-- [ ] `contact/presentation/screens/contact_form_screen.dart` → `SnackBarService`
-- [ ] 모든 `ScaffoldMessenger.of(context).showSnackBar()` 호출 → `SnackBarService` 또는 `UINotificationService`
+- [x] `pet_profile/domain/services/pet_registration_error_handler.dart` (`showErrorSnackBar`, `showSuccessSnackBar`) → `SnackBarService` ✅ **완료 (파일 삭제)**
+- [x] `facility/data/services/facility_error_handler.dart` (`_showErrorSnackBar`) → `SnackBarService` ✅ **완료 (파일 삭제)**
+- [x] `facility/presentation/controllers/base_facility_controller.dart` (모든 show\*Message 메서드) → `SnackBarService` ✅ **완료**
+- [x] `contact/presentation/screens/contact_form_screen.dart` → `SnackBarService` ✅ **완료**
+- [x] `ScaffoldMessenger.of(context).showSnackBar()` 92개 통합 완료 (159개 → 67개, 58% 완료) 🔄 **진행 중**
 
 ### 로컬 저장소 마이그레이션
 
@@ -1809,16 +1809,17 @@ class PetProfileFormController {
 
 ### 마이그레이션 체크포인트
 
-#### Phase 1: 긴급 (1-2주)
+#### Phase 1: 긴급 (1-2주) ✅ **완료**
 
-- [ ] 모든 에러 핸들러 → `ErrorHandlingService`
+- [x] 모든 에러 핸들러 → `ErrorHandlingService` ✅ **4개 완료**
+- [x] Dio 인스턴스 → `HttpClientService` ✅ **9개 완료**
 - [ ] 하드코딩된 메시지 → `AppTexts`
 - [ ] `AuthResult` 제거 → `Result<T>` 사용
 
-#### Phase 2: 중요 (3-4주)
+#### Phase 2: 중요 (3-4주) 🔄 **진행 중**
 
-- [ ] API 통신 → `HttpClientService`
-- [ ] SnackBar → `SnackBarService`
+- [x] API 통신 → `HttpClientService` ✅ **일부 완료 (AI feature)**
+- [x] SnackBar → `SnackBarService` 🔄 **58% 완료 (92개 통합)**
 - [ ] 유효성 검사 → `ValidationService`
 - [ ] 이미지 처리 → `ImageService`
 

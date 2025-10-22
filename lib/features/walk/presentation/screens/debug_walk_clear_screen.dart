@@ -60,24 +60,14 @@ class DebugWalkClearScreen extends StatelessWidget {
       await LocalWalkStorageService.saveCurrentWalk(null);
 
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('✅ 現在の散歩データを削除しました'),
-            backgroundColor: AppColors.pointGreen,
-          ),
-        );
+        SnackBarService.showSuccess(context, '✅ 現在の散歩データを削除しました');
 
         // 화면 닫기
         Navigator.pop(context);
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('❌ 削除失敗: $e'),
-            backgroundColor: AppColors.pointPink,
-          ),
-        );
+        SnackBarService.showError(context, '❌ 削除失敗: $e');
       }
     }
   }

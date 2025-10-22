@@ -41,12 +41,7 @@ class WalkDeleteDialog extends StatelessWidget {
             Navigator.pop(context);
             controller.deleteWalkRecord(walkRecord.id);
             if (context.mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('散歩記録を削除しました'),
-                  backgroundColor: AppColors.pointGreen,
-                ),
-              );
+              SnackBarService.showSuccess(context, '散歩記録を削除しました');
             }
           },
           style: ElevatedButton.styleFrom(

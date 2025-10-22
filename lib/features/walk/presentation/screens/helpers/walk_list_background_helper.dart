@@ -113,11 +113,6 @@ class WalkListBackgroundHelper {
 
     if (!context.mounted) return;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('散歩を終了しました (${duration.inMinutes}分)'),
-        backgroundColor: AppColors.pointGreen,
-      ),
-    );
+    SnackBarService.showSuccess(context, '散歩を終了しました (${duration.inMinutes}分)');
   }
 }

@@ -148,12 +148,10 @@ class WalkListDialogHelper {
             onPressed: () {
               Navigator.of(context).pop();
               onDelete();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('$labelを削除しました'),
-                  backgroundColor: AppColors.pointGreen,
-                  duration: const Duration(seconds: 1),
-                ),
+              SnackBarService.showSuccess(
+                context,
+                '$labelを削除しました',
+                duration: const Duration(seconds: 1),
               );
             },
             style: ElevatedButton.styleFrom(

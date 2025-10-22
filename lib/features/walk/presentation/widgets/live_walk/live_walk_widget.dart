@@ -1042,20 +1042,7 @@ class _ControlSectionState extends ConsumerState<_ControlSection> {
     walkController.completeWalk(notes);
     Navigator.of(context).pop();
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Row(
-          children: [
-            Icon(Icons.check_circle, color: Colors.white),
-            SizedBox(width: 8),
-            Text('산책이 완료되었습니다!'),
-          ],
-        ),
-        backgroundColor: Colors.green,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      ),
-    );
+    SnackBarService.showSuccess(context, '산책이 완료되었습니다!');
 
     Future.delayed(const Duration(seconds: 2), () {
       if (context.mounted) {

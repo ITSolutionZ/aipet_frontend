@@ -120,30 +120,19 @@ class RegistrationFormHandlers {
       await controller.selectAndProcessRegistrationImage();
 
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('登録証情報を自動で入力しました。確認後修正してください。'),
-            backgroundColor: AppColors.pointGreen,
-          ),
-        );
+        SnackBarService.showSuccess(context, '登録証情報を自動で入力しました。確認後修正してください。');
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('登録証処理中にエラーが発生しました: $e'),
-            backgroundColor: AppColors.pointRed,
-          ),
-        );
+        SnackBarService.showError(context, '登録証処理中にエラーが発生しました: $e');
       }
     }
   }
 
   /// 성공 메시지 표시
+  /// ✅ Shared SnackBarService 사용
   void _showSuccessMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: AppColors.pointGreen),
-    );
+    SnackBarService.showSuccess(context, message);
   }
 
   /// 에러 메시지 표시

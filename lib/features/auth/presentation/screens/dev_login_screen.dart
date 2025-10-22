@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:aipet_frontend/app/router/app_router.dart';
 import 'package:aipet_frontend/shared/shared.dart';
-import 'package:aipet_frontend/shared/widgets/dialogs/app_lock_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -62,12 +61,7 @@ class _DevLoginScreenState extends ConsumerState<DevLoginScreen> {
     await Future.delayed(const Duration(seconds: 1));
 
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('開発モードでログインしました'),
-          backgroundColor: AppColors.pointGreen,
-        ),
-      );
+      SnackBarService.showSuccess(context, '開発モードでログインしました');
 
       if (mounted) {
         context.go(AppRouter.homeRoute);
@@ -94,12 +88,7 @@ class _DevLoginScreenState extends ConsumerState<DevLoginScreen> {
 
       // 성공 메시지 표시
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('開発モードでログインしました'),
-            backgroundColor: AppColors.pointGreen,
-          ),
-        );
+        SnackBarService.showSuccess(context, '開発モードでログインしました');
 
         // 홈 화면으로 이동
         if (mounted) {
@@ -108,12 +97,7 @@ class _DevLoginScreenState extends ConsumerState<DevLoginScreen> {
       }
     } catch (error) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('ログインエラー: $error'),
-            backgroundColor: AppColors.pointBrown,
-          ),
-        );
+        SnackBarService.showError(context, 'ログインエラー: $error');
       }
     } finally {
       if (mounted) {

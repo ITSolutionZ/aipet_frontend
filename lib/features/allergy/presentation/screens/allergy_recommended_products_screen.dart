@@ -441,11 +441,10 @@ class _AllergyRecommendedProductsScreenState
   /// 상품 페이지 열기
   void _openProductPage(RakutenPetProduct product) {
     // 상품 URL로 이동 (실제로는 url_launcher 패키지 사용)
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('${product.itemName}の商品ページを開きます'),
-        duration: const Duration(seconds: 2),
-      ),
+    SnackBarService.showInfo(
+      context,
+      '${product.itemName}の商品ページを開きます',
+      duration: const Duration(seconds: 2),
     );
   }
 }

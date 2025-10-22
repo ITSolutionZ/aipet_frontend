@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/features/walk/presentation/widgets/map_widget.dart';
+import 'package:aipet_frontend/shared/core/services/snackbar_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -62,12 +63,10 @@ class WalkListLocationHelper {
 
   /// 위치 성공 스낵바
   static void _showLocationSuccessSnackBar(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('現在地に移動しました'),
-        backgroundColor: AppColors.pointGreen,
-        duration: Duration(seconds: 1),
-      ),
+    SnackBarService.showSuccess(
+      context,
+      '現在地に移動しました',
+      duration: const Duration(seconds: 1),
     );
   }
 
@@ -76,8 +75,6 @@ class WalkListLocationHelper {
     BuildContext context, {
     required String message,
   }) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: AppColors.pointPink),
-    );
+    SnackBarService.showError(context, message);
   }
 }

@@ -1,6 +1,7 @@
-import 'package:aipet_frontend/shared/design/design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../../shared/shared.dart';
 
 class CancelReservationModal extends ConsumerStatefulWidget {
   final String reservationId;
