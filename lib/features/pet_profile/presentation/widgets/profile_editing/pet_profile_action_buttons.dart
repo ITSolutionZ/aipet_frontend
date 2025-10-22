@@ -1,5 +1,4 @@
 import 'package:aipet_frontend/features/pet_profile/presentation/controllers/pet_profile_form_controller.dart';
-import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -121,7 +120,10 @@ class PetProfileActionButtons extends ConsumerWidget {
                             onEditComplete?.call();
 
                             // 성공 메시지 표시
-                            SnackBarService.showSuccess(context, 'プロフィールが正常に保存されました');
+                            SnackBarService.showSuccess(
+                              context,
+                              'プロフィールが正常に保存されました',
+                            );
                           }
                         },
                 ),

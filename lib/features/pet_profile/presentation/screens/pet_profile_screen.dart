@@ -297,12 +297,18 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
           .deletePetProfile();
 
       if (context.mounted) {
-        SnackBarService.showSuccess(context, PetProfileConstants.deleteSuccessMessage);
+        SnackBarService.showSuccess(
+          context,
+          PetProfileConstants.deleteSuccessMessage,
+        );
         context.go('/home');
       }
     } catch (e) {
       if (context.mounted) {
-        SnackBarService.showError(context, PetProfileConstants.deleteErrorMessage);
+        SnackBarService.showError(
+          context,
+          PetProfileConstants.deleteErrorMessage,
+        );
       }
     }
   }

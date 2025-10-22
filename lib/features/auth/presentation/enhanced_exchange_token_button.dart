@@ -335,19 +335,9 @@ class _EnhancedExchangeTokenButtonState
               if (context.mounted) {
                 final newState = ref.read(authControllerProvider);
                 if (newState.isSuccess) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('✅ 서버 JWT 저장 완료!'),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
+                  SnackBarService.showSuccess(context, '✅ サーバーJWT保存完了!');
                 } else if (newState.errorMessage != null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('❌ ${newState.errorMessage}'),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
+                  SnackBarService.showError(context, '❌ ${newState.errorMessage}');
                 }
               }
             },
