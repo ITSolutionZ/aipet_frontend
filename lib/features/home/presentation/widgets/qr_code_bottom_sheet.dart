@@ -959,10 +959,9 @@ class _QRCodeBottomSheetState extends ConsumerState<QRCodeBottomSheet>
   }
 
   /// 에러 메시지 표시
+  /// ✅ Shared SnackBarService 사용
   void _showErrorMessage(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: Colors.red),
-    );
+    SnackBarService.showError(context, message);
   }
 
   /// 예약 다이얼로그 표시
@@ -1066,12 +1065,8 @@ class _QRCodeBottomSheetState extends ConsumerState<QRCodeBottomSheet>
   ) {
     // TODO: 실제 예약 처리 로직 구현
     final displayName = petName.isNotEmpty ? petName : petId;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('$displayName の予約が確認されました'),
-        backgroundColor: Colors.green,
-      ),
-    );
+    // ✅ Shared SnackBarService 사용
+    SnackBarService.showSuccess(context, '$displayName の予約が確認されました');
   }
 
   /// 가족 추가 다이얼로그

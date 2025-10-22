@@ -1,3 +1,4 @@
+import 'package:aipet_frontend/shared/core/services/snackbar_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -327,16 +328,8 @@ class _ContactFormScreenState extends ConsumerState<ContactFormScreen> {
       await Future.delayed(const Duration(seconds: 2)); // シミュレーション
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text('お問い合わせを送信しました'),
-            backgroundColor: AppColors.pointGreen,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppSpacing.sm),
-            ),
-          ),
-        );
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showSuccess(context, 'お問い合わせを送信しました');
 
         // フォームをリセット
         _formKey.currentState!.reset();
@@ -350,15 +343,10 @@ class _ContactFormScreenState extends ConsumerState<ContactFormScreen> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text('送信に失敗しました。もう一度お試しください'),
-            backgroundColor: AppColors.pointPink,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppSpacing.sm),
-            ),
-          ),
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showError(
+          context,
+          '送信に失敗しました。もう一度お試しください',
         );
       }
     } finally {

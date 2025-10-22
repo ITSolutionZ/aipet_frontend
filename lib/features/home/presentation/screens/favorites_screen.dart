@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/features/shopping/data/providers/favorite_products_provider.dart';
+import 'package:aipet_frontend/shared/core/services/snackbar_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
