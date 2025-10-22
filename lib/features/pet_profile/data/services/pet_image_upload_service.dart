@@ -1,13 +1,13 @@
 import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image/image.dart' as img;
 import 'package:path/path.dart' as path;
 
 import '../../../../shared/core/api/api_client.dart';
 import '../../../../shared/core/data/result_types.dart';
 import '../../../../shared/core/domain/common_errors.dart';
 import '../../../../shared/core/domain/result.dart';
+import '../../../../shared/core/services/image_service.dart';
 import '../../../../shared/core/services/secure_storage_service.dart';
 import 'pet_api_service.dart';
 
@@ -101,42 +101,35 @@ class PetImageUploadService {
     }
   }
 
+  /// ✅ ImageService 사용으로 중복 제거
   Future<ResultState<File>> _processImage(
     File imageFile,
     ImageQuality quality,
   ) async {
     try {
-      final bytes = await imageFile.readAsBytes();
-      final image = img.decodeImage(bytes);
+      final jpegQuality = _getJpegQualityForQuality(quality);
+      final maxDimension = _getMaxDimensionForQuality(quality);
+      
+      // ImageService를 사용하여 이미지 압축
+      final compressedBytes = await ImageService.compressImage(
+        imageFile.path,
+        quality: jpegQuality,
+        maxWidth: maxDimension,
+        maxHeight: maxDimension,
+      );
 
-      if (image == null) {
+      if (compressedBytes == null) {
         return Result.failure(
           ValidationError(field: 'image', reason: '画像の処理に失敗しました'),
         );
       }
 
-      img.Image processedImage = image;
-
-      final maxDimension = _getMaxDimensionForQuality(quality);
-      if (image.width > maxDimension || image.height > maxDimension) {
-        processedImage = img.copyResize(
-          image,
-          width: image.width > image.height ? maxDimension : null,
-          height: image.height > image.width ? maxDimension : null,
-        );
-      }
-
-      final jpegQuality = _getJpegQualityForQuality(quality);
-      final processedBytes = img.encodeJpg(
-        processedImage,
-        quality: jpegQuality,
-      );
-
+      // 압축된 이미지를 임시 파일로 저장
       final tempDir = Directory.systemTemp;
       final fileName = '${DateTime.now().millisecondsSinceEpoch}_processed.jpg';
       final processedFile = File(path.join(tempDir.path, fileName));
 
-      await processedFile.writeAsBytes(processedBytes);
+      await processedFile.writeAsBytes(compressedBytes);
 
       return Success(processedFile);
     } catch (e) {
