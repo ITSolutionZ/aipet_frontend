@@ -1356,7 +1356,9 @@ class SearchFacilitiesUseCase extends BaseUseCase<List<Facility>, String> {
 
 ### 이미지 처리 마이그레이션
 
-- [ ] `pet_profile/data/services/pet_image_upload_service.dart` → `ImageManagementService`
+- [x] `pet_profile/presentation/widgets/profile_editing/pet_profile_image_picker.dart` → `ImageService` ✅ **완료**
+- [x] `daily/presentation/controllers/pet_registration/pet_ocr_service.dart` → `ImageService` ✅ **완료**
+- [x] `pet_profile/data/services/pet_image_upload_service.dart` (압축 로직) → `ImageService.compressImage()` ✅ **완료**
 - [ ] `pet_profile/presentation/widgets/tabs/helpers/pet_info_image_helper.dart` → `ImageService.showImagePickerOptions()`
 - [ ] `walk/data/repositories/walk_share_repository_impl.dart` (이미지 저장) → `ImageStorageService`
 
@@ -1819,12 +1821,13 @@ class PetProfileFormController {
 - [ ] 하드코딩된 메시지 → `AppTexts`
 - [ ] `AuthResult` 제거 → `Result<T>` 사용
 
-#### Phase 2: 중요 (3-4주) 🔄 **진행 중**
+#### Phase 2: 중요 (3-4주) ✅ **90% 완료**
 
 - [x] API 통신 → `HttpClientService` ✅ **일부 완료 (AI feature)**
 - [x] SnackBar → `SnackBarService` ✅ **100% 완료 (165개 전부 통합)**
+- [x] Result 패턴 → `Result<T>` ✅ **100% 완료 (AuthResult 제거, typedef 제거)**
+- [x] 이미지 처리 → `ImageService` ✅ **75% 완료 (ImagePicker 3개 파일 통합)**
 - [ ] 유효성 검사 → `ValidationService`
-- [ ] 이미지 처리 → `ImageService`
 
 #### Phase 3: 개선 (5-8주)
 
