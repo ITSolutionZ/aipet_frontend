@@ -4,6 +4,7 @@ import 'package:aipet_frontend/features/daily/presentation/logic/daily_health_in
 import 'package:aipet_frontend/features/daily/presentation/widgets/daily_date_header_widget.dart';
 import 'package:aipet_frontend/features/daily/presentation/widgets/daily_health_widgets.dart';
 import 'package:aipet_frontend/features/daily/presentation/widgets/sections/sections.dart';
+import 'package:aipet_frontend/shared/core/services/snackbar_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:aipet_frontend/shared/widgets/actions/actions.dart';
 import 'package:flutter/material.dart';
@@ -181,15 +182,13 @@ class DailyHealthInputScreen extends ConsumerWidget {
     }
   }
 
+  /// ✅ Shared SnackBarService 사용
   void _showSuccessMessage(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: AppColors.pointGreen),
-    );
+    SnackBarService.showSuccess(context, message);
   }
 
+  /// ✅ Shared SnackBarService 사용
   void _showErrorMessage(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: AppColors.pointRed),
-    );
+    SnackBarService.showError(context, message);
   }
 }

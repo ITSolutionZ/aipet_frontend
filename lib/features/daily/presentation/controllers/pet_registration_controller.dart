@@ -1,5 +1,6 @@
 import 'package:aipet_frontend/features/daily/presentation/controllers/pet_registration/pet_registration.dart';
 import 'package:aipet_frontend/features/pet_profile/data/data.dart';
+import 'package:aipet_frontend/shared/core/services/snackbar_service.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -216,12 +217,8 @@ class PetRegistrationController extends _$PetRegistrationController {
     BuildContext context,
   ) {
     if (state.forbiddenIngredients.length >= 8) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('最大8個まで登録できます'),
-          backgroundColor: Colors.orange,
-        ),
-      );
+      // ✅ Shared SnackBarService 사용
+      SnackBarService.showWarning(context, '最大8個まで登録できます');
       return;
     }
 
@@ -231,14 +228,11 @@ class PetRegistrationController extends _$PetRegistrationController {
 
       // 6개 이상일 때 알림 표시
       if (state.forbiddenIngredients.length >= 6) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              '${state.forbiddenIngredients.length}/8個登録済み - 最大8個まで登録可能です',
-            ),
-            backgroundColor: Colors.blue,
-            duration: const Duration(seconds: 2),
-          ),
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showInfo(
+          context,
+          '${state.forbiddenIngredients.length}/8個登録済み - 最大8個まで登録可能です',
+          duration: const Duration(seconds: 2),
         );
       }
     }
