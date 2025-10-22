@@ -34,11 +34,15 @@ class _PushNotificationScreenState
     super.initState();
     _uiController = NotificationUIController(ref);
     _loadNotificationSettings();
-    // アラーム時間設定を読み込み
+    // アラーム時間設定を読み込み（遅延実行）
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref
-          .read(alarmTimeSettingsControllerProvider.notifier)
-          .loadAlarmTimes('default_user_id');
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (mounted) {
+          ref
+              .read(alarmTimeSettingsControllerProvider.notifier)
+              .loadAlarmTimes('default_user_id');
+        }
+      });
     });
   }
 
@@ -307,11 +311,74 @@ class _PushNotificationScreenState
                         alarmTimeSettingsControllerProvider,
                       );
 
+                      // ローディング状態の改善
                       if (alarmState.isLoading) {
-                        return const Center(
-                          child: Padding(
-                            padding: EdgeInsets.all(AppSpacing.lg),
-                            child: CircularProgressIndicator(),
+                        return Container(
+                          padding: const EdgeInsets.all(AppSpacing.lg),
+                          child: const Center(
+                            child: CircularProgressIndicator(
+                              color: AppColors.pointBrown,
+                            ),
+                          ),
+                        );
+                      }
+
+                      // エラー状態の処理
+                      if (alarmState.error != null) {
+                        return Container(
+                          padding: const EdgeInsets.all(AppSpacing.lg),
+                          child: Column(
+                            children: [
+                              const Icon(
+                                Icons.error_outline,
+                                color: Colors.red,
+                                size: 48,
+                              ),
+                              const SizedBox(height: AppSpacing.md),
+                              Text(
+                                'アラーム時間設定の読み込みに失敗しました',
+                                style: AppFonts.bodyMedium.copyWith(
+                                  color: Colors.red,
+                                ),
+                              ),
+                              const SizedBox(height: AppSpacing.md),
+                              ActionButton.secondary(
+                                text: '再試行',
+                                isEnabled: true,
+                                onPressed: () {
+                                  ref
+                                      .read(alarmTimeSettingsControllerProvider.notifier)
+                                      .loadAlarmTimes('default_user_id');
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+
+                      // データがロードされていない場合のフォールバック
+                      if (alarmState.morningTime.hour == 0 && alarmState.morningTime.minute == 0) {
+                        return Container(
+                          padding: const EdgeInsets.all(AppSpacing.lg),
+                          child: Column(
+                            children: [
+                              const Icon(
+                                Icons.schedule,
+                                color: AppColors.pointGray,
+                                size: 48,
+                              ),
+                              const SizedBox(height: AppSpacing.md),
+                              Text(
+                                'アラーム時間設定を読み込み中...',
+                                style: AppFonts.bodyMedium.copyWith(
+                                  color: AppColors.pointGray,
+                                ),
+                              ),
+                              const SizedBox(height: AppSpacing.md),
+                              const CircularProgressIndicator(
+                                color: AppColors.pointBrown,
+                              ),
+                            ],
                           ),
                         );
                       }
