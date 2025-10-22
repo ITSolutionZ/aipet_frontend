@@ -156,13 +156,7 @@ class _PushNotificationScreenState
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('設定の保存に失敗しました: ${e.toString()}'),
-            backgroundColor: Colors.red,
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
+        SnackBarService.showError(context, '設定の保存に失敗しました: ${e.toString()}');
       }
       if (kDebugMode) {
         debugPrint('알림 설정 저장 실패: $e');

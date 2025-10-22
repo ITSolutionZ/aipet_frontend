@@ -337,7 +337,10 @@ class _EnhancedExchangeTokenButtonState
                 if (newState.isSuccess) {
                   SnackBarService.showSuccess(context, '✅ サーバーJWT保存完了!');
                 } else if (newState.errorMessage != null) {
-                  SnackBarService.showError(context, '❌ ${newState.errorMessage}');
+                  SnackBarService.showError(
+                    context,
+                    '❌ ${newState.errorMessage}',
+                  );
                 }
               }
             },

@@ -344,11 +344,6 @@ class _BoardListScreenState extends State<BoardListScreen>
   }
 
   void _showNewPostDialog() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('投稿機能は準備中です'),
-        duration: Duration(seconds: 2),
-      ),
-    );
+    SnackBarService.showInfo(context, '投稿機能は準備中です', duration: const Duration(seconds: 2));
   }
 }

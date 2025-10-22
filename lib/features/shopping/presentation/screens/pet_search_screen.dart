@@ -825,27 +825,16 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
     if (!mounted) return;
 
     if (success) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('${product.itemName}をお気に入りに追加しました'),
-          duration: const Duration(seconds: 2),
-          backgroundColor: AppColors.pointBrown,
-          action: SnackBarAction(
-            label: '見る',
-            textColor: Colors.white,
-            onPressed: () {
-              context.push('/favorites');
-            },
-          ),
-        ),
+      SnackBarService.showSuccess(
+        context,
+        '${product.itemName}をお気に入りに追加しました',
+        duration: const Duration(seconds: 2),
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('既にお気に入りに追加されています'),
-          duration: Duration(seconds: 2),
-          backgroundColor: Colors.orange,
-        ),
+      SnackBarService.showWarning(
+        context,
+        '既にお気に入りに追加されています',
+        duration: const Duration(seconds: 2),
       );
     }
   }

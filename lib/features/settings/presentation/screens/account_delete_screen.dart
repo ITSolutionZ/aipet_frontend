@@ -182,13 +182,7 @@ class AccountDeleteScreen extends StatelessWidget {
 
       if (context.mounted) {
         UiService.hideLoadingDialog(context);
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('アカウントが削除されました'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        SnackBarService.showError(context, 'アカウントが削除されました');
 
         // 로그인 화면으로 이동
         context.go('/login');
@@ -196,12 +190,7 @@ class AccountDeleteScreen extends StatelessWidget {
     } catch (e) {
       if (context.mounted) {
         UiService.hideLoadingDialog(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('削除中にエラーが発生しました: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        SnackBarService.showError(context, '削除中にエラーが発生しました: $e');
       }
     }
   }
