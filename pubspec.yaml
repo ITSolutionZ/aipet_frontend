@@ -32,6 +32,7 @@ dependencies:
   flutter_local_notifications: ^19.4.2
   url_launcher: ^6.2.4
   share_plus: ^12.0.0
+  youtube_player_flutter: ^9.0.3
   # mobile_scanner: ^4.0.1  # 호환성 문제로 임시 비활성화
   permission_handler: ^12.0.1
   flutter_secure_storage: ^9.2.2
