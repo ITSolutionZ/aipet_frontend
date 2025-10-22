@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../../../shared/design/tokens/tokens.dart';
+import '../../../../shared/shared.dart';
 import 'qr_code_scanner_screen.dart';
 
 /// QR 코드 바텀시트 위젯 (70% 크기)

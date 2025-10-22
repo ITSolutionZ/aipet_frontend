@@ -228,12 +228,7 @@ class _PetStatusSelectionDialogContentState
                               onTap: () {
                                 if (!isSelected &&
                                     state.selectedStatuses.length >= 2) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('最大2つまで選択できます'),
-                                      backgroundColor: AppColors.pointBrown,
-                                    ),
-                                  );
+                                  SnackBarService.showWarning(context, '最大2つまで選択できます');
                                   return;
                                 }
 

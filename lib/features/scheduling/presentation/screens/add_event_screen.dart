@@ -460,9 +460,7 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
       // 종료 시간이 시작 시간보다 이후인지 확인
       if (_startTime != null && newEndTime.isBefore(_startTime!)) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('종료 시간은 시작 시간보다 늦어야 합니다')),
-          );
+          SnackBarService.showWarning(context, '終了時間は開始時間より遅い必要があります');
         }
         return;
       }
