@@ -1,13 +1,16 @@
 import 'package:aipet_frontend/features/pet_activities/domain/entities/youtube_video_entity.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 /// YouTube 비디오 카드
-class YouTubeVideoCard extends StatelessWidget {
+class YouTubeVideoCard extends StatefulWidget {
   final YouTubeVideoEntity video;
   final VoidCallback? onTap;
   final VoidCallback? onBookmarkTap;
   final VoidCallback? onDeleteTap;
+  final bool isPlaying;
+  final VoidCallback? onPlayToggle;
 
   const YouTubeVideoCard({
     super.key,
@@ -15,7 +18,69 @@ class YouTubeVideoCard extends StatelessWidget {
     this.onTap,
     this.onBookmarkTap,
     this.onDeleteTap,
+    this.isPlaying = false,
+    this.onPlayToggle,
   });
+
+  @override
+  State<YouTubeVideoCard> createState() => _YouTubeVideoCardState();
+}
+
+class _YouTubeVideoCardState extends State<YouTubeVideoCard> {
+  YoutubePlayerController? _controller;
+  bool _isPlayerReady = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.isPlaying) {
+      _initializePlayer();
+    }
+  }
+
+  @override
+  void didUpdateWidget(YouTubeVideoCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isPlaying && !oldWidget.isPlaying) {
+      _initializePlayer();
+    } else if (!widget.isPlaying && oldWidget.isPlaying) {
+      _disposePlayer();
+    }
+  }
+
+  void _initializePlayer() {
+    _controller = YoutubePlayerController(
+      initialVideoId: widget.video.youtubeVideoId,
+      flags: const YoutubePlayerFlags(
+        autoPlay: true,
+        mute: false,
+        isLive: false,
+        forceHD: true,
+        enableCaption: true,
+      ),
+    );
+    _controller!.addListener(_listener);
+  }
+
+  void _disposePlayer() {
+    if (_controller != null) {
+      _controller!.removeListener(_listener);
+      _controller!.dispose();
+      _controller = null;
+    }
+  }
+
+  void _listener() {
+    if (_isPlayerReady && mounted && _controller != null && _controller!.value.isReady) {
+      setState(() {});
+    }
+  }
+
+  @override
+  void dispose() {
+    _disposePlayer();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,13 +90,13 @@ class YouTubeVideoCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppSpacing.md),
       ),
       child: InkWell(
-        onTap: onTap,
+        onTap: widget.onTap,
         borderRadius: BorderRadius.circular(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 썸네일
-            _buildThumbnail(),
+            // 썸네일 또는 플레이어
+            widget.isPlaying ? _buildPlayer() : _buildThumbnail(),
 
             // 비디오 정보
             Padding(
@@ -41,7 +106,7 @@ class YouTubeVideoCard extends StatelessWidget {
                 children: [
                   // 제목
                   Text(
-                    video.title,
+                    widget.video.title,
                     style: AppFonts.bodyMedium.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -51,9 +116,9 @@ class YouTubeVideoCard extends StatelessWidget {
                   const SizedBox(height: AppSpacing.xs),
 
                   // 설명
-                  if (video.description != null) ...[
+                  if (widget.video.description != null) ...[
                     Text(
-                      video.description!,
+                      widget.video.description!,
                       style: AppFonts.bodySmall.copyWith(
                         color: AppColors.textSecondary,
                       ),
@@ -64,11 +129,11 @@ class YouTubeVideoCard extends StatelessWidget {
                   ],
 
                   // 태그
-                  if (video.tags.isNotEmpty) ...[
+                  if (widget.video.tags.isNotEmpty) ...[
                     Wrap(
                       spacing: AppSpacing.xs,
                       runSpacing: AppSpacing.xs,
-                      children: video.tags
+                      children: widget.video.tags
                           .take(3)
                           .map((tag) => _buildTagChip(tag))
                           .toList(),
@@ -90,7 +155,7 @@ class YouTubeVideoCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(AppSpacing.xs),
                         ),
                         child: Text(
-                          video.formattedDuration,
+                          widget.video.formattedDuration,
                           style: AppFonts.bodySmall.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -100,16 +165,16 @@ class YouTubeVideoCard extends StatelessWidget {
                       const Spacer(),
 
                       // 액션 버튼들
-                      if (onBookmarkTap != null)
+                      if (widget.onBookmarkTap != null)
                         IconButton(
-                          onPressed: onBookmarkTap,
+                          onPressed: widget.onBookmarkTap,
                           icon: const Icon(Icons.bookmark_border),
                           color: AppColors.pointBrown,
                           iconSize: 20,
                         ),
-                      if (onDeleteTap != null)
+                      if (widget.onDeleteTap != null)
                         IconButton(
-                          onPressed: onDeleteTap,
+                          onPressed: widget.onDeleteTap,
                           icon: const Icon(Icons.delete_outline),
                           color: AppColors.error,
                           iconSize: 20,
@@ -125,59 +190,67 @@ class YouTubeVideoCard extends StatelessWidget {
     );
   }
 
-  Widget _buildThumbnail() {
+  /// 플레이어 빌드
+  Widget _buildPlayer() {
+    // _controller는 isPlaying=true일 때 반드시 초기화되어 있음
+    if (_controller == null) {
+      return Container(
+        height: 200,
+        color: Colors.black,
+        child: const Center(child: CircularProgressIndicator()),
+      );
+    }
+
     return Container(
       height: 200,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: AppColors.pointBrown.withValues(alpha: 0.1),
-        borderRadius: const BorderRadius.only(
+      decoration: const BoxDecoration(
+        color: Colors.black,
+        borderRadius: BorderRadius.only(
           topLeft: Radius.circular(AppSpacing.md),
           topRight: Radius.circular(AppSpacing.md),
         ),
       ),
+      child: ClipRRect(
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(AppSpacing.md),
+          topRight: Radius.circular(AppSpacing.md),
+        ),
+        child: YoutubePlayer(
+          controller: _controller!,
+          showVideoProgressIndicator: true,
+          progressIndicatorColor: AppColors.pointBlue,
+          progressColors: const ProgressBarColors(
+            playedColor: AppColors.pointBlue,
+            handleColor: AppColors.pointBlue,
+          ),
+          onReady: () {
+            _isPlayerReady = true;
+          },
+        ),
+      ),
+    );
+  }
+
+  /// 썸네일 빌드
+  Widget _buildThumbnail() {
+    return Container(
+      height: 200,
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(AppSpacing.md),
+          topRight: Radius.circular(AppSpacing.md),
+        ),
+        image: DecorationImage(
+          image: NetworkImage(widget.video.thumbnailUrl ?? ''),
+          fit: BoxFit.cover,
+        ),
+      ),
       child: Stack(
         children: [
-          // 썸네일 이미지
-          if (video.thumbnailUrl != null)
-            ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(AppSpacing.md),
-                topRight: Radius.circular(AppSpacing.md),
-              ),
-              child: Image.network(
-                video.thumbnailUrl!,
-                fit: BoxFit.cover,
-                width: double.infinity,
-                height: double.infinity,
-                errorBuilder: (context, error, stackTrace) =>
-                    _buildPlaceholder(),
-              ),
-            )
-          else
-            _buildPlaceholder(),
-
-          // 재생 버튼
-          Center(
-            child: Container(
-              width: 60,
-              height: 60,
-              decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.7),
-                borderRadius: BorderRadius.circular(30),
-              ),
-              child: const Icon(
-                Icons.play_arrow,
-                color: Colors.white,
-                size: 30,
-              ),
-            ),
-          ),
-
-          // YouTube 로고
+          // YouTube 배지
           Positioned(
             top: AppSpacing.sm,
-            right: AppSpacing.sm,
+            left: AppSpacing.sm,
             child: Container(
               padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.sm,
@@ -196,26 +269,50 @@ class YouTubeVideoCard extends StatelessWidget {
               ),
             ),
           ),
-        ],
-      ),
-    );
-  }
 
-  Widget _buildPlaceholder() {
-    return Container(
-      width: double.infinity,
-      height: double.infinity,
-      decoration: BoxDecoration(
-        color: AppColors.pointBrown.withValues(alpha: 0.1),
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(AppSpacing.md),
-          topRight: Radius.circular(AppSpacing.md),
-        ),
-      ),
-      child: const Icon(
-        Icons.video_library,
-        color: AppColors.pointBrown,
-        size: 48,
+          // 플레이 버튼
+          Center(
+            child: GestureDetector(
+              onTap: widget.onPlayToggle,
+              child: Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.7),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.play_arrow,
+                  color: Colors.white,
+                  size: 30,
+                ),
+              ),
+            ),
+          ),
+
+          // 재생 시간
+          Positioned(
+            bottom: AppSpacing.sm,
+            right: AppSpacing.sm,
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.sm,
+                vertical: AppSpacing.xs,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.7),
+                borderRadius: BorderRadius.circular(AppSpacing.xs),
+              ),
+              child: Text(
+                widget.video.formattedDuration,
+                style: AppFonts.bodySmall.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -227,14 +324,15 @@ class YouTubeVideoCard extends StatelessWidget {
         vertical: AppSpacing.xs,
       ),
       decoration: BoxDecoration(
-        color: AppColors.pointBlue.withValues(alpha: 0.1),
+        color: AppColors.pointBrown.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppSpacing.sm),
+        border: Border.all(color: AppColors.pointBrown.withValues(alpha: 0.3)),
       ),
       child: Text(
         tag,
         style: AppFonts.bodySmall.copyWith(
-          color: AppColors.pointBlue,
-          fontWeight: FontWeight.bold,
+          color: AppColors.pointBrown,
+          fontWeight: FontWeight.w500,
         ),
       ),
     );

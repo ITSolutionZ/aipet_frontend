@@ -1,5 +1,7 @@
+import 'package:aipet_frontend/app/router/routes/route_constants.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 /// 트릭 액션 버튼들
 class TrickActionButtons extends StatelessWidget {
@@ -35,7 +37,7 @@ class TrickActionButtons extends StatelessWidget {
           width: double.infinity,
           child: OutlinedButton.icon(
             onPressed: () {
-              // TODO: 모든 트릭 보기 화면으로 이동
+              context.push(RouteConstants.allTricksDetailRoute);
             },
             icon: const Icon(Icons.list),
             label: const Text('すべてのトリック'),

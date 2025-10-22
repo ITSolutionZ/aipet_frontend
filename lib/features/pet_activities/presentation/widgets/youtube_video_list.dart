@@ -13,6 +13,8 @@ class YouTubeVideoList extends StatelessWidget {
   final Function(YouTubeVideoEntity) onBookmarkTap;
   final Function(YouTubeVideoEntity) onDeleteTap;
   final VoidCallback onAddVideo;
+  final String? playingVideoId;
+  final Function(YouTubeVideoEntity) onPlayToggle;
 
   const YouTubeVideoList({
     super.key,
@@ -23,6 +25,8 @@ class YouTubeVideoList extends StatelessWidget {
     required this.onBookmarkTap,
     required this.onDeleteTap,
     required this.onAddVideo,
+    this.playingVideoId,
+    required this.onPlayToggle,
   });
 
   @override
@@ -48,6 +52,8 @@ class YouTubeVideoList extends StatelessWidget {
               onTap: () => onVideoTap(video),
               onBookmarkTap: () => onBookmarkTap(video),
               onDeleteTap: () => onDeleteTap(video),
+              isPlaying: playingVideoId == video.id,
+              onPlayToggle: () => onPlayToggle(video),
             ),
           ),
         );
