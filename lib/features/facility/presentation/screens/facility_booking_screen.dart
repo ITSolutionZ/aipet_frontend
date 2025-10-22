@@ -1394,10 +1394,7 @@ class _FacilityBookingScreenState extends ConsumerState<FacilityBookingScreen> {
         // 에러 처리
         if (mounted) {
           // ✅ Shared SnackBarService 사용
-          SnackBarService.showError(
-            context,
-            '予約保存中にエラーが発生しました: $e',
-          );
+          SnackBarService.showError(context, '予約保存中にエラーが発生しました: $e');
         }
       }
     }
