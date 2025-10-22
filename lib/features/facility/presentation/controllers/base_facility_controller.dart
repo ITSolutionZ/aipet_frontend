@@ -61,10 +61,14 @@ abstract class BaseFacilityController {
   }
 
   /// 로딩 상태 표시
-  /// ✅ Shared SnackBarService 사용
+  /// ✅ Shared SnackBarService 사용 (info로 대체)
   void showLoading(String message) {
     if (context.mounted) {
-      SnackBarService.showLoading(context, message);
+      SnackBarService.showInfo(
+        context,
+        message,
+        duration: const Duration(seconds: 2),
+      );
     }
   }
 }

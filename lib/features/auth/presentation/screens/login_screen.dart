@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:aipet_frontend/app/router/app_router.dart';
-import 'package:aipet_frontend/shared/core/services/snackbar_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -90,10 +89,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     } catch (e) {
       if (mounted) {
         // ✅ Shared SnackBarService 사용
-        SnackBarService.showError(
-          context,
-          'ログインに失敗しました: ${e.toString()}',
-        );
+        SnackBarService.showError(context, 'ログインに失敗しました: ${e.toString()}');
       }
     } finally {
       if (mounted) {
@@ -406,10 +402,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         // 로그인 성공
         if (mounted) {
           // ✅ Shared SnackBarService 사용
-          SnackBarService.showSuccess(
-            context,
-            result.data ?? 'ログインしました',
-          );
+          SnackBarService.showSuccess(context, result.data ?? 'ログインしました');
           context.go(AppRouter.homeRoute);
         }
       } else {
@@ -422,10 +415,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     } catch (e) {
       if (mounted) {
         // ✅ Shared SnackBarService 사용
-        SnackBarService.showError(
-          context,
-          'ログインに失敗しました: ${e.toString()}',
-        );
+        SnackBarService.showError(context, 'ログインに失敗しました: ${e.toString()}');
       }
     } finally {
       if (mounted) {
@@ -449,10 +439,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       if (result.isSuccess) {
         if (mounted) {
           // ✅ Shared SnackBarService 사용
-          SnackBarService.showSuccess(
-            context,
-            result.data ?? 'ログインしました',
-          );
+          SnackBarService.showSuccess(context, result.data ?? 'ログインしました');
           context.go(AppRouter.homeRoute);
         }
       } else {
@@ -491,10 +478,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       if (result.isSuccess) {
         if (mounted) {
           // ✅ Shared SnackBarService 사용
-          SnackBarService.showSuccess(
-            context,
-            result.data ?? 'ログインしました',
-          );
+          SnackBarService.showSuccess(context, result.data ?? 'ログインしました');
           context.go(AppRouter.homeRoute);
         }
       } else {
@@ -506,10 +490,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     } catch (e) {
       if (mounted) {
         // ✅ Shared SnackBarService 사용
-        SnackBarService.showError(
-          context,
-          'Appleログインに失敗しました: ${e.toString()}',
-        );
+        SnackBarService.showError(context, 'Appleログインに失敗しました: ${e.toString()}');
       }
     } finally {
       if (mounted) {
@@ -533,10 +514,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       if (result.isSuccess) {
         if (mounted) {
           // ✅ Shared SnackBarService 사용
-          SnackBarService.showSuccess(
-            context,
-            result.data ?? 'ログインしました',
-          );
+          SnackBarService.showSuccess(context, result.data ?? 'ログインしました');
           context.go(AppRouter.homeRoute);
         }
       } else {
@@ -548,10 +526,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     } catch (e) {
       if (mounted) {
         // ✅ Shared SnackBarService 사용
-        SnackBarService.showError(
-          context,
-          'LINEログインに失敗しました: ${e.toString()}',
-        );
+        SnackBarService.showError(context, 'LINEログインに失敗しました: ${e.toString()}');
       }
     } finally {
       if (mounted) {
