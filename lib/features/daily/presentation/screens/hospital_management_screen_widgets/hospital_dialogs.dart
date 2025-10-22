@@ -1,5 +1,4 @@
 import 'package:aipet_frontend/features/daily/data/providers/hospital_registration_provider.dart';
-import 'package:aipet_frontend/shared/core/services/snackbar_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -174,18 +173,13 @@ class HospitalDialogs {
         await launchUrl(telUri);
       } else {
         if (!context.mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('電話をかけることができません'),
-            backgroundColor: Colors.orange,
-          ),
-        );
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showWarning(context, '電話をかけることができません');
       }
     } catch (e) {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('エラーが発生しました: $e'), backgroundColor: Colors.red),
-      );
+      // ✅ Shared SnackBarService 사용
+      SnackBarService.showError(context, 'エラーが発生しました: $e');
     }
   }
 }
