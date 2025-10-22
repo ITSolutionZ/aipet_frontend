@@ -1,6 +1,7 @@
 import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
 import 'package:aipet_frontend/features/scheduling/data/services/calendar_event_service.dart';
 import 'package:aipet_frontend/features/scheduling/domain/entities/calendar_event_entity.dart';
+import 'package:aipet_frontend/shared/core/services/snackbar_service.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
@@ -654,12 +655,8 @@ class _AlarmSetupScreenState extends ConsumerState<AlarmSetupScreen> {
 
   Future<void> _saveAlarm() async {
     if (_selectedPet == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('ペットを選択してください'),
-          backgroundColor: AppColors.pointRed,
-        ),
-      );
+      // ✅ Shared SnackBarService 사용
+      SnackBarService.showWarning(context, 'ペットを選択してください');
       return;
     }
 
@@ -704,22 +701,14 @@ class _AlarmSetupScreenState extends ConsumerState<AlarmSetupScreen> {
       await CalendarEventService.instance.saveCalendarEvent(event);
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('アラームが保存されました'),
-            backgroundColor: AppColors.pointGreen,
-          ),
-        );
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showSuccess(context, 'アラームが保存されました');
         context.pop();
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('アラーム保存に失敗しました: $e'),
-            backgroundColor: AppColors.pointRed,
-          ),
-        );
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showError(context, 'アラーム保存に失敗しました: $e');
       }
     }
   }
