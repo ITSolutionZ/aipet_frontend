@@ -1,3 +1,7 @@
+import 'package:aipet_frontend/features/board/data/models/board_post_model.dart';
+import 'package:aipet_frontend/features/board/presentation/screens/board_detail_screen.dart';
+import 'package:aipet_frontend/features/board/presentation/screens/board_list_screen.dart';
+import 'package:aipet_frontend/features/contact/contact.dart';
 import 'package:aipet_frontend/features/daily/presentation/screens/daily_pet_registration_screen.dart';
 import 'package:aipet_frontend/features/daily/presentation/screens/reservation_status_screen_new.dart';
 import 'package:aipet_frontend/features/facility/presentation/screens/facility_calendar_screen.dart';
@@ -15,7 +19,6 @@ import 'package:aipet_frontend/features/scheduling/domain/entities/calendar_even
 import 'package:aipet_frontend/features/scheduling/presentation/screens/add_event_screen.dart';
 import 'package:aipet_frontend/features/shopping/presentation/screens/pet_search_screen.dart';
 import 'package:aipet_frontend/features/walk/presentation/screens/live_walk_screen.dart';
-import 'package:aipet_frontend/features/contact/contact.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -217,6 +220,23 @@ class StandaloneRoutes {
       path: '/favorites',
       name: 'favorites',
       builder: (context, state) => const FavoritesScreen(),
+    ),
+    // Board List
+    GoRoute(
+      path: RouteConstants.boardListRoute,
+      name: 'board-list',
+      builder: (context, state) => const BoardListScreen(),
+    ),
+    // Board Detail
+    GoRoute(
+      path: '/board/:postId',
+      name: 'board-detail',
+      builder: (context, state) {
+        final postId = state.pathParameters['postId'] ?? '';
+        final post = state.extra as BoardPost?;
+
+        return BoardDetailScreen(postId: postId, post: post);
+      },
     ),
     // Contact Form
     GoRoute(

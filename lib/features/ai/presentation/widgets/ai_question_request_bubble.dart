@@ -1,7 +1,6 @@
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../shared/domain/entities/pet_profile_entity.dart';
 import '../../domain/domain.dart';
 
 /// AI 메시지 버블 형태의 질문 요청 위젯

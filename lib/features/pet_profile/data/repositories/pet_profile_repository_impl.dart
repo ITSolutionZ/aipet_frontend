@@ -258,78 +258,81 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
 
   /// 안전한 PetProfileEntity 생성 (필드가 없거나 잘못된 형식일 때 대응)
   PetProfileEntity _safeCreatePetEntity(Map<String, dynamic> petData) {
-    // fromJson을 시도하지 않고 바로 수동으로 생성 (데이터베이스 필드명이 다름)
-    // 수동으로 안전하게 PetProfileEntity 생성
-    debugPrint('📋 === _safeCreatePetEntity 수동 생성 로그 ===');
-    debugPrint('📋 마이크로칩 ID (camelCase): ${petData['microchipId']}');
-    debugPrint('📋 마이크로칩 ID (snake_case): ${petData['microchip_id']}');
-    debugPrint('📋 등록번호 (camelCase): ${petData['registrationNumber']}');
-    debugPrint('📋 등록번호 (snake_case): ${petData['registration_number']}');
-    debugPrint('📋 보호자 이름 (camelCase): ${petData['guardianName']}');
-    debugPrint('📋 보호자 이름 (snake_case): ${petData['guardian_name']}');
-    debugPrint('📋 기관 이름 (camelCase): ${petData['institutionName']}');
-    debugPrint('📋 기관 이름 (snake_case): ${petData['institution_name']}');
-    debugPrint('📋 추가 정보 키들: ${petData['additionalInfo']?.keys.toList()}');
+    // 통일된 필드명으로 PetProfileEntity 생성
+    debugPrint('📋 === _safeCreatePetEntity 통일된 필드명 로그 ===');
+    debugPrint('📋 펫 ID: ${petData['id']}');
+    debugPrint('📋 펫 이름: ${petData['name']}');
+    debugPrint('📋 펫 타입: ${petData['type']}');
+    debugPrint('📋 펫 품종: ${petData['breed']}');
+    debugPrint('📋 펫 성별: ${petData['gender']}');
+    debugPrint('📋 펫 체중: ${petData['weight']}');
+    debugPrint('📋 펫 이미지: ${petData['imagePath']}');
     debugPrint('📋 펫 상태: ${petData['petStatus']}');
+    debugPrint('📋 중성화 여부: ${petData['neutered']}');
+    debugPrint('📋 추가 정보: ${petData['additionalInfo']}');
     debugPrint('📋 ===========================================');
 
-    // snake_case 필드를 additionalInfo에 포함
-    final additionalInfo = Map<String, dynamic>.from(
-      petData['additionalInfo'] as Map<String, dynamic>? ?? {},
-    );
+    // additionalInfo 정리 (필요한 필드만 유지)
+    final additionalInfo = <String, dynamic>{};
 
-    // 데이터베이스의 snake_case 필드들을 additionalInfo에 추가
-    if (petData['registration_number'] != null) {
-      additionalInfo['registrationNumber'] = petData['registration_number'];
-    }
-    if (petData['guardian_name'] != null) {
-      additionalInfo['guardianName'] = petData['guardian_name'];
-    }
-    if (petData['institution_name'] != null) {
-      additionalInfo['institutionName'] = petData['institution_name'];
-    }
-    if (petData['is_neutered'] != null) {
-      additionalInfo['isNeutered'] = petData['is_neutered'] == 1;
+    // 필요한 추가 정보만 포함
+    if (petData['additionalInfo'] is Map<String, dynamic>) {
+      final info = petData['additionalInfo'] as Map<String, dynamic>;
+      // 유효한 값만 추가
+      if (info['guardianName'] != null &&
+          info['guardianName'].toString().isNotEmpty) {
+        additionalInfo['guardianName'] = info['guardianName'];
+      }
+      if (info['institutionName'] != null &&
+          info['institutionName'].toString().isNotEmpty) {
+        additionalInfo['institutionName'] = info['institutionName'];
+      }
+      if (info['registrationNumber'] != null &&
+          info['registrationNumber'].toString().isNotEmpty) {
+        additionalInfo['registrationNumber'] = info['registrationNumber'];
+      }
+      if (info['adoptionDate'] != null) {
+        additionalInfo['adoptionDate'] = info['adoptionDate'];
+      }
+      if (info['forbiddenIngredients'] != null) {
+        additionalInfo['forbiddenIngredients'] = info['forbiddenIngredients'];
+      }
+      if (info['bodyPartsToManage'] != null) {
+        additionalInfo['bodyPartsToManage'] = info['bodyPartsToManage'];
+      }
+      if (info['appearance'] != null) {
+        additionalInfo['appearance'] = info['appearance'];
+      }
+      if (info['food'] != null) {
+        additionalInfo['food'] = info['food'];
+      }
+      if (info['supplement'] != null) {
+        additionalInfo['supplement'] = info['supplement'];
+      }
+      if (info['treat'] != null) {
+        additionalInfo['treat'] = info['treat'];
+      }
     }
 
     // petStatus 파싱 (기본값: PetStatus.active)
     final petStatus = _parsePetStatus(petData['petStatus']);
 
     return PetProfileEntity(
-      id:
-          petData['petId']?.toString() ??
-          petData['id']?.toString() ??
-          petData['data']?['id']?.toString() ??
-          '',
+      id: petData['id']?.toString() ?? '',
       name: petData['name']?.toString() ?? '',
-      type:
-          petData['typeName']?.toString() ??
-          petData['type']?.toString() ??
-          'dog',
+      type: petData['type']?.toString() ?? 'dog',
       breed: petData['breed']?.toString(),
-      // ✅ birth_date (snake_case) 필드도 확인
-      birthDate:
-          _parseDate(petData['birthDate']) ??
-          _parseDate(petData['birth_date']) ??
-          DateTime.now(),
+      birthDate: _parseDate(petData['birthDate']) ?? DateTime.now(),
       gender: petData['gender']?.toString() ?? 'unknown',
       weight: _parseDouble(petData['weight']) ?? 0.0,
-      imagePath:
-          petData['profile_image']?.toString() ??
-          petData['imagePath']?.toString(),
+      imagePath: petData['imagePath']?.toString(),
       ownerId: petData['ownerId']?.toString() ?? 'unknown',
-      createdAt:
-          _parseDate(petData['createdAt']) ??
-          _parseDate(petData['created_at']) ??
-          DateTime.now(),
-      updatedAt:
-          _parseDate(petData['updatedAt']) ??
-          _parseDate(petData['updated_at']) ??
-          DateTime.now(),
+      createdAt: _parseDate(petData['createdAt']) ?? DateTime.now(),
+      updatedAt: _parseDate(petData['updatedAt']) ?? DateTime.now(),
       isActive: petData['isActive'] as bool? ?? true,
       petStatus: petStatus,
       additionalInfo: additionalInfo,
-      neutered: petData['is_neutered'] == 1 || petData['neutered'] == true,
+      neutered: petData['neutered'] as bool? ?? false,
     );
   }
 

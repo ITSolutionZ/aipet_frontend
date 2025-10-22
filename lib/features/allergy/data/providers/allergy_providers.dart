@@ -1,3 +1,4 @@
+import 'package:aipet_frontend/features/shopping/data/providers/rakuten_brands_provider.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -268,7 +269,7 @@ Future<List<ProductEntity>> allergyProducts(Ref ref, {String? category}) async {
 /// 브랜드 정보 조회 Provider (제품의 brandId로 브랜드명 찾기)
 @riverpod
 String getBrandName(Ref ref, String brandId) {
-  // TODO: 실제로는 brand repository나 datasource에서 가져와야 함
-  // 현재는 임시로 brandId를 반환
-  return brandId;
+  final brandsState = ref.watch(rakutenBrandsProvider);
+  final brand = brandsState.brands.firstWhere((b) => b.brandId == brandId);
+  return brand.brandName;
 }

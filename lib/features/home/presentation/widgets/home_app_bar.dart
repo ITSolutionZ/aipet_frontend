@@ -73,9 +73,8 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
       ),
       child: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               // 왼쪽 - ドロワーが開いている時はユーザー名と情報修正ボタン、閉じている時はハンバーガー
               if (isDrawerOpen)
@@ -130,29 +129,37 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
                   ),
                 ),
 
-              const Spacer(),
+              // Spacer 대신 Expanded 사용
+              Expanded(
+                child: Container(), // 빈 공간
+              ),
 
               // 오른쪽 아이콘들
               Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   // 드로워가 닫혀있을 때
                   if (!isDrawerOpen) ...[
-                    // 하트 버튼 (즐겨찾기)
+                    // 하트 버튼 (즐겨찾기) - 개선된 스타일
                     Semantics(
                       label: 'お気に入りボタン',
                       button: true,
                       hint: 'タップしてお気に入りを表示します',
                       child: IconButton(
                         onPressed: onFavoriteTap,
-                        padding: const EdgeInsets.symmetric(horizontal: 4),
-                        constraints: const BoxConstraints(),
+                        padding: const EdgeInsets.all(2),
+                        constraints: const BoxConstraints(
+                          minWidth: 28,
+                          minHeight: 28,
+                        ),
                         icon: const Icon(
-                          Icons.favorite_outline,
-                          color: AppColors.pointDark, // 검정색으로 변경
-                          size: 24,
+                          Icons.favorite,
+                          color: AppColors.pointBrown,
+                          size: 16,
                         ),
                       ),
                     ),
+                    const SizedBox(width: 2), // 버튼 간격 더 줄임
                     // 알림 버튼
                     Semantics(
                       label: '通知ボタン',
@@ -160,57 +167,34 @@ class HomeAppBar extends ConsumerWidget implements PreferredSizeWidget {
                       hint: 'タップして通知を表示します',
                       child: IconButton(
                         onPressed: onNotificationTap,
-                        padding: const EdgeInsets.symmetric(horizontal: 4),
-                        constraints: const BoxConstraints(),
+                        padding: const EdgeInsets.all(2),
+                        constraints: const BoxConstraints(
+                          minWidth: 28,
+                          minHeight: 28,
+                        ),
                         icon: const Icon(
                           Icons.notifications_outlined,
-                          color: AppColors.pointDark, // 검정색으로 변경
-                          size: 24,
+                          color: AppColors.pointDark,
+                          size: 16,
                         ),
                       ),
                     ),
                   ],
 
-                  // 드로워가 열렸을 때
+                  // 드로워가 열렸을 때 - 닫기 버튼만 표시
                   if (isDrawerOpen) ...[
-                    // 알림 버튼
-                    IconButton(
-                      onPressed: onNotificationTap,
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
-                      constraints: const BoxConstraints(),
-                      icon: const Icon(
-                        Icons.notifications_outlined,
-                        color: AppColors.pureWhite,
-                        size: 24,
-                      ),
-                    ),
-                    // 1:1 채팅 버튼
-                    IconButton(
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('1:1チャット機能は準備中です'),
-                            duration: Duration(seconds: 2),
-                          ),
-                        );
-                      },
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
-                      constraints: const BoxConstraints(),
-                      icon: const Icon(
-                        Icons.chat_bubble_outline,
-                        color: AppColors.pureWhite,
-                        size: 24,
-                      ),
-                    ),
-                    // 닫기 버튼
+                    // 닫기 버튼만 표시
                     IconButton(
                       onPressed: onMenuTap,
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
-                      constraints: const BoxConstraints(),
+                      padding: const EdgeInsets.all(2),
+                      constraints: const BoxConstraints(
+                        minWidth: 28,
+                        minHeight: 28,
+                      ),
                       icon: const Icon(
                         Icons.close,
                         color: AppColors.pureWhite,
-                        size: 24,
+                        size: 16,
                       ),
                     ),
                   ],

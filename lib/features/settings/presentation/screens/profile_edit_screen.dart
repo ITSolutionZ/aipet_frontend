@@ -173,6 +173,10 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
   Future<void> _saveProfile() async {
     final formState = ref.read(profileEditFormControllerProvider);
     if (formState.formKey?.currentState?.validate() ?? false) {
+      // BuildContext를 미리 캡처
+      final scaffoldMessenger = ScaffoldMessenger.of(context);
+      final navigator = Navigator.of(context);
+
       // 비동기 작업 전에 ref.read() 호출 (모두 한 번에)
       late final UserProfileController controller;
       dynamic userProfileNotifier;
@@ -187,7 +191,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
         }
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          scaffoldMessenger.showSnackBar(
             SnackBar(
               content: Text('エラーが発生しました: $e'),
               backgroundColor: Colors.red,
@@ -234,15 +238,15 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
             }
           }
 
-          ScaffoldMessenger.of(context).showSnackBar(
+          scaffoldMessenger.showSnackBar(
             const SnackBar(
               content: Text('プロフィールが保存されました'),
               backgroundColor: AppColors.pointBrown,
             ),
           );
-          Navigator.pop(context);
+          navigator.pop();
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
+          scaffoldMessenger.showSnackBar(
             const SnackBar(
               content: Text('保存に失敗しました'),
               backgroundColor: Colors.red,

@@ -544,11 +544,6 @@ class ShellRoutes {
             builder: (context, state) => const AlarmTimeSettingsScreen(),
           ),
           GoRoute(
-            path: 'location-setting',
-            name: 'location-setting',
-            builder: (context, state) => const LocationSettingScreen(),
-          ),
-          GoRoute(
             path: 'database-dashboard',
             name: 'database-dashboard',
             builder: (context, state) => const DatabaseDashboardScreen(),

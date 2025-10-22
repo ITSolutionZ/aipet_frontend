@@ -4,7 +4,7 @@ import 'package:aipet_frontend/features/daily/data/providers/vaccine_provider.da
 import 'package:aipet_frontend/features/daily/presentation/controllers/daily_health_controller.dart';
 import 'package:aipet_frontend/features/daily/presentation/logic/daily_health_logic.dart';
 import 'package:aipet_frontend/features/pet_profile/pet_profile.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'daily_health_screen_controller.g.dart';
@@ -38,7 +38,11 @@ class DailyHealthScreenController extends _$DailyHealthScreenController {
   @override
   DailyHealthScreenData build() {
     _logic = DailyHealthLogic();
-    _initializePetSelection();
+    // build() 메서드에서는 ref.read() 사용 금지
+    // 대신 WidgetsBinding.instance.addPostFrameCallback 사용
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initializePetSelection();
+    });
     return const DailyHealthScreenData();
   }
 

@@ -11,7 +11,9 @@
 /// 또는 아래 코드를 test 파일로 실행하세요:
 library;
 
+import 'package:flutter/rendering.dart';
+
 void main() {
-  print('Database Dashboard로 이동하여 "全データ削除" 버튼을 사용하세요');
-  print('경로: /settings/database-dashboard');
+  debugPrint('Database Dashboard로 이동하여 "全データ削除" 버튼을 사용하세요');
+  debugPrint('경로: /settings/database-dashboard');
 }

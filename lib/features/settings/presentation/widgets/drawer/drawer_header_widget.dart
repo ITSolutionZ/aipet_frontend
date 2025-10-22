@@ -1,13 +1,12 @@
 import 'dart:io';
 
-import 'package:aipet_frontend/app/router/routes/route_constants.dart';
-import 'package:aipet_frontend/app/widgets/drawer/drawer_local_datasource.dart';
+import 'package:aipet_frontend/features/notification/data/providers/notification_providers.dart';
+import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
 import 'package:aipet_frontend/features/settings/presentation/controllers/user_profile_controller.dart';
 import 'package:aipet_frontend/shared/services/image_storage_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 /// ドロワーヘッダーウィジェット
 /// プロフィール情報と統計を表示
@@ -20,7 +19,12 @@ class DrawerHeaderWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // 실제 사용자 프로필 가져오기
     final profileState = ref.watch(userProfileControllerProvider);
-    final userStats = DrawerLocalDatasource.getUserStats();
+
+    // 실제 펫 데이터 가져오기
+    final petsAsync = ref.watch(petProfilesProvider);
+
+    // 미독 알림 수 가져오기
+    final unreadCountAsync = ref.watch(unreadNotificationCountProvider);
 
     // 프로필이 없으면 로드
     if (profileState.profile == null && !profileState.isLoading) {
@@ -48,7 +52,7 @@ class DrawerHeaderWidget extends ConsumerWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.white,
-                  border: Border.all(color: Colors.white, width: 2),
+                  border: Border.all(color: AppColors.pureWhite, width: 2),
                 ),
                 child: ClipOval(
                   child: _buildUserProfileImage(profileImagePath),
@@ -60,7 +64,7 @@ class DrawerHeaderWidget extends ConsumerWidget {
                 child: Text(
                   userName,
                   style: const TextStyle(
-                    color: Colors.white,
+                    color: AppColors.pureWhite,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
@@ -74,28 +78,26 @@ class DrawerHeaderWidget extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _StatItem(
-                label: '購読',
-                value: userStats['subscriptions'].toString(),
+              // 펫 수 표시
+              petsAsync.when(
+                data: (pets) =>
+                    _StatItem(label: 'ペット', value: pets.length.toString()),
+                loading: () => const _StatItem(label: 'ペット', value: '...'),
+                error: (_, __) => const _StatItem(label: 'ペット', value: '0'),
               ),
-              _StatItem(label: '投稿', value: userStats['posts'].toString()),
-              _StatItem(label: 'コメント', value: userStats['comments'].toString()),
-              // 位置設定ボタン
-              InkWell(
-                onTap: () {
-                  Navigator.of(context).pop(); // ドロワーを閉じる
-                  context.push(RouteConstants.locationSettingRoute);
-                },
-                child: const Column(
-                  children: [
-                    Icon(Icons.location_on, color: Colors.white, size: 18),
-                    SizedBox(height: 2),
-                    Text(
-                      '位置設定',
-                      style: TextStyle(color: Colors.white, fontSize: 11),
-                    ),
-                  ],
+              // 산책 기록 수 (임시로 0)
+              const _StatItem(label: '散歩', value: '0'),
+              // 건강 기록 수 (임시로 0)
+              const _StatItem(label: '健康', value: '0'),
+              // 미독 알림 수 표시
+              unreadCountAsync.when(
+                data: (count) => _StatItem(
+                  label: '未読',
+                  value: count.toString(),
+                  showBadge: count > 0,
                 ),
+                loading: () => const _StatItem(label: '未読', value: '...'),
+                error: (_, __) => const _StatItem(label: '未読', value: '0'),
               ),
             ],
           ),
@@ -191,23 +193,60 @@ class DrawerHeaderWidget extends ConsumerWidget {
 class _StatItem extends StatelessWidget {
   final String label;
   final String value;
+  final bool showBadge;
 
-  const _StatItem({required this.label, required this.value});
+  const _StatItem({
+    required this.label,
+    required this.value,
+    this.showBadge = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(
-          value,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
+        Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Text(
+              value,
+              style: const TextStyle(
+                color: AppColors.pureWhite,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            if (showBadge)
+              Positioned(
+                right: -8,
+                top: -4,
+                child: Container(
+                  padding: const EdgeInsets.all(2),
+                  decoration: const BoxDecoration(
+                    color: AppColors.pointRed,
+                    shape: BoxShape.circle,
+                  ),
+                  constraints: const BoxConstraints(
+                    minWidth: 12,
+                    minHeight: 12,
+                  ),
+                  child: const Icon(
+                    Icons.circle,
+                    color: AppColors.pointRed,
+                    size: 8,
+                  ),
+                ),
+              ),
+          ],
         ),
         const SizedBox(height: 2),
-        Text(label, style: const TextStyle(color: Colors.white, fontSize: 11)),
+        Text(
+          label,
+          style: TextStyle(
+            color: AppColors.pureWhite,
+            fontSize: AppFonts.bodySmall.fontSize,
+          ),
+        ),
       ],
     );
   }
