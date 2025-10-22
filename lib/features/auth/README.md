@@ -11,9 +11,9 @@ Auth 기능은 AI Pet 앱의 사용자 인증을 담당합니다. Firebase Auth�
 ```txt
 lib/features/auth/
 ├── domain/                    # 도메인 레이어
-│   ├── entities/             # 엔티티 (AuthUser, AuthResult)
-│   ├── repositories/         # 리포지토리 인터페이스
-│   └── result.dart          # Result 패턴 (Railway-oriented programming)
+│   ├── entities/             # 엔티티 (AuthUser)
+│   ├── repositories/         # 리포지토리 인터페이스 (Result<AuthUser> 패턴 사용)
+│   └── usecases/            # UseCase (비즈니스 로직)
 ├── data/                     # 데이터 레이어
 │   ├── repositories/         # 리포지토리 구현체
 │   ├── services/            # 인증 관련 서비스
@@ -78,9 +78,9 @@ if (result.isSuccess) {
 ### 개발 모드 (현재)
 
 ```dart
-// 간단한 검증만 수행
+// ✅ 공통 Result<T> 패턴 사용
 if (email.isEmpty || password.isEmpty) {
-  return AuthResult.failure('メールアドレスとパスワードを入力してください');
+  return Result.failure('メールアドレスとパスワードを入力してください');
 }
 
 // Mock 사용자 생성

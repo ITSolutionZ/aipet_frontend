@@ -148,14 +148,6 @@ class AuthService {
     }
   }
 
-  // 향후 실제 API 연동시 사용할 토큰 저장 메서드
-  // Future<void> _saveTokenFromResult(AuthResult result) async {
-  //   // 실제 API response에서 토큰 정보 추출하여 저장
-  //   final token = AuthToken(
-  //     accessToken: result.accessToken,
-  //     refreshToken: result.refreshToken,
-  //     expiresAt: result.expiresAt,
-  //   );
-  //   await TokenStorageService.saveToken(token);
-  // }
+  // ✅ AuthResult 제거됨 - 공통 Result<T> 패턴 사용
+  // 향후 실제 API 연동시 토큰은 Result<AuthToken>으로 반환됩니다.
 }
