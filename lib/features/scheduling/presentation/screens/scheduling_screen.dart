@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:aipet_frontend/features/scheduling/data/services/calendar_event_service.dart';
 import 'package:aipet_frontend/features/scheduling/domain/entities/calendar_event_entity.dart';
 import 'package:aipet_frontend/shared/shared.dart';
@@ -33,7 +35,7 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
     super.initState();
     _scrollController = ScrollController();
     _selectedDay = DateTime.now();
-    _loadEventsFromDatabase();
+    unawaited(_loadEventsFromDatabase());
   }
 
   @override
@@ -168,7 +170,10 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
   /// 데이터베이스에서 이벤트 로드
   Future<void> _loadEventsFromDatabase() async {
     try {
+      debugPrint('📥 イベント読み込み開始...');
       final events = await CalendarEventService.instance.getCalendarEvents();
+      debugPrint('📥 読み込まれたイベント数: ${events.length}');
+
       setState(() {
         _events.clear();
         for (final event in events) {
@@ -183,9 +188,10 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
             _events[eventDate] = [event];
           }
         }
+        debugPrint('📥 イベントキャッシュ更新完了: ${_events.length}日分');
       });
     } catch (e) {
-      debugPrint('이벤트 로드 실패: $e');
+      debugPrint('❌ イベント読み込み失敗: $e');
     }
   }
 
@@ -555,6 +561,13 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
     // 새 이벤트가 추가되었을 때 이벤트 목록 새로고침
     if (result == true) {
       await _loadEventsFromDatabase();
+      // TableCalendar의 마커 업데이트를 강제하기 위해 선택된 날짜 다시 선택
+      if (_selectedDay != null) {
+        setState(() {
+          // 달력 재렌더링
+          _focusedDay = _selectedDay!;
+        });
+      }
     }
   }
 }

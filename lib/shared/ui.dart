@@ -2,6 +2,7 @@ export 'design/branding/branding.dart';
 export 'design/design.dart';
 export 'ui/components/app_button.dart'
     hide ActionButton, CommonButton, ButtonSize, GlassButton, PointButton;
+export 'ui/screens/page_not_found_screen.dart';
 export 'widgets/accessibility/accessibility_widgets.dart';
 export 'widgets/animation/animation_widgets.dart';
 export 'widgets/buttons/action_button.dart' hide ActionButton;

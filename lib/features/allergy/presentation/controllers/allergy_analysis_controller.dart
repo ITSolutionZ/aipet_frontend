@@ -1,3 +1,4 @@
+import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -85,9 +86,15 @@ class AllergyAnalysisController extends _$AllergyAnalysisController {
       // 4. 보고서 생성 (펫 ID가 있는 경우)
       AllergyReport? report;
       if (petId != null) {
+        final petProfiles = await ref.read(petProfilesProvider.future);
+        final pet = petProfiles.firstWhere(
+          (p) => p.id == petId,
+          orElse: () => petProfiles.first,
+        );
+
         report = await analyzeUseCase.generateAndSaveReport(
           petId: petId,
-          petName: 'Pet $petId', // TODO: 실제 펫 이름으로 교체
+          petName: pet.name,
           analysis: analysis,
         );
       }

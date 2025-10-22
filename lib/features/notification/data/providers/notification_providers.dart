@@ -1,3 +1,4 @@
+import 'package:aipet_frontend/features/scheduling/data/services/calendar_event_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -17,11 +18,34 @@ NotificationRepositoryImpl notificationRepository(Ref ref) {
 class NotificationsNotifier extends _$NotificationsNotifier {
   @override
   Future<List<NotificationModel>> build() async {
-    // TODO: 캘린더 이벤트 연동 (추후 구현)
-    // 현재는 빈 리스트 반환
-    debugPrint('🔔 알림 리스트 로드 (현재는 빈 리스트)');
+    try {
+      final events = await CalendarEventService.instance.getCalendarEvents();
+      final notifications = <NotificationModel>[];
 
-    return [];
+      for (final event in events) {
+        final notification = NotificationModel(
+          id: event.id,
+          title: event.title,
+          body: event.description,
+          type: NotificationType.reminder,
+          createdAt: event.startTime,
+          expiresAt: event.endTime,
+          data: {
+            'eventId': event.id,
+            'eventType': event.type.name,
+            'petId': event.petId,
+            'startTime': event.startTime.toIso8601String(),
+          },
+        );
+        notifications.add(notification);
+      }
+
+      debugPrint('🔔 알림 리스트 로드 완료: ${notifications.length}개');
+      return notifications;
+    } catch (e) {
+      debugPrint('🔔 알림 리스트 로드 실패: $e');
+      return [];
+    }
   }
 
   /// 알림 새로고침

@@ -1,7 +1,9 @@
+import 'package:aipet_frontend/features/shopping/data/providers/favorite_products_provider.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// お気に入り画面
 ///
@@ -92,16 +94,212 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
 
   /// 商品のお気に入り
   Widget _buildProductFavorites() {
-    // TODO: 実際のお気に入り商品データを表示
-    return _buildEmptyState(
-      icon: Icons.shopping_bag,
-      title: 'お気に入りの商品がありません',
-      message: 'ペット用品や食品をお気に入りに追加できます',
-      actionLabel: '商品を探す',
-      onAction: () {
-        context.push('/pet-search');
+    final favoritesAsync = ref.watch(favoriteProductsProvider);
+
+    return favoritesAsync.when(
+      data: (favorites) {
+        if (favorites.isEmpty) {
+          return _buildEmptyState(
+            icon: Icons.shopping_bag,
+            title: 'お気に入りの商品がありません',
+            message: 'ペット用品や食品をお気に入りに追加できます',
+            actionLabel: '商品を探す',
+            onAction: () {
+              context.push('/pet-search');
+            },
+          );
+        }
+
+        return ListView.builder(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          itemCount: favorites.length,
+          itemBuilder: (context, index) {
+            final product = favorites[index];
+            return _buildProductCard(product);
+          },
+        );
       },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stack) => Center(
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.xl),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, size: 64, color: Colors.red),
+              const SizedBox(height: AppSpacing.md),
+              Text(
+                'エラーが発生しました',
+                style: AppFonts.titleMedium.copyWith(color: Colors.red),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                error.toString(),
+                style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
+  }
+
+  /// 商品カード
+  Widget _buildProductCard(dynamic product) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: AppSpacing.md),
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadius.medium),
+      ),
+      child: InkWell(
+        onTap: () => _openProductPage(product.itemUrl),
+        borderRadius: BorderRadius.circular(AppRadius.medium),
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 商品画像
+              Container(
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(AppRadius.small),
+                  color: AppColors.pointOffWhite,
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(AppRadius.small),
+                  child: product.imageUrl.isNotEmpty
+                      ? Image.network(
+                          product.imageUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Icon(Icons.pets, size: 30);
+                          },
+                        )
+                      : const Icon(Icons.pets, size: 30),
+                ),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              // 商品情報
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      product.itemName,
+                      style: AppFonts.bodyMedium.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      product.shopName,
+                      style: AppFonts.bodySmall.copyWith(
+                        color: AppColors.pointGray,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      product.formattedPrice,
+                      style: AppFonts.bodyLarge.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.pointBrown,
+                      ),
+                    ),
+                    if (product.reviewCount != null &&
+                        product.reviewCount!.isNotEmpty) ...[
+                      const SizedBox(height: AppSpacing.xs),
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.star,
+                            size: 14,
+                            color: Colors.amber,
+                          ),
+                          const SizedBox(width: 2),
+                          Text(
+                            product.formattedReviewAverage,
+                            style: AppFonts.bodySmall,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            '(${product.formattedReviewCount})',
+                            style: AppFonts.bodySmall.copyWith(
+                              color: AppColors.pointGray,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              // 削除ボタン
+              IconButton(
+                icon: const Icon(Icons.delete_outline, color: Colors.red),
+                onPressed: () => _removeFavorite(product.itemCode),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// 商品ページを開く
+  Future<void> _openProductPage(String url) async {
+    try {
+      final Uri uri = Uri.parse(url);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      }
+    } catch (e) {
+      debugPrint('Failed to open product page: $e');
+    }
+  }
+
+  /// お気に入りから削除
+  Future<void> _removeFavorite(String itemCode) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('確認'),
+        content: const Text('お気に入りから削除しますか？'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('キャンセル'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('削除'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      await ref
+          .read(favoriteProductsProvider.notifier)
+          .removeFavorite(itemCode);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('お気に入りから削除しました'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    }
   }
 
   /// その他のお気に入り

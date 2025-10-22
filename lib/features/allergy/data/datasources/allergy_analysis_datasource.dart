@@ -28,6 +28,9 @@ abstract class AllergyAnalysisDatasource {
 
   /// 알레르기 리포트 저장
   Future<void> saveAllergyReport(AllergyReport report);
+
+  /// 분석 기록 조회
+  Future<List<AllergyAnalysisResult>> getAnalysisHistory(String petId);
 }
 
 /// Local 알레르기 분석 데이터소스
@@ -43,6 +46,7 @@ abstract class AllergyAnalysisLocalDatasource
   Future<List<ProductEntity>> getLocalProducts();
 
   /// 분석 기록 조회
+  @override
   Future<List<AllergyAnalysisResult>> getAnalysisHistory(String petId);
 }
 

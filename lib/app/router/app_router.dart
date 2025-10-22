@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../shared/shared.dart';
 import 'routes/routes.dart';
 
 /// 중앙집중화된 앱 라우터 설정
@@ -107,6 +108,13 @@ class AppRouter {
     return GoRouter(
       initialLocation: splashRoute, // 스플래시 시퀀스로 시작
       debugLogDiagnostics: false,
+      errorBuilder: (context, state) {
+        // 404 에러 처리
+        return PageNotFoundScreen(
+          errorMessage: state.error?.toString(),
+          location: state.uri.toString(),
+        );
+      },
       routes: [
         // 루트 경로 리다이렉트
         GoRoute(path: '/', redirect: (context, state) => splashRoute),

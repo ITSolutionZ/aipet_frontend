@@ -1,5 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../data/services/calendar_event_service.dart';
+import '../../data/services/google_calendar_service.dart';
 import '../../domain/entities/calendar_event_entity.dart';
 
 part 'calendar_controller.g.dart';
@@ -12,18 +14,15 @@ class CalendarController extends _$CalendarController {
   }
 
   Future<List<CalendarEventEntity>> _loadEvents() async {
-    // TODO: 실제 로컬/리모트 데이터 로딩 구현
-    // 현재는 빈 리스트 반환
-    return [];
+    return CalendarEventService.instance.getCalendarEvents();
   }
 
   /// 새 이벤트 추가
   Future<void> addEvent(CalendarEventEntity event) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      // TODO: 실제 저장 로직 구현
-      final currentEvents = state.value ?? [];
-      return [...currentEvents, event];
+      await CalendarEventService.instance.saveCalendarEvent(event);
+      return _loadEvents();
     });
   }
 
@@ -31,15 +30,8 @@ class CalendarController extends _$CalendarController {
   Future<void> updateEvent(CalendarEventEntity event) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      // TODO: 실제 업데이트 로직 구현
-      final currentEvents = state.value ?? [];
-      final index = currentEvents.indexWhere((e) => e.id == event.id);
-      if (index != -1) {
-        final updatedEvents = [...currentEvents];
-        updatedEvents[index] = event;
-        return updatedEvents;
-      }
-      return currentEvents;
+      await CalendarEventService.instance.updateCalendarEvent(event);
+      return _loadEvents();
     });
   }
 
@@ -47,9 +39,8 @@ class CalendarController extends _$CalendarController {
   Future<void> deleteEvent(String eventId) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      // TODO: 실제 삭제 로직 구현
-      final currentEvents = state.value ?? [];
-      return currentEvents.where((e) => e.id != eventId).toList();
+      await CalendarEventService.instance.deleteCalendarEvent(eventId);
+      return _loadEvents();
     });
   }
 
@@ -71,10 +62,22 @@ class CalendarController extends _$CalendarController {
   Future<void> syncWithGoogleCalendar() async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      // TODO: Google Calendar 동기화 로직 구현
-      // GoogleCalendarService를 사용한 동기화
-      final currentEvents = state.value ?? [];
-      return currentEvents;
+      final googleService = GoogleCalendarService();
+
+      if (!googleService.isAuthenticated) {
+        // 인증되지 않은 경우 로컬 이벤트만 반환
+        return _loadEvents();
+      }
+
+      // Google Calendar에서 이벤트 가져오기
+      final googleEvents = await googleService.getEvents();
+
+      // 로컬에 저장
+      for (final event in googleEvents) {
+        await CalendarEventService.instance.saveCalendarEvent(event);
+      }
+
+      return _loadEvents();
     });
   }
 }

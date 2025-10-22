@@ -35,4 +35,7 @@ abstract class AllergyAnalysisRepository {
     required String petId,
     required AllergyAnalysisResult analysisResult,
   });
+
+  /// 알레르기 분석 히스토리 조회
+  Future<List<AllergyAnalysisResult>> getAnalysisHistory(String petId);
 }

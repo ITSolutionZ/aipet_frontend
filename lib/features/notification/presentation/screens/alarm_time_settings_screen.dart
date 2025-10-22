@@ -184,7 +184,6 @@ class _AlarmTimeSettingsScreenState
         '${eventType.displayName}時間',
         defaultTime,
         (time) {
-          // TODO: 실제 구현에서는 이벤트 타입별로 시간을 저장해야 함
           ref
               .read(alarmTimeSettingsControllerProvider.notifier)
               .selectTime(eventType.name, time);

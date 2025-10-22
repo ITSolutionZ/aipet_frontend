@@ -1,6 +1,7 @@
 import 'package:aipet_frontend/app/widgets/widgets.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class AccountDeleteScreen extends StatelessWidget {
   const AccountDeleteScreen({super.key});
@@ -166,16 +167,42 @@ class AccountDeleteScreen extends StatelessWidget {
     );
   }
 
-  void _deleteAccount(BuildContext context) {
-    // TODO: アカウント削除処理
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('アカウントが削除されました'),
-        backgroundColor: Colors.red,
-      ),
-    );
+  Future<void> _deleteAccount(BuildContext context) async {
+    try {
+      // 로딩 표시
+      if (context.mounted) {
+        UiService.showLoadingDialog(context, 'アカウント削除中...');
+      }
 
-    // 複数回pop()してログイン画面に戻る
-    Navigator.of(context).popUntil((route) => route.isFirst);
+      // 1. 모든 로컬 데이터 삭제
+      await LocalDataManager.instance.clearAllLocalData();
+
+      // 2. 인증 정보 삭제
+      await SecureStorageService.logout();
+
+      if (context.mounted) {
+        UiService.hideLoadingDialog(context);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('アカウントが削除されました'),
+            backgroundColor: Colors.red,
+          ),
+        );
+
+        // 로그인 화면으로 이동
+        context.go('/login');
+      }
+    } catch (e) {
+      if (context.mounted) {
+        UiService.hideLoadingDialog(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('削除中にエラーが発生しました: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 }

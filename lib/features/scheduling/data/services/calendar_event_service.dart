@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:aipet_frontend/features/scheduling/domain/entities/calendar_event_entity.dart';
 import 'package:aipet_frontend/shared/services/local_database_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 
 /// 캘린더 이벤트 로컬 저장 서비스
@@ -18,39 +19,53 @@ class CalendarEventService {
 
   /// 캘린더 이벤트 저장
   Future<void> saveCalendarEvent(CalendarEventEntity event) async {
-    final db = await _dbService.database;
+    try {
+      final db = await _dbService.database;
 
-    await db.insert('calendar_events', {
-      'id': event.id,
-      'title': event.title,
-      'description': event.description,
-      'start_time': event.startTime.toIso8601String(),
-      'end_time': event.endTime.toIso8601String(),
-      'is_all_day': event.isAllDay == true ? 1 : 0,
-      'event_type': event.type.name,
-      'pet_id': event.petId,
-      'location': event.location,
-      'has_alarm': event.hasAlarm ? 1 : 0,
-      'alarm_settings': jsonEncode(
-        event.alarmSettings.map((e) => e.toJson()).toList(),
-      ),
-      'is_recurring': event.recurrence != null ? 1 : 0,
-      'recurrence_rule': event.recurrence?.toJson().toString(),
-      'created_at': DateTime.now().toIso8601String(),
-      'updated_at': DateTime.now().toIso8601String(),
-    }, conflictAlgorithm: ConflictAlgorithm.replace);
+      await db.insert('calendar_events', {
+        'id': event.id,
+        'title': event.title,
+        'description': event.description,
+        'start_time': event.startTime.toIso8601String(),
+        'end_time': event.endTime.toIso8601String(),
+        'is_all_day': event.isAllDay == true ? 1 : 0,
+        'event_type': event.type.name,
+        'pet_id': event.petId,
+        'location': event.location,
+        'has_alarm': event.hasAlarm ? 1 : 0,
+        'alarm_settings': jsonEncode(
+          event.alarmSettings.map((e) => e.toJson()).toList(),
+        ),
+        'is_recurring': event.recurrence != null ? 1 : 0,
+        'recurrence_rule': event.recurrence?.toJson().toString(),
+        'created_at': DateTime.now().toIso8601String(),
+        'updated_at': DateTime.now().toIso8601String(),
+      }, conflictAlgorithm: ConflictAlgorithm.replace);
+
+      debugPrint('✅ イベント保存成功: ${event.title} (ID: ${event.id})');
+    } catch (e) {
+      debugPrint('❌ イベント保存失敗: $e');
+      rethrow;
+    }
   }
 
   /// 캘린더 이벤트 목록 조회
   Future<List<CalendarEventEntity>> getCalendarEvents() async {
-    final db = await LocalDatabaseService.instance.database;
+    try {
+      final db = await LocalDatabaseService.instance.database;
 
-    final List<Map<String, dynamic>> maps = await db.query(
-      'calendar_events',
-      orderBy: 'start_time ASC',
-    );
+      final List<Map<String, dynamic>> maps = await db.query(
+        'calendar_events',
+        orderBy: 'start_time ASC',
+      );
 
-    return maps.map((map) => _mapToEntity(map)).toList();
+      final events = maps.map((map) => _mapToEntity(map)).toList();
+      debugPrint('✅ イベント取得成功: ${events.length}件');
+      return events;
+    } catch (e) {
+      debugPrint('❌ イベント取得失敗: $e');
+      return [];
+    }
   }
 
   /// 특정 날짜의 캘린더 이벤트 조회
