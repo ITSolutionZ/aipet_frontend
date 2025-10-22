@@ -1,4 +1,3 @@
-import 'package:aipet_frontend/shared/core/services/snackbar_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -94,9 +93,9 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
     notifier.searchPetProducts(keyword: baseKeyword);
 
     // タブに対応するブランドを検索
-    ref.read(rakutenBrandsProvider.notifier).searchPopularBrands(
-          keyword: baseKeyword,
-        );
+    ref
+        .read(rakutenBrandsProvider.notifier)
+        .searchPopularBrands(keyword: baseKeyword);
   }
 
   /// 現在のタブの基本キーワードを取得
@@ -1011,8 +1010,9 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
                                   border: Border.all(
                                     color: isSelected
                                         ? AppColors.pointBrown
-                                        : AppColors.pointGray
-                                            .withValues(alpha: 0.2),
+                                        : AppColors.pointGray.withValues(
+                                            alpha: 0.2,
+                                          ),
                                     width: isSelected ? 2 : 1,
                                   ),
                                 ),
@@ -1026,37 +1026,40 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
                                           fit: BoxFit.cover,
                                           errorBuilder:
                                               (context, error, stackTrace) {
-                                            return Center(
-                                              child: Text(
-                                                brand.brandName.isNotEmpty
-                                                    ? brand.brandName[0]
-                                                        .toUpperCase()
-                                                    : '?',
-                                                style: AppFonts.titleLarge
-                                                    .copyWith(
-                                                  color: isSelected
-                                                      ? AppColors.pointBrown
-                                                      : AppColors.pointGray,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 28,
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                          loadingBuilder:
-                                              (context, child, loadingProgress) {
+                                                return Center(
+                                                  child: Text(
+                                                    brand.brandName.isNotEmpty
+                                                        ? brand.brandName[0]
+                                                              .toUpperCase()
+                                                        : '?',
+                                                    style: AppFonts.titleLarge
+                                                        .copyWith(
+                                                          color: isSelected
+                                                              ? AppColors
+                                                                    .pointBrown
+                                                              : AppColors
+                                                                    .pointGray,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 28,
+                                                        ),
+                                                  ),
+                                                );
+                                              },
+                                          loadingBuilder: (context, child, loadingProgress) {
                                             if (loadingProgress == null) {
                                               return child;
                                             }
                                             return Center(
                                               child: CircularProgressIndicator(
-                                                value: loadingProgress
+                                                value:
+                                                    loadingProgress
                                                             .expectedTotalBytes !=
                                                         null
                                                     ? loadingProgress
-                                                            .cumulativeBytesLoaded /
-                                                        loadingProgress
-                                                            .expectedTotalBytes!
+                                                              .cumulativeBytesLoaded /
+                                                          loadingProgress
+                                                              .expectedTotalBytes!
                                                     : null,
                                                 strokeWidth: 2,
                                                 color: AppColors.pointBrown,
@@ -1068,10 +1071,9 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
                                           child: Text(
                                             brand.brandName.isNotEmpty
                                                 ? brand.brandName[0]
-                                                    .toUpperCase()
+                                                      .toUpperCase()
                                                 : '?',
-                                            style:
-                                                AppFonts.titleLarge.copyWith(
+                                            style: AppFonts.titleLarge.copyWith(
                                               color: isSelected
                                                   ? AppColors.pointBrown
                                                   : AppColors.pointGray,
