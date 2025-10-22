@@ -1,8 +1,10 @@
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../data/models/rakuten_pet_product_model.dart';
+import '../../data/providers/rakuten_brands_provider.dart';
 import '../../data/providers/rakuten_products_provider.dart';
 
 /// ペット商品検索画面
@@ -16,7 +18,6 @@ class PetSearchScreen extends ConsumerStatefulWidget {
 class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final TextEditingController _searchController = TextEditingController();
 
   // アコーディオン状態管理
   final Set<String> _expandedProducts = <String>{};
@@ -58,56 +59,7 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
     {'name': '便秘予防', 'isSelected': false},
   ];
 
-  final List<Map<String, dynamic>> _popularBrands = [
-    {
-      'name': 'CARNA4',
-      'japaneseName': 'カルナ4',
-      'logo': 'assets/images/placeholder.png', // placeholder 이미지 사용
-      'isSelected': false,
-    },
-    {
-      'name': 'BEST BREED',
-      'japaneseName': 'ベストブリード',
-      'logo': 'assets/images/placeholder.png',
-      'isSelected': false,
-    },
-    {
-      'name': 'Gutsy',
-      'japaneseName': 'ガッツィ',
-      'logo': 'assets/images/placeholder.png',
-      'isSelected': false,
-    },
-    {
-      'name': 'BELCANDO',
-      'japaneseName': 'ベルカンド',
-      'logo': 'assets/images/placeholder.png',
-      'isSelected': false,
-    },
-    {
-      'name': 'PLATINUM',
-      'japaneseName': 'プラチナム',
-      'logo': 'assets/images/placeholder.png',
-      'isSelected': false,
-    },
-    {
-      'name': 'ROYAL CANIN',
-      'japaneseName': 'ロイヤルカナン',
-      'logo': 'assets/images/placeholder.png',
-      'isSelected': false,
-    },
-    {
-      'name': 'ORIJEN',
-      'japaneseName': 'オリジン',
-      'logo': 'assets/images/placeholder.png',
-      'isSelected': false,
-    },
-    {
-      'name': 'Hills',
-      'japaneseName': 'ヒルズ',
-      'logo': 'assets/images/placeholder.png',
-      'isSelected': false,
-    },
-  ];
+  // ブランド情報はAPIから取得するため、ローカルリストを削除
 
   @override
   void initState() {
@@ -124,24 +76,19 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
     // 初期データを読み込み
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _onTabChanged(0);
+      // ブランド情報をAPIから取得
+      ref.read(rakutenBrandsProvider.notifier).searchPopularBrands();
     });
   }
 
   void _onTabChanged(int index) {
-    // タブが変更された時はフィルターなしでタブの基本キーワード + ユーザー入力で検索
+    // タブが変更された時はフィルターなしでタブの基本キーワードで検索
     final String baseKeyword = _getCurrentTabKeyword();
-    final userInput = _searchController.text.trim();
-
-    String keyword = baseKeyword;
-    if (userInput.isNotEmpty) {
-      keyword = '$baseKeyword $userInput';
-    }
 
     final notifier = ref.read(rakutenProductsProvider.notifier);
 
-    debugPrint('🔍 Tab changed to: $keyword');
-    debugPrint('🔍 User input: ${userInput.isEmpty ? "なし" : userInput}');
-    notifier.searchPetProducts(keyword: keyword);
+    debugPrint('🔍 Tab changed to: $baseKeyword');
+    notifier.searchPetProducts(keyword: baseKeyword);
   }
 
   /// 現在のタブの基本キーワードを取得
@@ -199,21 +146,18 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
       }
     }
 
-    // 人気ブランドフィルター
-    for (final brand in _popularBrands) {
-      if (brand['isSelected'] == true) {
-        selectedFilters.add(brand['name']);
+    // 人気ブランドフィルター (APIから取得したブランドを使用)
+    final brandState = ref.read(rakutenBrandsProvider);
+    for (final brand in brandState.brands) {
+      if (brand.isSelected) {
+        selectedFilters.add(brand.brandName);
       }
     }
 
     // 検索キーワードを構築: タブ名 + ユーザー入力 + フィルター1 + フィルター2 + ...
     final List<String> allKeywords = [baseKeyword];
 
-    // ユーザーが検索バーに入力した内容を追加
-    final userInput = _searchController.text.trim();
-    if (userInput.isNotEmpty) {
-      allKeywords.add(userInput);
-    }
+    // 사용자 입력은 검색바가 없으므로 제거
 
     // フィルターキーワードを最適化
     for (final filter in selectedFilters) {
@@ -249,7 +193,6 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
 
     debugPrint('🔍 Applying filters with keyword: $keyword');
     debugPrint('🔍 Base keyword from tab: $baseKeyword');
-    debugPrint('🔍 User input: ${userInput.isEmpty ? "なし" : userInput}');
     debugPrint('🔍 Selected filters: $selectedFilters');
     debugPrint('🔍 Filter count: ${selectedFilters.length}');
 
@@ -267,11 +210,6 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
     for (final filter in _ingredientFilters) {
       if (filter['isSelected'] == true) {
         debugPrint('🔍 Ingredient filter selected: ${filter['name']}');
-      }
-    }
-    for (final brand in _popularBrands) {
-      if (brand['isSelected'] == true) {
-        debugPrint('🔍 Brand filter selected: ${brand['name']}');
       }
     }
 
@@ -310,26 +248,17 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
         filter['isSelected'] = false;
       }
 
-      // 人気ブランドフィルターをクリア
-      for (final brand in _popularBrands) {
-        brand['isSelected'] = false;
-      }
+      // 人気ブランドフィルターをクリア (APIから取得したブランドを使用)
+      ref.read(rakutenBrandsProvider.notifier).clearAllSelections();
     });
 
-    // フィルターをクリアした後、現在のタブの基本キーワード + ユーザー入力で再検索
+    // フィルターをクリアした後、現在のタブの基本キーワードで再検索
     final String baseKeyword = _getCurrentTabKeyword();
-    final userInput = _searchController.text.trim();
-
-    String keyword = baseKeyword;
-    if (userInput.isNotEmpty) {
-      keyword = '$baseKeyword $userInput';
-    }
 
     final notifier = ref.read(rakutenProductsProvider.notifier);
 
-    debugPrint('🔍 Filters cleared, searching with: $keyword');
-    debugPrint('🔍 User input: ${userInput.isEmpty ? "なし" : userInput}');
-    notifier.searchPetProducts(keyword: keyword);
+    debugPrint('🔍 Filters cleared, searching with: $baseKeyword');
+    notifier.searchPetProducts(keyword: baseKeyword);
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
@@ -343,148 +272,100 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
   @override
   void dispose() {
     _tabController.dispose();
-    _searchController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Container(
-          decoration: BoxDecoration(
-            color: Colors.grey[100],
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: TextField(
-            controller: _searchController,
-            decoration: InputDecoration(
-              hintText: '検索ワードを入力してください',
-              border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 12,
-              ),
-              suffixIcon: GestureDetector(
-                onTap: () {
-                  // 検索アイコンタップで検索実行
-                  _applyFilters();
-                },
-                child: const Icon(Icons.search, color: Colors.grey),
-              ),
-            ),
-            onSubmitted: (value) {
-              // Enterキーで検索実行
-              _applyFilters();
-            },
-          ),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // カテゴリータブ
-            Container(
-              color: Colors.white,
-              child: TabBar(
-                controller: _tabController,
-                isScrollable: true,
-                indicatorColor: Colors.red,
-                labelColor: Colors.red,
-                unselectedLabelColor: Colors.grey,
-                tabs: _categories
-                    .map((category) => Tab(text: category))
-                    .toList(),
-              ),
-            ),
+      backgroundColor: AppColors.pointOffWhite,
+      appBar: const SoftGradientAppBar(title: ''),
+      body: Column(
+        children: [
+          // 카테고리 탭
+          _buildCategoryTabs(),
 
-            // フィルターセクション
-            Padding(
-              padding: const EdgeInsets.all(16),
+          // 메인 콘텐츠
+          Expanded(
+            child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // 健康心配フィルター
-                  _buildFilterSection('うちの子の健康が気になりますか？', _healthFilters),
-                  const SizedBox(height: 24),
+                  // 필터 섹션
+                  Padding(
+                    padding: const EdgeInsets.all(AppSpacing.lg),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // 건강 관련 필터
+                        _buildFilterSection('うちの子の健康が気になりますか？', _healthFilters),
+                        const SizedBox(height: AppSpacing.xl),
 
-                  // 製造国別フィルター
-                  _buildFilterSection('フード製造国別で見る', _countryFilters),
-                  const SizedBox(height: 24),
+                        // 제조국별 필터
+                        _buildFilterSection('フード製造国別で見る', _countryFilters),
+                        const SizedBox(height: AppSpacing.xl),
 
-                  // 原料成分フィルター
-                  _buildFilterSection('原料成分でフードを見る', _ingredientFilters),
-                  const SizedBox(height: 24),
+                        // 원료 성분 필터
+                        _buildFilterSection('原料成分でフードを見る', _ingredientFilters),
+                        const SizedBox(height: AppSpacing.xl),
 
-                  // フィルターボタン
-                  Row(
-                    children: [
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: _applyFilters,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF1E3A8A),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: const Text(
-                              'フィルターを適用して検索',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: _clearAllFilters,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            decoration: BoxDecoration(
-                              color: Colors.grey[300],
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: const Text(
-                              'フィルターをクリア',
-                              style: TextStyle(
-                                color: Colors.black87,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                        // 액션 버튼들
+                        _buildActionButtons(),
+                        const SizedBox(height: AppSpacing.xl),
+
+                        // 인기 브랜드
+                        _buildPopularBrandsSection(),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 32),
 
-                  // 人気ブランド
-                  _buildPopularBrandsSection(),
+                  // 상품 리스트
+                  _buildProductList(),
                 ],
               ),
             ),
-
-            // 商品リスト
-            _buildProductList(),
-          ],
-        ),
+          ),
+        ],
       ),
+    );
+  }
+
+  /// 카테고리 탭 구성
+  Widget _buildCategoryTabs() {
+    return Container(
+      color: AppColors.pureWhite,
+      child: TabBar(
+        controller: _tabController,
+        isScrollable: true,
+        indicatorColor: AppColors.pointBrown,
+        labelColor: AppColors.pointBrown,
+        unselectedLabelColor: AppColors.pointGray,
+        indicatorWeight: 3,
+        tabs: _categories.map((category) => Tab(text: category)).toList(),
+      ),
+    );
+  }
+
+  /// 액션 버튼들 구성
+  Widget _buildActionButtons() {
+    return Row(
+      children: [
+        Expanded(
+          child: ActionButton.primary(
+            text: '適応',
+            onPressed: _applyFilters,
+            isEnabled: true,
+          ),
+        ),
+        const SizedBox(width: AppSpacing.md),
+        Expanded(
+          child: ActionButton.secondary(
+            text: 'クリア',
+            onPressed: _clearAllFilters,
+            isEnabled: true,
+          ),
+        ),
+      ],
     );
   }
 
@@ -849,16 +730,53 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
   }
 
   /// 商品ページを開く
-  void _openProductPage(RakutenPetProduct product) {
-    // 商品ページを開く処理（簡易実装）
-    debugPrint('🔗 Opening product page: ${product.itemName}');
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('${product.itemName}の商品ページを開きます'),
-        duration: const Duration(seconds: 2),
-        backgroundColor: AppColors.pointBrown,
-      ),
-    );
+  Future<void> _openProductPage(RakutenPetProduct product) async {
+    try {
+      debugPrint('🔗 Opening product page: ${product.itemName}');
+      debugPrint('🔗 Product URL: ${product.itemUrl}');
+
+      final Uri url = Uri.parse(product.itemUrl);
+
+      if (await canLaunchUrl(url)) {
+        await launchUrl(
+          url,
+          mode: LaunchMode.externalApplication, // 外部ブラウザで開く
+        );
+
+        // 成功メッセージ
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('${product.itemName}の商品ページを開きました'),
+              duration: const Duration(seconds: 2),
+              backgroundColor: AppColors.pointBrown,
+            ),
+          );
+        }
+      } else {
+        // URLを開けない場合のエラーハンドリング
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('商品ページを開けませんでした'),
+              duration: Duration(seconds: 2),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      debugPrint('❌ Error opening product page: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('エラーが発生しました: $e'),
+            duration: const Duration(seconds: 3),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   /// お気に入りに追加
@@ -880,49 +798,48 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
       children: [
         Text(
           title,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: Colors.black87,
+          style: AppFonts.bodyLarge.copyWith(
+            fontWeight: FontWeight.bold,
+            color: AppColors.pointBrown,
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.md),
         Wrap(
-          spacing: 8,
-          runSpacing: 8,
+          spacing: AppSpacing.sm,
+          runSpacing: AppSpacing.sm,
           children: filters.map((filter) {
+            final isSelected = filter['isSelected'] == true;
             return GestureDetector(
               onTap: () {
                 setState(() {
                   filter['isSelected'] = !filter['isSelected'];
                 });
-                // フィルターを適用
+                // 필터를 적용
                 _applyFilters();
               },
               child: Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.sm,
                 ),
                 decoration: BoxDecoration(
-                  color: filter['isSelected']
-                      ? Colors.blue[100]
-                      : Colors.grey[200],
-                  borderRadius: BorderRadius.circular(20),
-                  border: filter['isSelected']
-                      ? Border.all(color: Colors.blue, width: 1)
-                      : null,
+                  color: isSelected
+                      ? AppColors.pointBrown
+                      : AppColors.pureWhite,
+                  borderRadius: BorderRadius.circular(AppRadius.large),
+                  border: Border.all(
+                    color: isSelected
+                        ? AppColors.pointBrown
+                        : AppColors.pointGray.withValues(alpha: 0.3),
+                  ),
                 ),
                 child: Text(
                   filter['name'],
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: filter['isSelected']
-                        ? Colors.blue[800]
-                        : Colors.black87,
-                    fontWeight: filter['isSelected']
-                        ? FontWeight.w600
-                        : FontWeight.normal,
+                  style: AppFonts.bodySmall.copyWith(
+                    color: isSelected
+                        ? AppColors.pureWhite
+                        : AppColors.pointGray,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ),
@@ -934,91 +851,152 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
   }
 
   Widget _buildPopularBrandsSection() {
+    final brandState = ref.watch(rakutenBrandsProvider);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           '人気ブランド',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: Colors.black87,
+          style: AppFonts.bodyLarge.copyWith(
+            fontWeight: FontWeight.bold,
+            color: AppColors.pointBrown,
           ),
         ),
-        const SizedBox(height: 16),
-        GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 4,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
-            childAspectRatio: 0.8,
-          ),
-          itemCount: _popularBrands.length,
-          itemBuilder: (context, index) {
-            final brand = _popularBrands[index];
-            final isSelected = brand['isSelected'] == true;
+        const SizedBox(height: AppSpacing.md),
+        SizedBox(
+          height: 140,
+          child: brandState.isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : brandState.error != null
+              ? Center(
+                  child: Text(
+                    'ブランド情報の読み込みに失敗しました',
+                    style: AppFonts.bodyMedium.copyWith(color: Colors.red),
+                  ),
+                )
+              : ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: brandState.brands.length,
+                  itemBuilder: (context, index) {
+                    final brand = brandState.brands[index];
+                    final isSelected = brand.isSelected;
 
-            return GestureDetector(
-              onTap: () {
-                setState(() {
-                  brand['isSelected'] = !isSelected;
-                });
-                // フィルターを適用
-                _applyFilters();
-              },
-              child: Column(
-                children: [
-                  Container(
-                    width: 60,
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: isSelected ? Colors.blue[100] : Colors.grey[200],
-                      borderRadius: BorderRadius.circular(30),
-                      border: isSelected
-                          ? Border.all(color: Colors.blue, width: 2)
-                          : null,
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(30),
-                      child: brand['logo'] != null
-                          ? Image.asset(
-                              brand['logo'],
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return const Icon(
-                                  Icons.pets,
-                                  size: 30,
-                                  color: Colors.grey,
-                                );
-                              },
-                            )
-                          : const Icon(
-                              Icons.pets,
-                              size: 30,
-                              color: Colors.grey,
+                    return Container(
+                      width: 110,
+                      margin: const EdgeInsets.only(right: AppSpacing.md),
+                      child: GestureDetector(
+                        onTap: () {
+                          ref
+                              .read(rakutenBrandsProvider.notifier)
+                              .toggleBrandSelection(brand.brandId);
+                          // 필터를 적용
+                          _applyFilters();
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? AppColors.pointBrown.withValues(alpha: 0.1)
+                                : AppColors.pureWhite,
+                            borderRadius: BorderRadius.circular(
+                              AppRadius.medium,
                             ),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    brand['japaneseName'],
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: isSelected ? Colors.blue[800] : Colors.black87,
-                      fontWeight: isSelected
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                    ),
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-            );
-          },
+                            border: Border.all(
+                              color: isSelected
+                                  ? AppColors.pointBrown
+                                  : AppColors.pointGray.withValues(alpha: 0.3),
+                              width: isSelected ? 2 : 1,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.pointBrown.withValues(
+                                  alpha: 0.1,
+                                ),
+                                blurRadius: 6,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              // 브랜드 로고 이미지
+                              Container(
+                                width: 60,
+                                height: 60,
+                                margin: const EdgeInsets.only(
+                                  bottom: AppSpacing.sm,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(
+                                    AppRadius.small,
+                                  ),
+                                  color: AppColors.pointOffWhite,
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(
+                                    AppRadius.small,
+                                  ),
+                                  child: brand.brandLogoUrl.isNotEmpty
+                                      ? Image.asset(
+                                          brand.brandLogoUrl,
+                                          fit: BoxFit.cover,
+                                          errorBuilder:
+                                              (context, error, stackTrace) {
+                                                return Icon(
+                                                  Icons.pets,
+                                                  color: isSelected
+                                                      ? AppColors.pointBrown
+                                                      : AppColors.pointGray,
+                                                  size: 30,
+                                                );
+                                              },
+                                        )
+                                      : Icon(
+                                          Icons.pets,
+                                          color: isSelected
+                                              ? AppColors.pointBrown
+                                              : AppColors.pointGray,
+                                          size: 30,
+                                        ),
+                                ),
+                              ),
+                              // 브랜드 이름 (영문)
+                              Text(
+                                brand.brandName,
+                                style: AppFonts.bodySmall.copyWith(
+                                  color: isSelected
+                                      ? AppColors.pointBrown
+                                      : AppColors.pointGray,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 10,
+                                ),
+                                textAlign: TextAlign.center,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 2),
+                              // 브랜드 이름 (일본어)
+                              Text(
+                                brand.brandNameJapanese,
+                                style: AppFonts.bodySmall.copyWith(
+                                  color: isSelected
+                                      ? AppColors.pointBrown
+                                      : AppColors.pointGray,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 9,
+                                ),
+                                textAlign: TextAlign.center,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
         ),
       ],
     );

@@ -16,6 +16,7 @@ class DailyPetRegistrationScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    debugPrint('🔍 DailyPetRegistrationScreen 빌드됨, petId: $petId');
     return _PetRegistrationForm(petId: petId);
   }
 }

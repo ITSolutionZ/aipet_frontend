@@ -38,7 +38,7 @@ class SettingsScreen extends ConsumerWidget {
             margin: const EdgeInsets.only(bottom: AppSpacing.xl),
             padding: const EdgeInsets.all(AppSpacing.lg),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppColors.pureWhite,
               borderRadius: BorderRadius.circular(AppRadius.medium),
               boxShadow: [
                 BoxShadow(
@@ -82,27 +82,35 @@ class SettingsScreen extends ConsumerWidget {
             icon: Icons.person,
             title: 'プロフィール編集',
             backgroundColor: const Color(0xFFA88B5A),
+            tileColor: AppColors.pureWhite,
             onTap: () => context.push(AppRouter.profileEditRoute),
           ),
+          const SizedBox(height: AppSpacing.xs),
           SettingsTileWidget(
             icon: Icons.pets,
             title: 'ペット情報編集',
             backgroundColor: const Color(0xFFA88B5A),
+            tileColor: AppColors.pureWhite,
             onTap: () {
-              // 管理中の反応動物画面へ移動
-              context.push(AppRouter.petEditRoute);
+              debugPrint('🔍 ペット情報編集 버튼 클릭됨 - 간단 테스트');
+              // 간단한 테스트: 바로 펫 등록 화면으로 이동
+              context.push('/daily-pet-registration');
             },
           ),
+          const SizedBox(height: AppSpacing.xs),
           SettingsTileWidget(
             icon: Icons.lock,
             title: 'セキュリティ設定',
             backgroundColor: const Color(0xFFA88B5A),
+            tileColor: AppColors.pureWhite,
             onTap: () => context.push('/settings/biometric-security'),
           ),
+          const SizedBox(height: AppSpacing.xs),
           SettingsTileWidget(
             icon: Icons.delete,
             title: 'アカウント削除',
             backgroundColor: const Color(0xFFB85A5A),
+            tileColor: AppColors.pureWhite,
             onTap: () => context.push(AppRouter.accountDeleteRoute),
           ),
 
@@ -114,18 +122,23 @@ class SettingsScreen extends ConsumerWidget {
             icon: Icons.notifications,
             title: 'アラーム設定',
             backgroundColor: const Color(0xFF7A9CC6),
+            tileColor: AppColors.pureWhite,
             onTap: () => context.push(AppRouter.pushNotificationRoute),
           ),
+          const SizedBox(height: AppSpacing.xs),
           SettingsTileWidget(
             icon: Icons.star,
             title: 'プレミアム管理',
             backgroundColor: const Color(0xFF7A9CC6),
+            tileColor: AppColors.pureWhite,
             onTap: () {},
           ),
+          const SizedBox(height: AppSpacing.xs),
           SettingsTileWidget(
             icon: Icons.lightbulb,
             title: 'テーマ設定',
             backgroundColor: const Color(0xFF7A9CC6),
+            tileColor: AppColors.pureWhite,
             onTap: () {},
           ),
 
@@ -137,19 +150,24 @@ class SettingsScreen extends ConsumerWidget {
             icon: Icons.dashboard,
             title: 'データベースダッシュボード (開発用)',
             backgroundColor: const Color(0xFF6B73FF),
+            tileColor: AppColors.pureWhite,
             onTap: () => context.push('/settings/database-dashboard'),
           ),
+          const SizedBox(height: AppSpacing.xs),
           SettingsTileWidget(
             icon: Icons.help,
             title: 'お問い合わせ',
             backgroundColor: const Color(0xFFB8A5A5),
+            tileColor: AppColors.pureWhite,
             onTap: () {},
           ),
+          const SizedBox(height: AppSpacing.xs),
           SettingsTileWidget(
             icon: Icons.info,
             title: 'アプリ情報',
             backgroundColor: const Color(0xFFB8A5A5),
-            onTap: () {},
+            tileColor: AppColors.pureWhite,
+            onTap: () => context.push('/settings/app-info'),
           ),
 
           const SizedBox(height: AppSpacing.xl),
