@@ -180,12 +180,7 @@ class _FeedingScheduleEditScreenState
     await _updateLocalData(_selectedMealType, timeString, amount);
 
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('$_selectedMealTypeのスケジュールを保存しました'),
-          backgroundColor: AppColors.pointGreen,
-        ),
-      );
+      SnackBarService.showSuccess(context, '$_selectedMealTypeのスケジュールを保存しました');
 
       context.pop({
         'mealType': _selectedMealType,

@@ -381,12 +381,7 @@ class _EditWateringRecordScreenState
       await prefs.setStringList('watering_records', updatedRecords);
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('給水記録を更新しました'),
-            backgroundColor: AppColors.pointGreen,
-          ),
-        );
+        SnackBarService.showSuccess(context, '給水記録を更新しました');
         context.pop();
       }
     }
@@ -421,12 +416,7 @@ class _EditWateringRecordScreenState
                 await prefs.setStringList('watering_records', filteredRecords);
 
                 if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('給水記録を削除しました'),
-                      backgroundColor: AppColors.pointBrown,
-                    ),
-                  );
+                  SnackBarService.showSuccess(context, '給水記録を削除しました');
                   context.pop();
                 }
               },

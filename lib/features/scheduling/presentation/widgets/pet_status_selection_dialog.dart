@@ -228,7 +228,10 @@ class _PetStatusSelectionDialogContentState
                               onTap: () {
                                 if (!isSelected &&
                                     state.selectedStatuses.length >= 2) {
-                                  SnackBarService.showWarning(context, '最大2つまで選択できます');
+                                  SnackBarService.showWarning(
+                                    context,
+                                    '最大2つまで選択できます',
+                                  );
                                   return;
                                 }
 

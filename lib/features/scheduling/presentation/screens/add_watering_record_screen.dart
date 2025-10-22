@@ -262,12 +262,7 @@ class _AddWateringRecordScreenState
       await prefs.setStringList('watering_records', records);
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('給水記録を保存しました'),
-            backgroundColor: AppColors.pointGreen,
-          ),
-        );
+        SnackBarService.showSuccess(context, '給水記録を保存しました');
         context.pop();
       }
     }
