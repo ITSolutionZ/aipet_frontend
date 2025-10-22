@@ -1,4 +1,3 @@
-import 'package:aipet_frontend/shared/core/services/snackbar_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -34,9 +33,7 @@ class _ContactFormScreenState extends ConsumerState<ContactFormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const SoftGradientAppBar(
-        title: 'お問い合わせ',
-      ),
+      appBar: const SoftGradientAppBar(title: 'お問い合わせ'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: Form(
@@ -344,10 +341,7 @@ class _ContactFormScreenState extends ConsumerState<ContactFormScreen> {
     } catch (e) {
       if (mounted) {
         // ✅ Shared SnackBarService 사용
-        SnackBarService.showError(
-          context,
-          '送信に失敗しました。もう一度お試しください',
-        );
+        SnackBarService.showError(context, '送信に失敗しました。もう一度お試しください');
       }
     } finally {
       if (mounted) {

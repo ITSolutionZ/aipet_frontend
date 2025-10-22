@@ -1,5 +1,4 @@
 import 'package:aipet_frontend/features/shopping/data/providers/favorite_products_provider.dart';
-import 'package:aipet_frontend/shared/core/services/snackbar_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -219,11 +218,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                       const SizedBox(height: AppSpacing.xs),
                       Row(
                         children: [
-                          const Icon(
-                            Icons.star,
-                            size: 14,
-                            color: Colors.amber,
-                          ),
+                          const Icon(Icons.star, size: 14, color: Colors.amber),
                           const SizedBox(width: 2),
                           Text(
                             product.formattedReviewAverage,
@@ -293,11 +288,11 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
           .removeFavorite(itemCode);
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('お気に入りから削除しました'),
-            duration: Duration(seconds: 2),
-          ),
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showWarning(
+          context,
+          'お気に入りから削除しました',
+          duration: const Duration(seconds: 2),
         );
       }
     }
