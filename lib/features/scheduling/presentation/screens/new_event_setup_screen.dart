@@ -164,11 +164,10 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
           _isEditingHour = false;
         }
       });
-      SnackBarService.showWarning(context, ""(
-        SnackBar(
-          content: Text('$min から $max の間で入力してください'),
-          backgroundColor: AppColors.pointRed,
-        ),
+      // ✅ Shared SnackBarService 사용
+      SnackBarService.showWarning(
+        context,
+        '$min から $max の間で入力してください',
       );
     }
   }
@@ -824,22 +823,14 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
 
   Future<void> _saveEvent() async {
     if (_selectedPet == null) {
-      SnackBarService.showWarning(context, ""(
-        const SnackBar(
-          content: Text('ペットを選択してください'),
-          backgroundColor: AppColors.pointRed,
-        ),
-      );
+      // ✅ Shared SnackBarService 사용
+      SnackBarService.showWarning(context, 'ペットを選択してください');
       return;
     }
 
     if (_eventName.isEmpty) {
-      SnackBarService.showWarning(context, ""(
-        const SnackBar(
-          content: Text('イベント名を入力してください'),
-          backgroundColor: AppColors.pointRed,
-        ),
-      );
+      // ✅ Shared SnackBarService 사용
+      SnackBarService.showWarning(context, 'イベント名を入力してください');
       return;
     }
 
@@ -887,23 +878,15 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
       await CalendarEventService.instance.saveCalendarEvent(event);
 
       if (mounted) {
-        SnackBarService.showWarning(context, ""(
-          const SnackBar(
-            content: Text('イベントが保存されました'),
-            backgroundColor: AppColors.pointGreen,
-          ),
-        );
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showSuccess(context, 'イベントが保存されました');
         // 캘린더 화면으로 돌아가면서 이벤트 새로고침을 위한 결과 전달
         context.pop(true);
       }
     } catch (e) {
       if (mounted) {
-        SnackBarService.showWarning(context, ""(
-          SnackBar(
-            content: Text('イベントの保存に失敗しました: $e'),
-            backgroundColor: AppColors.pointRed,
-          ),
-        );
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showError(context, 'イベントの保存に失敗しました: $e');
       }
     }
   }

@@ -24,4 +24,3 @@ grep -r "ScaffoldMessenger.of(context).showSnackBar" lib/features/ --include="*.
 echo ""
 echo "📊 Total SnackBar calls:"
 grep -r "ScaffoldMessenger.of(context).showSnackBar" lib/features/ --include="*.dart" | wc -l
-
