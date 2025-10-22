@@ -11,8 +11,8 @@ import 'package:aipet_frontend/features/facility/presentation/screens/hospital_d
 import 'package:aipet_frontend/features/home/presentation/screens/favorites_screen.dart';
 import 'package:aipet_frontend/features/notification/presentation/screens/notification_detail_screen.dart';
 import 'package:aipet_frontend/features/notification/presentation/screens/notification_list_screen.dart';
-import 'package:aipet_frontend/features/pet_activities/presentation/screens/all_tricks_screen.dart';
-import 'package:aipet_frontend/features/pet_activities/presentation/screens/youtube_training_videos_screen.dart';
+// import 'package:aipet_frontend/features/pet_activities/presentation/screens/all_tricks_screen.dart';
+// import 'package:aipet_frontend/features/pet_activities/presentation/screens/youtube_training_videos_screen.dart';
 import 'package:aipet_frontend/features/pet_health/presentation/screens/weight_tracking_screen.dart';
 import 'package:aipet_frontend/features/pet_profile/presentation/screens/pet_profile_screen.dart';
 import 'package:aipet_frontend/features/scheduling/domain/entities/calendar_event_entity.dart';
@@ -173,19 +173,19 @@ class StandaloneRoutes {
       builder: (context, state) =>
           const Scaffold(body: Center(child: Text('イベント詳細画面 - 近日公開'))),
     ),
-    GoRoute(
-      path: RouteConstants.allTricksRoute,
-      name: 'all-tricks',
-      builder: (context, state) => const AllTricksScreen(),
-    ),
-    GoRoute(
-      path: RouteConstants.trainingVideosRoute,
-      name: 'training-videos',
-      builder: (context, state) {
-        final petId = state.uri.queryParameters['petId'] ?? 'pet1';
-        return YouTubeTrainingVideosScreen(petId: petId);
-      },
-    ),
+    // GoRoute(
+    //   path: RouteConstants.allTricksRoute,
+    //   name: 'all-tricks',
+    //   builder: (context, state) => const AllTricksScreen(),
+    // ),
+    // GoRoute(
+    //   path: RouteConstants.trainingVideosRoute,
+    //   name: 'training-videos',
+    //   builder: (context, state) {
+    //     final petId = state.uri.queryParameters['petId'] ?? 'pet1';
+    //     return YouTubeTrainingVideosScreen(petId: petId);
+    //   },
+    // ),
     GoRoute(
       path: RouteConstants.liveWalkRoute,
       name: 'live-walk',

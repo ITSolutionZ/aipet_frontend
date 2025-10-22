@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/features/pet_activities/presentation/screens/learn_trick_screen.dart';
+// import 'package:aipet_frontend/features/pet_activities/presentation/screens/learn_trick_screen.dart';
 import 'package:aipet_frontend/features/pet_feeding/presentation/screens/pet_feeding_screens.dart';
 import 'package:aipet_frontend/features/pet_profile/presentation/screens/vaccine_screen.dart';
 import 'package:go_router/go_router.dart';
@@ -46,10 +46,10 @@ class PetRoutes {
     ),
 
     // ===== PET ACTIVITIES =====
-    GoRoute(
-      path: RouteConstants.allTricksRoute,
-      name: 'learn-trick',
-      builder: (context, state) => const LearnTrickScreen(),
-    ),
+    // GoRoute(
+    //   path: RouteConstants.allTricksRoute,
+    //   name: 'learn-trick',
+    //   builder: (context, state) => const LearnTrickScreen(),
+    // ),
   ];
 }
