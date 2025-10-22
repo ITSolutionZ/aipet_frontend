@@ -1,9 +1,12 @@
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../data/models/favorite_product_model.dart';
 import '../../data/models/rakuten_pet_product_model.dart';
+import '../../data/providers/favorite_products_provider.dart';
 import '../../data/providers/rakuten_brands_provider.dart';
 import '../../data/providers/rakuten_products_provider.dart';
 
@@ -76,8 +79,7 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
     // 初期データを読み込み
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _onTabChanged(0);
-      // ブランド情報をAPIから取得
-      ref.read(rakutenBrandsProvider.notifier).searchPopularBrands();
+      // ブランド情報は _onTabChanged 内で検索されるため、ここでは不要
     });
   }
 
@@ -89,6 +91,11 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
 
     debugPrint('🔍 Tab changed to: $baseKeyword');
     notifier.searchPetProducts(keyword: baseKeyword);
+
+    // タブに対応するブランドを検索
+    ref.read(rakutenBrandsProvider.notifier).searchPopularBrands(
+          keyword: baseKeyword,
+        );
   }
 
   /// 現在のタブの基本キーワードを取得
@@ -115,52 +122,55 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
     }
   }
 
-  /// フィルターを適用して検索
+  /// フィルターを適用して検索 (AND条件)
   void _applyFilters() {
     final notifier = ref.read(rakutenProductsProvider.notifier);
 
-    // 現在のタブの基本キーワードを取得
+    // 1. 現在のタブの基本キーワードを取得 (必須)
     final String baseKeyword = _getCurrentTabKeyword();
 
-    // 選択されたフィルターを収集
-    final List<String> selectedFilters = [];
+    // 2. チップフィルターを収集 (健康/国/成分)
+    final List<String> chipFilters = [];
 
     // 健康関連フィルター
     for (final filter in _healthFilters) {
       if (filter['isSelected'] == true) {
-        selectedFilters.add(filter['name']);
+        chipFilters.add(filter['name']);
       }
     }
 
     // 製造国フィルター
     for (final filter in _countryFilters) {
       if (filter['isSelected'] == true) {
-        selectedFilters.add(filter['name']);
+        chipFilters.add(filter['name']);
       }
     }
 
     // 原料成分フィルター
     for (final filter in _ingredientFilters) {
       if (filter['isSelected'] == true) {
-        selectedFilters.add(filter['name']);
+        chipFilters.add(filter['name']);
       }
     }
 
-    // 人気ブランドフィルター (APIから取得したブランドを使用)
+    // 3. ブランドフィルターを収集
     final brandState = ref.read(rakutenBrandsProvider);
+    final List<String> selectedBrands = [];
+
     for (final brand in brandState.brands) {
       if (brand.isSelected) {
-        selectedFilters.add(brand.brandName);
+        selectedBrands.add(brand.brandName);
       }
     }
 
-    // 検索キーワードを構築: タブ名 + ユーザー入力 + フィルター1 + フィルター2 + ...
-    final List<String> allKeywords = [baseKeyword];
+    // 4. 検索キーワードを構築 (AND条件): タブ名 + チップフィルター + ブランド
+    final List<String> allKeywords = [];
 
-    // 사용자 입력은 검색바가 없으므로 제거
+    // 4-1. タブ名 (必須)
+    allKeywords.add(baseKeyword);
 
-    // フィルターキーワードを最適化
-    for (final filter in selectedFilters) {
+    // 4-2. チップフィルターを最適化して追加
+    for (final filter in chipFilters) {
       switch (filter) {
         case 'スペイン産':
           allKeywords.add('スペイン');
@@ -189,45 +199,65 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
       }
     }
 
+    // 4-3. ブランド名を最適化して追加
+    for (final brandName in selectedBrands) {
+      switch (brandName) {
+        case 'ROYAL CANIN':
+          allKeywords.add('ロイヤルカナン');
+          break;
+        case 'HILLS':
+          allKeywords.add('ヒルズ');
+          break;
+        case 'ORIJEN':
+          allKeywords.add('オリジン');
+          break;
+        case 'ACANA':
+          allKeywords.add('アカナ');
+          break;
+        case 'NUTRO':
+          allKeywords.add('ニュートロ');
+          break;
+        case 'PURINA':
+          allKeywords.add('ピュリナ');
+          break;
+        case 'IAMS':
+          allKeywords.add('アイムス');
+          break;
+        default:
+          allKeywords.add(brandName);
+          break;
+      }
+    }
+
+    // 5. AND条件でキーワードを結合 (スペース区切り)
     final keyword = allKeywords.join(' ');
 
-    debugPrint('🔍 Applying filters with keyword: $keyword');
-    debugPrint('🔍 Base keyword from tab: $baseKeyword');
-    debugPrint('🔍 Selected filters: $selectedFilters');
-    debugPrint('🔍 Filter count: ${selectedFilters.length}');
+    // 6. デバッグログ
+    debugPrint('═══════════════════════════════════════');
+    debugPrint('🔍 検索条件 (AND条件)');
+    debugPrint('═══════════════════════════════════════');
+    debugPrint('📌 タブ: $baseKeyword');
+    debugPrint('🏷️ チップフィルター (${chipFilters.length}個): $chipFilters');
+    debugPrint('🎯 ブランド (${selectedBrands.length}個): $selectedBrands');
+    debugPrint('🔎 最終検索キーワード: "$keyword"');
+    debugPrint('═══════════════════════════════════════');
 
-    // 各 필터 타입별로 선택된 항목들을 로깅
-    for (final filter in _healthFilters) {
-      if (filter['isSelected'] == true) {
-        debugPrint('🔍 Health filter selected: ${filter['name']}');
-      }
-    }
-    for (final filter in _countryFilters) {
-      if (filter['isSelected'] == true) {
-        debugPrint('🔍 Country filter selected: ${filter['name']}');
-      }
-    }
-    for (final filter in _ingredientFilters) {
-      if (filter['isSelected'] == true) {
-        debugPrint('🔍 Ingredient filter selected: ${filter['name']}');
-      }
-    }
-
-    // 常に検索を実行（フィルターがなくてもタブの基本キーワードで検索）
+    // 7. 検索を実行
     notifier.searchPetProducts(keyword: keyword);
 
-    // スナックバーでフィルター適用を通知
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          selectedFilters.isNotEmpty
-              ? '${selectedFilters.length}個のフィルターを適用しました'
-              : 'フィルターをクリアしました',
+    // 8. スナックバーで通知
+    final totalFilters = chipFilters.length + selectedBrands.length;
+    if (totalFilters > 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            '$totalFilters個のフィルターを適用しました (AND条件)',
+          ),
+          duration: const Duration(seconds: 2),
+          backgroundColor: const Color(0xFF1E3A8A),
         ),
-        duration: const Duration(seconds: 2),
-        backgroundColor: const Color(0xFF1E3A8A),
-      ),
-    );
+      );
+    }
   }
 
   /// すべてのフィルターをクリア
@@ -780,16 +810,51 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
   }
 
   /// お気に入りに追加
-  void _addToFavorites(RakutenPetProduct product) {
-    // お気に入り追加処理（簡易実装）
-    debugPrint('⭐ Added to favorites: ${product.itemName}');
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('${product.itemName}をお気に入りに追加しました'),
-        duration: const Duration(seconds: 2),
-        backgroundColor: AppColors.pointBrown,
-      ),
+  Future<void> _addToFavorites(RakutenPetProduct product) async {
+    // RakutenPetProductをFavoriteProductに変換
+    final favoriteProduct = FavoriteProduct(
+      itemCode: product.itemCode,
+      itemName: product.itemName,
+      imageUrl: product.imageUrl,
+      itemPrice: product.itemPrice,
+      shopName: product.shopName,
+      itemUrl: product.itemUrl,
+      reviewAverage: product.reviewAverage,
+      reviewCount: product.reviewCount,
+      addedAt: DateTime.now(),
     );
+
+    // お気に入りに追加
+    final success = await ref
+        .read(favoriteProductsProvider.notifier)
+        .addFavorite(favoriteProduct);
+
+    if (!mounted) return;
+
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${product.itemName}をお気に入りに追加しました'),
+          duration: const Duration(seconds: 2),
+          backgroundColor: AppColors.pointBrown,
+          action: SnackBarAction(
+            label: '見る',
+            textColor: Colors.white,
+            onPressed: () {
+              context.push('/favorites');
+            },
+          ),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('既にお気に入りに追加されています'),
+          duration: Duration(seconds: 2),
+          backgroundColor: Colors.orange,
+        ),
+      );
+    }
   }
 
   Widget _buildFilterSection(String title, List<Map<String, dynamic>> filters) {
@@ -853,6 +918,11 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
   Widget _buildPopularBrandsSection() {
     final brandState = ref.watch(rakutenBrandsProvider);
 
+    // 디버그 로그 추가
+    debugPrint(
+      '🏷️ Brand State: isLoading=${brandState.isLoading}, error=${brandState.error}, brands=${brandState.brands.length}',
+    );
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -875,6 +945,15 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
                     style: AppFonts.bodyMedium.copyWith(color: Colors.red),
                   ),
                 )
+              : brandState.brands.isEmpty
+              ? Center(
+                  child: Text(
+                    'ブランド情報がありません',
+                    style: AppFonts.bodyMedium.copyWith(
+                      color: AppColors.pointGray,
+                    ),
+                  ),
+                )
               : ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: brandState.brands.length,
@@ -890,8 +969,11 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
                           ref
                               .read(rakutenBrandsProvider.notifier)
                               .toggleBrandSelection(brand.brandId);
-                          // 필터를 적용
-                          _applyFilters();
+
+                          // 상태 업데이트 후 필터 적용
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            _applyFilters();
+                          });
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -920,7 +1002,7 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              // 브랜드 로고 이미지
+                              // 브랜드 로고 아이콘
                               Container(
                                 width: 60,
                                 height: 60,
@@ -932,32 +1014,77 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
                                     AppRadius.small,
                                   ),
                                   color: AppColors.pointOffWhite,
+                                  border: Border.all(
+                                    color: isSelected
+                                        ? AppColors.pointBrown
+                                        : AppColors.pointGray
+                                            .withValues(alpha: 0.2),
+                                    width: isSelected ? 2 : 1,
+                                  ),
                                 ),
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(
                                     AppRadius.small,
                                   ),
                                   child: brand.brandLogoUrl.isNotEmpty
-                                      ? Image.asset(
+                                      ? Image.network(
                                           brand.brandLogoUrl,
                                           fit: BoxFit.cover,
                                           errorBuilder:
                                               (context, error, stackTrace) {
-                                                return Icon(
-                                                  Icons.pets,
+                                            return Center(
+                                              child: Text(
+                                                brand.brandName.isNotEmpty
+                                                    ? brand.brandName[0]
+                                                        .toUpperCase()
+                                                    : '?',
+                                                style: AppFonts.titleLarge
+                                                    .copyWith(
                                                   color: isSelected
                                                       ? AppColors.pointBrown
                                                       : AppColors.pointGray,
-                                                  size: 30,
-                                                );
-                                              },
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 28,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          loadingBuilder:
+                                              (context, child, loadingProgress) {
+                                            if (loadingProgress == null) {
+                                              return child;
+                                            }
+                                            return Center(
+                                              child: CircularProgressIndicator(
+                                                value: loadingProgress
+                                                            .expectedTotalBytes !=
+                                                        null
+                                                    ? loadingProgress
+                                                            .cumulativeBytesLoaded /
+                                                        loadingProgress
+                                                            .expectedTotalBytes!
+                                                    : null,
+                                                strokeWidth: 2,
+                                                color: AppColors.pointBrown,
+                                              ),
+                                            );
+                                          },
                                         )
-                                      : Icon(
-                                          Icons.pets,
-                                          color: isSelected
-                                              ? AppColors.pointBrown
-                                              : AppColors.pointGray,
-                                          size: 30,
+                                      : Center(
+                                          child: Text(
+                                            brand.brandName.isNotEmpty
+                                                ? brand.brandName[0]
+                                                    .toUpperCase()
+                                                : '?',
+                                            style:
+                                                AppFonts.titleLarge.copyWith(
+                                              color: isSelected
+                                                  ? AppColors.pointBrown
+                                                  : AppColors.pointGray,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 28,
+                                            ),
+                                          ),
                                         ),
                                 ),
                               ),

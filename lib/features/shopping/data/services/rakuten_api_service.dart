@@ -455,15 +455,14 @@ class RakutenApiService {
 
   /// 人気ブランドを検索
   Future<List<RakutenBrand>> searchPopularBrands({
-    String keyword = 'ペットフード',
+    String keyword = 'ドッグフード',
     int page = 1,
-    int hits = 20,
+    int hits = 30,
   }) async {
     try {
       if (_applicationId.isEmpty) {
-        throw Exception(
-          'Application ID is not set. Please check your .env file.',
-        );
+        debugPrint('⚠️ Application ID is empty, returning default brands');
+        return _getDefaultBrands();
       }
 
       final queryParams = <String, String>{
@@ -473,15 +472,13 @@ class RakutenApiService {
         'keyword': keyword,
         'page': page.toString(),
         'hits': hits.toString(),
-        'sort': '+reviewCount', // レビュー数順
+        'sort': '-reviewCount', // レビュー数の多い順
         'availability': '1',
         'imageFlag': '1',
         'formatVersion': '2',
       };
 
-      final uri = Uri.parse(
-        _itemSearchUrl,
-      ).replace(queryParameters: queryParams);
+      final uri = Uri.parse(_itemSearchUrl).replace(queryParameters: queryParams);
 
       debugPrint('🔍 Brand Search URL: ${uri.toString()}');
 
@@ -493,44 +490,70 @@ class RakutenApiService {
         final data = json.decode(response.body);
         final items = data['Items'] as List<dynamic>? ?? [];
 
+        debugPrint('📦 Found ${items.length} items for brand extraction');
+
         if (items.isEmpty) {
-          debugPrint('⚠️ No brands found for keyword: $keyword');
+          debugPrint('⚠️ No items found, returning default brands');
           return _getDefaultBrands();
         }
 
-        // ブランド情報を抽出
+        // ブランド情報を抽出 (shopNameベース)
         final Map<String, RakutenBrand> brandMap = {};
+        final Set<String> processedShops = {};
 
         for (final item in items) {
-          final itemData = item['Item'] as Map<String, dynamic>? ?? {};
-          final shopName = _safeGetString(itemData, 'shopName');
-          final shopCode = _safeGetString(itemData, 'shopCode');
+          if (item is! Map<String, dynamic>) continue;
 
-          if (shopName.isNotEmpty && shopCode.isNotEmpty) {
-            // 既存のブランドかチェック
-            if (!brandMap.containsKey(shopCode)) {
-              brandMap[shopCode] = RakutenBrand(
-                brandId: shopCode,
-                brandName: shopName,
-                brandNameJapanese: _getJapaneseBrandName(shopName),
-                brandLogoUrl: _getBrandLogoUrl(shopName),
-                brandDescription: _getBrandDescription(shopName),
-                productCount: 1,
-              );
-            } else {
-              // 商品数を増加
-              final existingBrand = brandMap[shopCode]!;
-              brandMap[shopCode] = existingBrand.copyWith(
-                productCount: existingBrand.productCount + 1,
-              );
-            }
+          final shopName = _safeGetString(item, 'shopName');
+          final shopCode = _safeGetString(item, 'shopCode');
+          final imageUrl = _getSimpleImageUrl(item);
+
+          // shopNameが空またはすでに処理済みの場合はスキップ
+          if (shopName.isEmpty || processedShops.contains(shopCode)) continue;
+
+          // ブランド名を抽出 (shopNameから)
+          final brandInfo = _extractBrandInfo(shopName);
+          final brandName = brandInfo['brandName'] ?? '';
+          final brandNameJapanese = brandInfo['brandNameJapanese'] ?? '';
+          final description = brandInfo['description'] ?? '';
+
+          debugPrint('🏪 Shop: $shopName → Brand: $brandName');
+
+          if (brandName.isNotEmpty && !brandMap.containsKey(shopCode)) {
+            brandMap[shopCode] = RakutenBrand(
+              brandId: shopCode,
+              brandName: brandName,
+              brandNameJapanese: brandNameJapanese,
+              brandLogoUrl: imageUrl,
+              brandDescription: description,
+              productCount: 1,
+            );
+            processedShops.add(shopCode);
+
+            debugPrint('✅ Brand added: $brandName (Logo: ${imageUrl.isNotEmpty ? "✓" : "✗"})');
+
+            // 최대 8개 브랜드만 수집
+            if (brandMap.length >= 8) break;
           }
         }
 
         final brands = brandMap.values.toList();
-        debugPrint('🏷️ Found ${brands.length} brands');
+        debugPrint('🏷️ Extracted ${brands.length} brands from API');
 
-        return brands;
+        // ブランドが少ない場合はデフォルトブランドで補完
+        if (brands.length < 8) {
+          final defaultBrands = _getDefaultBrands();
+          final existingBrandIds = brands.map((b) => b.brandId).toSet();
+
+          for (final defaultBrand in defaultBrands) {
+            if (!existingBrandIds.contains(defaultBrand.brandId)) {
+              brands.add(defaultBrand);
+              if (brands.length >= 8) break;
+            }
+          }
+        }
+
+        return brands.take(8).toList();
       } else {
         debugPrint('❌ Brand search failed: ${response.statusCode}');
         return _getDefaultBrands();
@@ -541,6 +564,56 @@ class RakutenApiService {
     }
   }
 
+  /// ブランド情報を抽出 (shopNameから)
+  Map<String, String> _extractBrandInfo(String shopName) {
+    // 既知のブランド名マッピング
+    final brandMappings = {
+      'ロイヤルカナン': {'en': 'ROYAL CANIN', 'ja': 'ロイヤルカナン', 'desc': 'フランス発のプレミアムペットフードブランド'},
+      'ヒルズ': {'en': 'HILLS', 'ja': 'ヒルズ', 'desc': '獣医師推奨のサイエンス・ダイエット'},
+      'HILLS': {'en': 'HILLS', 'ja': 'ヒルズ', 'desc': '獣医師推奨のサイエンス・ダイエット'},
+      'オリジン': {'en': 'ORIJEN', 'ja': 'オリジン', 'desc': 'カナダ産の高品質ペットフード'},
+      'ORIJEN': {'en': 'ORIJEN', 'ja': 'オリジン', 'desc': 'カナダ産の高品質ペットフード'},
+      'アカナ': {'en': 'ACANA', 'ja': 'アカナ', 'desc': '自然な原材料を使用したペットフード'},
+      'ACANA': {'en': 'ACANA', 'ja': 'アカナ', 'desc': '自然な原材料を使用したペットフード'},
+      'ニュートロ': {'en': 'NUTRO', 'ja': 'ニュートロ', 'desc': '自然素材を使用したプレミアムフード'},
+      'NUTRO': {'en': 'NUTRO', 'ja': 'ニュートロ', 'desc': '自然素材を使用したプレミアムフード'},
+      'ピュリナ': {'en': 'PURINA', 'ja': 'ピュリナ', 'desc': '世界的なペットフードブランド'},
+      'PURINA': {'en': 'PURINA', 'ja': 'ピュリナ', 'desc': '世界的なペットフードブランド'},
+      'アイムス': {'en': 'IAMS', 'ja': 'アイムス', 'desc': '科学的に証明された栄養バランス'},
+      'IAMS': {'en': 'IAMS', 'ja': 'アイムス', 'desc': '科学的に証明された栄養バランス'},
+    };
+
+    // shopNameから既知のブランド名を検索
+    for (final entry in brandMappings.entries) {
+      if (shopName.contains(entry.key)) {
+        return {
+          'brandName': entry.value['en']!,
+          'brandNameJapanese': entry.value['ja']!,
+          'description': entry.value['desc']!,
+        };
+      }
+    }
+
+    // マッチしない場合は、shopNameから"公式"などを除去してブランド名として使用
+    final cleanedName = shopName
+        .replaceAll('公式', '')
+        .replaceAll('ショップ', '')
+        .replaceAll('楽天市場店', '')
+        .replaceAll('店', '')
+        .trim();
+
+    return {
+      'brandName': cleanedName,
+      'brandNameJapanese': cleanedName,
+      'description': 'ペットフードブランド',
+    };
+  }
+
+  /// デフォルトブランドリスト (public method)
+  List<RakutenBrand> getDefaultBrandsPublic() {
+    return _getDefaultBrands();
+  }
+
   /// デフォルトブランドリスト
   List<RakutenBrand> _getDefaultBrands() {
     return const [
@@ -548,7 +621,7 @@ class RakutenApiService {
         brandId: 'royal_canin',
         brandName: 'ROYAL CANIN',
         brandNameJapanese: 'ロイヤルカナン',
-        brandLogoUrl: 'assets/images/brands/royal_canin.png',
+        brandLogoUrl: 'assets/images/placeholder.png',
         brandDescription: 'フランス発のプレミアムペットフードブランド',
         productCount: 0,
       ),
@@ -556,7 +629,7 @@ class RakutenApiService {
         brandId: 'hills',
         brandName: 'HILLS',
         brandNameJapanese: 'ヒルズ',
-        brandLogoUrl: 'assets/images/brands/hills.png',
+        brandLogoUrl: 'assets/images/placeholder.png',
         brandDescription: '獣医師推奨のサイエンス・ダイエット',
         productCount: 0,
       ),
@@ -564,7 +637,7 @@ class RakutenApiService {
         brandId: 'orijen',
         brandName: 'ORIJEN',
         brandNameJapanese: 'オリジン',
-        brandLogoUrl: 'assets/images/brands/orijen.png',
+        brandLogoUrl: 'assets/images/placeholder.png',
         brandDescription: 'カナダ産の高品質ペットフード',
         productCount: 0,
       ),
@@ -572,7 +645,7 @@ class RakutenApiService {
         brandId: 'acana',
         brandName: 'ACANA',
         brandNameJapanese: 'アカナ',
-        brandLogoUrl: 'assets/images/brands/acana.png',
+        brandLogoUrl: 'assets/images/placeholder.png',
         brandDescription: '自然な原材料を使用したペットフード',
         productCount: 0,
       ),
@@ -580,63 +653,37 @@ class RakutenApiService {
         brandId: 'ziwi_peak',
         brandName: 'ZIWI PEAK',
         brandNameJapanese: 'ジウィピーク',
-        brandLogoUrl: 'assets/images/brands/ziwi_peak.png',
+        brandLogoUrl: 'assets/images/placeholder.png',
         brandDescription: 'ニュージーランド産のプレミアムフード',
+        productCount: 0,
+      ),
+      RakutenBrand(
+        brandId: 'canidae',
+        brandName: 'CANIDAE',
+        brandNameJapanese: 'カニデ',
+        brandLogoUrl: 'assets/images/placeholder.png',
+        brandDescription: '全ライフステージ対応のペットフード',
+        productCount: 0,
+      ),
+      RakutenBrand(
+        brandId: 'wellness',
+        brandName: 'WELLNESS',
+        brandNameJapanese: 'ウェルネス',
+        brandLogoUrl: 'assets/images/placeholder.png',
+        brandDescription: '自然素材を使用したヘルシーフード',
+        productCount: 0,
+      ),
+      RakutenBrand(
+        brandId: 'blue_buffalo',
+        brandName: 'BLUE BUFFALO',
+        brandNameJapanese: 'ブルーバッファロー',
+        brandLogoUrl: 'assets/images/placeholder.png',
+        brandDescription: '天然素材を使用したプレミアムフード',
         productCount: 0,
       ),
     ];
   }
 
-  /// ブランド名の日本語変換
-  String _getJapaneseBrandName(String brandName) {
-    final brandMap = {
-      'ROYAL CANIN': 'ロイヤルカナン',
-      'HILLS': 'ヒルズ',
-      'ORIJEN': 'オリジン',
-      'ACANA': 'アカナ',
-      'ZIWI PEAK': 'ジウィピーク',
-      'CANIDAE': 'カニデ',
-      'WELLNESS': 'ウェルネス',
-      'BLUE BUFFALO': 'ブルーバッファロー',
-      'NATURAL BALANCE': 'ナチュラルバランス',
-      'NUTRO': 'ナチュロ',
-    };
-    return brandMap[brandName.toUpperCase()] ?? brandName;
-  }
-
-  /// ブランドロゴURL取得
-  String _getBrandLogoUrl(String brandName) {
-    final brandMap = {
-      'ROYAL CANIN': 'assets/images/brands/royal_canin.png',
-      'HILLS': 'assets/images/brands/hills.png',
-      'ORIJEN': 'assets/images/brands/orijen.png',
-      'ACANA': 'assets/images/brands/acana.png',
-      'ZIWI PEAK': 'assets/images/brands/ziwi_peak.png',
-      'CANIDAE': 'assets/images/brands/canidae.png',
-      'WELLNESS': 'assets/images/brands/wellness.png',
-      'BLUE BUFFALO': 'assets/images/brands/blue_buffalo.png',
-      'NATURAL BALANCE': 'assets/images/brands/natural_balance.png',
-      'NUTRO': 'assets/images/brands/nutro.png',
-    };
-    return brandMap[brandName.toUpperCase()] ?? 'assets/images/placeholder.png';
-  }
-
-  /// ブランド説明取得
-  String _getBrandDescription(String brandName) {
-    final brandMap = {
-      'ROYAL CANIN': 'フランス発のプレミアムペットフードブランド',
-      'HILLS': '獣医師推奨のサイエンス・ダイエット',
-      'ORIJEN': 'カナダ産の高品質ペットフード',
-      'ACANA': '自然な原材料を使用したペットフード',
-      'ZIWI PEAK': 'ニュージーランド産のプレミアムフード',
-      'CANIDAE': '全ライフステージ対応のペットフード',
-      'WELLNESS': '自然素材を使用したヘルシーフード',
-      'BLUE BUFFALO': '天然素材を使用したプレミアムフード',
-      'NATURAL BALANCE': 'バランスの取れた栄養設計',
-      'NUTRO': '自然な原材料を使用したペットフード',
-    };
-    return brandMap[brandName.toUpperCase()] ?? 'ペットフードブランド';
-  }
 
   /// 価格帯でペット商品を検索
   Future<List<RakutenPetProduct>> searchPetProductsByPrice({

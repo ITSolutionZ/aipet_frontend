@@ -16,26 +16,12 @@ class DrawerLocalDatasource {
     'joinDate': '2024-01-01',
   };
 
-  /// 드로워 정보 배너 데이터
-  static const Map<String, dynamic> infoBanner = {
-    'title': '一緒に情報を登録してカスタムサービスを受けてください',
-    'buttonText': '情報設定',
-    'isEnabled': true,
-  };
 
   /// 서비스 문의 섹션 데이터
   static const Map<String, dynamic> serviceInquiry = {
     'title': 'サービスお問い合わせ',
     'description': 'ご質問やサポートが必要な場合はお気軽にお問い合わせください',
     'contactEmail': 'support@aipet.com',
-    'isEnabled': true,
-  };
-
-  /// 북마크 섹션 데이터
-  static const Map<String, dynamic> bookmarkSection = {
-    'title': 'マイブックマーク',
-    'description': 'お気に入りのコンテンツを管理',
-    'itemCount': 0,
     'isEnabled': true,
   };
 
@@ -49,19 +35,10 @@ class DrawerLocalDatasource {
     return Map.from(userProfile);
   }
 
-  /// 정보 배너 데이터 가져오기
-  static Map<String, dynamic> getInfoBanner() {
-    return Map.from(infoBanner);
-  }
 
   /// 서비스 문의 데이터 가져오기
   static Map<String, dynamic> getServiceInquiry() {
     return Map.from(serviceInquiry);
-  }
-
-  /// 북마크 섹션 데이터 가져오기
-  static Map<String, dynamic> getBookmarkSection() {
-    return Map.from(bookmarkSection);
   }
 
   /// 통계 업데이트 (시뮬레이션)

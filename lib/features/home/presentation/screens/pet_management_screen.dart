@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
-import 'package:aipet_frontend/shared/domain/entities/pet_profile_entity.dart';
 import 'package:aipet_frontend/shared/services/image_storage_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
@@ -245,11 +244,14 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
 
   /// 펫 카드 위젯
   Widget _buildPetCard(BuildContext context, PetProfileEntity pet) {
+    // 숨김 탭 여부 확인
+    final isHiddenTab = _selectedTabIndex == 1;
+
     return Dismissible(
       key: Key('pet_${pet.id}'),
       direction: DismissDirection.horizontal,
-      background: _buildSwipeBackground(true), // 삭제 배경
-      secondaryBackground: _buildSwipeBackground(false), // 숨김 배경
+      background: _buildSwipeBackground(true, isHiddenTab), // 삭제 배경
+      secondaryBackground: _buildSwipeBackground(false, isHiddenTab), // 숨김/복원 배경
       resizeDuration: const Duration(milliseconds: 200),
       confirmDismiss: (direction) async {
         return _showSwipeActionDialog(context, pet, direction);
@@ -258,7 +260,12 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
         if (direction == DismissDirection.startToEnd) {
           _deletePet(context, pet);
         } else {
-          _hidePet(context, pet);
+          // 숨김 탭이면 복원, 아니면 숨김
+          if (isHiddenTab) {
+            _restorePet(context, pet);
+          } else {
+            _hidePet(context, pet);
+          }
         }
       },
       child: GestureDetector(
@@ -409,7 +416,17 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
   }
 
   /// 스와이프 배경 위젯
-  Widget _buildSwipeBackground(bool isDelete) {
+  Widget _buildSwipeBackground(bool isDelete, bool isHiddenTab) {
+    // 숨김 탭에서는 오른쪽 스와이프가 "복원"
+    final isRestore = !isDelete && isHiddenTab;
+    final icon = isDelete
+        ? Icons.delete
+        : (isRestore ? Icons.visibility : Icons.visibility_off);
+    final label = isDelete ? '삭제' : (isRestore ? '복원' : '숨김');
+    final color = isDelete
+        ? Colors.red
+        : (isRestore ? Colors.green : Colors.orange);
+
     return Container(
       alignment: isDelete ? Alignment.centerLeft : Alignment.centerRight,
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -417,15 +434,10 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
         gradient: LinearGradient(
           begin: isDelete ? Alignment.centerLeft : Alignment.centerRight,
           end: isDelete ? Alignment.centerRight : Alignment.centerLeft,
-          colors: isDelete
-              ? [
-                  Colors.red.withValues(alpha: 0.8),
-                  Colors.red.withValues(alpha: 0.6),
-                ]
-              : [
-                  Colors.orange.withValues(alpha: 0.8),
-                  Colors.orange.withValues(alpha: 0.6),
-                ],
+          colors: [
+            color.withValues(alpha: 0.8),
+            color.withValues(alpha: 0.6),
+          ],
         ),
         borderRadius: BorderRadius.circular(12),
       ),
@@ -433,13 +445,13 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
-            isDelete ? Icons.delete : Icons.visibility_off,
+            icon,
             color: Colors.white,
             size: 24,
           ),
           const SizedBox(height: 4),
           Text(
-            isDelete ? '삭제' : '숨김',
+            label,
             style: const TextStyle(
               color: Colors.white,
               fontSize: 12,
@@ -458,10 +470,17 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
     DismissDirection direction,
   ) async {
     final isDelete = direction == DismissDirection.startToEnd;
-    final action = isDelete ? '삭제' : '숨김';
+    final isHiddenTab = _selectedTabIndex == 1;
+    final isRestore = !isDelete && isHiddenTab;
+
+    final action = isDelete ? '삭제' : (isRestore ? '복원' : '숨김');
     final message = isDelete
         ? '${pet.name}을(를) 영구적으로 삭제하시겠습니까?'
-        : '${pet.name}을(를) 숨김 처리하시겠습니까?';
+        : (isRestore
+            ? '${pet.name}을(를) 다시 관리중으로 복원하시겠습니까?'
+            : '${pet.name}을(를) 숨김 처리하시겠습니까?');
+    final actionColor =
+        isDelete ? Colors.red : (isRestore ? Colors.green : Colors.orange);
 
     return await showDialog<bool>(
           context: context,
@@ -476,7 +495,7 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
               TextButton(
                 onPressed: () => Navigator.of(context).pop(true),
                 style: TextButton.styleFrom(
-                  foregroundColor: isDelete ? Colors.red : Colors.orange,
+                  foregroundColor: actionColor,
                 ),
                 child: Text(action),
               ),
@@ -526,18 +545,18 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
     final petName = pet.name;
     final scaffoldMessenger = ScaffoldMessenger.of(context);
 
+    // 즉시 탭을 숨김 탭으로 전환
+    setState(() {
+      _selectedTabIndex = 1;
+    });
+
     // 리포지토리를 통해 업데이트
     final notifier = ref.read(petProfilesProvider.notifier);
     notifier
         .updatePet(hiddenPet)
         .then((_) {
-          // mounted 체크 후 성공 메시지 표시 및 탭 전환
+          // mounted 체크 후 성공 메시지 표시
           if (mounted) {
-            // 숨김 탭으로 자동 전환
-            setState(() {
-              _selectedTabIndex = 1;
-            });
-
             scaffoldMessenger.showSnackBar(
               SnackBar(
                 content: Text('$petName이(가) 숨김 처리되었습니다'),
@@ -547,11 +566,59 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
           }
         })
         .catchError((error) {
-          // mounted 체크 후 에러 메시지 표시
+          // 에러 발생 시 탭을 원래대로 되돌림
           if (mounted) {
+            setState(() {
+              _selectedTabIndex = 0;
+            });
+
             scaffoldMessenger.showSnackBar(
               SnackBar(
                 content: Text('숨김 처리 중 오류가 발생했습니다: ${error.toString()}'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        });
+  }
+
+  /// 펫 복원 처리 (숨김 해제)
+  void _restorePet(BuildContext context, PetProfileEntity pet) {
+    // 펫 상태를 활성으로 업데이트
+    final activePet = pet.copyWith(petStatus: PetStatus.active);
+    final petName = pet.name;
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
+    // 즉시 탭을 관리중인 반려동물 탭으로 전환
+    setState(() {
+      _selectedTabIndex = 0;
+    });
+
+    // 리포지토리를 통해 업데이트
+    final notifier = ref.read(petProfilesProvider.notifier);
+    notifier
+        .updatePet(activePet)
+        .then((_) {
+          // mounted 체크 후 성공 메시지 표시
+          if (mounted) {
+            scaffoldMessenger.showSnackBar(
+              SnackBar(
+                content: Text('$petName이(가) 관리중으로 복원되었습니다'),
+                backgroundColor: Colors.green,
+              ),
+            );
+          }
+        })
+        .catchError((error) {
+          // 에러 발생 시 탭을 원래대로 되돌림
+          if (mounted) {
+            setState(() {
+              _selectedTabIndex = 1;
+            });
+
+            scaffoldMessenger.showSnackBar(
+              SnackBar(
+                content: Text('복원 중 오류가 발생했습니다: ${error.toString()}'),
                 backgroundColor: Colors.red,
               ),
             );

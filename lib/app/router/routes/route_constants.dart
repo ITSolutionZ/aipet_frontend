@@ -87,7 +87,6 @@ class RouteConstants {
   static const String accountDeleteRoute = '/settings/account-delete';
   static const String pushNotificationRoute = '/settings/push-notification';
   static const String alarmTimeSettingsRoute = '/settings/alarm-time-settings';
-  static const String locationSettingRoute = '/settings/location-setting';
 
   // ===== PET FEEDING =====
   static const String feedingMainRoute = '/feeding-main';
@@ -116,6 +115,10 @@ class RouteConstants {
 
   // ===== SHOPPING =====
   static const String petSearchRoute = '/pet-search';
+
+  // ===== BOARD (掲示板) =====
+  static const String boardListRoute = '/board';
+  static const String boardDetailRoute = '/board/:postId';
 
   // ===== CONTACT =====
   static const String contactFormRoute = '/contact-form';

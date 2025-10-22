@@ -1,6 +1,12 @@
+import 'dart:async';
+
+import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
 import 'package:aipet_frontend/shared/design/text_styles.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../../../shared/design/tokens/tokens.dart';
 import 'qr_code_scanner_screen.dart';
@@ -26,6 +32,10 @@ class QRCodeBottomSheet extends ConsumerStatefulWidget {
 class _QRCodeBottomSheetState extends ConsumerState<QRCodeBottomSheet>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  PetProfileEntity? _selectedPet;
+  bool _showQRCode = false;
+  PetProfileEntity? _selectedReservationPet;
+  bool _showReservationQRCode = false;
 
   @override
   void initState() {
@@ -152,49 +162,218 @@ class _QRCodeBottomSheetState extends ConsumerState<QRCodeBottomSheet>
 
   /// 펫 등록 탭 위젯
   Widget _buildPetRegistrationTab() {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          const SizedBox(height: 20),
+    final petsAsync = ref.watch(petProfilesProvider);
 
-          // 설명 텍스트
-          Text(
-            'ペット登録用のQRコードをスキャンしてください。',
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.textSecondary,
-              height: 1.5,
-            ),
-            textAlign: TextAlign.center,
+    return petsAsync.when(
+      data: (pets) {
+        // 활성 펫만 필터링
+        final activePets =
+            pets.where((p) => p.petStatus != PetStatus.hidden).toList();
+
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              const SizedBox(height: 10),
+
+              // 내 펫 QR 코드 섹션
+              if (activePets.isNotEmpty) ...[
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: AppColors.pointBrown.withValues(alpha: 0.05),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: AppColors.pointBrown.withValues(alpha: 0.2),
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.pets,
+                            size: 20,
+                            color: AppColors.pointBrown,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            '私のペットを共有',
+                            style: AppTextStyles.bodyMedium.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.pointDark,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        '他の人に共有したいペットを選択してください',
+                        style: AppTextStyles.bodySmall.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      _buildPetSelector(activePets),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+                const Divider(),
+                const SizedBox(height: 24),
+              ],
+
+              // QR 스캔 섹션
+              Text(
+                'ペット登録用のQRコードをスキャンしてください。',
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: AppColors.textSecondary,
+                  height: 1.5,
+                ),
+                textAlign: TextAlign.center,
+              ),
+
+              const SizedBox(height: 24),
+
+              // QR 스캔 아이콘
+              Container(
+                width: 100,
+                height: 100,
+                decoration: BoxDecoration(
+                  color: AppColors.pointBrown.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: const Icon(
+                  Icons.qr_code_scanner,
+                  size: 50,
+                  color: AppColors.pointBrown,
+                ),
+              ),
+
+              const SizedBox(height: 24),
+
+              // 스캔 버튼
+              SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: ElevatedButton.icon(
+                  onPressed: () => _scanQRCode(context, 'pet_registration'),
+                  icon: const Icon(Icons.qr_code_scanner),
+                  label: const Text('ペット登録用QRスキャン'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.pointBrown,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // 설명 텍스트
+              Text(
+                '他の人が共有したペット登録用QRコードをスキャンしてください。',
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: AppColors.textSecondary,
+                  height: 1.5,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
+        );
+      },
+      loading: () => const Center(
+        child: CircularProgressIndicator(color: AppColors.pointBrown),
+      ),
+      error: (error, stack) => Center(
+        child: Text(
+          'エラーが発生しました',
+          style: AppTextStyles.bodyMedium.copyWith(
+            color: AppColors.textSecondary,
+          ),
+        ),
+      ),
+    );
+  }
 
-          const SizedBox(height: 40),
-
-          // QR 스캔 아이콘
-          Container(
-            width: 120,
-            height: 120,
-            decoration: BoxDecoration(
-              color: AppColors.pointBrown.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: const Icon(
-              Icons.qr_code_scanner,
-              size: 60,
-              color: AppColors.pointBrown,
+  /// 펫 선택기 위젯
+  Widget _buildPetSelector(List<PetProfileEntity> pets) {
+    return Column(
+      children: [
+        // 펫 선택 드롭다운
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: AppColors.pointGray.withValues(alpha: 0.3)),
+          ),
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<PetProfileEntity>(
+              isExpanded: true,
+              value: _selectedPet,
+              hint: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Text(
+                  'ペットを選択',
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ),
+              items: pets.map((pet) {
+                return DropdownMenuItem(
+                  value: pet,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Row(
+                      children: [
+                        Text(
+                          pet.typeIcon,
+                          style: const TextStyle(fontSize: 20),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            pet.name,
+                            style: AppTextStyles.bodyMedium.copyWith(
+                              color: AppColors.pointDark,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }).toList(),
+              onChanged: (pet) {
+                setState(() {
+                  _selectedPet = pet;
+                  _showQRCode = false;
+                });
+              },
             ),
           ),
+        ),
 
-          const SizedBox(height: 40),
+        const SizedBox(height: 16),
 
-          // 스캔 버튼
+        // QR 코드 표시 버튼
+        if (_selectedPet != null)
           SizedBox(
             width: double.infinity,
-            height: 52,
+            height: 48,
             child: ElevatedButton.icon(
-              onPressed: () => _scanQRCode(context, 'pet_registration'),
-              icon: const Icon(Icons.qr_code_scanner),
-              label: const Text('ペット登録用QRスキャン'),
+              onPressed: () {
+                setState(() {
+                  _showQRCode = !_showQRCode;
+                });
+              },
+              icon: Icon(_showQRCode ? Icons.visibility_off : Icons.qr_code),
+              label: Text(_showQRCode ? 'QRコードを隠す' : 'QRコードを表示'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.pointBrown,
                 foregroundColor: Colors.white,
@@ -205,11 +384,114 @@ class _QRCodeBottomSheetState extends ConsumerState<QRCodeBottomSheet>
             ),
           ),
 
+        // QR 코드 표시
+        if (_showQRCode && _selectedPet != null) ...[
           const SizedBox(height: 20),
+          _buildQRCodeDisplay(_selectedPet!),
+        ],
+      ],
+    );
+  }
+
+  /// QR 코드 표시 위젯
+  Widget _buildQRCodeDisplay(PetProfileEntity pet) {
+    final qrData =
+        'pet_profile:${pet.id}|${pet.name}|${pet.type}|${pet.weight}kg|https://aipet.app/pet/${pet.id}';
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          // 펫 정보
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                pet.typeIcon,
+                style: const TextStyle(fontSize: 24),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                pet.name,
+                style: AppTextStyles.h2.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.pointDark,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Text(
+            '${pet.typeName} • ${pet.weight}kg',
+            style: AppTextStyles.bodySmall.copyWith(
+              color: AppColors.textSecondary,
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          // QR 코드
+          Container(
+            width: 200,
+            height: 200,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: AppColors.pointGray.withValues(alpha: 0.3),
+              ),
+            ),
+            child: QrImageView(
+              data: qrData,
+              version: QrVersions.auto,
+              size: 180,
+              backgroundColor: Colors.white,
+              dataModuleStyle: const QrDataModuleStyle(
+                dataModuleShape: QrDataModuleShape.square,
+                color: AppColors.pointDark,
+              ),
+              eyeStyle: const QrEyeStyle(
+                eyeShape: QrEyeShape.square,
+                color: AppColors.pointDark,
+              ),
+              gapless: false,
+              embeddedImage: const AssetImage(
+                'assets/icons/logo_notinclude_text.png',
+              ),
+              embeddedImageStyle: const QrEmbeddedImageStyle(
+                size: Size(40, 40),
+                color: AppColors.pointBrown,
+              ),
+              errorStateBuilder: (cxt, err) {
+                return const Center(
+                  child: Text(
+                    'QR コード生成エラー',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: AppColors.pointGray,
+                      fontSize: 12,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+
+          const SizedBox(height: 16),
 
           // 설명 텍스트
           Text(
-            '動物病院で発行されたペット登録用QRコードをスキャンしてください。',
+            'このQRコードをスキャンして\n${pet.name}を共同管理者として追加できます',
             style: AppTextStyles.bodySmall.copyWith(
               color: AppColors.textSecondary,
               height: 1.5,
@@ -223,49 +505,222 @@ class _QRCodeBottomSheetState extends ConsumerState<QRCodeBottomSheet>
 
   /// 예약 탭 위젯
   Widget _buildReservationTab() {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          const SizedBox(height: 20),
+    final petsAsync = ref.watch(petProfilesProvider);
 
-          // 설명 텍스트
-          Text(
-            '予約用のQRコードをスキャンしてください。',
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.textSecondary,
-              height: 1.5,
-            ),
-            textAlign: TextAlign.center,
+    return petsAsync.when(
+      data: (pets) {
+        // 활성 펫만 필터링
+        final activePets =
+            pets.where((p) => p.petStatus != PetStatus.hidden).toList();
+
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              const SizedBox(height: 10),
+
+              // 내 펫 QR 코드 섹션
+              if (activePets.isNotEmpty) ...[
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: AppColors.pointBrown.withValues(alpha: 0.05),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: AppColors.pointBrown.withValues(alpha: 0.2),
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.calendar_today,
+                            size: 20,
+                            color: AppColors.pointBrown,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'ペットの予約QRコード',
+                            style: AppTextStyles.bodyMedium.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.pointDark,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        '予約に使用するペットを選択してください',
+                        style: AppTextStyles.bodySmall.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      _buildReservationPetSelector(activePets),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+                const Divider(),
+                const SizedBox(height: 24),
+              ],
+
+              // QR 스캔 섹션
+              Text(
+                '予約用のQRコードをスキャンしてください。',
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: AppColors.textSecondary,
+                  height: 1.5,
+                ),
+                textAlign: TextAlign.center,
+              ),
+
+              const SizedBox(height: 24),
+
+              // QR 스캔 아이콘
+              Container(
+                width: 100,
+                height: 100,
+                decoration: BoxDecoration(
+                  color: AppColors.pointBrown.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: const Icon(
+                  Icons.qr_code_scanner,
+                  size: 50,
+                  color: AppColors.pointBrown,
+                ),
+              ),
+
+              const SizedBox(height: 24),
+
+              // 스캔 버튼
+              SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: ElevatedButton.icon(
+                  onPressed: () => _scanQRCode(context, 'reservation'),
+                  icon: const Icon(Icons.calendar_today),
+                  label: const Text('予約用QRスキャン'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.pointBrown,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // 설명 텍스트
+              Text(
+                '動物病院やペットサロンで発行された予約用QRコードをスキャンしてください。',
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: AppColors.textSecondary,
+                  height: 1.5,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
+        );
+      },
+      loading: () => const Center(
+        child: CircularProgressIndicator(color: AppColors.pointBrown),
+      ),
+      error: (error, stack) => Center(
+        child: Text(
+          'エラーが発生しました',
+          style: AppTextStyles.bodyMedium.copyWith(
+            color: AppColors.textSecondary,
+          ),
+        ),
+      ),
+    );
+  }
 
-          const SizedBox(height: 40),
-
-          // QR 스캔 아이콘
-          Container(
-            width: 120,
-            height: 120,
-            decoration: BoxDecoration(
-              color: AppColors.pointBrown.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: const Icon(
-              Icons.qr_code_scanner,
-              size: 60,
-              color: AppColors.pointBrown,
+  /// 예약용 펫 선택기 위젯
+  Widget _buildReservationPetSelector(List<PetProfileEntity> pets) {
+    return Column(
+      children: [
+        // 펫 선택 드롭다운
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: AppColors.pointGray.withValues(alpha: 0.3)),
+          ),
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<PetProfileEntity>(
+              isExpanded: true,
+              value: _selectedReservationPet,
+              hint: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Text(
+                  'ペットを選択',
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ),
+              items: pets.map((pet) {
+                return DropdownMenuItem(
+                  value: pet,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Row(
+                      children: [
+                        Text(
+                          pet.typeIcon,
+                          style: const TextStyle(fontSize: 20),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            pet.name,
+                            style: AppTextStyles.bodyMedium.copyWith(
+                              color: AppColors.pointDark,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }).toList(),
+              onChanged: (pet) {
+                setState(() {
+                  _selectedReservationPet = pet;
+                  _showReservationQRCode = false;
+                });
+              },
             ),
           ),
+        ),
 
-          const SizedBox(height: 40),
+        const SizedBox(height: 16),
 
-          // 스캔 버튼
+        // QR 코드 표시 버튼
+        if (_selectedReservationPet != null)
           SizedBox(
             width: double.infinity,
-            height: 52,
+            height: 48,
             child: ElevatedButton.icon(
-              onPressed: () => _scanQRCode(context, 'reservation'),
-              icon: const Icon(Icons.calendar_today),
-              label: const Text('予約用QRスキャン'),
+              onPressed: () {
+                setState(() {
+                  _showReservationQRCode = !_showReservationQRCode;
+                });
+              },
+              icon: Icon(
+                _showReservationQRCode ? Icons.visibility_off : Icons.qr_code,
+              ),
+              label: Text(
+                _showReservationQRCode ? 'QRコードを隠す' : 'QRコードを表示',
+              ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.pointBrown,
                 foregroundColor: Colors.white,
@@ -276,16 +731,141 @@ class _QRCodeBottomSheetState extends ConsumerState<QRCodeBottomSheet>
             ),
           ),
 
+        // QR 코드 표시
+        if (_showReservationQRCode && _selectedReservationPet != null) ...[
           const SizedBox(height: 20),
+          _buildReservationQRCodeDisplay(_selectedReservationPet!),
+        ],
+      ],
+    );
+  }
 
-          // 설명 텍스트
+  /// 예약용 QR 코드 표시 위젯
+  Widget _buildReservationQRCodeDisplay(PetProfileEntity pet) {
+    // 예약용 QR 데이터: 펫 정보 + 예약 타입
+    final qrData =
+        'reservation:${pet.id}|${pet.name}|${pet.type}|${pet.weight}kg|https://aipet.app/reservation/${pet.id}';
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          // 펫 정보
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                pet.typeIcon,
+                style: const TextStyle(fontSize: 24),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                pet.name,
+                style: AppTextStyles.h2.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.pointDark,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
           Text(
-            '動物病院やペットサロンで発行された予約用QRコードをスキャンしてください。',
+            '${pet.typeName} • ${pet.weight}kg',
             style: AppTextStyles.bodySmall.copyWith(
               color: AppColors.textSecondary,
-              height: 1.5,
             ),
-            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 20),
+
+          // QR 코드
+          Container(
+            width: 200,
+            height: 200,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: AppColors.pointGray.withValues(alpha: 0.3),
+              ),
+            ),
+            child: QrImageView(
+              data: qrData,
+              version: QrVersions.auto,
+              size: 180,
+              backgroundColor: Colors.white,
+              dataModuleStyle: const QrDataModuleStyle(
+                dataModuleShape: QrDataModuleShape.square,
+                color: AppColors.pointDark,
+              ),
+              eyeStyle: const QrEyeStyle(
+                eyeShape: QrEyeShape.square,
+                color: AppColors.pointDark,
+              ),
+              gapless: false,
+              embeddedImage: const AssetImage(
+                'assets/icons/logo_notinclude_text.png',
+              ),
+              embeddedImageStyle: const QrEmbeddedImageStyle(
+                size: Size(40, 40),
+                color: AppColors.pointBrown,
+              ),
+              errorStateBuilder: (cxt, err) {
+                return const Center(
+                  child: Text(
+                    'QR コード生成エラー',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: AppColors.pointGray,
+                      fontSize: 12,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+
+          const SizedBox(height: 16),
+
+          // 설명 텍스트
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: AppColors.pointBrown.withValues(alpha: 0.05),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: AppColors.pointBrown.withValues(alpha: 0.2),
+              ),
+            ),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.info_outline,
+                  size: 16,
+                  color: AppColors.pointBrown,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    '病院やサロンでこのQRコードを\nスキャンして予約できます',
+                    style: AppTextStyles.bodySmall.copyWith(
+                      color: AppColors.pointDark,
+                      height: 1.5,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -316,23 +896,59 @@ class _QRCodeBottomSheetState extends ConsumerState<QRCodeBottomSheet>
   ) {
     if (scanType == 'pet_registration') {
       // 펫 등록용 QR 코드 처리
-      if (qrData.startsWith('AIPET:')) {
+      // 형식: pet_profile:{펫ID}|{이름}|{타입}|{체중}kg|https://aipet.app/pet/{펫ID}
+      if (qrData.startsWith('pet_profile:')) {
+        final dataWithoutPrefix = qrData.substring('pet_profile:'.length);
+        final parts = dataWithoutPrefix.split('|');
+        if (parts.isNotEmpty) {
+          final petId = parts[0];
+          final petName = parts.length > 1 ? parts[1] : '不明';
+          final petType = parts.length > 2 ? parts[2] : '';
+          final petWeight = parts.length > 3 ? parts[3] : '';
+          _showAddFamilyDialog(context, petId, petName, petType, petWeight);
+        } else {
+          _showErrorMessage(context, 'QRコードの形式が正しくありません');
+        }
+      }
+      // 레거시 형식 지원: AIPET:
+      else if (qrData.startsWith('AIPET:')) {
         final parts = qrData.split(':');
         if (parts.length >= 3) {
           final petId = parts[1];
           final petName = parts[2];
-          _showAddFamilyDialog(context, petId, petName);
+          _showAddFamilyDialog(context, petId, petName, '', '');
         }
       } else {
         _showErrorMessage(context, 'ペット登録用のQRコードではありません');
       }
     } else if (scanType == 'reservation') {
       // 예약용 QR 코드 처리
-      if (qrData.startsWith('RESERVATION:')) {
+      // 형식: reservation:{펫ID}|{이름}|{타입}|{체중}kg|https://aipet.app/reservation/{펫ID}
+      if (qrData.startsWith('reservation:')) {
+        final dataWithoutPrefix = qrData.substring('reservation:'.length);
+        final parts = dataWithoutPrefix.split('|');
+        if (parts.isNotEmpty) {
+          final petId = parts[0];
+          final petName = parts.length > 1 ? parts[1] : '不明';
+          final petType = parts.length > 2 ? parts[2] : '';
+          final petWeight = parts.length > 3 ? parts[3] : '';
+          _showReservationDialog(
+            context,
+            petId,
+            petName,
+            petType,
+            petWeight,
+          );
+        } else {
+          _showErrorMessage(context, 'QRコードの形式が正しくありません');
+        }
+      }
+      // 레거시 형식 지원: RESERVATION:
+      else if (qrData.startsWith('RESERVATION:')) {
         final parts = qrData.split(':');
         if (parts.length >= 2) {
           final reservationId = parts[1];
-          _showReservationDialog(context, reservationId);
+          _showReservationDialog(context, reservationId, '', '', '');
         }
       } else {
         _showErrorMessage(context, '予約用のQRコードではありません');
@@ -350,12 +966,77 @@ class _QRCodeBottomSheetState extends ConsumerState<QRCodeBottomSheet>
   }
 
   /// 예약 다이얼로그 표시
-  void _showReservationDialog(BuildContext context, String reservationId) {
+  void _showReservationDialog(
+    BuildContext context,
+    String petId,
+    String petName,
+    String petType,
+    String petWeight,
+  ) {
+    // 펫 타입을 일본어로 변환
+    String getTypeName(String type) {
+      switch (type.toLowerCase()) {
+        case 'dog':
+          return '犬';
+        case 'cat':
+          return '猫';
+        case 'bird':
+          return '鳥';
+        case 'hamster':
+          return 'ハムスター';
+        case 'rabbit':
+          return 'うさぎ';
+        case 'turtle':
+          return '亀';
+        default:
+          return type;
+      }
+    }
+
+    final typeDisplay = petType.isNotEmpty ? getTypeName(petType) : '';
+    final weightDisplay = petWeight.isNotEmpty ? petWeight : '';
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('予約確認'),
-        content: Text('予約ID: $reservationId\nこの予約を確認しますか？'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (petName.isNotEmpty) ...[
+              Text(
+                '$petName の予約を確認しますか？',
+                style: const TextStyle(fontSize: 16),
+              ),
+              if (typeDisplay.isNotEmpty || weightDisplay.isNotEmpty) ...[
+                const SizedBox(height: 16),
+                const Divider(),
+                const SizedBox(height: 8),
+                const Text(
+                  'ペット情報',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.pointBrown,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                if (typeDisplay.isNotEmpty)
+                  Text(
+                    '種類: $typeDisplay',
+                    style: const TextStyle(fontSize: 14),
+                  ),
+                if (weightDisplay.isNotEmpty)
+                  Text(
+                    '体重: $weightDisplay',
+                    style: const TextStyle(fontSize: 14),
+                  ),
+              ],
+            ] else
+              Text('予約ID: $petId\nこの予約を確認しますか？'),
+          ],
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -363,7 +1044,7 @@ class _QRCodeBottomSheetState extends ConsumerState<QRCodeBottomSheet>
           ),
           ElevatedButton(
             onPressed: () {
-              _processReservation(context, reservationId);
+              _processReservation(context, petId, petName);
               Navigator.pop(context);
             },
             style: ElevatedButton.styleFrom(
@@ -378,11 +1059,16 @@ class _QRCodeBottomSheetState extends ConsumerState<QRCodeBottomSheet>
   }
 
   /// 예약 처리
-  void _processReservation(BuildContext context, String reservationId) {
+  void _processReservation(
+    BuildContext context,
+    String petId,
+    String petName,
+  ) {
     // TODO: 실제 예약 처리 로직 구현
+    final displayName = petName.isNotEmpty ? petName : petId;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('予約 $reservationId が確認されました'),
+        content: Text('$displayName の予約が確認されました'),
         backgroundColor: Colors.green,
       ),
     );
@@ -393,12 +1079,70 @@ class _QRCodeBottomSheetState extends ConsumerState<QRCodeBottomSheet>
     BuildContext context,
     String petId,
     String petName,
+    String petType,
+    String petWeight,
   ) {
+    // 펫 타입을 일본어로 변환
+    String getTypeName(String type) {
+      switch (type.toLowerCase()) {
+        case 'dog':
+          return '犬';
+        case 'cat':
+          return '猫';
+        case 'bird':
+          return '鳥';
+        case 'hamster':
+          return 'ハムスター';
+        case 'rabbit':
+          return 'うさぎ';
+        case 'turtle':
+          return '亀';
+        default:
+          return type;
+      }
+    }
+
+    final typeDisplay = petType.isNotEmpty ? getTypeName(petType) : '';
+    final weightDisplay = petWeight.isNotEmpty ? petWeight : '';
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('家族を追加'),
-        content: Text('$petName の家族として追加しますか？'),
+        title: const Text('共同管理者として追加'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '$petName を共同管理者として追加しますか？',
+              style: const TextStyle(fontSize: 16),
+            ),
+            if (typeDisplay.isNotEmpty || weightDisplay.isNotEmpty) ...[
+              const SizedBox(height: 16),
+              const Divider(),
+              const SizedBox(height: 8),
+              const Text(
+                'ペット情報',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.pointBrown,
+                ),
+              ),
+              const SizedBox(height: 8),
+              if (typeDisplay.isNotEmpty)
+                Text(
+                  '種類: $typeDisplay',
+                  style: const TextStyle(fontSize: 14),
+                ),
+              if (weightDisplay.isNotEmpty)
+                Text(
+                  '体重: $weightDisplay',
+                  style: const TextStyle(fontSize: 14),
+                ),
+            ],
+          ],
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -421,14 +1165,96 @@ class _QRCodeBottomSheetState extends ConsumerState<QRCodeBottomSheet>
   }
 
   /// 가족 멤버 추가
-  void _addFamilyMember(BuildContext context, String petId, String petName) {
-    // TODO: 실제 가족 추가 로직 구현
-    // 현재는 성공 메시지만 표시
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('$petName を家族として追加しました'),
-        backgroundColor: Colors.green,
-      ),
-    );
+  Future<void> _addFamilyMember(
+    BuildContext dialogContext,
+    String petId,
+    String petName,
+  ) async {
+    // BuildContext를 미리 캡처
+    final navigator = Navigator.of(dialogContext);
+    final scaffoldMessenger = ScaffoldMessenger.of(dialogContext);
+    final router = GoRouter.of(dialogContext);
+
+    try {
+      // 로딩 다이얼로그 표시 (unawaited로 처리)
+      unawaited(
+        showDialog(
+          context: dialogContext,
+          barrierDismissible: false,
+          builder: (context) => const Center(
+            child: CircularProgressIndicator(color: AppColors.pointBrown),
+          ),
+        ),
+      );
+
+      // 펫 정보 로드
+      final repository = ref.read(petProfileRepositoryProvider);
+      final result = await repository.getPetById(petId);
+
+      if (!mounted) return;
+
+      // 로딩 다이얼로그 닫기
+      navigator.pop();
+
+      if (result.isSuccess && result.dataOrNull != null) {
+        final pet = result.dataOrNull!;
+
+        // 펫을 로컬 데이터베이스에 추가
+        final notifier = ref.read(petProfilesProvider.notifier);
+        await notifier.createPet(pet);
+
+        if (!mounted) return;
+
+        // 성공 메시지 표시
+        scaffoldMessenger.showSnackBar(
+          SnackBar(
+            content: Text('$petName を共同管理ペットとして追加しました'),
+            backgroundColor: Colors.green,
+            action: SnackBarAction(
+              label: '確認',
+              textColor: Colors.white,
+              onPressed: () {
+                router.push('/pet-management');
+              },
+            ),
+          ),
+        );
+      } else {
+        // 펫을 찾을 수 없음
+        if (!mounted) return;
+
+        unawaited(
+          showDialog(
+            context: dialogContext,
+            builder: (dialogCtx) => AlertDialog(
+              title: const Text('ペットが見つかりません'),
+              content: const Text(
+                '共有されたペットの情報を読み込めませんでした。\n'
+                'ペットの所有者に確認してください。',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(dialogCtx).pop(),
+                  child: const Text('確認'),
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+    } catch (error) {
+      if (!mounted) return;
+
+      // 로딩 다이얼로그가 열려있으면 닫기
+      navigator.pop();
+
+      // 에러 메시지 표시
+      scaffoldMessenger.showSnackBar(
+        SnackBar(
+          content: Text('エラーが発生しました: ${error.toString()}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 }

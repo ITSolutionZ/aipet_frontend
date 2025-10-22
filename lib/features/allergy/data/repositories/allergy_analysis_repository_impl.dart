@@ -212,6 +212,15 @@ class AllergyAnalysisRepositoryImpl implements AllergyAnalysisRepository {
     return report;
   }
 
+  @override
+  Future<List<AllergyAnalysisResult>> getAnalysisHistory(String petId) async {
+    try {
+      return await _datasource.getAnalysisHistory(petId);
+    } catch (e) {
+      return [];
+    }
+  }
+
   // Helper methods
 
   IngredientRisk _getDefaultRisk(String ingredient) {

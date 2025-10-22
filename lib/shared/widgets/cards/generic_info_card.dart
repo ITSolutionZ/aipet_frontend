@@ -1,5 +1,5 @@
 import 'package:aipet_frontend/shared/shared.dart';
-import 'package:aipet_frontend/shared/widgets/layout/card.dart';
+// import 'package:aipet_frontend/shared/widgets/layout/card.dart';
 import 'package:flutter/material.dart';
 
 /// 범용 정보 카드 컴포넌트

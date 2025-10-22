@@ -140,10 +140,28 @@ class AnalyzeAllergyUseCase {
     );
   }
 
-  /// 알레르기 히스토리 구성 (임시 구현)
+  /// 알레르기 히스토리 구성
   Future<List<AllergyRecord>> _buildAllergyHistory(String petId) async {
-    // TODO: 실제 히스토리 데이터 로드
-    return [];
+    try {
+      final analysisHistory = await _repository.getAnalysisHistory(petId);
+      return analysisHistory
+          .asMap()
+          .entries
+          .map(
+            (entry) => AllergyRecord(
+              id: 'history_${DateTime.now().millisecondsSinceEpoch}_${entry.key}',
+              petId: petId,
+              products: [],
+              reactions: entry.value.suspectedIngredients,
+              severity: entry.value.confidence > 0.7 ? 'high' : 'moderate',
+              occurredAt: DateTime.now(),
+              notes: entry.value.analysis,
+            ),
+          )
+          .toList();
+    } catch (e) {
+      return [];
+    }
   }
 
   /// 종합 권장사항 생성
@@ -208,8 +226,34 @@ class AnalyzeAllergyUseCase {
     String petId,
     List<String> potentialAllergens,
   ) async {
-    // TODO: 개별 펫의 히스토리 기반 계산
-    return 0.5; // 仮値
+    try {
+      final history = await _buildAllergyHistory(petId);
+
+      if (history.isEmpty) {
+        return 0.3; // 히스토리 없음 - 낮은 위험도
+      }
+
+      // 히스토리에서 해당 알레르겐과 관련된 반응 횟수 계산
+      int matchCount = 0;
+      int totalReactions = 0;
+
+      for (final record in history) {
+        totalReactions += record.reactions.length;
+        for (final allergen in potentialAllergens) {
+          if (record.reactions.contains(allergen)) {
+            matchCount++;
+          }
+        }
+      }
+
+      if (totalReactions == 0) return 0.3;
+
+      // 매칭 비율에 따른 위험도 계산 (0.0 ~ 1.0)
+      final matchRatio = matchCount / totalReactions;
+      return matchRatio.clamp(0.0, 1.0);
+    } catch (e) {
+      return 0.5; // 에러 발생 시 중간 값
+    }
   }
 
   /// 전체 위험도 계산
