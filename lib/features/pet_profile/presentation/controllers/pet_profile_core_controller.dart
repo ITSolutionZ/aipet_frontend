@@ -5,7 +5,6 @@ import 'package:aipet_frontend/features/pet_profile/domain/usecases/get_all_pets
 import 'package:aipet_frontend/features/pet_profile/domain/usecases/get_pet_profile_usecase.dart';
 import 'package:aipet_frontend/features/pet_profile/domain/usecases/update_pet_usecase.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart' as core_result;
-import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 
 class PetProfileCoreController extends CrudController<PetProfileEntity> {

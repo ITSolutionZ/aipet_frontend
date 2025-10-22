@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
-import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/services/image_storage_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
@@ -89,7 +88,8 @@ class AppBarPetSelectorWidget extends ConsumerWidget {
 
     // 상대 경로를 절대 경로로 변환
     final storageService = ImageStorageService();
-    final absolutePath = storageService.getAbsolutePath(pet.imagePath!) ?? pet.imagePath!;
+    final absolutePath =
+        storageService.getAbsolutePath(pet.imagePath!) ?? pet.imagePath!;
     debugPrint('🖼️ AppBarPetSelectorWidget - absolutePath: $absolutePath');
 
     final imageType = ImageService.getImageType(absolutePath);
@@ -104,7 +104,9 @@ class AppBarPetSelectorWidget extends ConsumerWidget {
         debugPrint('🖼️ AppBarPetSelectorWidget - File exists: $fileExists');
 
         if (!fileExists) {
-          debugPrint('❌ AppBarPetSelectorWidget - File does not exist: $absolutePath');
+          debugPrint(
+            '❌ AppBarPetSelectorWidget - File does not exist: $absolutePath',
+          );
           return _buildDefaultPetIcon();
         }
 
@@ -114,7 +116,9 @@ class AppBarPetSelectorWidget extends ConsumerWidget {
           height: 40,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🖼️ AppBarPetSelectorWidget - File image error: $error');
+            debugPrint(
+              '🖼️ AppBarPetSelectorWidget - File image error: $error',
+            );
             return _buildDefaultPetIcon();
           },
         );
@@ -126,7 +130,9 @@ class AppBarPetSelectorWidget extends ConsumerWidget {
           height: 40,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🖼️ AppBarPetSelectorWidget - Network image error: $error');
+            debugPrint(
+              '🖼️ AppBarPetSelectorWidget - Network image error: $error',
+            );
             return _buildDefaultPetIcon();
           },
         );
@@ -138,7 +144,9 @@ class AppBarPetSelectorWidget extends ConsumerWidget {
           height: 40,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🖼️ AppBarPetSelectorWidget - Asset image error: $error');
+            debugPrint(
+              '🖼️ AppBarPetSelectorWidget - Asset image error: $error',
+            );
             return _buildDefaultPetIcon();
           },
         );

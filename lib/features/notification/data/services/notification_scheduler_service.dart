@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import '../../domain/domain.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../domain/domain.dart';
 import 'helpers/notification_scheduler_executor_helper.dart';
 import 'helpers/notification_scheduler_storage_helper.dart';
 import 'notification_service.dart' as local;

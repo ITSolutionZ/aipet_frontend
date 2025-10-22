@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import '../../domain/domain.dart';
 import 'package:flutter/foundation.dart';
 
+import '../../domain/domain.dart';
 import 'helpers/notification_template_storage_helper.dart';
 import 'notification_service.dart' as local;
 

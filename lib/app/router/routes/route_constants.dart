@@ -40,7 +40,6 @@ class RouteConstants {
   static const String allTricksRoute = '/all-tricks';
   static const String allTricksDetailRoute = '/all-tricks-detail';
   static const String trainingVideosRoute = '/training-videos';
-  static const String youtubePlayerRoute = '/youtube-player';
   static const String qrCodeRoute = '/home/qr';
   static const String allergyRoute = '/home/allergy';
   static const String allergyProductSelectionRoute =

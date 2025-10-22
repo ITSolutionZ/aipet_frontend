@@ -3,8 +3,6 @@ import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../shared/widgets/layout/card.dart';
-
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
 

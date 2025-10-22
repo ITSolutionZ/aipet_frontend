@@ -1,5 +1,5 @@
-import 'notification_local_storage_service.dart';
 import '../../domain/domain.dart';
+import 'notification_local_storage_service.dart';
 
 /// 통계 팩토리 (데이터 레이어에서 로컬 저장소 데이터 생성)
 class NotificationStatsFactory {
