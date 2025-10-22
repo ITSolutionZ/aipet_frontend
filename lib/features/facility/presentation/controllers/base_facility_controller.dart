@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/app/services/unified_error_handler.dart';
+import 'package:aipet_frontend/shared/core/services/snackbar_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -13,58 +14,34 @@ abstract class BaseFacilityController {
   BaseFacilityController(this.ref, this.context);
 
   /// 성공 메시지 표시
+  /// ✅ Shared SnackBarService 사용
   void showSuccessMessage(String message) {
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: Colors.green,
-          behavior: SnackBarBehavior.floating,
-          duration: const Duration(seconds: 3),
-        ),
-      );
+      SnackBarService.showSuccess(context, message);
     }
   }
 
   /// 에러 메시지 표시
+  /// ✅ Shared SnackBarService 사용
   void showErrorMessage(String message) {
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: Colors.red,
-          behavior: SnackBarBehavior.floating,
-          duration: const Duration(seconds: 4),
-        ),
-      );
+      SnackBarService.showError(context, message);
     }
   }
 
   /// 정보 메시지 표시
+  /// ✅ Shared SnackBarService 사용
   void showInfoMessage(String message) {
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: Colors.blue,
-          behavior: SnackBarBehavior.floating,
-          duration: const Duration(seconds: 3),
-        ),
-      );
+      SnackBarService.showInfo(context, message);
     }
   }
 
   /// 경고 메시지 표시
+  /// ✅ Shared SnackBarService 사용
   void showWarningMessage(String message) {
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: Colors.orange,
-          behavior: SnackBarBehavior.floating,
-          duration: const Duration(seconds: 3),
-        ),
-      );
+      SnackBarService.showWarning(context, message);
     }
   }
 
@@ -84,26 +61,10 @@ abstract class BaseFacilityController {
   }
 
   /// 로딩 상태 표시
+  /// ✅ Shared SnackBarService 사용
   void showLoading(String message) {
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Row(
-            children: [
-              const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              ),
-              const SizedBox(width: 12),
-              Text(message),
-            ],
-          ),
-          backgroundColor: Colors.blue,
-          behavior: SnackBarBehavior.floating,
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      SnackBarService.showLoading(context, message);
     }
   }
 }
