@@ -1,6 +1,7 @@
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../data/models/rakuten_pet_product_model.dart';
 import '../../data/providers/rakuten_products_provider.dart';
@@ -423,6 +424,7 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
         const SizedBox(width: AppSpacing.md),
         Expanded(
           child: ActionButton.secondary(
+            foregroundColor: AppColors.pointPink,
             text: 'クリア',
             onPressed: _clearAllFilters,
             isEnabled: true,
@@ -793,16 +795,53 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
   }
 
   /// 商品ページを開く
-  void _openProductPage(RakutenPetProduct product) {
-    // 商品ページを開く処理（簡易実装）
-    debugPrint('🔗 Opening product page: ${product.itemName}');
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('${product.itemName}の商品ページを開きます'),
-        duration: const Duration(seconds: 2),
-        backgroundColor: AppColors.pointBrown,
-      ),
-    );
+  Future<void> _openProductPage(RakutenPetProduct product) async {
+    try {
+      debugPrint('🔗 Opening product page: ${product.itemName}');
+      debugPrint('🔗 Product URL: ${product.itemUrl}');
+      
+      final Uri url = Uri.parse(product.itemUrl);
+      
+      if (await canLaunchUrl(url)) {
+        await launchUrl(
+          url,
+          mode: LaunchMode.externalApplication, // 外部ブラウザで開く
+        );
+        
+        // 成功メッセージ
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('${product.itemName}の商品ページを開きました'),
+              duration: const Duration(seconds: 2),
+              backgroundColor: AppColors.pointBrown,
+            ),
+          );
+        }
+      } else {
+        // URLを開けない場合のエラーハンドリング
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('商品ページを開けませんでした'),
+              duration: const Duration(seconds: 2),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      debugPrint('❌ Error opening product page: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('エラーが発生しました: $e'),
+            duration: const Duration(seconds: 3),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   /// お気に入りに追加
@@ -937,12 +976,18 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
                           height: 60,
                           margin: const EdgeInsets.only(bottom: AppSpacing.sm),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(AppRadius.small),
+                            borderRadius: BorderRadius.circular(
+                              AppRadius.small,
+                            ),
                             color: AppColors.pointOffWhite,
                           ),
                           child: ClipRRect(
-                            borderRadius: BorderRadius.circular(AppRadius.small),
-                            child: brand['logo'] != null && brand['logo'].isNotEmpty
+                            borderRadius: BorderRadius.circular(
+                              AppRadius.small,
+                            ),
+                            child:
+                                brand['logo'] != null &&
+                                    brand['logo'].isNotEmpty
                                 ? Image.asset(
                                     brand['logo'],
                                     fit: BoxFit.cover,
