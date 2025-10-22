@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../data/models/rakuten_brand_model.dart';
 import '../../data/models/rakuten_pet_product_model.dart';
 import '../../data/providers/rakuten_brands_provider.dart';
 import '../../data/providers/rakuten_products_provider.dart';
@@ -78,7 +77,7 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _onTabChanged(0);
       // ブランド情報をAPIから取得
-      ref.read(rakutenBrandsNotifierProvider.notifier).searchPopularBrands();
+      ref.read(rakutenBrandsProvider.notifier).searchPopularBrands();
     });
   }
 
@@ -147,10 +146,11 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
       }
     }
 
-    // 人気ブランドフィルター
-    for (final brand in _popularBrands) {
-      if (brand['isSelected'] == true) {
-        selectedFilters.add(brand['name']);
+    // 人気ブランドフィルター (APIから取得したブランドを使用)
+    final brandState = ref.read(rakutenBrandsProvider);
+    for (final brand in brandState.brands) {
+      if (brand.isSelected) {
+        selectedFilters.add(brand.brandName);
       }
     }
 
@@ -212,11 +212,6 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
         debugPrint('🔍 Ingredient filter selected: ${filter['name']}');
       }
     }
-    for (final brand in _popularBrands) {
-      if (brand['isSelected'] == true) {
-        debugPrint('🔍 Brand filter selected: ${brand['name']}');
-      }
-    }
 
     // 常に検索を実行（フィルターがなくてもタブの基本キーワードで検索）
     notifier.searchPetProducts(keyword: keyword);
@@ -253,10 +248,8 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
         filter['isSelected'] = false;
       }
 
-      // 人気ブランドフィルターをクリア
-      for (final brand in _popularBrands) {
-        brand['isSelected'] = false;
-      }
+      // 人気ブランドフィルターをクリア (APIから取得したブランドを使用)
+      ref.read(rakutenBrandsProvider.notifier).clearAllSelections();
     });
 
     // フィルターをクリアした後、現在のタブの基本キーワードで再検索
@@ -858,8 +851,8 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
   }
 
   Widget _buildPopularBrandsSection() {
-    final brandState = ref.watch(rakutenBrandsNotifierProvider);
-    
+    final brandState = ref.watch(rakutenBrandsProvider);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -876,74 +869,80 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
           child: brandState.isLoading
               ? const Center(child: CircularProgressIndicator())
               : brandState.error != null
-                  ? Center(
-                      child: Text(
-                        'ブランド情報の読み込みに失敗しました',
-                        style: AppFonts.bodyMedium.copyWith(
-                          color: Colors.red,
-                        ),
-                      ),
-                    )
-                  : ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: brandState.brands.length,
-                      itemBuilder: (context, index) {
-                        final brand = brandState.brands[index];
-                        final isSelected = brand.isSelected;
+              ? Center(
+                  child: Text(
+                    'ブランド情報の読み込みに失敗しました',
+                    style: AppFonts.bodyMedium.copyWith(color: Colors.red),
+                  ),
+                )
+              : ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: brandState.brands.length,
+                  itemBuilder: (context, index) {
+                    final brand = brandState.brands[index];
+                    final isSelected = brand.isSelected;
 
-                        return Container(
-                          width: 110,
-                          margin: const EdgeInsets.only(right: AppSpacing.md),
-                          child: GestureDetector(
-                            onTap: () {
-                              ref.read(rakutenBrandsNotifierProvider.notifier)
-                                  .toggleBrandSelection(brand.brandId);
-                              // 필터를 적용
-                              _applyFilters();
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: isSelected
-                                    ? AppColors.pointBrown.withValues(alpha: 0.1)
-                                    : AppColors.pureWhite,
-                                borderRadius: BorderRadius.circular(AppRadius.medium),
-                                border: Border.all(
-                                  color: isSelected
-                                      ? AppColors.pointBrown
-                                      : AppColors.pointGray.withValues(alpha: 0.3),
-                                  width: isSelected ? 2 : 1,
+                    return Container(
+                      width: 110,
+                      margin: const EdgeInsets.only(right: AppSpacing.md),
+                      child: GestureDetector(
+                        onTap: () {
+                          ref
+                              .read(rakutenBrandsProvider.notifier)
+                              .toggleBrandSelection(brand.brandId);
+                          // 필터를 적용
+                          _applyFilters();
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? AppColors.pointBrown.withValues(alpha: 0.1)
+                                : AppColors.pureWhite,
+                            borderRadius: BorderRadius.circular(
+                              AppRadius.medium,
+                            ),
+                            border: Border.all(
+                              color: isSelected
+                                  ? AppColors.pointBrown
+                                  : AppColors.pointGray.withValues(alpha: 0.3),
+                              width: isSelected ? 2 : 1,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.pointBrown.withValues(
+                                  alpha: 0.1,
                                 ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: AppColors.pointBrown.withValues(alpha: 0.1),
-                                    blurRadius: 6,
-                                    offset: const Offset(0, 3),
-                                  ),
-                                ],
+                                blurRadius: 6,
+                                offset: const Offset(0, 3),
                               ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  // 브랜드 로고 이미지
-                                  Container(
-                                    width: 60,
-                                    height: 60,
-                                    margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(
-                                        AppRadius.small,
-                                      ),
-                                      color: AppColors.pointOffWhite,
-                                    ),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(
-                                        AppRadius.small,
-                                      ),
-                                      child: brand.brandLogoUrl.isNotEmpty
-                                          ? Image.asset(
-                                              brand.brandLogoUrl,
-                                              fit: BoxFit.cover,
-                                              errorBuilder: (context, error, stackTrace) {
+                            ],
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              // 브랜드 로고 이미지
+                              Container(
+                                width: 60,
+                                height: 60,
+                                margin: const EdgeInsets.only(
+                                  bottom: AppSpacing.sm,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(
+                                    AppRadius.small,
+                                  ),
+                                  color: AppColors.pointOffWhite,
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(
+                                    AppRadius.small,
+                                  ),
+                                  child: brand.brandLogoUrl.isNotEmpty
+                                      ? Image.asset(
+                                          brand.brandLogoUrl,
+                                          fit: BoxFit.cover,
+                                          errorBuilder:
+                                              (context, error, stackTrace) {
                                                 return Icon(
                                                   Icons.pets,
                                                   color: isSelected
@@ -952,52 +951,52 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
                                                   size: 30,
                                                 );
                                               },
-                                            )
-                                          : Icon(
-                                              Icons.pets,
-                                              color: isSelected
-                                                  ? AppColors.pointBrown
-                                                  : AppColors.pointGray,
-                                              size: 30,
-                                            ),
-                                    ),
-                                  ),
-                                  // 브랜드 이름 (영문)
-                                  Text(
-                                    brand.brandName,
-                                    style: AppFonts.bodySmall.copyWith(
-                                      color: isSelected
-                                          ? AppColors.pointBrown
-                                          : AppColors.pointGray,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 10,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  const SizedBox(height: 2),
-                                  // 브랜드 이름 (일본어)
-                                  Text(
-                                    brand.brandNameJapanese,
-                                    style: AppFonts.bodySmall.copyWith(
-                                      color: isSelected
-                                          ? AppColors.pointBrown
-                                          : AppColors.pointGray,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 9,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ],
+                                        )
+                                      : Icon(
+                                          Icons.pets,
+                                          color: isSelected
+                                              ? AppColors.pointBrown
+                                              : AppColors.pointGray,
+                                          size: 30,
+                                        ),
+                                ),
                               ),
-                            ),
+                              // 브랜드 이름 (영문)
+                              Text(
+                                brand.brandName,
+                                style: AppFonts.bodySmall.copyWith(
+                                  color: isSelected
+                                      ? AppColors.pointBrown
+                                      : AppColors.pointGray,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 10,
+                                ),
+                                textAlign: TextAlign.center,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 2),
+                              // 브랜드 이름 (일본어)
+                              Text(
+                                brand.brandNameJapanese,
+                                style: AppFonts.bodySmall.copyWith(
+                                  color: isSelected
+                                      ? AppColors.pointBrown
+                                      : AppColors.pointGray,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 9,
+                                ),
+                                textAlign: TextAlign.center,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
                           ),
-                        );
-                      },
-                    ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
         ),
       ],
     );

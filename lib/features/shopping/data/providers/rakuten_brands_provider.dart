@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../models/rakuten_brand_model.dart';
@@ -10,8 +9,8 @@ part 'rakuten_brands_provider.g.dart';
 @riverpod
 class RakutenBrandsNotifier extends _$RakutenBrandsNotifier {
   @override
-  RakutenBrandsState build() {
-    return const RakutenBrandsState();
+  RakutenBrandsStateData build() {
+    return const RakutenBrandsStateData();
   }
 
   final RakutenApiService _apiService = RakutenApiService();
@@ -22,11 +21,7 @@ class RakutenBrandsNotifier extends _$RakutenBrandsNotifier {
     bool reset = true,
   }) async {
     if (reset) {
-      state = state.copyWith(
-        isLoading: true,
-        error: null,
-        brands: [],
-      );
+      state = state.copyWith(isLoading: true, error: null, brands: []);
     } else {
       state = state.copyWith(isLoading: true, error: null);
     }
@@ -38,16 +33,9 @@ class RakutenBrandsNotifier extends _$RakutenBrandsNotifier {
         hits: 20,
       );
 
-      state = state.copyWith(
-        isLoading: false,
-        brands: brands,
-        error: null,
-      );
+      state = state.copyWith(isLoading: false, brands: brands, error: null);
     } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        error: e.toString(),
-      );
+      state = state.copyWith(isLoading: false, error: e.toString());
     }
   }
 
@@ -78,14 +66,7 @@ class RakutenBrandsNotifier extends _$RakutenBrandsNotifier {
   }
 }
 
-/// ラクテンブランド状態データ
-@riverpod
-class RakutenBrandsState extends _$RakutenBrandsState {
-  @override
-  RakutenBrandsStateData build() {
-    return const RakutenBrandsStateData();
-  }
-}
+// RakutenBrandsState 클래스는 제거됨 - RakutenBrandsStateData를 직접 사용
 
 /// ラクテンブランド状態データクラス
 class RakutenBrandsStateData {
