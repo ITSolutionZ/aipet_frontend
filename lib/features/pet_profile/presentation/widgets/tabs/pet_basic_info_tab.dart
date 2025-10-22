@@ -1234,11 +1234,6 @@ class PetBasicInfoTab extends ConsumerWidget {
 
   /// 삭제 성공 메시지 표시
   void _showDeleteSuccessMessage(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('家族情報を削除しました'),
-        backgroundColor: Colors.green,
-      ),
-    );
+    SnackBarService.showSuccess(context, '家族情報を削除しました');
   }
 }

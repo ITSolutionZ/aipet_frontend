@@ -297,21 +297,12 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
           .deletePetProfile();
 
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(PetProfileConstants.deleteSuccessMessage),
-          ),
-        );
+        SnackBarService.showSuccess(context, PetProfileConstants.deleteSuccessMessage);
         context.go('/home');
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(PetProfileConstants.deleteErrorMessage),
-            backgroundColor: AppColors.pointRed,
-          ),
-        );
+        SnackBarService.showError(context, PetProfileConstants.deleteErrorMessage);
       }
     }
   }
