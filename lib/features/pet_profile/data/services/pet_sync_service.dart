@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../shared/core/data/result_types.dart';
 import '../../../../shared/core/domain/common_errors.dart';
+import '../../../../shared/core/domain/result.dart';
 import '../../../../shared/domain/entities/pet_profile_entity.dart';
 import '../../../../shared/services/cache_service.dart';
 import 'helpers/helpers.dart';

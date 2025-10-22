@@ -7,6 +7,7 @@ import 'package:path/path.dart' as path;
 import '../../../../shared/core/api/api_client.dart';
 import '../../../../shared/core/data/result_types.dart';
 import '../../../../shared/core/domain/common_errors.dart';
+import '../../../../shared/core/domain/result.dart';
 import '../../../../shared/core/services/secure_storage_service.dart';
 import 'pet_api_service.dart';
 

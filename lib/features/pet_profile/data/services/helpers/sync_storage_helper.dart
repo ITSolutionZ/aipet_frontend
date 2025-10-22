@@ -1,5 +1,6 @@
 import 'package:aipet_frontend/shared/core/data/result_types.dart';
 import 'package:aipet_frontend/shared/core/domain/common_errors.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/core/services/secure_storage_service.dart';
 import 'package:aipet_frontend/shared/domain/entities/pet_profile_entity.dart';
 import 'package:aipet_frontend/shared/services/cache_service.dart';

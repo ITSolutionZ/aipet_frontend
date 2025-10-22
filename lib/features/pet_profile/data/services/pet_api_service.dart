@@ -4,6 +4,7 @@ import '../../../../shared/core/api/api_error_handler.dart';
 import '../../../../shared/core/data/base_remote_data_source.dart';
 import '../../../../shared/core/data/result_types.dart';
 import '../../../../shared/core/domain/common_errors.dart';
+import '../../../../shared/core/domain/result.dart';
 import '../models/pet_profile_api_model.dart';
 
 class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
