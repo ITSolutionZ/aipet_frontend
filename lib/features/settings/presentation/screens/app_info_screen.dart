@@ -31,7 +31,7 @@ class _AppInfoScreenState extends ConsumerState<AppInfoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: const SoftGradientAppBar(),
+      appBar: const SoftGradientAppBar(title: ''),
       body: ListView(
         padding: const EdgeInsets.all(AppSpacing.lg),
         children: [
@@ -153,9 +153,7 @@ class _AppInfoScreenState extends ConsumerState<AppInfoScreen> {
           const SizedBox(height: AppSpacing.md),
           Text(
             'このアプリは以下のオープンソースライブラリを使用しています：',
-            style: AppFonts.bodyMedium.copyWith(
-              color: AppColors.textSecondary,
-            ),
+            style: AppFonts.bodyMedium.copyWith(color: AppColors.textSecondary),
           ),
           const SizedBox(height: AppSpacing.md),
           _buildLicenseList(),
@@ -218,9 +216,7 @@ class _AppInfoScreenState extends ConsumerState<AppInfoScreen> {
           Expanded(
             child: Text(
               value,
-              style: AppFonts.bodyMedium.copyWith(
-                color: AppColors.pointDark,
-              ),
+              style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark),
             ),
           ),
         ],
@@ -292,23 +288,30 @@ class _AppInfoScreenState extends ConsumerState<AppInfoScreen> {
     ];
 
     return Column(
-      children: licenses.map((license) => Padding(
-        padding: const EdgeInsets.only(bottom: AppSpacing.xs),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('• ', style: TextStyle(color: AppColors.pointBrown)),
-            Expanded(
-              child: Text(
-                license,
-                style: AppFonts.bodySmall.copyWith(
-                  color: AppColors.textSecondary,
-                ),
+      children: licenses
+          .map(
+            (license) => Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.xs),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    '• ',
+                    style: TextStyle(color: AppColors.pointBrown),
+                  ),
+                  Expanded(
+                    child: Text(
+                      license,
+                      style: AppFonts.bodySmall.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      )).toList(),
+          )
+          .toList(),
     );
   }
 }
