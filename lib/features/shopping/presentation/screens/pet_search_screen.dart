@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../data/models/rakuten_brand_model.dart';
 import '../../data/models/rakuten_pet_product_model.dart';
+import '../../data/providers/rakuten_brands_provider.dart';
 import '../../data/providers/rakuten_products_provider.dart';
 
 /// ペット商品検索画面
@@ -58,68 +60,7 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
     {'name': '便秘予防', 'isSelected': false},
   ];
 
-  final List<Map<String, dynamic>> _popularBrands = [
-    {
-      'name': 'ROYAL CANIN',
-      'japaneseName': 'ロイヤルカナン',
-      'logo': 'assets/images/brands/royal_canin.png',
-      'isSelected': false,
-    },
-    {
-      'name': 'HILLS',
-      'japaneseName': 'ヒルズ',
-      'logo': 'assets/images/brands/hills.png',
-      'isSelected': false,
-    },
-    {
-      'name': 'ORIJEN',
-      'japaneseName': 'オリジン',
-      'logo': 'assets/images/brands/orijen.png',
-      'isSelected': false,
-    },
-    {
-      'name': 'ACANA',
-      'japaneseName': 'アカナ',
-      'logo': 'assets/images/brands/acana.png',
-      'isSelected': false,
-    },
-    {
-      'name': 'ZIWI PEAK',
-      'japaneseName': 'ジウィピーク',
-      'logo': 'assets/images/brands/ziwi_peak.png',
-      'isSelected': false,
-    },
-    {
-      'name': 'CANIDAE',
-      'japaneseName': 'カニデ',
-      'logo': 'assets/images/brands/canidae.png',
-      'isSelected': false,
-    },
-    {
-      'name': 'WELLNESS',
-      'japaneseName': 'ウェルネス',
-      'logo': 'assets/images/brands/wellness.png',
-      'isSelected': false,
-    },
-    {
-      'name': 'BLUE BUFFALO',
-      'japaneseName': 'ブルーバッファロー',
-      'logo': 'assets/images/brands/blue_buffalo.png',
-      'isSelected': false,
-    },
-    {
-      'name': 'NATURAL BALANCE',
-      'japaneseName': 'ナチュラルバランス',
-      'logo': 'assets/images/brands/natural_balance.png',
-      'isSelected': false,
-    },
-    {
-      'name': 'NUTRO',
-      'japaneseName': 'ナチュロ',
-      'logo': 'assets/images/brands/nutro.png',
-      'isSelected': false,
-    },
-  ];
+  // ブランド情報はAPIから取得するため、ローカルリストを削除
 
   @override
   void initState() {
@@ -136,6 +77,8 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
     // 初期データを読み込み
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _onTabChanged(0);
+      // ブランド情報をAPIから取得
+      ref.read(rakutenBrandsNotifierProvider.notifier).searchPopularBrands();
     });
   }
 
@@ -424,7 +367,6 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
         const SizedBox(width: AppSpacing.md),
         Expanded(
           child: ActionButton.secondary(
-            foregroundColor: AppColors.pointPink,
             text: 'クリア',
             onPressed: _clearAllFilters,
             isEnabled: true,
@@ -799,15 +741,15 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
     try {
       debugPrint('🔗 Opening product page: ${product.itemName}');
       debugPrint('🔗 Product URL: ${product.itemUrl}');
-      
+
       final Uri url = Uri.parse(product.itemUrl);
-      
+
       if (await canLaunchUrl(url)) {
         await launchUrl(
           url,
           mode: LaunchMode.externalApplication, // 外部ブラウザで開く
         );
-        
+
         // 成功メッセージ
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -822,9 +764,9 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
         // URLを開けない場合のエラーハンドリング
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
+            const SnackBar(
               content: Text('商品ページを開けませんでした'),
-              duration: const Duration(seconds: 2),
+              duration: Duration(seconds: 2),
               backgroundColor: Colors.red,
             ),
           );
@@ -916,6 +858,8 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
   }
 
   Widget _buildPopularBrandsSection() {
+    final brandState = ref.watch(rakutenBrandsNotifierProvider);
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -929,123 +873,131 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
         const SizedBox(height: AppSpacing.md),
         SizedBox(
           height: 140,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: _popularBrands.length,
-            itemBuilder: (context, index) {
-              final brand = _popularBrands[index];
-              final isSelected = brand['isSelected'] == true;
-
-              return Container(
-                width: 110,
-                margin: const EdgeInsets.only(right: AppSpacing.md),
-                child: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      brand['isSelected'] = !isSelected;
-                    });
-                    // 필터를 적용
-                    _applyFilters();
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? AppColors.pointBrown.withValues(alpha: 0.1)
-                          : AppColors.pureWhite,
-                      borderRadius: BorderRadius.circular(AppRadius.medium),
-                      border: Border.all(
-                        color: isSelected
-                            ? AppColors.pointBrown
-                            : AppColors.pointGray.withValues(alpha: 0.3),
-                        width: isSelected ? 2 : 1,
+          child: brandState.isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : brandState.error != null
+                  ? Center(
+                      child: Text(
+                        'ブランド情報の読み込みに失敗しました',
+                        style: AppFonts.bodyMedium.copyWith(
+                          color: Colors.red,
+                        ),
                       ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.pointBrown.withValues(alpha: 0.1),
-                          blurRadius: 6,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // 브랜드 로고 이미지
-                        Container(
-                          width: 60,
-                          height: 60,
-                          margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(
-                              AppRadius.small,
-                            ),
-                            color: AppColors.pointOffWhite,
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(
-                              AppRadius.small,
-                            ),
-                            child:
-                                brand['logo'] != null &&
-                                    brand['logo'].isNotEmpty
-                                ? Image.asset(
-                                    brand['logo'],
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Icon(
-                                        Icons.pets,
-                                        color: isSelected
-                                            ? AppColors.pointBrown
-                                            : AppColors.pointGray,
-                                        size: 30,
-                                      );
-                                    },
-                                  )
-                                : Icon(
-                                    Icons.pets,
-                                    color: isSelected
-                                        ? AppColors.pointBrown
-                                        : AppColors.pointGray,
-                                    size: 30,
+                    )
+                  : ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: brandState.brands.length,
+                      itemBuilder: (context, index) {
+                        final brand = brandState.brands[index];
+                        final isSelected = brand.isSelected;
+
+                        return Container(
+                          width: 110,
+                          margin: const EdgeInsets.only(right: AppSpacing.md),
+                          child: GestureDetector(
+                            onTap: () {
+                              ref.read(rakutenBrandsNotifierProvider.notifier)
+                                  .toggleBrandSelection(brand.brandId);
+                              // 필터를 적용
+                              _applyFilters();
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: isSelected
+                                    ? AppColors.pointBrown.withValues(alpha: 0.1)
+                                    : AppColors.pureWhite,
+                                borderRadius: BorderRadius.circular(AppRadius.medium),
+                                border: Border.all(
+                                  color: isSelected
+                                      ? AppColors.pointBrown
+                                      : AppColors.pointGray.withValues(alpha: 0.3),
+                                  width: isSelected ? 2 : 1,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.pointBrown.withValues(alpha: 0.1),
+                                    blurRadius: 6,
+                                    offset: const Offset(0, 3),
                                   ),
+                                ],
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  // 브랜드 로고 이미지
+                                  Container(
+                                    width: 60,
+                                    height: 60,
+                                    margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(
+                                        AppRadius.small,
+                                      ),
+                                      color: AppColors.pointOffWhite,
+                                    ),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(
+                                        AppRadius.small,
+                                      ),
+                                      child: brand.brandLogoUrl.isNotEmpty
+                                          ? Image.asset(
+                                              brand.brandLogoUrl,
+                                              fit: BoxFit.cover,
+                                              errorBuilder: (context, error, stackTrace) {
+                                                return Icon(
+                                                  Icons.pets,
+                                                  color: isSelected
+                                                      ? AppColors.pointBrown
+                                                      : AppColors.pointGray,
+                                                  size: 30,
+                                                );
+                                              },
+                                            )
+                                          : Icon(
+                                              Icons.pets,
+                                              color: isSelected
+                                                  ? AppColors.pointBrown
+                                                  : AppColors.pointGray,
+                                              size: 30,
+                                            ),
+                                    ),
+                                  ),
+                                  // 브랜드 이름 (영문)
+                                  Text(
+                                    brand.brandName,
+                                    style: AppFonts.bodySmall.copyWith(
+                                      color: isSelected
+                                          ? AppColors.pointBrown
+                                          : AppColors.pointGray,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 10,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const SizedBox(height: 2),
+                                  // 브랜드 이름 (일본어)
+                                  Text(
+                                    brand.brandNameJapanese,
+                                    style: AppFonts.bodySmall.copyWith(
+                                      color: isSelected
+                                          ? AppColors.pointBrown
+                                          : AppColors.pointGray,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 9,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
-                        ),
-                        // 브랜드 이름 (영문)
-                        Text(
-                          brand['name'],
-                          style: AppFonts.bodySmall.copyWith(
-                            color: isSelected
-                                ? AppColors.pointBrown
-                                : AppColors.pointGray,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 10,
-                          ),
-                          textAlign: TextAlign.center,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 2),
-                        // 브랜드 이름 (일본어)
-                        Text(
-                          brand['japaneseName'],
-                          style: AppFonts.bodySmall.copyWith(
-                            color: isSelected
-                                ? AppColors.pointBrown
-                                : AppColors.pointGray,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 9,
-                          ),
-                          textAlign: TextAlign.center,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
+                        );
+                      },
                     ),
-                  ),
-                ),
-              );
-            },
-          ),
         ),
       ],
     );
