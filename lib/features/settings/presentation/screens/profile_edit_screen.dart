@@ -23,6 +23,7 @@ class ProfileEditFormController extends _$ProfileEditFormController {
   }
 
   void _disposeControllers() {
+    // 현재 상태의 컨트롤러들을 정리
     state.formKey?.currentState?.dispose();
     state.userNameController?.dispose();
     state.emailController?.dispose();
@@ -37,29 +38,7 @@ class ProfileEditFormController extends _$ProfileEditFormController {
     final nameKatakanaController = TextEditingController();
     final contactController = TextEditingController();
 
-    // 실시간 필드 업데이트
-    userNameController.addListener(() {
-      ref
-          .read(userProfileControllerProvider.notifier)
-          .updateField('userName', userNameController.text);
-    });
-    emailController.addListener(() {
-      ref
-          .read(userProfileControllerProvider.notifier)
-          .updateField('email', emailController.text);
-    });
-    nameKatakanaController.addListener(() {
-      ref
-          .read(userProfileControllerProvider.notifier)
-          .updateField('nameKatakana', nameKatakanaController.text);
-    });
-    contactController.addListener(() {
-      ref
-          .read(userProfileControllerProvider.notifier)
-          .updateField('contact', contactController.text);
-    });
-
-    // 프로필 데이터가 있으면 컨트롤러에 값 설정
+    // 프로필 데이터가 있으면 컨트롤러에 값 설정 (리스너 설정 전에)
     final profileState = ref.read(userProfileControllerProvider);
     if (profileState.profile != null) {
       final profile = profileState.profile!;
@@ -70,6 +49,7 @@ class ProfileEditFormController extends _$ProfileEditFormController {
       debugPrint('📝 초기화 시 프로필 데이터 설정: ${profile.userName}');
     }
 
+    // 상태 업데이트 (리스너 설정 전에)
     state = state.copyWith(
       formKey: formKey,
       userNameController: userNameController,
@@ -77,6 +57,31 @@ class ProfileEditFormController extends _$ProfileEditFormController {
       nameKatakanaController: nameKatakanaController,
       contactController: contactController,
     );
+
+    // 빌드 완료 후 리스너 설정
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // 실시간 필드 업데이트
+      userNameController.addListener(() {
+        ref
+            .read(userProfileControllerProvider.notifier)
+            .updateField('userName', userNameController.text);
+      });
+      emailController.addListener(() {
+        ref
+            .read(userProfileControllerProvider.notifier)
+            .updateField('email', emailController.text);
+      });
+      nameKatakanaController.addListener(() {
+        ref
+            .read(userProfileControllerProvider.notifier)
+            .updateField('nameKatakana', nameKatakanaController.text);
+      });
+      contactController.addListener(() {
+        ref
+            .read(userProfileControllerProvider.notifier)
+            .updateField('contact', contactController.text);
+      });
+    });
   }
 
   /// 선택된 이미지 업데이트

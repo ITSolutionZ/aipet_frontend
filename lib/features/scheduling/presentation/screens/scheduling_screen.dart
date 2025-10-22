@@ -48,8 +48,7 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: DynamicAppBarStyles.brown(
-        scrollController: _scrollController,
+      appBar: SoftGradientAppBar(
         title: '',
         actions: [
           IconButton(
@@ -75,10 +74,12 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
               calendarFormat: _calendarFormat,
               eventLoader: _getEventsForDay,
               startingDayOfWeek: StartingDayOfWeek.monday,
+              locale: 'ja_JP',
               calendarStyle: CalendarStyle(
                 outsideDaysVisible: false,
                 weekendTextStyle: const TextStyle(color: AppColors.pointRed),
                 holidayTextStyle: const TextStyle(color: AppColors.pointRed),
+                defaultTextStyle: const TextStyle(color: AppColors.pointDark),
                 selectedDecoration: const BoxDecoration(
                   color: AppColors.pointBrown,
                   shape: BoxShape.circle,
@@ -150,7 +151,7 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
       floatingActionButton: IconButton(
         onPressed: _openAlarmSetup,
         icon: const Icon(Icons.add, color: Colors.white),
-        tooltip: '새 일정 추가',
+        tooltip: '新しい予定を追加',
         style: IconButton.styleFrom(
           backgroundColor: AppColors.pointBrown,
           foregroundColor: Colors.white,
@@ -206,12 +207,12 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
           ),
           const SizedBox(height: 16),
           Text(
-            '날짜를 선택해주세요',
+            '日付を選択してください',
             style: AppFonts.titleMedium.copyWith(color: AppColors.pointGray),
           ),
           const SizedBox(height: 8),
           Text(
-            '캘린더에서 날짜를 선택하면\n해당 날짜의 일정을 확인할 수 있습니다',
+            'カレンダーで日付を選択すると\nその日の予定を確認できます',
             style: AppFonts.bodySmall.copyWith(color: AppColors.pointGray),
             textAlign: TextAlign.center,
           ),
@@ -249,7 +250,7 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
             ),
             const SizedBox(height: 16),
             Text(
-              '일정이 없습니다',
+              '予定がありません',
               style: AppFonts.titleMedium.copyWith(color: AppColors.pointGray),
             ),
             const SizedBox(height: 8),
@@ -266,7 +267,7 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  onTap: _showAddEventDialog,
+                  onTap: _openAlarmSetup,
                   borderRadius: BorderRadius.circular(16.0),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -283,7 +284,7 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          '일정 추가',
+                          '予定追加',
                           style: AppFonts.bodySmall.copyWith(
                             color: AppColors.pureWhite,
                             fontSize: 12,
@@ -354,7 +355,7 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('${event.title} 일정이 추가되었습니다'),
+            content: Text('${event.title}の予定が追加されました'),
             backgroundColor: AppColors.pointGreen,
           ),
         );
@@ -364,7 +365,7 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('일정 저장에 실패했습니다: $e'),
+            content: Text('予定の保存に失敗しました: $e'),
             backgroundColor: AppColors.pointRed,
           ),
         );
@@ -460,7 +461,7 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('${newEvent.title} 일정이 수정되었습니다'),
+            content: Text('${newEvent.title}の予定が修正されました'),
             backgroundColor: AppColors.pointBlue,
           ),
         );
@@ -470,7 +471,7 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('일정 수정에 실패했습니다: $e'),
+            content: Text('予定の修正に失敗しました: $e'),
             backgroundColor: AppColors.pointRed,
           ),
         );
@@ -483,12 +484,12 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('일정 삭제'),
-        content: Text('${event.title} 일정을 삭제하시겠습니까?'),
+        title: const Text('予定削除'),
+        content: Text('${event.title}の予定を削除しますか？'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('취소'),
+            child: const Text('キャンセル'),
           ),
           TextButton(
             onPressed: () {
@@ -496,7 +497,7 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
               _deleteEvent(event);
             },
             style: TextButton.styleFrom(foregroundColor: AppColors.pointRed),
-            child: const Text('삭제'),
+            child: const Text('削除'),
           ),
         ],
       ),
@@ -527,7 +528,7 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('${event.title} 일정이 삭제되었습니다'),
+            content: Text('${event.title}の予定が削除されました'),
             backgroundColor: AppColors.pointRed,
           ),
         );
@@ -546,9 +547,14 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
   }
 
   /// 알람 설정 화면 열기
-  void _openAlarmSetup() {
-    context.push(
+  void _openAlarmSetup() async {
+    final result = await context.push(
       '/scheduling/new-event?date=${_selectedDay?.toIso8601String()}',
     );
+
+    // 새 이벤트가 추가되었을 때 이벤트 목록 새로고침
+    if (result == true) {
+      await _loadEventsFromDatabase();
+    }
   }
 }

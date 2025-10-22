@@ -113,9 +113,9 @@ class _BiometricSecurityScreenState
       setState(() {
         _isBiometricEnabled = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('生体認証が無効化されました')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('生体認証が無効化されました')));
     }
   }
 
@@ -126,9 +126,9 @@ class _BiometricSecurityScreenState
       setState(() {
         _isPinEnabled = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('PIN码が無効化されました')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('PIN码が無効化されました')));
     }
   }
 
@@ -136,12 +136,7 @@ class _BiometricSecurityScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
-      appBar: AppBar(
-        title: const Text('セキュリティ設定'),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        foregroundColor: Colors.black,
-      ),
+      appBar: const SoftGradientAppBar(title: ''),
       body: ListView(
         padding: const EdgeInsets.all(AppSpacing.lg),
         children: [

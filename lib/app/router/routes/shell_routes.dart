@@ -22,6 +22,7 @@ import 'package:aipet_frontend/features/scheduling/presentation/presentation.dar
 import 'package:aipet_frontend/features/scheduling/presentation/screens/alarm_setup_screen.dart';
 import 'package:aipet_frontend/features/scheduling/presentation/screens/new_event_setup_screen.dart';
 import 'package:aipet_frontend/features/scheduling/presentation/screens/today_appointments_screen.dart';
+import 'package:aipet_frontend/features/settings/presentation/screens/app_info_screen.dart';
 import 'package:aipet_frontend/features/settings/presentation/screens/biometric_security_screen.dart';
 import 'package:aipet_frontend/features/settings/presentation/screens/database_dashboard_screen.dart';
 import 'package:aipet_frontend/features/settings/presentation/screens/settings_screens.dart';
@@ -551,6 +552,11 @@ class ShellRoutes {
             path: 'database-dashboard',
             name: 'database-dashboard',
             builder: (context, state) => const DatabaseDashboardScreen(),
+          ),
+          GoRoute(
+            path: 'app-info',
+            name: 'app-info',
+            builder: (context, state) => const AppInfoScreen(),
           ),
         ],
       ),
