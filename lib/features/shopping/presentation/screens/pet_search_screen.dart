@@ -1,3 +1,4 @@
+import 'package:aipet_frontend/shared/core/services/snackbar_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -248,14 +249,11 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
     // 8. スナックバーで通知
     final totalFilters = chipFilters.length + selectedBrands.length;
     if (totalFilters > 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            '$totalFilters個のフィルターを適用しました (AND条件)',
-          ),
-          duration: const Duration(seconds: 2),
-          backgroundColor: const Color(0xFF1E3A8A),
-        ),
+      // ✅ Shared SnackBarService 사용
+      SnackBarService.showInfo(
+        context,
+        '$totalFilters個のフィルターを適用しました (AND条件)',
+        duration: const Duration(seconds: 2),
       );
     }
   }
@@ -290,12 +288,11 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
     debugPrint('🔍 Filters cleared, searching with: $baseKeyword');
     notifier.searchPetProducts(keyword: baseKeyword);
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('すべてのフィルターをクリアしました'),
-        duration: Duration(seconds: 2),
-        backgroundColor: Color(0xFF1E3A8A),
-      ),
+    // ✅ Shared SnackBarService 사용
+    SnackBarService.showInfo(
+      context,
+      'すべてのフィルターをクリアしました',
+      duration: const Duration(seconds: 2),
     );
   }
 
@@ -775,35 +772,32 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
 
         // 成功メッセージ
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('${product.itemName}の商品ページを開きました'),
-              duration: const Duration(seconds: 2),
-              backgroundColor: AppColors.pointBrown,
-            ),
+          // ✅ Shared SnackBarService 사용
+          SnackBarService.showSuccess(
+            context,
+            '${product.itemName}の商品ページを開きました',
+            duration: const Duration(seconds: 2),
           );
         }
       } else {
         // URLを開けない場合のエラーハンドリング
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('商品ページを開けませんでした'),
-              duration: Duration(seconds: 2),
-              backgroundColor: Colors.red,
-            ),
+          // ✅ Shared SnackBarService 사용
+          SnackBarService.showError(
+            context,
+            '商品ページを開けませんでした',
+            duration: const Duration(seconds: 2),
           );
         }
       }
     } catch (e) {
       debugPrint('❌ Error opening product page: $e');
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('エラーが発生しました: $e'),
-            duration: const Duration(seconds: 3),
-            backgroundColor: Colors.red,
-          ),
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showError(
+          context,
+          'エラーが発生しました: $e',
+          duration: const Duration(seconds: 3),
         );
       }
     }
