@@ -4,7 +4,7 @@ import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+// ✅ Removed SharedPreferences
 
 /// 급수 기록 편집 화면
 class EditWateringRecordScreen extends ConsumerStatefulWidget {
@@ -355,7 +355,7 @@ class _EditWateringRecordScreenState
   Future<void> _saveRecord() async {
     if (_formKey.currentState!.validate()) {
       // 로컬 데이터로 저장
-      final prefs = await SharedPreferences.getInstance();
+      final cache = CacheService(); await cache.initialize();
 
       final recordId = widget.record['id'] as String;
 
@@ -369,7 +369,7 @@ class _EditWateringRecordScreenState
       };
 
       // 기존 기록 가져오기
-      final records = prefs.getStringList('watering_records') ?? [];
+      final records = await cache.getPersistentCacheList('watering_records') ?? [];
       final updatedRecords = records.map((record) {
         final data = jsonDecode(record) as Map<String, dynamic>;
         if (data['id'] == recordId) {
@@ -378,7 +378,7 @@ class _EditWateringRecordScreenState
         return record;
       }).toList();
 
-      await prefs.setStringList('watering_records', updatedRecords);
+      await await cache.setPersistentCacheList('watering_records', updatedRecords);
 
       if (mounted) {
         SnackBarService.showSuccess(context, '給水記録を更新しました');
@@ -405,15 +405,15 @@ class _EditWateringRecordScreenState
                 Navigator.of(context).pop();
 
                 // 로컬 데이터에서 삭제
-                final prefs = await SharedPreferences.getInstance();
-                final records = prefs.getStringList('watering_records') ?? [];
+                final cache = CacheService(); await cache.initialize();
+                final records = await cache.getPersistentCacheList('watering_records') ?? [];
                 final currentRecordId = widget.record['id'] as String;
                 final filteredRecords = records.where((record) {
                   final data = jsonDecode(record) as Map<String, dynamic>;
                   return data['id'] != currentRecordId;
                 }).toList();
 
-                await prefs.setStringList('watering_records', filteredRecords);
+                await await cache.setPersistentCacheList('watering_records', filteredRecords);
 
                 if (mounted) {
                   SnackBarService.showSuccess(context, '給水記録を削除しました');

@@ -8,6 +8,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// 건강 기록(백신, 체중)을 SharedPreferences에 저장/관리합니다
 class PetHealthLocalStorageService {
   static const String _keyVaccineRecords = 'pet_vaccine_records';
+  // ✅ SharedPreferences 인스턴스 재사용
+  static SharedPreferences? _prefs;
+  static Future<void> _init() async {
+    _prefs ??= await SharedPreferences.getInstance();
+  }
   static const String _keyWeightRecords = 'pet_weight_records';
 
   /// 백신 기록 가져오기
@@ -15,7 +20,7 @@ class PetHealthLocalStorageService {
     String? petId,
   }) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final recordsJson = prefs.getStringList(_keyVaccineRecords) ?? [];
 
       if (recordsJson.isEmpty) {
@@ -40,7 +45,7 @@ class PetHealthLocalStorageService {
   /// 백신 기록 추가
   static Future<void> addVaccineRecord(Map<String, dynamic> record) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final records = prefs.getStringList(_keyVaccineRecords) ?? [];
 
       if (record['id'] == null || (record['id'] as String).isEmpty) {
@@ -59,7 +64,7 @@ class PetHealthLocalStorageService {
   /// 백신 기록 업데이트
   static Future<void> updateVaccineRecord(Map<String, dynamic> record) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final records = prefs.getStringList(_keyVaccineRecords) ?? [];
 
       final index = records.indexWhere((r) {
@@ -80,7 +85,7 @@ class PetHealthLocalStorageService {
   /// 백신 기록 삭제
   static Future<void> deleteVaccineRecord(String recordId) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final records = prefs.getStringList(_keyVaccineRecords) ?? [];
 
       records.removeWhere((r) {
@@ -100,7 +105,7 @@ class PetHealthLocalStorageService {
     String? petId,
   }) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final recordsJson = prefs.getStringList(_keyWeightRecords) ?? [];
 
       if (recordsJson.isEmpty) {
@@ -125,7 +130,7 @@ class PetHealthLocalStorageService {
   /// 체중 기록 추가
   static Future<void> addWeightRecord(Map<String, dynamic> record) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final records = prefs.getStringList(_keyWeightRecords) ?? [];
 
       if (record['id'] == null || (record['id'] as String).isEmpty) {
@@ -148,7 +153,7 @@ class PetHealthLocalStorageService {
   /// 체중 기록 업데이트
   static Future<void> updateWeightRecord(Map<String, dynamic> record) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final records = prefs.getStringList(_keyWeightRecords) ?? [];
 
       final index = records.indexWhere((r) {
@@ -170,7 +175,7 @@ class PetHealthLocalStorageService {
   /// 체중 기록 삭제
   static Future<void> deleteWeightRecord(String recordId) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final records = prefs.getStringList(_keyWeightRecords) ?? [];
 
       records.removeWhere((r) {
@@ -188,7 +193,7 @@ class PetHealthLocalStorageService {
   /// 초기 기본 백신 기록 생성
   static Future<List<Map<String, dynamic>>>
   _initializeDefaultVaccineRecords() async {
-    final prefs = await SharedPreferences.getInstance();
+    await _init();
     final defaultRecords = [
       {
         'id': 'vaccine-1',
@@ -217,7 +222,7 @@ class PetHealthLocalStorageService {
   /// 초기 기본 체중 기록 생성
   static Future<List<Map<String, dynamic>>>
   _initializeDefaultWeightRecords() async {
-    final prefs = await SharedPreferences.getInstance();
+    await _init();
     final now = DateTime.now();
     final defaultRecords = [
       {

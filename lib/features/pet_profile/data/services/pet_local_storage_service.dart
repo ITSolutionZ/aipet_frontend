@@ -8,13 +8,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 ///
 /// ペット情報をローカルに保存・管理します
 class PetLocalStorageService {
+  // ✅ SharedPreferences 인스턴스 재사용
+  static SharedPreferences? _prefs;
+  static Future<void> _init() async {
+    _prefs ??= await SharedPreferences.getInstance();
+  }
   static const String _keyPets = 'local_pets';
   static const String _keySelectedPetId = 'selected_pet_id';
 
   /// ペットリストを取得
   static Future<List<PetProfileEntity>> getPets() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final petsJson = prefs.getStringList(_keyPets) ?? [];
 
       if (petsJson.isEmpty) {
@@ -76,7 +81,7 @@ class PetLocalStorageService {
   /// ペットリストを保存
   static Future<void> savePets(List<PetProfileEntity> pets) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final petsJson = pets.map((pet) {
         // additionalInfo를 안전하게 직렬화
         final safeAdditionalInfo = _sanitizeAdditionalInfo(pet.additionalInfo);
@@ -226,19 +231,19 @@ class PetLocalStorageService {
 
   /// 選択中のペットIDを保存
   static Future<void> saveSelectedPetId(String petId) async {
-    final prefs = await SharedPreferences.getInstance();
+    await _init();
     await prefs.setString(_keySelectedPetId, petId);
   }
 
   /// 選択中のペットIDを取得
   static Future<String?> getSelectedPetId() async {
-    final prefs = await SharedPreferences.getInstance();
+    await _init();
     return prefs.getString(_keySelectedPetId);
   }
 
   /// すべてのペットデータをクリア
   static Future<void> clearAll() async {
-    final prefs = await SharedPreferences.getInstance();
+    await _init();
     await prefs.remove(_keyPets);
     await prefs.remove(_keySelectedPetId);
   }

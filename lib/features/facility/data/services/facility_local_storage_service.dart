@@ -9,12 +9,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 class FacilityLocalStorageService {
   static const String _keyFacilities = 'facilities';
   static const String _keyFavorites = 'favorite_facilities';
+  // ✅ SharedPreferences 인스턴스 재사용
+  static SharedPreferences? _prefs;
+  static Future<void> _init() async {
+    _prefs ??= await SharedPreferences.getInstance();
+  }
   static const String _keyHistory = 'facility_history';
 
   /// 시설 가져오기
   static Future<List<Map<String, dynamic>>> getFacilities() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final facilitiesJson = prefs.getStringList(_keyFacilities) ?? [];
 
       return facilitiesJson
@@ -29,7 +34,7 @@ class FacilityLocalStorageService {
   /// 시설 추가
   static Future<void> addFacility(Map<String, dynamic> facility) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final facilities = prefs.getStringList(_keyFacilities) ?? [];
 
       if (facility['id'] == null || (facility['id'] as String).isEmpty) {
@@ -54,7 +59,7 @@ class FacilityLocalStorageService {
     List<Map<String, dynamic>> facilitiesList,
   ) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final existingFacilities = prefs.getStringList(_keyFacilities) ?? [];
 
       // 기존 시설 ID 맵 생성
@@ -85,7 +90,7 @@ class FacilityLocalStorageService {
   /// 시설 업데이트
   static Future<void> updateFacility(Map<String, dynamic> facility) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final facilities = prefs.getStringList(_keyFacilities) ?? [];
 
       final index = facilities.indexWhere((f) {
@@ -107,7 +112,7 @@ class FacilityLocalStorageService {
   /// 시설 삭제
   static Future<void> deleteFacility(String facilityId) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final facilities = prefs.getStringList(_keyFacilities) ?? [];
 
       facilities.removeWhere((f) {
@@ -125,7 +130,7 @@ class FacilityLocalStorageService {
   /// 즐겨찾기 가져오기
   static Future<List<String>> getFavorites() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       return prefs.getStringList(_keyFavorites) ?? [];
     } catch (e) {
       LoggerService.debug('즐겨찾기 로드 실패: $e');
@@ -136,7 +141,7 @@ class FacilityLocalStorageService {
   /// 즐겨찾기 토글
   static Future<void> toggleFavorite(String facilityId) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final favorites = prefs.getStringList(_keyFavorites) ?? [];
 
       if (favorites.contains(facilityId)) {
@@ -155,7 +160,7 @@ class FacilityLocalStorageService {
   /// 방문 기록 추가
   static Future<void> addToHistory(String facilityId) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final history = prefs.getStringList(_keyHistory) ?? [];
 
       // 중복 제거
@@ -178,7 +183,7 @@ class FacilityLocalStorageService {
   /// 방문 기록 가져오기
   static Future<List<String>> getHistory() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       return prefs.getStringList(_keyHistory) ?? [];
     } catch (e) {
       LoggerService.debug('방문 기록 로드 실패: $e');
@@ -189,7 +194,7 @@ class FacilityLocalStorageService {
   /// 모든 시설 데이터 삭제
   static Future<void> clearAllFacilities() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       await prefs.remove(_keyFacilities);
       LoggerService.debug('모든 시설 삭제 성공');
     } catch (e) {

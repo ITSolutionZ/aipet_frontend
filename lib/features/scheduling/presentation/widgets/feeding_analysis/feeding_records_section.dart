@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+// ✅ Removed SharedPreferences
 
 /// 급여 기록 섹션
 class FeedingRecordsSection extends StatelessWidget {
@@ -182,7 +182,7 @@ class FeedingRecordsSection extends StatelessWidget {
               onPressed: () async {
                 if (amountController.text.isNotEmpty) {
                   // 로컬 데이터로 저장
-                  final prefs = await SharedPreferences.getInstance();
+                  final cache = CacheService(); await cache.initialize();
 
                   final feedingRecord = {
                     'id': DateTime.now().millisecondsSinceEpoch.toString(),
@@ -194,9 +194,9 @@ class FeedingRecordsSection extends StatelessWidget {
                     'change': '+0g', // 변화량은 별도 계산 로직 필요
                   };
 
-                  final records = prefs.getStringList('feeding_records') ?? [];
+                  final records = await cache.getPersistentCacheList('feeding_records') ?? [];
                   records.add(jsonEncode(feedingRecord));
-                  await prefs.setStringList('feeding_records', records);
+                  await await cache.setPersistentCacheList('feeding_records', records);
 
                   SnackBarService.showSuccess(context, '食事記録が追加されました。');
                   amountController.dispose();

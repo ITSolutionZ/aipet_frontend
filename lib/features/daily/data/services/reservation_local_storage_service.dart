@@ -6,6 +6,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// 예약 데이터 로컬 저장소 서비스
 class ReservationLocalStorageService {
   static const String _keyReservations = 'reservations';
+  // ✅ SharedPreferences 인스턴스 재사용
+  static SharedPreferences? _prefs;
+  static Future<void> _init() async {
+    _prefs ??= await SharedPreferences.getInstance();
+  }
 
   /// 예약 상태 상수
   static const String pending = 'pending';
@@ -15,7 +20,7 @@ class ReservationLocalStorageService {
 
   /// 모든 예약 조회
   static Future<List<Map<String, dynamic>>> getReservations() async {
-    final prefs = await SharedPreferences.getInstance();
+    await _init();
     final jsonString = prefs.getString(_keyReservations);
 
     if (jsonString == null) {
@@ -118,7 +123,7 @@ class ReservationLocalStorageService {
   static Future<void> _saveReservations(
     List<Map<String, dynamic>> reservations,
   ) async {
-    final prefs = await SharedPreferences.getInstance();
+    await _init();
 
     // DateTime을 ISO8601 문자열로 변환
     final serializedList = reservations.map((reservation) {
@@ -185,7 +190,7 @@ class ReservationLocalStorageService {
 
   /// 모든 예약 데이터 삭제
   static Future<void> clearAllReservations() async {
-    final prefs = await SharedPreferences.getInstance();
+    await _init();
     await prefs.remove(_keyReservations);
   }
 
