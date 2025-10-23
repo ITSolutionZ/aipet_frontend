@@ -257,7 +257,6 @@ class CacheKeys {
   static const String appointments = 'appointments';
 }
 
-/// 캐시 TTL 상수
   /// List<String> 조회 (호환성)
   Future<List<String>?> getPersistentCacheList(String key) async {
     await initialize();
