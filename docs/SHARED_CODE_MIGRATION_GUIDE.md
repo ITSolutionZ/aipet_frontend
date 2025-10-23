@@ -1371,9 +1371,9 @@ class SearchFacilitiesUseCase extends BaseUseCase<List<Facility>, String> {
 
 ### 상수 마이그레이션
 
-- [ ] `ai/domain/constants/ai_constants.dart` → `UnifiedConstants`, `AppTexts`
-- [ ] `allergy/domain/constants/allergy_constants.dart` → `AppTexts`, `UnifiedValidationRules`
-- [ ] `pet_profile/presentation/constants/pet_profile_constants.dart` → `AppTexts`, `AppConstants`
+- [x] `pet_profile/presentation/constants/pet_profile_constants.dart` → AppTexts 중복 제거 ✅ **완료**
+- [x] `allergy/domain/constants/allergy_constants.dart` → AppTexts 사용 (feature-specific은 유지) ✅ **부분 완료**
+- [ ] `ai/domain/constants/ai_constants.dart` → `UnifiedConstants`, `AppTexts` (대부분 feature-specific)
 - [ ] `auth/domain/auth_constants.dart` → `AppTexts` 직접 사용 (이미 부분적으로 사용 중)
 
 ### Result 패턴 마이그레이션
