@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'helpers/notification_storage_defaults_helper.dart';
+import 'package:aipet_frontend/shared/services/cache_service.dart';
 
 /// 알림 로컬 저장소 서비스
 ///
@@ -15,9 +16,10 @@ class NotificationLocalStorageService {
   static const String _keyUserEngagement = 'user_engagement';
 
   // ✅ SharedPreferences 인스턴스 재사용
-  static SharedPreferences? _prefs;
+  static final _cache = CacheService();
+  // ✅ CacheService 사용 (SharedPreferences 0개 달성)
   static Future<void> _init() async {
-    _prefs ??= await SharedPreferences.getInstance();
+    await _cache.initialize();
   }
 
   /// 알림 가져오기

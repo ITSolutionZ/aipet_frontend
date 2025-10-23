@@ -171,6 +171,65 @@ class CacheService {
       debugPrint('🧹 CacheService: 만료된 메모리 캐시 정리 - ${expiredKeys.length}개');
     }
   }
+
+  // ========================================
+  // SharedPreferences 호환 편의 메서드
+  // ========================================
+
+  /// String 저장
+  Future<void> setString(String key, String value) async {
+    await initialize();
+    await _prefs!.setString(key, value);
+  }
+
+  /// String 조회
+  String? getString(String key) {
+    return _prefs?.getString(key);
+  }
+
+  /// StringList 저장
+  Future<void> setStringList(String key, List<String> value) async {
+    await initialize();
+    await _prefs!.setStringList(key, value);
+  }
+
+  /// StringList 조회
+  List<String>? getStringList(String key) {
+    return _prefs?.getStringList(key);
+  }
+
+  /// Bool 저장
+  Future<void> setBoolValue(String key, bool value) async {
+    await initialize();
+    await _prefs!.setBool(key, value);
+  }
+
+  /// Bool 조회
+  bool? getBoolValue(String key) {
+    return _prefs?.getBool(key);
+  }
+
+  /// Int 저장
+  Future<void> setIntValue(String key, int value) async {
+    await initialize();
+    await _prefs!.setInt(key, value);
+  }
+
+  /// Int 조회
+  int? getIntValue(String key) {
+    return _prefs?.getInt(key);
+  }
+
+  /// 키 제거
+  Future<void> removeKey(String key) async {
+    await initialize();
+    await _prefs!.remove(key);
+  }
+
+  /// 키 존재 여부
+  bool containsKeySync(String key) {
+    return _prefs?.containsKey(key) ?? false;
+  }
 }
 
 /// 캐시 엔트리
