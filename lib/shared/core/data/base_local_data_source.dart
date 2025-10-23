@@ -30,7 +30,7 @@ abstract class BaseLocalDataSource<T> implements LocalDataSource<T> {
       final data = fromJson(json);
       return Success(data);
     } catch (e) {
-      return Result.failure(CacheError('캐시 데이터 조회 실패', details: e.toString()));
+      return Result.failure(CacheError(.toString()'캐시 데이터 조회 실패', details: e.toString()));
     }
   }
 
@@ -51,7 +51,7 @@ abstract class BaseLocalDataSource<T> implements LocalDataSource<T> {
           .toList();
       return Success(dataList);
     } catch (e) {
-      return Result.failure(CacheError('캐시 리스트 조회 실패', details: e.toString()));
+      return Result.failure(CacheError(.toString()'캐시 리스트 조회 실패', details: e.toString()));
     }
   }
 
@@ -66,7 +66,7 @@ abstract class BaseLocalDataSource<T> implements LocalDataSource<T> {
       await prefs.setString(cacheKey, jsonString);
       return const Success(null);
     } catch (e) {
-      return Result.failure(CacheError('캐시 데이터 저장 실패', details: e.toString()));
+      return Result.failure(CacheError(.toString()'캐시 데이터 저장 실패', details: e.toString()));
     }
   }
 
@@ -81,7 +81,7 @@ abstract class BaseLocalDataSource<T> implements LocalDataSource<T> {
       await prefs.setString(cacheKey, jsonString);
       return const Success(null);
     } catch (e) {
-      return Result.failure(CacheError('캐시 리스트 저장 실패', details: e.toString()));
+      return Result.failure(CacheError(.toString()'캐시 리스트 저장 실패', details: e.toString()));
     }
   }
 
@@ -93,7 +93,7 @@ abstract class BaseLocalDataSource<T> implements LocalDataSource<T> {
       await prefs.remove(cacheKey);
       return const Success(null);
     } catch (e) {
-      return Result.failure(CacheError('캐시 삭제 실패', details: e.toString()));
+      return Result.failure(CacheError(.toString()'캐시 삭제 실패', details: e.toString()));
     }
   }
 
@@ -110,7 +110,7 @@ abstract class BaseLocalDataSource<T> implements LocalDataSource<T> {
 
       return const Success(null);
     } catch (e) {
-      return Result.failure(CacheError('전체 캐시 삭제 실패', details: e.toString()));
+      return Result.failure(CacheError(.toString()'전체 캐시 삭제 실패', details: e.toString()));
     }
   }
 
@@ -122,7 +122,7 @@ abstract class BaseLocalDataSource<T> implements LocalDataSource<T> {
       final hasData = prefs.containsKey(cacheKey);
       return Success(hasData);
     } catch (e) {
-      return Result.failure(CacheError('캐시 존재 확인 실패', details: e.toString()));
+      return Result.failure(CacheError(.toString()'캐시 존재 확인 실패', details: e.toString()));
     }
   }
 
