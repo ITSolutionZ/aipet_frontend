@@ -2,16 +2,16 @@ import 'dart:convert';
 
 import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:aipet_frontend/shared/services/cache_service.dart';
 import '../../domain/domain.dart';
 
 /// 저장된 알레르기 분석 결과 Repository
 class SavedAnalysisRepository {
   // ✅ SharedPreferences 인스턴스 재사용
-  static SharedPreferences? _prefs;
+  static final _cache = CacheService();
   static Future<void> _init() async {
-    _prefs ??= await SharedPreferences.getInstance();
+    await _cache.initialize();
   }
   static const String _key = 'saved_allergy_analyses';
 

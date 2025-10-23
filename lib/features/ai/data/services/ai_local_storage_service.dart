@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:aipet_frontend/shared/services/cache_service.dart';
 import '../../domain/domain.dart';
 
 /// 🎯 AI 로컬 저장소 서비스

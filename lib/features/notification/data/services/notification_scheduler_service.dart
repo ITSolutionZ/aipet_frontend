@@ -2,16 +2,16 @@ import 'dart:async';
 
 import '../../domain/domain.dart';
 import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:aipet_frontend/shared/services/cache_service.dart';
 import 'helpers/notification_scheduler_executor_helper.dart';
 import 'helpers/notification_scheduler_storage_helper.dart';
 import 'notification_service.dart' as local;
 
   // ✅ SharedPreferences 인스턴스 재사용
-  static SharedPreferences? _prefs;
+  static final _cache = CacheService();
   static Future<void> _init() async {
-    _prefs ??= await SharedPreferences.getInstance();
+    await _cache.initialize();
   }
 /// 알림 스케줄링 서비스
 class NotificationSchedulerService {

@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'helpers/notification_storage_defaults_helper.dart';
+import 'package:aipet_frontend/shared/services/cache_service.dart';
 import 'package:aipet_frontend/shared/services/cache_service.dart';
 
 /// 알림 로컬 저장소 서비스

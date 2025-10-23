@@ -1,15 +1,15 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 /// 예약 데이터 로컬 저장소 서비스
+import 'package:aipet_frontend/shared/services/cache_service.dart';
 class ReservationLocalStorageService {
   static const String _keyReservations = 'reservations';
   // ✅ SharedPreferences 인스턴스 재사용
-  static SharedPreferences? _prefs;
+  static final _cache = CacheService();
   static Future<void> _init() async {
-    _prefs ??= await SharedPreferences.getInstance();
+    await _cache.initialize();
   }
 
   /// 예약 상태 상수

@@ -1,17 +1,17 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/favorite_product_model.dart';
+import 'package:aipet_frontend/shared/services/cache_service.dart';
 
 /// お気に入り管理サービス
 class FavoriteService {
   static const String _key = 'favorite_products';
   // ✅ SharedPreferences 인스턴스 재사용
-  static SharedPreferences? _prefs;
+  static final _cache = CacheService();
   static Future<void> _init() async {
-    _prefs ??= await SharedPreferences.getInstance();
+    await _cache.initialize();
   }
 
   /// お気に入り商品を全て取得

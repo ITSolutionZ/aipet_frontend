@@ -3,15 +3,15 @@ import 'dart:convert';
 import 'package:aipet_frontend/features/settings/data/services/local_user_service.dart';
 import 'package:aipet_frontend/features/settings/domain/entities/settings_entity.dart';
 import 'package:aipet_frontend/features/settings/domain/repositories/settings_repository.dart';
+import 'package:aipet_frontend/shared/services/cache_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsRepositoryImpl implements SettingsRepository {
   // ✅ SharedPreferences 인스턴스 재사용
-  static SharedPreferences? _prefs;
+  static final _cache = CacheService();
   static Future<void> _init() async {
-    _prefs ??= await SharedPreferences.getInstance();
+    await _cache.initialize();
   }
   // LocalUserService 인스턴스 (사용자 프로필용)
   final LocalUserService _userService = LocalUserService();

@@ -1,17 +1,17 @@
 import 'dart:convert';
 
 import 'package:aipet_frontend/features/pet_feeding/domain/entities/recipe_entity.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 /// 레시피 매퍼 헬퍼
+import 'package:aipet_frontend/shared/services/cache_service.dart';
 class RecipeMapperHelper {
   /// 레시피 엔티티를 JSON으로 변환
   static Map<String, dynamic> entityToJson(RecipeEntity recipe) {
     return recipe.toJson();
   // ✅ SharedPreferences 인스턴스 재사용
-  static SharedPreferences? _prefs;
+  static final _cache = CacheService();
   static Future<void> _init() async {
-    _prefs ??= await SharedPreferences.getInstance();
+    await _cache.initialize();
   }
   }
 

@@ -1,15 +1,15 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 /// 급여 기록 저장 헬퍼
+import 'package:aipet_frontend/shared/services/cache_service.dart';
 class FeedingStorageHelper {
   static const String _keyFeedingRecords = 'feeding_records';
   // ✅ SharedPreferences 인스턴스 재사용
-  static SharedPreferences? _prefs;
+  static final _cache = CacheService();
   static Future<void> _init() async {
-    _prefs ??= await SharedPreferences.getInstance();
+    await _cache.initialize();
   }
   static const String _keyFeedingSchedules = 'feeding_schedules';
 

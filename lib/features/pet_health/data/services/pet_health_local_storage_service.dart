@@ -1,17 +1,17 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 /// 펫 건강 로컬 저장소 서비스
+import 'package:aipet_frontend/shared/services/cache_service.dart';
 ///
 /// 건강 기록(백신, 체중)을 SharedPreferences에 저장/관리합니다
 class PetHealthLocalStorageService {
   static const String _keyVaccineRecords = 'pet_vaccine_records';
   // ✅ SharedPreferences 인스턴스 재사용
-  static SharedPreferences? _prefs;
+  static final _cache = CacheService();
   static Future<void> _init() async {
-    _prefs ??= await SharedPreferences.getInstance();
+    await _cache.initialize();
   }
   static const String _keyWeightRecords = 'pet_weight_records';
 

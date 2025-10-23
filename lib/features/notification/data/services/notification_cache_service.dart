@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:aipet_frontend/shared/services/cache_service.dart';
 
 import '../../domain/domain.dart';
 
@@ -23,11 +23,11 @@ class NotificationCacheService {
   static const Duration _cacheExpiration = Duration(minutes: 30);
 
   // ✅ SharedPreferences 인스턴스 재사용
-  static SharedPreferences? _prefs;
+  static final _cache = CacheService();
 
   /// SharedPreferences 인스턴스 가져오기
   static Future<SharedPreferences> get _preferences async {
-    return _prefs ??= await SharedPreferences.getInstance();
+    return await _cache.initialize();
   }
 
   /// 알림 목록을 캐시에 저장

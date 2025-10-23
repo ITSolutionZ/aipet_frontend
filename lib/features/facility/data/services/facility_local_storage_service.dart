@@ -1,18 +1,18 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 /// 시설 로컬 저장소 서비스
+import 'package:aipet_frontend/shared/services/cache_service.dart';
 ///
 /// 시설 정보와 즐겨찾기를 SharedPreferences에 저장/관리합니다
 class FacilityLocalStorageService {
   static const String _keyFacilities = 'facilities';
   static const String _keyFavorites = 'favorite_facilities';
   // ✅ SharedPreferences 인스턴스 재사용
-  static SharedPreferences? _prefs;
+  static final _cache = CacheService();
   static Future<void> _init() async {
-    _prefs ??= await SharedPreferences.getInstance();
+    await _cache.initialize();
   }
   static const String _keyHistory = 'facility_history';
 

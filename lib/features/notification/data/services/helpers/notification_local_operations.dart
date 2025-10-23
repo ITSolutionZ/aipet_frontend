@@ -3,15 +3,15 @@ import 'dart:convert';
 import '../../../domain/domain.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:aipet_frontend/shared/services/cache_service.dart';
 
 /// 알림 로컬 작업 헬퍼
 class NotificationLocalOperations {
   static const String _tag = 'NotificationLocalOperations';
   // ✅ SharedPreferences 인스턴스 재사용
-  static SharedPreferences? _prefs;
+  static final _cache = CacheService();
   static Future<void> _init() async {
-    _prefs ??= await SharedPreferences.getInstance();
+    await _cache.initialize();
   }
   static const String _notificationsKey = 'notifications';
 

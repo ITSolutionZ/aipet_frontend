@@ -2,16 +2,16 @@ import 'dart:convert';
 
 import 'package:aipet_frontend/features/walk/domain/entities/no_entry_zone_entity.dart';
 import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:aipet_frontend/shared/services/cache_service.dart';
 /// 금지구역 로컬 저장소 서비스
 class NoEntryZoneStorageService {
   static const String _storageKey = 'no_entry_zones';
 
   // ✅ SharedPreferences 인스턴스 재사용
-  static SharedPreferences? _prefs;
+  static final _cache = CacheService();
   static Future<void> _init() async {
-    _prefs ??= await SharedPreferences.getInstance();
+    await _cache.initialize();
   }
   /// 모든 금지구역 로드
   static Future<List<NoEntryZone>> loadNoEntryZones() async {

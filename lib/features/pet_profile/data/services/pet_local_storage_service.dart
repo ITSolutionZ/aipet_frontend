@@ -2,16 +2,16 @@ import 'dart:convert';
 
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:aipet_frontend/shared/services/cache_service.dart';
 /// ペットローカルストレージサービス
 ///
 /// ペット情報をローカルに保存・管理します
 class PetLocalStorageService {
   // ✅ SharedPreferences 인스턴스 재사용
-  static SharedPreferences? _prefs;
+  static final _cache = CacheService();
   static Future<void> _init() async {
-    _prefs ??= await SharedPreferences.getInstance();
+    await _cache.initialize();
   }
   static const String _keyPets = 'local_pets';
   static const String _keySelectedPetId = 'selected_pet_id';

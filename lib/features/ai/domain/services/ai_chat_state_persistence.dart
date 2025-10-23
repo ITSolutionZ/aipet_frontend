@@ -3,14 +3,14 @@ import 'dart:convert';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:aipet_frontend/shared/services/cache_service.dart';
 
 import '../entities/ai_category_entity.dart';
 import '../entities/ai_message_entity.dart';
   // ✅ SharedPreferences 인스턴스 재사용
-  static SharedPreferences? _prefs;
+  static final _cache = CacheService();
   static Future<void> _init() async {
-    _prefs ??= await SharedPreferences.getInstance();
+    await _cache.initialize();
   }
 
 /// 🎯 AI 채팅 상태 영속화 관리자

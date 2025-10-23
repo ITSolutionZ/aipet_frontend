@@ -2,16 +2,16 @@ import 'dart:convert';
 
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:aipet_frontend/shared/services/cache_service.dart';
 /// 로컬 산책 데이터 저장 서비스
 class LocalWalkStorageService {
   static const String _walkRecordsKey = 'walk_records';
   static const String _currentWalkKey = 'current_walk';
   // ✅ SharedPreferences 인스턴스 재사용
-  static SharedPreferences? _prefs;
+  static final _cache = CacheService();
   static Future<void> _init() async {
-    _prefs ??= await SharedPreferences.getInstance();
+    await _cache.initialize();
   }
 
   /// 모든 산책 기록 저장

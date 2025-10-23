@@ -1,17 +1,17 @@
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../domain/domain.dart';
 
+import 'package:aipet_frontend/shared/services/cache_service.dart';
 /// 온보딩 관리 리포지토리 구현체
 ///
 /// OnboardingRepository 인터페이스의 구체적인 구현을 제공합니다.
 /// SharedPreferences를 사용하여 온보딩 상태를 영구 저장합니다.
   // ✅ SharedPreferences 인스턴스 재사용
-  static SharedPreferences? _prefs;
+  static final _cache = CacheService();
   static Future<void> _init() async {
-    _prefs ??= await SharedPreferences.getInstance();
+    await _cache.initialize();
   }
 class OnboardingRepositoryImpl implements OnboardingRepository {
   // SharedPreferences 키 상수

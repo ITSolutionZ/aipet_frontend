@@ -1,17 +1,17 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 /// 펫 상태 관리 헬퍼
+import 'package:aipet_frontend/shared/services/cache_service.dart';
 class PetStatusHelper {
   static const String _keyPetStatuses = 'pet_statuses';
 
   /// 펫 상태 저장
   // ✅ SharedPreferences 인스턴스 재사용
-  static SharedPreferences? _prefs;
+  static final _cache = CacheService();
   static Future<void> _init() async {
-    _prefs ??= await SharedPreferences.getInstance();
+    await _cache.initialize();
   }
   static Future<void> updatePetStatus(
     String petId,
