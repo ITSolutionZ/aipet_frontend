@@ -33,7 +33,7 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
 
       return response;
     } catch (e) {
-      return Result.failure(ApiErrorHandler.handleError(e));
+      return ResultState.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -42,7 +42,7 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
       final response = await fetchData(ApiEndpoints.petById(petId));
       return response;
     } catch (e) {
-      return Result.failure(ApiErrorHandler.handleError(e));
+      return ResultState.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -56,14 +56,14 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
       );
 
       if (response.data == null) {
-        return Result.failure(UnknownError.toString());
+        return ResultState.failure(UnknownError.toString());
       }
 
       final petData = response.data!['data'] ?? response.data!;
       final pet = PetProfileApiModel.fromJson(petData);
       return Success(pet);
     } catch (e) {
-      return Result.failure(ApiErrorHandler.handleError(e));
+      return ResultState.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -78,14 +78,14 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
       );
 
       if (response.data == null) {
-        return Result.failure(UnknownError.toString());
+        return ResultState.failure(UnknownError.toString());
       }
 
       final petData = response.data!['data'] ?? response.data!;
       final pet = PetProfileApiModel.fromJson(petData);
       return Success(pet);
     } catch (e) {
-      return Result.failure(ApiErrorHandler.handleError(e));
+      return ResultState.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -94,7 +94,7 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
       await deleteData(ApiEndpoints.pets, petId);
       return const Success(null);
     } catch (e) {
-      return Result.failure(ApiErrorHandler.handleError(e));
+      return ResultState.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -120,11 +120,11 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
         return Success(uploadResponse);
       }
 
-      return Result.failure(
+      return ResultState.failure(
         response.errorOrNull ?? UnknownError(details: 'Image upload failed'),
       );
     } catch (e) {
-      return Result.failure(ApiErrorHandler.handleError(e));
+      return ResultState.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -139,7 +139,7 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
       );
       return const Success(null);
     } catch (e) {
-      return Result.failure(ApiErrorHandler.handleError(e));
+      return ResultState.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -152,14 +152,14 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
       );
 
       if (response.data == null) {
-        return Result.failure(UnknownError.toString());
+        return ResultState.failure(UnknownError.toString());
       }
 
       final settingsData = response.data!['data'] ?? response.data!;
       final settings = PetSharingSettings.fromJson(settingsData);
       return Success(settings);
     } catch (e) {
-      return Result.failure(ApiErrorHandler.handleError(e));
+      return ResultState.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -174,7 +174,7 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
       );
       return const Success(null);
     } catch (e) {
-      return Result.failure(ApiErrorHandler.handleError(e));
+      return ResultState.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -188,7 +188,7 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
       );
       return const Success(null);
     } catch (e) {
-      return Result.failure(ApiErrorHandler.handleError(e));
+      return ResultState.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -199,14 +199,14 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
       );
 
       if (response.data == null) {
-        return Result.failure(UnknownError.toString());
+        return ResultState.failure(UnknownError.toString());
       }
 
       final managersData = response.data!['data'] ?? response.data!;
       final managers = List<String>.from(managersData['family_managers'] ?? []);
       return Success(managers);
     } catch (e) {
-      return Result.failure(ApiErrorHandler.handleError(e));
+      return ResultState.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -217,14 +217,14 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
       );
 
       if (response.data == null) {
-        return Result.failure(UnknownError.toString());
+        return ResultState.failure(UnknownError.toString());
       }
 
       final statusData = response.data!['data'] ?? response.data!;
       final status = PetSyncStatus.fromJson(statusData);
       return Success(status);
     } catch (e) {
-      return Result.failure(ApiErrorHandler.handleError(e));
+      return ResultState.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -251,7 +251,7 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
 
       return response;
     } catch (e) {
-      return Result.failure(ApiErrorHandler.handleError(e));
+      return ResultState.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -268,7 +268,7 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
 
       return response;
     } catch (e) {
-      return Result.failure(ApiErrorHandler.handleError(e));
+      return ResultState.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -282,7 +282,7 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
       );
       return const Success(null);
     } catch (e) {
-      return Result.failure(ApiErrorHandler.handleError(e));
+      return ResultState.failure(ApiErrorHandler.handleError(e));
     }
   }
 }

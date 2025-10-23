@@ -91,7 +91,7 @@ class SyncStorageHelper {
 
       return Success(pets);
     } catch (e) {
-      return Result.failure(
+      return ResultState.failure(
         CacheError('캐시된 펫 데이터 로드 실패', details: e.toString()),
       );
     }
@@ -107,7 +107,7 @@ class SyncStorageHelper {
       }
       return const Success(null);
     } catch (e) {
-      return Result.failure(
+      return ResultState.failure(
         CacheError('마지막 동기화 시간 조회 실패', details: e.toString()),
       );
     }
@@ -147,7 +147,7 @@ class SyncStorageHelper {
           if (result.isSuccess) {
             return Success(result.dataOrNull!.toDomain());
           }
-          return Result.failure(result.errorOrNull!);
+          return ResultState.failure(result.errorOrNull!);
 
         case 'update':
           final petId = data['id'] as String;
@@ -158,7 +158,7 @@ class SyncStorageHelper {
           if (result.isSuccess) {
             return Success(result.dataOrNull!.toDomain());
           }
-          return Result.failure(result.errorOrNull!);
+          return ResultState.failure(result.errorOrNull!);
 
         case 'delete':
           final petId = data['id'] as String;
@@ -166,15 +166,15 @@ class SyncStorageHelper {
           if (result.isSuccess) {
             return const Success(null);
           }
-          return Result.failure(result.errorOrNull!);
+          return ResultState.failure(result.errorOrNull!);
 
         default:
-          return Result.failure(
+          return ResultState.failure(
             ValidationError(field: 'sync_type', reason: '알 수 없는 동기화 타입: $type'),
           );
       }
     } catch (e) {
-      return Result.failure(SyncError.toString()));
+      return ResultState.failure(SyncError.toString()));
     }
   }
 }
