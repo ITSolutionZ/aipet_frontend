@@ -1,6 +1,7 @@
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
+import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
 import '../../domain/domain.dart';
 
 /// 예약 카드 위젯

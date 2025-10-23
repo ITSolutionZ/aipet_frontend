@@ -1,6 +1,7 @@
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 import 'package:aipet_frontend/shared/ui.dart';
 import 'package:flutter/material.dart';
+import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
 
 /// 산책 상세 정보 카드 위젯
 class WalkDetailInfoCard extends StatelessWidget {

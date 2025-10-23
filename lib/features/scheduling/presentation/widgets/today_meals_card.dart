@@ -1,6 +1,7 @@
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
+import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
 import 'meal_status_widget.dart';
 
 class TodayMealsCard extends StatelessWidget {

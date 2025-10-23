@@ -1,6 +1,7 @@
 /// 조용한 시간 설정
 class QuietTimeSettings {
   /// 조용한 시간 활성화
+import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
   final bool enabled;
 
   /// 시작 시간 (HH:mm)
