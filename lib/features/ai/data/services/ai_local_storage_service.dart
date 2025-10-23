@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:aipet_frontend/shared/services/cache_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
@@ -101,7 +100,7 @@ class AiLocalStorageService extends BaseLoggingService {
   Future<void> clearChatHistory() async {
     try {
       await _cache.initialize();
-      await _cache.remove(_chatHistoryKey);
+      await _cache.removeKey(_chatHistoryKey);
       logInfo('채팅 히스토리 삭제 완료');
     } catch (e) {
       logError('채팅 히스토리 삭제 실패', e);
@@ -586,12 +585,12 @@ class AiLocalStorageService extends BaseLoggingService {
   Future<void> clearAllData() async {
     try {
       await _cache.initialize();
-      await _cache.remove(_chatHistoryKey);
-      await _cache.remove(_favoriteMessagesKey);
-      await _cache.remove(_chatSessionsKey);
-      await _cache.remove(_chatSummariesKey);
-      await _cache.remove(_favoriteQAsKey);
-      await _cache.remove(_suggestedQuestionsKey);
+      await _cache.removeKey(_chatHistoryKey);
+      await _cache.removeKey(_favoriteMessagesKey);
+      await _cache.removeKey(_chatSessionsKey);
+      await _cache.removeKey(_chatSummariesKey);
+      await _cache.removeKey(_favoriteQAsKey);
+      await _cache.removeKey(_suggestedQuestionsKey);
       logInfo('모든 AI 데이터 초기화 완료');
     } catch (e) {
       logError('AI 데이터 초기화 실패', e);
