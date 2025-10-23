@@ -29,6 +29,8 @@ class AiLocalStorageService extends BaseLoggingService {
   static const String _favoriteQAsKey = 'ai_favorite_qas';
   static const String _suggestedQuestionsKey = 'ai_suggested_questions';
 
+  final _cache = CacheService();
+
   AiLocalStorageService() : super('ai_local_storage');
 
   /// CacheService 초기화
@@ -52,11 +54,11 @@ class AiLocalStorageService extends BaseLoggingService {
   /// - 로깅을 통한 에러 추적
   Future<void> saveChatHistory(List<AiMessageEntity> messages) async {
     try {
-      final prefs = await _prefs;
+      final cache = await cache.initialize();
       final messagesJson = messages.map((msg) => _messageToJson(msg)).toList();
       final jsonString = jsonEncode(messagesJson);
 
-      await prefs.setString(_chatHistoryKey, jsonString);
+      await cache.setString(_chatHistoryKey, jsonString);
       logInfo('채팅 히스토리 저장 완료: ${messages.length}개 메시지');
     } catch (e) {
       logError('채팅 히스토리 저장 실패', e);
@@ -79,8 +81,8 @@ class AiLocalStorageService extends BaseLoggingService {
   /// 3. 메시지 타입 검증 및 기본값 설정
   Future<List<AiMessageEntity>> loadChatHistory() async {
     try {
-      final prefs = await _prefs;
-      final jsonString = prefs.getString(_chatHistoryKey);
+      await _cache.initialize();
+      final jsonString = _cache.getString(_chatHistoryKey);
 
       if (jsonString == null || jsonString.isEmpty) {
         logInfo('저장된 채팅 히스토리가 없습니다');
@@ -103,8 +105,8 @@ class AiLocalStorageService extends BaseLoggingService {
   /// 채팅 히스토리 삭제
   Future<void> clearChatHistory() async {
     try {
-      final prefs = await _prefs;
-      await prefs.remove(_chatHistoryKey);
+      await _cache.initialize();
+      await _cache.remove(_chatHistoryKey);
       logInfo('채팅 히스토리 삭제 완료');
     } catch (e) {
       logError('채팅 히스토리 삭제 실패', e);
@@ -117,7 +119,7 @@ class AiLocalStorageService extends BaseLoggingService {
   /// 즐겨찾기 메시지 저장
   Future<void> saveFavoriteMessage(AiFavoriteEntity favorite) async {
     try {
-      final prefs = await _prefs;
+      await _cache.initialize();
       final favorites = await loadFavoriteMessages();
 
       // 중복 확인
@@ -129,7 +131,7 @@ class AiLocalStorageService extends BaseLoggingService {
           .toList();
       final jsonString = jsonEncode(favoritesJson);
 
-      await prefs.setString(_favoriteMessagesKey, jsonString);
+      await _cache.setString(_favoriteMessagesKey, jsonString);
       logInfo('즐겨찾기 메시지 저장 완료: ${favorite.id}');
     } catch (e) {
       logError('즐겨찾기 메시지 저장 실패', e);
@@ -140,7 +142,7 @@ class AiLocalStorageService extends BaseLoggingService {
   /// 즐겨찾기 메시지 목록 로드
   Future<List<AiFavoriteEntity>> loadFavoriteMessages() async {
     try {
-      final prefs = await _prefs;
+      await _cache.initialize();
       final jsonString = prefs.getString(_favoriteMessagesKey);
 
       if (jsonString == null || jsonString.isEmpty) {
@@ -163,7 +165,7 @@ class AiLocalStorageService extends BaseLoggingService {
   /// 즐겨찾기 메시지 삭제
   Future<void> removeFavoriteMessage(String favoriteId) async {
     try {
-      final prefs = await _prefs;
+      await _cache.initialize();
       final favorites = await loadFavoriteMessages();
 
       favorites.removeWhere((fav) => fav.id == favoriteId);
@@ -173,7 +175,7 @@ class AiLocalStorageService extends BaseLoggingService {
           .toList();
       final jsonString = jsonEncode(favoritesJson);
 
-      await prefs.setString(_favoriteMessagesKey, jsonString);
+      await _cache.setString(_favoriteMessagesKey, jsonString);
       logInfo('즐겨찾기 메시지 삭제 완료: $favoriteId');
     } catch (e) {
       logError('즐겨찾기 메시지 삭제 실패', e);
@@ -186,7 +188,7 @@ class AiLocalStorageService extends BaseLoggingService {
   /// 채팅 세션 저장
   Future<void> saveChatSession(AiChatSessionEntity session) async {
     try {
-      final prefs = await _prefs;
+      await _cache.initialize();
       final sessions = await loadChatSessions();
 
       // 중복 확인 및 업데이트
@@ -196,7 +198,7 @@ class AiLocalStorageService extends BaseLoggingService {
       final sessionsJson = sessions.map((s) => _sessionToJson(s)).toList();
       final jsonString = jsonEncode(sessionsJson);
 
-      await prefs.setString(_chatSessionsKey, jsonString);
+      await _cache.setString(_chatSessionsKey, jsonString);
       logInfo('채팅 세션 저장 완료: ${session.id}');
     } catch (e) {
       logError('채팅 세션 저장 실패', e);
@@ -207,7 +209,7 @@ class AiLocalStorageService extends BaseLoggingService {
   /// 채팅 세션 목록 로드
   Future<List<AiChatSessionEntity>> loadChatSessions() async {
     try {
-      final prefs = await _prefs;
+      await _cache.initialize();
       final jsonString = prefs.getString(_chatSessionsKey);
 
       if (jsonString == null || jsonString.isEmpty) {
@@ -230,7 +232,7 @@ class AiLocalStorageService extends BaseLoggingService {
   /// 채팅 세션 삭제
   Future<void> deleteChatSession(String sessionId) async {
     try {
-      final prefs = await _prefs;
+      await _cache.initialize();
       final sessions = await loadChatSessions();
 
       sessions.removeWhere((s) => s.id == sessionId);
@@ -238,7 +240,7 @@ class AiLocalStorageService extends BaseLoggingService {
       final sessionsJson = sessions.map((s) => _sessionToJson(s)).toList();
       final jsonString = jsonEncode(sessionsJson);
 
-      await prefs.setString(_chatSessionsKey, jsonString);
+      await _cache.setString(_chatSessionsKey, jsonString);
       logInfo('채팅 세션 삭제 완료: $sessionId');
     } catch (e) {
       logError('채팅 세션 삭제 실패', e);
@@ -251,7 +253,7 @@ class AiLocalStorageService extends BaseLoggingService {
   /// 채팅 요약 저장
   Future<void> saveChatSummary(AiChatSummaryEntity summary) async {
     try {
-      final prefs = await _prefs;
+      await _cache.initialize();
       final summaries = await loadChatSummaries();
 
       summaries.removeWhere((s) => s.id == summary.id);
@@ -260,7 +262,7 @@ class AiLocalStorageService extends BaseLoggingService {
       final summariesJson = summaries.map((s) => _summaryToJson(s)).toList();
       final jsonString = jsonEncode(summariesJson);
 
-      await prefs.setString(_chatSummariesKey, jsonString);
+      await _cache.setString(_chatSummariesKey, jsonString);
       logInfo('채팅 요약 저장 완료: ${summary.id}');
     } catch (e) {
       logError('채팅 요약 저장 실패', e);
@@ -271,7 +273,7 @@ class AiLocalStorageService extends BaseLoggingService {
   /// 채팅 요약 목록 로드
   Future<List<AiChatSummaryEntity>> loadChatSummaries() async {
     try {
-      final prefs = await _prefs;
+      await _cache.initialize();
       final jsonString = prefs.getString(_chatSummariesKey);
 
       if (jsonString == null || jsonString.isEmpty) {
@@ -294,7 +296,7 @@ class AiLocalStorageService extends BaseLoggingService {
   /// 채팅 요약 삭제
   Future<void> deleteChatSummary(String summaryId) async {
     try {
-      final prefs = await _prefs;
+      await _cache.initialize();
       final summaries = await loadChatSummaries();
 
       summaries.removeWhere((s) => s.id == summaryId);
@@ -302,7 +304,7 @@ class AiLocalStorageService extends BaseLoggingService {
       final summariesJson = summaries.map((s) => _summaryToJson(s)).toList();
       final jsonString = jsonEncode(summariesJson);
 
-      await prefs.setString(_chatSummariesKey, jsonString);
+      await _cache.setString(_chatSummariesKey, jsonString);
       logInfo('채팅 요약 삭제 완료: $summaryId');
     } catch (e) {
       logError('채팅 요약 삭제 실패', e);
@@ -315,7 +317,7 @@ class AiLocalStorageService extends BaseLoggingService {
   /// 즐겨찾기 QA 저장
   Future<void> saveFavoriteQA(AiFavoriteQaEntity favoriteQA) async {
     try {
-      final prefs = await _prefs;
+      await _cache.initialize();
       final favoriteQAs = await loadFavoriteQAs();
 
       favoriteQAs.removeWhere((qa) => qa.id == favoriteQA.id);
@@ -324,7 +326,7 @@ class AiLocalStorageService extends BaseLoggingService {
       final qasJson = favoriteQAs.map((qa) => _favoriteQAToJson(qa)).toList();
       final jsonString = jsonEncode(qasJson);
 
-      await prefs.setString(_favoriteQAsKey, jsonString);
+      await _cache.setString(_favoriteQAsKey, jsonString);
       logInfo('즐겨찾기 QA 저장 완료: ${favoriteQA.id}');
     } catch (e) {
       logError('즐겨찾기 QA 저장 실패', e);
@@ -335,7 +337,7 @@ class AiLocalStorageService extends BaseLoggingService {
   /// 즐겨찾기 QA 목록 로드
   Future<List<AiFavoriteQaEntity>> loadFavoriteQAs() async {
     try {
-      final prefs = await _prefs;
+      await _cache.initialize();
       final jsonString = prefs.getString(_favoriteQAsKey);
 
       if (jsonString == null || jsonString.isEmpty) {
@@ -358,7 +360,7 @@ class AiLocalStorageService extends BaseLoggingService {
   /// 즐겨찾기 QA 삭제
   Future<void> removeFavoriteQA(String qaId) async {
     try {
-      final prefs = await _prefs;
+      await _cache.initialize();
       final favoriteQAs = await loadFavoriteQAs();
 
       favoriteQAs.removeWhere((qa) => qa.id == qaId);
@@ -366,7 +368,7 @@ class AiLocalStorageService extends BaseLoggingService {
       final qasJson = favoriteQAs.map((qa) => _favoriteQAToJson(qa)).toList();
       final jsonString = jsonEncode(qasJson);
 
-      await prefs.setString(_favoriteQAsKey, jsonString);
+      await _cache.setString(_favoriteQAsKey, jsonString);
       logInfo('즐겨찾기 QA 삭제 완료: $qaId');
     } catch (e) {
       logError('즐겨찾기 QA 삭제 실패', e);
@@ -537,7 +539,7 @@ class AiLocalStorageService extends BaseLoggingService {
   /// 추천 질문 목록 로드
   Future<List<AiSuggestedQuestionEntity>> loadSuggestedQuestions() async {
     try {
-      final prefs = await _prefs;
+      await _cache.initialize();
       final jsonString = prefs.getString(_suggestedQuestionsKey);
 
       if (jsonString == null || jsonString.isEmpty) {
@@ -588,13 +590,13 @@ class AiLocalStorageService extends BaseLoggingService {
   /// 모든 AI 데이터 초기화
   Future<void> clearAllData() async {
     try {
-      final prefs = await _prefs;
-      await prefs.remove(_chatHistoryKey);
-      await prefs.remove(_favoriteMessagesKey);
-      await prefs.remove(_chatSessionsKey);
-      await prefs.remove(_chatSummariesKey);
-      await prefs.remove(_favoriteQAsKey);
-      await prefs.remove(_suggestedQuestionsKey);
+      await _cache.initialize();
+      await _cache.remove(_chatHistoryKey);
+      await _cache.remove(_favoriteMessagesKey);
+      await _cache.remove(_chatSessionsKey);
+      await _cache.remove(_chatSummariesKey);
+      await _cache.remove(_favoriteQAsKey);
+      await _cache.remove(_suggestedQuestionsKey);
       logInfo('모든 AI 데이터 초기화 완료');
     } catch (e) {
       logError('AI 데이터 초기화 실패', e);
