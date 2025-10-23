@@ -29,14 +29,14 @@ class AiChatStatePersistence {
 
       if (success) {
         if (kDebugMode) {
-          debugPrint('💾 Selected pet saved: $petId');
+          LoggerService.debug('💾 Selected pet saved: $petId');
         }
         return Result.success('펫 선택 상태가 저장되었습니다', null);
       } else {
         return Result.failure('펫 선택 상태 저장에 실패했습니다');
       }
     } catch (e) {
-      debugPrint('❌ Failed to save selected pet: $e');
+      LoggerService.debug('❌ Failed to save selected pet: $e');
       return Result.failure('펫 저장 중 오류가 발생했습니다: $e');
     }
   }
@@ -49,7 +49,7 @@ class AiChatStatePersistence {
 
       return Result.success('펫 선택 상태를 불러왔습니다', petId);
     } catch (e) {
-      debugPrint('❌ Failed to load selected pet: $e');
+      LoggerService.debug('❌ Failed to load selected pet: $e');
       return Result.failure('펫 로드 중 오류가 발생했습니다: $e');
     }
   }
@@ -71,12 +71,12 @@ class AiChatStatePersistence {
       }
 
       if (kDebugMode) {
-        debugPrint('💾 Selected category saved: ${category?.name ?? 'none'}');
+        LoggerService.debug('💾 Selected category saved: ${category?.name ?? 'none'}');
       }
 
       return Result.success('카테고리 선택 상태가 저장되었습니다', null);
     } catch (e) {
-      debugPrint('❌ Failed to save selected category: $e');
+      LoggerService.debug('❌ Failed to save selected category: $e');
       return Result.failure('카테고리 저장 중 오류가 발생했습니다: $e');
     }
   }
@@ -102,7 +102,7 @@ class AiChatStatePersistence {
 
       return Result.success('카테고리 선택 상태를 불러왔습니다', category);
     } catch (e) {
-      debugPrint('❌ Failed to load selected category: $e');
+      LoggerService.debug('❌ Failed to load selected category: $e');
       return Result.failure('카테고리 로드 중 오류가 발생했습니다: $e');
     }
   }
@@ -120,7 +120,7 @@ class AiChatStatePersistence {
 
       return Result.success('임시 메시지가 저장되었습니다', null);
     } catch (e) {
-      debugPrint('❌ Failed to save draft message: $e');
+      LoggerService.debug('❌ Failed to save draft message: $e');
       return Result.failure('임시 메시지 저장 중 오류가 발생했습니다: $e');
     }
   }
@@ -133,7 +133,7 @@ class AiChatStatePersistence {
 
       return Result.success('임시 메시지를 불러왔습니다', draftMessage);
     } catch (e) {
-      debugPrint('❌ Failed to load draft message: $e');
+      LoggerService.debug('❌ Failed to load draft message: $e');
       return Result.failure('임시 메시지 로드 중 오류가 발생했습니다: $e');
     }
   }
@@ -164,12 +164,12 @@ class AiChatStatePersistence {
       await prefs.setString('$_keyPrefix$_keyRecentMessages', messagesJson);
 
       if (kDebugMode) {
-        debugPrint('💾 Cached ${recentMessages.length} recent messages');
+        LoggerService.debug('💾 Cached ${recentMessages.length} recent messages');
       }
 
       return Result.success('최근 메시지가 캐시되었습니다', null);
     } catch (e) {
-      debugPrint('❌ Failed to cache recent messages: $e');
+      LoggerService.debug('❌ Failed to cache recent messages: $e');
       return Result.failure('메시지 캐시 중 오류가 발생했습니다: $e');
     }
   }
@@ -199,12 +199,12 @@ class AiChatStatePersistence {
       }).toList();
 
       if (kDebugMode) {
-        debugPrint('📋 Loaded ${messages.length} cached messages');
+        LoggerService.debug('📋 Loaded ${messages.length} cached messages');
       }
 
       return Result.success('캐시된 메시지를 불러왔습니다', messages);
     } catch (e) {
-      debugPrint('❌ Failed to load cached messages: $e');
+      LoggerService.debug('❌ Failed to load cached messages: $e');
       return Result.failure('캐시 메시지 로드 중 오류가 발생했습니다: $e');
     }
   }
@@ -228,12 +228,12 @@ class AiChatStatePersistence {
       }
 
       if (kDebugMode) {
-        debugPrint('🗑️ Cleared ${keysToRemove.length} chat state entries');
+        LoggerService.debug('🗑️ Cleared ${keysToRemove.length} chat state entries');
       }
 
       return Result.success('채팅 상태가 초기화되었습니다', null);
     } catch (e) {
-      debugPrint('❌ Failed to clear chat state: $e');
+      LoggerService.debug('❌ Failed to clear chat state: $e');
       return Result.failure('채팅 상태 초기화 중 오류가 발생했습니다: $e');
     }
   }
@@ -246,12 +246,12 @@ class AiChatStatePersistence {
       await prefs.remove('$_keyPrefix${petId}_draft');
 
       if (kDebugMode) {
-        debugPrint('🗑️ Cleared chat state for pet: $petId');
+        LoggerService.debug('🗑️ Cleared chat state for pet: $petId');
       }
 
       return Result.success('펫 채팅 상태가 삭제되었습니다', null);
     } catch (e) {
-      debugPrint('❌ Failed to clear pet chat state: $e');
+      LoggerService.debug('❌ Failed to clear pet chat state: $e');
       return Result.failure('펫 채팅 상태 삭제 중 오류가 발생했습니다: $e');
     }
   }

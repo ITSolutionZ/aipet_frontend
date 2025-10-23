@@ -99,24 +99,24 @@ class PetSelectorWidget extends ConsumerWidget {
       );
     }
 
-    debugPrint('🖼️ DailyPetSelectorWidget - imagePath: ${pet.imagePath}');
+    LoggerService.debug('🖼️ DailyPetSelectorWidget - imagePath: ${pet.imagePath}');
 
     // 상대 경로를 절대 경로로 변환
     final storageService = ImageStorageService();
     final absolutePath = storageService.getAbsolutePath(pet.imagePath!) ?? pet.imagePath!;
-    debugPrint('🖼️ DailyPetSelectorWidget - absolutePath: $absolutePath');
+    LoggerService.debug('🖼️ DailyPetSelectorWidget - absolutePath: $absolutePath');
 
     final imageType = ImageService.getImageType(absolutePath);
-    debugPrint('🖼️ DailyPetSelectorWidget - imageType: $imageType');
+    LoggerService.debug('🖼️ DailyPetSelectorWidget - imageType: $imageType');
 
     switch (imageType) {
       case ImageType.file:
         final file = File(absolutePath);
         final fileExists = file.existsSync();
-        debugPrint('🖼️ DailyPetSelectorWidget - File exists: $fileExists');
+        LoggerService.debug('🖼️ DailyPetSelectorWidget - File exists: $fileExists');
 
         if (!fileExists) {
-          debugPrint('❌ DailyPetSelectorWidget - File does not exist: $absolutePath');
+          LoggerService.debug('❌ DailyPetSelectorWidget - File does not exist: $absolutePath');
           return _buildDefaultPetIcon();
         }
 
@@ -126,7 +126,7 @@ class PetSelectorWidget extends ConsumerWidget {
           height: 36,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🖼️ DailyPetSelectorWidget - File image error: $error');
+            LoggerService.debug('🖼️ DailyPetSelectorWidget - File image error: $error');
             return _buildDefaultPetIcon();
           },
         );
@@ -137,7 +137,7 @@ class PetSelectorWidget extends ConsumerWidget {
           height: 36,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🖼️ DailyPetSelectorWidget - Network image error: $error');
+            LoggerService.debug('🖼️ DailyPetSelectorWidget - Network image error: $error');
             return _buildDefaultPetIcon();
           },
         );
@@ -148,7 +148,7 @@ class PetSelectorWidget extends ConsumerWidget {
           height: 36,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🖼️ DailyPetSelectorWidget - Asset image error: $error');
+            LoggerService.debug('🖼️ DailyPetSelectorWidget - Asset image error: $error');
             return _buildDefaultPetIcon();
           },
         );

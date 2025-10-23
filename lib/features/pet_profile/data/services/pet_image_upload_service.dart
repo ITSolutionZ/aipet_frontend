@@ -109,7 +109,7 @@ class PetImageUploadService {
     try {
       final jpegQuality = _getJpegQualityForQuality(quality);
       final maxDimension = _getMaxDimensionForQuality(quality);
-      
+
       // ImageService를 사용하여 이미지 압축
       final compressedBytes = await ImageService.compressImage(
         imageFile.path,

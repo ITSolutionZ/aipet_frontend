@@ -9,9 +9,9 @@ class PetDataParserHelper {
       // fromJson을 먼저 시도해보고, 실패하면 수동으로 생성
       return PetProfileEntity.fromJson(petData);
     } catch (e) {
-      debugPrint('PetProfileEntity.fromJson failed, creating manually: $e');
-      debugPrint('Pet data keys: ${petData.keys.toList()}');
-      debugPrint('Pet data: $petData');
+      LoggerService.debug('PetProfileEntity.fromJson failed, creating manually: $e');
+      LoggerService.debug('Pet data keys: ${petData.keys.toList()}');
+      LoggerService.debug('Pet data: $petData');
 
       // 수동으로 안전하게 PetProfileEntity 생성
       return PetProfileEntity(

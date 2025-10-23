@@ -21,9 +21,9 @@ class PetDataInitHelper {
       // 빈 리스트로 초기화 (사용자가 직접 펫을 등록하도록)
       await localDataManager.savePetProfiles([]);
       await localDataManager.setMigrationCompleted('pet_profiles');
-      debugPrint('Pet profiles initialized with empty data');
+      LoggerService.debug('Pet profiles initialized with empty data');
     } catch (error) {
-      debugPrint('Failed to initialize: $error');
+      LoggerService.debug('Failed to initialize: $error');
     }
   }
 
@@ -36,15 +36,15 @@ class PetDataInitHelper {
       'pet_profiles',
     );
 
-    debugPrint('=== Local Storage Debug Info ===');
-    debugPrint('Pet count: ${localPets.length}');
-    debugPrint('Migration completed: $isMigrationCompleted');
+    LoggerService.debug('=== Local Storage Debug Info ===');
+    LoggerService.debug('Pet count: ${localPets.length}');
+    LoggerService.debug('Migration completed: $isMigrationCompleted');
 
     if (localPets.isNotEmpty) {
-      debugPrint('First pet keys: ${localPets.first.keys.toList()}');
-      debugPrint('First pet data: ${localPets.first}');
+      LoggerService.debug('First pet keys: ${localPets.first.keys.toList()}');
+      LoggerService.debug('First pet data: ${localPets.first}');
     }
-    debugPrint('===============================');
+    LoggerService.debug('===============================');
   }
 
   /// LocalDataManager 초기화 확인
@@ -52,9 +52,9 @@ class PetDataInitHelper {
     LocalDataManager localDataManager,
   ) async {
     if (!localDataManager.isInitialized) {
-      debugPrint('LocalDataManager not initialized, initializing now...');
+      LoggerService.debug('LocalDataManager not initialized, initializing now...');
       await localDataManager.initialize();
-      debugPrint('LocalDataManager initialization completed');
+      LoggerService.debug('LocalDataManager initialization completed');
     }
   }
 }

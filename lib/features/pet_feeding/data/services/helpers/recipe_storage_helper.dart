@@ -21,7 +21,7 @@ class RecipeStorageHelper {
           .map((json) => jsonDecode(json) as Map<String, dynamic>)
           .toList();
     } catch (e) {
-      debugPrint('레시피 로드 실패: $e');
+      LoggerService.debug('레시피 로드 실패: $e');
       return [];
     }
   }
@@ -43,9 +43,9 @@ class RecipeStorageHelper {
       recipes.add(jsonEncode(recipe));
       await prefs.setStringList(_keyRecipes, recipes);
 
-      debugPrint('레시피 추가 성공: ${recipe['id']}');
+      LoggerService.debug('레시피 추가 성공: ${recipe['id']}');
     } catch (e) {
-      debugPrint('레시피 추가 실패: $e');
+      LoggerService.debug('레시피 추가 실패: $e');
       rethrow;
     }
   }
@@ -72,10 +72,10 @@ class RecipeStorageHelper {
 
         recipes[index] = jsonEncode(existingRecipe);
         await prefs.setStringList(_keyRecipes, recipes);
-        debugPrint('레시피 업데이트 성공: $recipeId');
+        LoggerService.debug('레시피 업데이트 성공: $recipeId');
       }
     } catch (e) {
-      debugPrint('레시피 업데이트 실패: $e');
+      LoggerService.debug('레시피 업데이트 실패: $e');
       rethrow;
     }
   }
@@ -92,9 +92,9 @@ class RecipeStorageHelper {
       });
 
       await prefs.setStringList(_keyRecipes, recipes);
-      debugPrint('레시피 삭제 성공: $recipeId');
+      LoggerService.debug('레시피 삭제 성공: $recipeId');
     } catch (e) {
-      debugPrint('레시피 삭제 실패: $e');
+      LoggerService.debug('레시피 삭제 실패: $e');
       rethrow;
     }
   }
@@ -118,7 +118,7 @@ class RecipeStorageHelper {
             ingredients.any((i) => i.contains(lowerQuery));
       }).toList();
     } catch (e) {
-      debugPrint('레시피 검색 실패: $e');
+      LoggerService.debug('레시피 검색 실패: $e');
       return [];
     }
   }
@@ -136,7 +136,7 @@ class RecipeStorageHelper {
         return recipeDifficulty == difficulty.toLowerCase();
       }).toList();
     } catch (e) {
-      debugPrint('난이도별 레시피 로드 실패: $e');
+      LoggerService.debug('난이도별 레시피 로드 실패: $e');
       return [];
     }
   }
@@ -152,7 +152,7 @@ class RecipeStorageHelper {
         return recipe['isFavorite'] == true && recipe['userId'] == userId;
       }).toList();
     } catch (e) {
-      debugPrint('즐겨찾기 레시피 로드 실패: $e');
+      LoggerService.debug('즐겨찾기 레시피 로드 실패: $e');
       return [];
     }
   }
@@ -172,7 +172,7 @@ class RecipeStorageHelper {
 
       return allRecipes.take(limit).toList();
     } catch (e) {
-      debugPrint('최고 평점 레시피 로드 실패: $e');
+      LoggerService.debug('최고 평점 레시피 로드 실패: $e');
       return [];
     }
   }
@@ -188,7 +188,7 @@ class RecipeStorageHelper {
         return time <= 30;
       }).toList();
     } catch (e) {
-      debugPrint('빠른 조리 레시피 로드 실패: $e');
+      LoggerService.debug('빠른 조리 레시피 로드 실패: $e');
       return [];
     }
   }

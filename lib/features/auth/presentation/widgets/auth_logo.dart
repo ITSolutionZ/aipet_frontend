@@ -31,8 +31,8 @@ class AuthLogo extends StatelessWidget {
           height: height,
           fit: BoxFit.contain,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('AuthLogo: Failed to load image: $imagePath');
-            debugPrint('AuthLogo: Error: $error');
+            LoggerService.debug('AuthLogo: Failed to load image: $imagePath');
+            LoggerService.debug('AuthLogo: Error: $error');
             return Container(
               width: width,
               height: height,

@@ -23,7 +23,7 @@ class NoEntryZoneStorageService {
           .map((item) => NoEntryZone.fromJson(item as Map<String, dynamic>))
           .toList();
     } catch (e) {
-      debugPrint('금지구역 로드 실패: $e');
+      LoggerService.debug('금지구역 로드 실패: $e');
       return [];
     }
   }
@@ -35,7 +35,7 @@ class NoEntryZoneStorageService {
       zones.add(zone);
       await _saveZones(zones);
     } catch (e) {
-      debugPrint('금지구역 추가 실패: $e');
+      LoggerService.debug('금지구역 추가 실패: $e');
     }
   }
 
@@ -46,7 +46,7 @@ class NoEntryZoneStorageService {
       zones.removeWhere((zone) => zone.id == zoneId);
       await _saveZones(zones);
     } catch (e) {
-      debugPrint('금지구역 삭제 실패: $e');
+      LoggerService.debug('금지구역 삭제 실패: $e');
     }
   }
 
@@ -56,7 +56,7 @@ class NoEntryZoneStorageService {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove(_storageKey);
     } catch (e) {
-      debugPrint('금지구역 초기화 실패: $e');
+      LoggerService.debug('금지구역 초기화 실패: $e');
     }
   }
 
@@ -67,7 +67,7 @@ class NoEntryZoneStorageService {
       final jsonList = zones.map((zone) => zone.toJson()).toList();
       await prefs.setString(_storageKey, jsonEncode(jsonList));
     } catch (e) {
-      debugPrint('금지구역 저장 실패: $e');
+      LoggerService.debug('금지구역 저장 실패: $e');
     }
   }
 

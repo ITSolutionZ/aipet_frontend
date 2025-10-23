@@ -161,24 +161,24 @@ class WalkDetailScreen extends ConsumerWidget {
       );
     }
 
-    debugPrint('🖼️ WalkDetailScreen - imagePath: $imagePath');
+    LoggerService.debug('🖼️ WalkDetailScreen - imagePath: $imagePath');
 
     // 상대 경로를 절대 경로로 변환
     final storageService = ImageStorageService();
     final absolutePath = storageService.getAbsolutePath(imagePath) ?? imagePath;
-    debugPrint('🖼️ WalkDetailScreen - absolutePath: $absolutePath');
+    LoggerService.debug('🖼️ WalkDetailScreen - absolutePath: $absolutePath');
 
     final imageType = ImageService.getImageType(absolutePath);
-    debugPrint('🖼️ WalkDetailScreen - imageType: $imageType');
+    LoggerService.debug('🖼️ WalkDetailScreen - imageType: $imageType');
 
     switch (imageType) {
       case ImageType.file:
         final file = File(absolutePath);
         final fileExists = file.existsSync();
-        debugPrint('🖼️ WalkDetailScreen - File exists: $fileExists');
+        LoggerService.debug('🖼️ WalkDetailScreen - File exists: $fileExists');
 
         if (!fileExists) {
-          debugPrint('❌ WalkDetailScreen - File does not exist: $absolutePath');
+          LoggerService.debug('❌ WalkDetailScreen - File does not exist: $absolutePath');
           return Container(
             color: AppColors.pointGray.withValues(alpha: 0.3),
             child: Icon(
@@ -193,7 +193,7 @@ class WalkDetailScreen extends ConsumerWidget {
           file,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🖼️ WalkDetailScreen - File image error: $error');
+            LoggerService.debug('🖼️ WalkDetailScreen - File image error: $error');
             return Container(
               color: AppColors.pointGray.withValues(alpha: 0.3),
               child: Icon(
@@ -209,7 +209,7 @@ class WalkDetailScreen extends ConsumerWidget {
           absolutePath,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🖼️ WalkDetailScreen - Network image error: $error');
+            LoggerService.debug('🖼️ WalkDetailScreen - Network image error: $error');
             return Container(
               color: AppColors.pointGray.withValues(alpha: 0.3),
               child: Icon(
@@ -225,7 +225,7 @@ class WalkDetailScreen extends ConsumerWidget {
           absolutePath,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🖼️ WalkDetailScreen - Asset image error: $error');
+            LoggerService.debug('🖼️ WalkDetailScreen - Asset image error: $error');
             return Container(
               color: AppColors.pointGray.withValues(alpha: 0.3),
               child: Icon(

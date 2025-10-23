@@ -56,24 +56,24 @@ class PetSelectionWidget extends StatelessWidget {
       return null;
     }
 
-    debugPrint('🖼️ PetSelectionWidget - imagePath: $imagePath');
+    LoggerService.debug('🖼️ PetSelectionWidget - imagePath: $imagePath');
 
     // 상대 경로를 절대 경로로 변환
     final storageService = ImageStorageService();
     final absolutePath = storageService.getAbsolutePath(imagePath) ?? imagePath;
-    debugPrint('🖼️ PetSelectionWidget - absolutePath: $absolutePath');
+    LoggerService.debug('🖼️ PetSelectionWidget - absolutePath: $absolutePath');
 
     final imageType = ImageService.getImageType(absolutePath);
-    debugPrint('🖼️ PetSelectionWidget - imageType: $imageType');
+    LoggerService.debug('🖼️ PetSelectionWidget - imageType: $imageType');
 
     switch (imageType) {
       case ImageType.file:
         final file = File(absolutePath);
         final fileExists = file.existsSync();
-        debugPrint('🖼️ PetSelectionWidget - File exists: $fileExists');
+        LoggerService.debug('🖼️ PetSelectionWidget - File exists: $fileExists');
 
         if (!fileExists) {
-          debugPrint(
+          LoggerService.debug(
             '❌ PetSelectionWidget - File does not exist: $absolutePath',
           );
           return null;

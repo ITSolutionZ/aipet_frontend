@@ -17,7 +17,7 @@ class NotificationAnalyticsStorageHelper {
       await SecureStorageService.setString(_statsKey, statsJson);
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('통계 저장 실패: $e');
+        LoggerService.debug('통계 저장 실패: $e');
       }
     }
   }
@@ -34,7 +34,7 @@ class NotificationAnalyticsStorageHelper {
       }
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('통계 조회 실패: $e');
+        LoggerService.debug('통계 조회 실패: $e');
       }
     }
     return [];
@@ -47,7 +47,7 @@ class NotificationAnalyticsStorageHelper {
       await SecureStorageService.setString(_analyticsKey, analyticsJson);
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('분석 데이터 저장 실패: $e');
+        LoggerService.debug('분석 데이터 저장 실패: $e');
       }
     }
   }
@@ -62,7 +62,7 @@ class NotificationAnalyticsStorageHelper {
       }
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('분석 데이터 조회 실패: $e');
+        LoggerService.debug('분석 데이터 조회 실패: $e');
       }
     }
     return null;
@@ -79,7 +79,7 @@ class NotificationAnalyticsStorageHelper {
       await SecureStorageService.setString(_userEngagementKey, engagementJson);
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('사용자 참여도 저장 실패: $e');
+        LoggerService.debug('사용자 참여도 저장 실패: $e');
       }
     }
   }
@@ -98,7 +98,7 @@ class NotificationAnalyticsStorageHelper {
       }
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('사용자 참여도 조회 실패: $e');
+        LoggerService.debug('사용자 참여도 조회 실패: $e');
       }
     }
     return [];
@@ -112,7 +112,7 @@ class NotificationAnalyticsStorageHelper {
       await SecureStorageService.remove(_userEngagementKey);
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('데이터 삭제 실패: $e');
+        LoggerService.debug('데이터 삭제 실패: $e');
       }
     }
   }

@@ -21,7 +21,7 @@ class FacilityLocalStorageService {
           .map((json) => jsonDecode(json) as Map<String, dynamic>)
           .toList();
     } catch (e) {
-      debugPrint('시설 로드 실패: $e');
+      LoggerService.debug('시설 로드 실패: $e');
       return [];
     }
   }
@@ -43,9 +43,9 @@ class FacilityLocalStorageService {
       facilities.add(jsonEncode(facility));
       await prefs.setStringList(_keyFacilities, facilities);
 
-      debugPrint('시설 추가 성공: ${facility['id']}');
+      LoggerService.debug('시설 추가 성공: ${facility['id']}');
     } catch (e) {
-      debugPrint('시설 추가 실패: $e');
+      LoggerService.debug('시설 추가 실패: $e');
     }
   }
 
@@ -76,9 +76,9 @@ class FacilityLocalStorageService {
 
       await prefs.setStringList(_keyFacilities, existingFacilities);
 
-      debugPrint('시설 일괄 추가 성공: ${facilitiesList.length}개');
+      LoggerService.debug('시설 일괄 추가 성공: ${facilitiesList.length}개');
     } catch (e) {
-      debugPrint('시설 일괄 추가 실패: $e');
+      LoggerService.debug('시설 일괄 추가 실패: $e');
     }
   }
 
@@ -97,10 +97,10 @@ class FacilityLocalStorageService {
         facility['updatedAt'] = DateTime.now().toIso8601String();
         facilities[index] = jsonEncode(facility);
         await prefs.setStringList(_keyFacilities, facilities);
-        debugPrint('시설 업데이트 성공: ${facility['id']}');
+        LoggerService.debug('시설 업데이트 성공: ${facility['id']}');
       }
     } catch (e) {
-      debugPrint('시설 업데이트 실패: $e');
+      LoggerService.debug('시설 업데이트 실패: $e');
     }
   }
 
@@ -116,9 +116,9 @@ class FacilityLocalStorageService {
       });
 
       await prefs.setStringList(_keyFacilities, facilities);
-      debugPrint('시설 삭제 성공: $facilityId');
+      LoggerService.debug('시설 삭제 성공: $facilityId');
     } catch (e) {
-      debugPrint('시설 삭제 실패: $e');
+      LoggerService.debug('시설 삭제 실패: $e');
     }
   }
 
@@ -128,7 +128,7 @@ class FacilityLocalStorageService {
       final prefs = await SharedPreferences.getInstance();
       return prefs.getStringList(_keyFavorites) ?? [];
     } catch (e) {
-      debugPrint('즐겨찾기 로드 실패: $e');
+      LoggerService.debug('즐겨찾기 로드 실패: $e');
       return [];
     }
   }
@@ -146,9 +146,9 @@ class FacilityLocalStorageService {
       }
 
       await prefs.setStringList(_keyFavorites, favorites);
-      debugPrint('즐겨찾기 토글 성공: $facilityId');
+      LoggerService.debug('즐겨찾기 토글 성공: $facilityId');
     } catch (e) {
-      debugPrint('즐겨찾기 토글 실패: $e');
+      LoggerService.debug('즐겨찾기 토글 실패: $e');
     }
   }
 
@@ -169,9 +169,9 @@ class FacilityLocalStorageService {
       }
 
       await prefs.setStringList(_keyHistory, history);
-      debugPrint('방문 기록 추가 성공: $facilityId');
+      LoggerService.debug('방문 기록 추가 성공: $facilityId');
     } catch (e) {
-      debugPrint('방문 기록 추가 실패: $e');
+      LoggerService.debug('방문 기록 추가 실패: $e');
     }
   }
 
@@ -181,7 +181,7 @@ class FacilityLocalStorageService {
       final prefs = await SharedPreferences.getInstance();
       return prefs.getStringList(_keyHistory) ?? [];
     } catch (e) {
-      debugPrint('방문 기록 로드 실패: $e');
+      LoggerService.debug('방문 기록 로드 실패: $e');
       return [];
     }
   }
@@ -191,9 +191,9 @@ class FacilityLocalStorageService {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove(_keyFacilities);
-      debugPrint('모든 시설 삭제 성공');
+      LoggerService.debug('모든 시설 삭제 성공');
     } catch (e) {
-      debugPrint('모든 시설 삭제 실패: $e');
+      LoggerService.debug('모든 시설 삭제 실패: $e');
     }
   }
 }

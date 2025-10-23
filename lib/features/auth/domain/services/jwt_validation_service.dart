@@ -23,7 +23,7 @@ class JwtValidationService {
       final parts = token.split('.');
       if (parts.length != 3) {
         if (kDebugMode) {
-          debugPrint('[$_tag] ❌ JWT 형식 오류: ${parts.length}개 부분 (3개 필요)');
+          LoggerService.debug('[$_tag] ❌ JWT 형식 오류: ${parts.length}개 부분 (3개 필요)');
         }
         return Result.failure('잘못된 JWT 형식: ${parts.length}개 부분 (3개 필요)');
       }
@@ -121,7 +121,7 @@ class JwtValidationService {
       );
 
       if (kDebugMode) {
-        debugPrint(
+        LoggerService.debug(
           '[$_tag] ✅ JWT 구조 검증 성공 - 알고리즘: ${header['alg']}, 만료: ${validationResult.expirationTime}',
         );
       }
@@ -129,7 +129,7 @@ class JwtValidationService {
       return Result.success('JWT 구조 검증 성공', validationResult);
     } catch (error, stackTrace) {
       if (kDebugMode) {
-        debugPrint('[$_tag] JWT 검증 중 예외 발생: $error\n$stackTrace');
+        LoggerService.debug('[$_tag] JWT 검증 중 예외 발생: $error\n$stackTrace');
       }
       return Result.failure('JWT 검증 중 오류 발생: $error');
     }
@@ -163,7 +163,7 @@ class JwtValidationService {
     }
 
     if (kDebugMode) {
-      debugPrint('[$_tag] ✅ Firebase ID 토큰 검증 성공');
+      LoggerService.debug('[$_tag] ✅ Firebase ID 토큰 검증 성공');
     }
 
     return basicResult;

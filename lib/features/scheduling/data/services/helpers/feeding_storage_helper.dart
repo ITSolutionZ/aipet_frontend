@@ -22,7 +22,7 @@ class FeedingStorageHelper {
         return jsonDecode(json) as Map<String, dynamic>;
       }).toList();
     } catch (e) {
-      debugPrint('急給記録取得エラー: $e');
+      LoggerService.debug('急給記録取得エラー: $e');
       return [];
     }
   }
@@ -36,9 +36,9 @@ class FeedingStorageHelper {
       records.add(jsonEncode(record));
       await prefs.setStringList(_keyFeedingRecords, records);
 
-      debugPrint('急給記録追加成功: ${record['id']}');
+      LoggerService.debug('急給記録追加成功: ${record['id']}');
     } catch (e) {
-      debugPrint('急給記録追加エラー: $e');
+      LoggerService.debug('急給記録追加エラー: $e');
     }
   }
 
@@ -56,7 +56,7 @@ class FeedingStorageHelper {
         return jsonDecode(json) as Map<String, dynamic>;
       }).toList();
     } catch (e) {
-      debugPrint('急給スケジュール取得エラー: $e');
+      LoggerService.debug('急給スケジュール取得エラー: $e');
       return [];
     }
   }
@@ -86,9 +86,9 @@ class FeedingStorageHelper {
       final schedulesJson = updatedSchedules.map((s) => jsonEncode(s)).toList();
       await prefs.setStringList(_keyFeedingSchedules, schedulesJson);
 
-      debugPrint('急給スケジュール更新成功: $mealType');
+      LoggerService.debug('急給スケジュール更新成功: $mealType');
     } catch (e) {
-      debugPrint('急給スケジュール更新エラー: $e');
+      LoggerService.debug('急給スケジュール更新エラー: $e');
     }
   }
 

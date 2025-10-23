@@ -103,24 +103,24 @@ class HospitalPetProfileHeader extends ConsumerWidget {
       );
     }
 
-    debugPrint('🖼️ HospitalPetProfileHeader - imagePath: ${pet.imagePath}');
+    LoggerService.debug('🖼️ HospitalPetProfileHeader - imagePath: ${pet.imagePath}');
 
     // 상대 경로를 절대 경로로 변환
     final storageService = ImageStorageService();
     final absolutePath = storageService.getAbsolutePath(pet.imagePath!) ?? pet.imagePath!;
-    debugPrint('🖼️ HospitalPetProfileHeader - absolutePath: $absolutePath');
+    LoggerService.debug('🖼️ HospitalPetProfileHeader - absolutePath: $absolutePath');
 
     final imageType = ImageService.getImageType(absolutePath);
-    debugPrint('🖼️ HospitalPetProfileHeader - imageType: $imageType');
+    LoggerService.debug('🖼️ HospitalPetProfileHeader - imageType: $imageType');
 
     switch (imageType) {
       case ImageType.file:
         final file = File(absolutePath);
         final fileExists = file.existsSync();
-        debugPrint('🖼️ HospitalPetProfileHeader - File exists: $fileExists');
+        LoggerService.debug('🖼️ HospitalPetProfileHeader - File exists: $fileExists');
 
         if (!fileExists) {
-          debugPrint('❌ HospitalPetProfileHeader - File does not exist: $absolutePath');
+          LoggerService.debug('❌ HospitalPetProfileHeader - File does not exist: $absolutePath');
           return Container(
             color: Colors.grey[300],
             child: const Icon(Icons.pets, size: 40, color: Colors.grey),
@@ -131,7 +131,7 @@ class HospitalPetProfileHeader extends ConsumerWidget {
           file,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🖼️ HospitalPetProfileHeader - File image error: $error');
+            LoggerService.debug('🖼️ HospitalPetProfileHeader - File image error: $error');
             return Container(
               color: Colors.grey[300],
               child: const Icon(Icons.pets, size: 40, color: Colors.grey),
@@ -143,7 +143,7 @@ class HospitalPetProfileHeader extends ConsumerWidget {
           absolutePath,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🖼️ HospitalPetProfileHeader - Network image error: $error');
+            LoggerService.debug('🖼️ HospitalPetProfileHeader - Network image error: $error');
             return Container(
               color: Colors.grey[300],
               child: const Icon(Icons.pets, size: 40, color: Colors.grey),
@@ -155,7 +155,7 @@ class HospitalPetProfileHeader extends ConsumerWidget {
           absolutePath,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🖼️ HospitalPetProfileHeader - Asset image error: $error');
+            LoggerService.debug('🖼️ HospitalPetProfileHeader - Asset image error: $error');
             return Container(
               color: Colors.grey[300],
               child: const Icon(Icons.pets, size: 40, color: Colors.grey),

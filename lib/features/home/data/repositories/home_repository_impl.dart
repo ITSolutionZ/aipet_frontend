@@ -19,17 +19,17 @@ class HomeRepositoryImpl implements HomeRepository {
   @override
   Future<HomeDashboardEntity> getDashboardData() async {
     try {
-      debugPrint('🏠 HomeRepositoryImpl: getDashboardData 시작');
+      LoggerService.debug('🏠 HomeRepositoryImpl: getDashboardData 시작');
 
       // 1단계: 초고속 캐시 확인 (즉시 반환 가능)
       final ultraFastCached = await _ultraFastCache.getUltraFastDashboard();
       if (ultraFastCached != null) {
-        debugPrint('🚀 HomeRepositoryImpl: 초고속 캐시에서 즉시 반환');
+        LoggerService.debug('🚀 HomeRepositoryImpl: 초고속 캐시에서 즉시 반환');
         return ultraFastCached;
       }
 
       // 2단계: 데이터 없음 - 새로 로딩
-      debugPrint('🔄 HomeRepositoryImpl: 새 데이터 로딩 시작...');
+      LoggerService.debug('🔄 HomeRepositoryImpl: 새 데이터 로딩 시작...');
 
       // 개별 데이터 병렬 로딩
       final results = await Future.wait([
@@ -46,7 +46,7 @@ class HomeRepositoryImpl implements HomeRepository {
       final healthSummary = results[3] as HealthSummary;
       final walkSummary = results[4] as WalkSummary;
 
-      debugPrint('✅ HomeRepositoryImpl: 병렬 데이터 조회 완료');
+      LoggerService.debug('✅ HomeRepositoryImpl: 병렬 데이터 조회 완료');
 
       final now = DateTime.now();
       final currentTime =
@@ -64,11 +64,11 @@ class HomeRepositoryImpl implements HomeRepository {
       // 3단계: 초고속 캐시에 저장 (다음 로딩 시 즉시 반환용)
       await _ultraFastCache.saveDashboard(dashboard);
 
-      debugPrint('✅ HomeRepositoryImpl: getDashboardData 완료');
+      LoggerService.debug('✅ HomeRepositoryImpl: getDashboardData 완료');
       return dashboard;
     } catch (error, stackTrace) {
-      debugPrint('💥 HomeRepositoryImpl: getDashboardData 실패 - $error');
-      debugPrint('📍 StackTrace: $stackTrace');
+      LoggerService.debug('💥 HomeRepositoryImpl: getDashboardData 실패 - $error');
+      LoggerService.debug('📍 StackTrace: $stackTrace');
       rethrow;
     }
   }
@@ -85,7 +85,7 @@ class HomeRepositoryImpl implements HomeRepository {
           CacheKeys.weather,
         );
         if (cachedWeather != null) {
-          debugPrint('⚡ getCurrentWeather: 캐시에서 날씨 데이터 반환');
+          LoggerService.debug('⚡ getCurrentWeather: 캐시에서 날씨 데이터 반환');
           return cachedWeather;
         }
       }
@@ -141,28 +141,28 @@ class HomeRepositoryImpl implements HomeRepository {
   @override
   Future<List<PetSummaryEntity>> getPetSummaries() async {
     try {
-      debugPrint('🐾 getPetSummaries: 시작');
+      LoggerService.debug('🐾 getPetSummaries: 시작');
 
       // 캐시에서 펫 요약 정보 확인
       final cachedPetSummaries = _cacheService
           .getMemoryCache<List<PetSummaryEntity>>(CacheKeys.petProfiles);
 
       if (cachedPetSummaries != null) {
-        debugPrint('⚡ getPetSummaries: 캐시에서 펫 요약 정보 반환');
+        LoggerService.debug('⚡ getPetSummaries: 캐시에서 펫 요약 정보 반환');
         return cachedPetSummaries;
       }
 
       // 로컬 스토리지 초기화 확인
       await _localStorageService.initialize();
-      debugPrint('🐾 getPetSummaries: 로컬 스토리지 초기화 완료');
+      LoggerService.debug('🐾 getPetSummaries: 로컬 스토리지 초기화 완료');
 
       // 로컬 스토리지에서 펫 정보 가져오기 (실제 데이터)
       final petProfiles = await _localStorageService.pet.getAllPets();
-      debugPrint('🐾 getPetSummaries: 로컬에서 ${petProfiles.length}개 펫 데이터 조회');
+      LoggerService.debug('🐾 getPetSummaries: 로컬에서 ${petProfiles.length}개 펫 데이터 조회');
 
       // 빈 데이터인 경우 빈 리스트 반환
       if (petProfiles.isEmpty) {
-        debugPrint('🐾 getPetSummaries: 펫 데이터가 없음 - 빈 리스트 반환');
+        LoggerService.debug('🐾 getPetSummaries: 펫 데이터가 없음 - 빈 리스트 반환');
         final emptySummaries = <PetSummaryEntity>[];
 
         // 빈 리스트도 캐시에 저장
@@ -177,7 +177,7 @@ class HomeRepositoryImpl implements HomeRepository {
 
       // 펫 데이터를 요약 엔티티로 변환
       final petSummaries = PetMapper.toSummaryEntityListFromMaps(petProfiles);
-      debugPrint('🐾 getPetSummaries: ${petSummaries.length}개 펫 요약 정보 생성 완료');
+      LoggerService.debug('🐾 getPetSummaries: ${petSummaries.length}개 펫 요약 정보 생성 완료');
 
       // 펫 요약 정보 캐시 저장 (1시간 TTL)
       _cacheService.setMemoryCache(
@@ -188,8 +188,8 @@ class HomeRepositoryImpl implements HomeRepository {
 
       return petSummaries;
     } catch (error, stackTrace) {
-      debugPrint('❌ getPetSummaries: 에러 발생 - $error');
-      debugPrint('📍 StackTrace: $stackTrace');
+      LoggerService.debug('❌ getPetSummaries: 에러 발생 - $error');
+      LoggerService.debug('📍 StackTrace: $stackTrace');
 
       // 에러 발생 시 빈 리스트 반환 (앱 크래시 방지)
       return <PetSummaryEntity>[];
@@ -206,7 +206,7 @@ class HomeRepositoryImpl implements HomeRepository {
   @override
   Future<WalkSummary> getWalkSummary() async {
     try {
-      debugPrint('🚶 getWalkSummary: 시작');
+      LoggerService.debug('🚶 getWalkSummary: 시작');
 
       // 캐시에서 산책 요약 정보 확인
       final cachedWalkSummary = _cacheService.getMemoryCache<WalkSummary>(
@@ -214,7 +214,7 @@ class HomeRepositoryImpl implements HomeRepository {
       );
 
       if (cachedWalkSummary != null) {
-        debugPrint('⚡ getWalkSummary: 캐시에서 산책 요약 정보 반환');
+        LoggerService.debug('⚡ getWalkSummary: 캐시에서 산책 요약 정보 반환');
         return cachedWalkSummary;
       }
 
@@ -223,7 +223,7 @@ class HomeRepositoryImpl implements HomeRepository {
 
       // 로컬 스토리지에서 산책 기록 가져오기 (실제 데이터)
       final pets = await _localStorageService.pet.getAllPets();
-      debugPrint('🚶 getWalkSummary: ${pets.length}개 펫 데이터 조회');
+      LoggerService.debug('🚶 getWalkSummary: ${pets.length}개 펫 데이터 조회');
 
       int todayWalks = 0;
       double todayDistance = 0.0;
@@ -249,7 +249,7 @@ class HomeRepositoryImpl implements HomeRepository {
             }
           }
         } catch (petError) {
-          debugPrint(
+          LoggerService.debug(
             '⚠️ getWalkSummary: 펫 ${pet['name']} 산책 기록 조회 실패 - $petError',
           );
           // 개별 펫 에러는 무시하고 계속 진행
@@ -275,13 +275,13 @@ class HomeRepositoryImpl implements HomeRepository {
         ttl: CacheTTL.medium,
       );
 
-      debugPrint(
+      LoggerService.debug(
         '🚶 getWalkSummary: 완료 - 오늘 $todayWalks회, 거리 ${todayDistance}km, 시간 ${todayDuration.inMinutes}분',
       );
       return walkSummary;
     } catch (error, stackTrace) {
-      debugPrint('❌ getWalkSummary: 에러 발생 - $error');
-      debugPrint('📍 StackTrace: $stackTrace');
+      LoggerService.debug('❌ getWalkSummary: 에러 발생 - $error');
+      LoggerService.debug('📍 StackTrace: $stackTrace');
 
       // 에러 발생 시 기본 산책 요약 정보 반환
       return const WalkSummary(
@@ -298,7 +298,7 @@ class HomeRepositoryImpl implements HomeRepository {
   @override
   Future<HealthSummary> getPetHealthSummary() async {
     try {
-      debugPrint('🏥 getPetHealthSummary: 시작');
+      LoggerService.debug('🏥 getPetHealthSummary: 시작');
 
       // 캐시에서 건강 요약 정보 확인
       final cachedHealthSummary = _cacheService.getMemoryCache<HealthSummary>(
@@ -306,7 +306,7 @@ class HomeRepositoryImpl implements HomeRepository {
       );
 
       if (cachedHealthSummary != null) {
-        debugPrint('⚡ getPetHealthSummary: 캐시에서 건강 요약 정보 반환');
+        LoggerService.debug('⚡ getPetHealthSummary: 캐시에서 건강 요약 정보 반환');
         return cachedHealthSummary;
       }
 
@@ -317,7 +317,7 @@ class HomeRepositoryImpl implements HomeRepository {
 
       // 로컬 스토리지에서 펫 정보와 건강 기록 가져오기
       final pets = await _localStorageService.pet.getAllPets();
-      debugPrint('🏥 getPetHealthSummary: ${pets.length}개 펫 데이터 조회');
+      LoggerService.debug('🏥 getPetHealthSummary: ${pets.length}개 펫 데이터 조회');
 
       final alerts = <HealthAlert>[];
       int healthyPets = 0;
@@ -350,7 +350,7 @@ class HomeRepositoryImpl implements HomeRepository {
             healthyPets++;
           }
         } catch (petError) {
-          debugPrint(
+          LoggerService.debug(
             '⚠️ getPetHealthSummary: 펫 ${pet['name']} 건강 기록 조회 실패 - $petError',
           );
           // 개별 펫 에러는 무시하고 계속 진행
@@ -372,13 +372,13 @@ class HomeRepositoryImpl implements HomeRepository {
         ttl: CacheTTL.medium,
       );
 
-      debugPrint(
+      LoggerService.debug(
         '🏥 getPetHealthSummary: 완료 - 총 ${pets.length}마리, 건강 $healthyPets마리, 주의 $petsNeedingAttention마리',
       );
       return healthSummary;
     } catch (error, stackTrace) {
-      debugPrint('❌ getPetHealthSummary: 에러 발생 - $error');
-      debugPrint('📍 StackTrace: $stackTrace');
+      LoggerService.debug('❌ getPetHealthSummary: 에러 발생 - $error');
+      LoggerService.debug('📍 StackTrace: $stackTrace');
 
       // 에러 발생 시 기본 건강 요약 정보 반환
       return const HealthSummary(
@@ -393,14 +393,14 @@ class HomeRepositoryImpl implements HomeRepository {
   @override
   Future<List<AppointmentSummary>> getUpcomingAppointments() async {
     try {
-      debugPrint('📅 getUpcomingAppointments: 시작');
+      LoggerService.debug('📅 getUpcomingAppointments: 시작');
 
       // 캐시에서 예약 정보 확인
       final cachedAppointments = _cacheService
           .getMemoryCache<List<AppointmentSummary>>(CacheKeys.appointments);
 
       if (cachedAppointments != null) {
-        debugPrint('⚡ getUpcomingAppointments: 캐시에서 예약 정보 반환');
+        LoggerService.debug('⚡ getUpcomingAppointments: 캐시에서 예약 정보 반환');
         return cachedAppointments;
       }
 
@@ -410,7 +410,7 @@ class HomeRepositoryImpl implements HomeRepository {
       // 로컬 스토리지에서 스케줄 정보 가져오기 (실제 데이터)
       final schedules = await _localStorageService.schedule
           .getUpcomingSchedules(limit: 10);
-      debugPrint('📅 getUpcomingAppointments: ${schedules.length}개 스케줄 조회');
+      LoggerService.debug('📅 getUpcomingAppointments: ${schedules.length}개 스케줄 조회');
 
       final appointments = <AppointmentSummary>[];
 
@@ -426,7 +426,7 @@ class HomeRepositoryImpl implements HomeRepository {
                 final pet = await _localStorageService.pet.getPetById(petId);
                 petName = pet?['name'] ?? '';
               } catch (petError) {
-                debugPrint('⚠️ getUpcomingAppointments: 펫 조회 실패 - $petError');
+                LoggerService.debug('⚠️ getUpcomingAppointments: 펫 조회 실패 - $petError');
                 petName = 'Unknown Pet';
               }
             }
@@ -442,7 +442,7 @@ class HomeRepositoryImpl implements HomeRepository {
             );
           }
         } catch (scheduleError) {
-          debugPrint('⚠️ getUpcomingAppointments: 스케줄 처리 실패 - $scheduleError');
+          LoggerService.debug('⚠️ getUpcomingAppointments: 스케줄 처리 실패 - $scheduleError');
           // 개별 스케줄 에러는 무시하고 계속 진행
         }
       }
@@ -454,11 +454,11 @@ class HomeRepositoryImpl implements HomeRepository {
         ttl: CacheTTL.medium,
       );
 
-      debugPrint('📅 getUpcomingAppointments: 완료 - ${appointments.length}개 예약');
+      LoggerService.debug('📅 getUpcomingAppointments: 완료 - ${appointments.length}개 예약');
       return appointments;
     } catch (error, stackTrace) {
-      debugPrint('❌ getUpcomingAppointments: 에러 발생 - $error');
-      debugPrint('📍 StackTrace: $stackTrace');
+      LoggerService.debug('❌ getUpcomingAppointments: 에러 발생 - $error');
+      LoggerService.debug('📍 StackTrace: $stackTrace');
 
       // 에러 발생 시 빈 예약 리스트 반환
       return <AppointmentSummary>[];

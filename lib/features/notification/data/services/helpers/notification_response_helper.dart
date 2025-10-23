@@ -36,7 +36,7 @@ class NotificationResponseHelper {
       }
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('[$_tag] ❌ 알림 응답 처리 실패: $e');
+        LoggerService.debug('[$_tag] ❌ 알림 응답 처리 실패: $e');
       }
     }
   }

@@ -15,7 +15,7 @@ class WalkListPetHelper {
     required WalkController controller,
     required WidgetRef ref,
   }) {
-    debugPrint('🐾 펫 탭: ${pet.name} (ID: ${pet.id})');
+    LoggerService.debug('🐾 펫 탭: ${pet.name} (ID: ${pet.id})');
 
     // 펫 선택 토글
     controller.togglePet(WalkPetInfo.fromPetProfile(pet));
@@ -27,7 +27,7 @@ class WalkListPetHelper {
   /// 선택된 펫 로깅
   static void _logSelectedPets(WidgetRef ref) {
     final currentSelected = ref.read(selectedPetsProvider);
-    debugPrint('✅ 선택된 펫들: ${currentSelected.map((p) => p.name).join(', ')}');
+    LoggerService.debug('✅ 선택된 펫들: ${currentSelected.map((p) => p.name).join(', ')}');
   }
 
   /// 추천 산책 시간 가져오기

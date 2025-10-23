@@ -29,11 +29,11 @@ class PetRegistrationController extends _$PetRegistrationController {
     _ocrService = PetOcrService();
     _storageService = PetRegistrationStorageService();
 
-    debugPrint(
+    LoggerService.debug(
       '🏗️ PetRegistrationController: Build called, starting initialization',
     );
     _loadSavedFormData();
-    debugPrint('🏗️ PetRegistrationController: Build completed');
+    LoggerService.debug('🏗️ PetRegistrationController: Build completed');
 
     return PetRegistrationFormData.initialFormData;
   }
@@ -74,7 +74,7 @@ class PetRegistrationController extends _$PetRegistrationController {
   // ================================
 
   void updatePetName(String name) {
-    debugPrint('📝 updatePetName called with: $name');
+    LoggerService.debug('📝 updatePetName called with: $name');
     state = state.copyWith(petName: name);
     _autoSaveFormData();
   }
@@ -165,19 +165,19 @@ class PetRegistrationController extends _$PetRegistrationController {
   }
 
   void updatePetImagePath(String? imagePath) {
-    debugPrint(
+    LoggerService.debug(
       '🖼️ PetRegistrationController: updatePetImagePath called with: $imagePath',
     );
     if (imagePath == null) {
       state = state.copyWith(clearPetImage: true);
-      debugPrint('🖼️ PetRegistrationController: Image cleared');
+      LoggerService.debug('🖼️ PetRegistrationController: Image cleared');
     } else {
       state = state.copyWith(petImagePath: imagePath);
-      debugPrint(
+      LoggerService.debug(
         '🖼️ PetRegistrationController: Image path set to: $imagePath',
       );
     }
-    debugPrint(
+    LoggerService.debug(
       '🖼️ PetRegistrationController: Updated state.petImagePath: ${state.petImagePath}',
     );
     _autoSaveFormData();
@@ -275,13 +275,13 @@ class PetRegistrationController extends _$PetRegistrationController {
     if (savedData != null) {
       state = savedData;
       _updateControllersFromState(savedData);
-      debugPrint('📥 Form data loaded and controllers updated successfully');
+      LoggerService.debug('📥 Form data loaded and controllers updated successfully');
     }
   }
 
   /// 수동으로 컨트롤러 초기화 (화면에서 호출용)
   Future<void> manualInit() async {
-    debugPrint('🔧 Manual initialization called');
+    LoggerService.debug('🔧 Manual initialization called');
     await _loadSavedFormData();
   }
 
@@ -292,7 +292,7 @@ class PetRegistrationController extends _$PetRegistrationController {
 
   /// 자동 저장 (디바운스 적용)
   void _autoSaveFormData() {
-    debugPrint('🔄 Auto-save triggered');
+    LoggerService.debug('🔄 Auto-save triggered');
     // 즉시 저장 (디바운스 제거하여 확실히 저장되도록)
     saveFormDataToLocal();
   }
@@ -400,26 +400,26 @@ class PetRegistrationController extends _$PetRegistrationController {
     final relationService = PetUserRelationService.instance;
 
     // 텍스트 컨트롤러와 state 동기화 확인
-    debugPrint('🔍 submitForm - Checking form validity:');
-    debugPrint(
+    LoggerService.debug('🔍 submitForm - Checking form validity:');
+    LoggerService.debug(
       '  - petName from state: "${state.petName}" (empty: ${state.petName.isEmpty})',
     );
-    debugPrint('  - petName from controller: "${_petNameController.text}"');
-    debugPrint('  - weight from state: ${state.weight}');
-    debugPrint('  - weight from controller: "${_weightController.text}"');
+    LoggerService.debug('  - petName from controller: "${_petNameController.text}"');
+    LoggerService.debug('  - weight from state: ${state.weight}');
+    LoggerService.debug('  - weight from controller: "${_weightController.text}"');
 
     if (!isFormValid()) {
-      debugPrint('❌ submitForm - Form validation failed in submitForm()');
+      LoggerService.debug('❌ submitForm - Form validation failed in submitForm()');
       throw Exception('すべての必須項目を入力してください');
     }
 
-    debugPrint(
+    LoggerService.debug(
       '✅ submitForm - Form validation passed, proceeding with registration',
     );
 
     // 실제 펫 프로필 생성 및 저장
     try {
-      debugPrint('🐾 Creating PetProfileEntity from form data...');
+      LoggerService.debug('🐾 Creating PetProfileEntity from form data...');
 
       // PetProfileEntity 생성
       final petEntity = PetProfileEntity(
@@ -450,31 +450,31 @@ class PetRegistrationController extends _$PetRegistrationController {
         },
       );
 
-      debugPrint(
+      LoggerService.debug(
         '🐾 PetProfileEntity created: ${petEntity.name}, ${petEntity.type}, ${petEntity.breed}',
       );
-      debugPrint('🖼️ PetProfileEntity imagePath: ${petEntity.imagePath}');
-      debugPrint('🖼️ State petImagePath: ${state.petImagePath}');
+      LoggerService.debug('🖼️ PetProfileEntity imagePath: ${petEntity.imagePath}');
+      LoggerService.debug('🖼️ State petImagePath: ${state.petImagePath}');
 
       // 펫 등록 시 저장되는 모든 데이터 로그
-      debugPrint('📋 === 펫 등록 데이터 저장 로그 ===');
-      debugPrint('📋 펫 이름: ${petEntity.name}');
-      debugPrint('📋 펫 타입: ${petEntity.type}');
-      debugPrint('📋 펫 품종: ${petEntity.breed}');
-      debugPrint('📋 펫 성별: ${petEntity.gender}');
-      debugPrint('📋 펫 체중: ${petEntity.weight}');
-      debugPrint('📋 펫 이미지: ${petEntity.imagePath}');
-      debugPrint('📋 보호자 이름: ${state.guardianName}');
-      debugPrint('📋 기관 이름: ${state.institutionName}');
-      debugPrint('📋 등록번호: ${state.registrationNumber}');
-      debugPrint('📋 중성화 여부: ${state.isNeutered}');
-      debugPrint('📋 금지 원료: ${state.forbiddenIngredients}');
-      debugPrint('📋 관리 부위: ${state.bodyPartsToManage}');
-      debugPrint('📋 사료: ${state.food}');
-      debugPrint('📋 보조제: ${state.supplement}');
-      debugPrint('📋 간식: ${state.treat}');
-      debugPrint('📋 추가 정보: ${petEntity.additionalInfo}');
-      debugPrint('📋 ================================');
+      LoggerService.debug('📋 === 펫 등록 데이터 저장 로그 ===');
+      LoggerService.debug('📋 펫 이름: ${petEntity.name}');
+      LoggerService.debug('📋 펫 타입: ${petEntity.type}');
+      LoggerService.debug('📋 펫 품종: ${petEntity.breed}');
+      LoggerService.debug('📋 펫 성별: ${petEntity.gender}');
+      LoggerService.debug('📋 펫 체중: ${petEntity.weight}');
+      LoggerService.debug('📋 펫 이미지: ${petEntity.imagePath}');
+      LoggerService.debug('📋 보호자 이름: ${state.guardianName}');
+      LoggerService.debug('📋 기관 이름: ${state.institutionName}');
+      LoggerService.debug('📋 등록번호: ${state.registrationNumber}');
+      LoggerService.debug('📋 중성화 여부: ${state.isNeutered}');
+      LoggerService.debug('📋 금지 원료: ${state.forbiddenIngredients}');
+      LoggerService.debug('📋 관리 부위: ${state.bodyPartsToManage}');
+      LoggerService.debug('📋 사료: ${state.food}');
+      LoggerService.debug('📋 보조제: ${state.supplement}');
+      LoggerService.debug('📋 간식: ${state.treat}');
+      LoggerService.debug('📋 추가 정보: ${petEntity.additionalInfo}');
+      LoggerService.debug('📋 ================================');
 
       // 펫 프로필 저장
       final createdPet = await petProfilesNotifier.createPet(petEntity);
@@ -484,8 +484,8 @@ class PetRegistrationController extends _$PetRegistrationController {
         return createdPet.id;
       }
 
-      debugPrint('✅ Pet profile saved successfully to repository');
-      debugPrint('✅ Created pet ID: ${createdPet.id}');
+      LoggerService.debug('✅ Pet profile saved successfully to repository');
+      LoggerService.debug('✅ Created pet ID: ${createdPet.id}');
 
       // 펫-사용자 관계 생성 (소유자로 등록)
       final relationSuccess = await relationService.addUserToPet(
@@ -496,25 +496,25 @@ class PetRegistrationController extends _$PetRegistrationController {
       );
 
       if (relationSuccess) {
-        debugPrint('✅ Pet-user relation created successfully');
+        LoggerService.debug('✅ Pet-user relation created successfully');
       } else {
-        debugPrint('⚠️ Pet-user relation creation failed');
+        LoggerService.debug('⚠️ Pet-user relation creation failed');
       }
 
       // Mock 데이터 처리 로그
-      debugPrint(
+      LoggerService.debug(
         'ペット登録完了: ${state.petName}, ${state.petType}, ${state.breed}, ${state.gender}, ${state.isNeutered}',
       );
 
       // 성공적으로 등록된 후 로컬 저장 데이터 삭제
       await clearSavedFormData();
 
-      debugPrint('✅ Pet registration completed successfully');
+      LoggerService.debug('✅ Pet registration completed successfully');
 
       // 등록된 펫 ID 반환 (실제 생성된 ID 사용)
       return createdPet.id;
     } catch (e) {
-      debugPrint('❌ Pet registration failed: $e');
+      LoggerService.debug('❌ Pet registration failed: $e');
       rethrow;
     }
   }
@@ -528,7 +528,7 @@ class PetRegistrationController extends _$PetRegistrationController {
     final petProfilesNotifier = ref.read(petProfilesProvider.notifier);
 
     try {
-      debugPrint('🔄 Updating pet profile for ID: $petId');
+      LoggerService.debug('🔄 Updating pet profile for ID: $petId');
 
       // 펫 프로필 업데이트를 위한 PetProfileEntity 생성
       final petEntity = PetProfileEntity(
@@ -559,7 +559,7 @@ class PetRegistrationController extends _$PetRegistrationController {
         },
       );
 
-      debugPrint(
+      LoggerService.debug(
         '🔄 PetProfileEntity for update: ${petEntity.name}, ${petEntity.type}, ${petEntity.breed}',
       );
 
@@ -571,18 +571,18 @@ class PetRegistrationController extends _$PetRegistrationController {
         return petId;
       }
 
-      debugPrint('✅ Pet profile updated successfully');
-      debugPrint('✅ Updated pet ID: $petId');
+      LoggerService.debug('✅ Pet profile updated successfully');
+      LoggerService.debug('✅ Updated pet ID: $petId');
 
       // 성공적으로 업데이트된 후 로컬 저장 데이터 삭제
       await clearSavedFormData();
 
-      debugPrint('✅ Pet update completed successfully');
+      LoggerService.debug('✅ Pet update completed successfully');
 
       // 업데이트된 펫 ID 반환 (기존 petId 사용)
       return petId;
     } catch (error) {
-      debugPrint('❌ Pet profile creation failed: $error');
+      LoggerService.debug('❌ Pet profile creation failed: $error');
       throw Exception('ペットプロフィール保存に失敗しました: $error');
     }
   }

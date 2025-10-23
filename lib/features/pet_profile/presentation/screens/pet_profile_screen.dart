@@ -143,17 +143,17 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
   }
 
   Widget _buildBody(BuildContext context, PetProfileUnifiedState state) {
-    debugPrint(
+    LoggerService.debug(
       '🔍 PetProfileScreen _buildBody: isLoading=${state.isLoading}, errorMessage=${state.errorMessage}, selectedPet=${state.selectedPet?.name}',
     );
 
     if (state.isLoading) {
-      debugPrint('🔍 Showing loading widget');
+      LoggerService.debug('🔍 Showing loading widget');
       return const _LoadingWidget();
     }
 
     if (state.errorMessage != null) {
-      debugPrint('🔍 Showing error widget: ${state.errorMessage}');
+      LoggerService.debug('🔍 Showing error widget: ${state.errorMessage}');
       return _ErrorWidget(
         error: state.errorMessage!,
         onRetry: () => _loadPetProfile(),
@@ -161,11 +161,11 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
     }
 
     if (state.selectedPet == null) {
-      debugPrint('🔍 Showing pet not found widget');
+      LoggerService.debug('🔍 Showing pet not found widget');
       return const _PetNotFoundWidget();
     }
 
-    debugPrint(
+    LoggerService.debug(
       '🔍 Showing pet profile content for: ${state.selectedPet!.name}',
     );
 

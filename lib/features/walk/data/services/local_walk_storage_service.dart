@@ -19,10 +19,10 @@ class LocalWalkStorageService {
       final jsonString = jsonEncode(jsonList);
 
       final result = await prefs.setString(_walkRecordsKey, jsonString);
-      debugPrint('📱 산책 기록 저장 완료: ${walkRecords.length}개');
+      LoggerService.debug('📱 산책 기록 저장 완료: ${walkRecords.length}개');
       return result;
     } catch (e) {
-      debugPrint('❌ 산책 기록 저장 실패: $e');
+      LoggerService.debug('❌ 산책 기록 저장 실패: $e');
       return false;
     }
   }
@@ -34,7 +34,7 @@ class LocalWalkStorageService {
       final jsonString = prefs.getString(_walkRecordsKey);
 
       if (jsonString == null || jsonString.isEmpty) {
-        debugPrint('📱 저장된 산책 기록이 없습니다');
+        LoggerService.debug('📱 저장된 산책 기록이 없습니다');
         return [];
       }
 
@@ -45,10 +45,10 @@ class LocalWalkStorageService {
           )
           .toList();
 
-      debugPrint('📱 산책 기록 불러오기 완료: ${walkRecords.length}개');
+      LoggerService.debug('📱 산책 기록 불러오기 완료: ${walkRecords.length}개');
       return walkRecords;
     } catch (e) {
-      debugPrint('❌ 산책 기록 불러오기 실패: $e');
+      LoggerService.debug('❌ 산책 기록 불러오기 실패: $e');
       return [];
     }
   }
@@ -72,7 +72,7 @@ class LocalWalkStorageService {
 
       return await saveWalkRecords(existingRecords);
     } catch (e) {
-      debugPrint('❌ 산책 기록 추가 실패: $e');
+      LoggerService.debug('❌ 산책 기록 추가 실패: $e');
       return false;
     }
   }
@@ -89,11 +89,11 @@ class LocalWalkStorageService {
         existingRecords[index] = walkRecord;
         return await saveWalkRecords(existingRecords);
       } else {
-        debugPrint('⚠️ 업데이트할 산책 기록을 찾을 수 없습니다: ${walkRecord.id}');
+        LoggerService.debug('⚠️ 업데이트할 산책 기록을 찾을 수 없습니다: ${walkRecord.id}');
         return false;
       }
     } catch (e) {
-      debugPrint('❌ 산책 기록 업데이트 실패: $e');
+      LoggerService.debug('❌ 산책 기록 업데이트 실패: $e');
       return false;
     }
   }
@@ -107,14 +107,14 @@ class LocalWalkStorageService {
           .toList();
 
       if (updatedRecords.length < existingRecords.length) {
-        debugPrint('📱 산책 기록 삭제: $walkId');
+        LoggerService.debug('📱 산책 기록 삭제: $walkId');
         return await saveWalkRecords(updatedRecords);
       } else {
-        debugPrint('⚠️ 삭제할 산책 기록을 찾을 수 없습니다: $walkId');
+        LoggerService.debug('⚠️ 삭제할 산책 기록을 찾을 수 없습니다: $walkId');
         return false;
       }
     } catch (e) {
-      debugPrint('❌ 산책 기록 삭제 실패: $e');
+      LoggerService.debug('❌ 산책 기록 삭제 실패: $e');
       return false;
     }
   }
@@ -126,16 +126,16 @@ class LocalWalkStorageService {
 
       if (walkRecord == null) {
         final result = await prefs.remove(_currentWalkKey);
-        debugPrint('📱 현재 산책 기록 제거');
+        LoggerService.debug('📱 현재 산책 기록 제거');
         return result;
       } else {
         final jsonString = jsonEncode(walkRecord.toJson());
         final result = await prefs.setString(_currentWalkKey, jsonString);
-        debugPrint('📱 현재 산책 기록 저장: ${walkRecord.id}');
+        LoggerService.debug('📱 현재 산책 기록 저장: ${walkRecord.id}');
         return result;
       }
     } catch (e) {
-      debugPrint('❌ 현재 산책 저장 실패: $e');
+      LoggerService.debug('❌ 현재 산책 저장 실패: $e');
       return false;
     }
   }
@@ -147,17 +147,17 @@ class LocalWalkStorageService {
       final jsonString = prefs.getString(_currentWalkKey);
 
       if (jsonString == null || jsonString.isEmpty) {
-        debugPrint('📱 현재 진행 중인 산책이 없습니다');
+        LoggerService.debug('📱 현재 진행 중인 산책이 없습니다');
         return null;
       }
 
       final json = jsonDecode(jsonString) as Map<String, dynamic>;
       final walkRecord = WalkRecordEntity.fromJson(json);
 
-      debugPrint('📱 현재 산책 기록 불러오기: ${walkRecord.id}');
+      LoggerService.debug('📱 현재 산책 기록 불러오기: ${walkRecord.id}');
       return walkRecord;
     } catch (e) {
-      debugPrint('❌ 현재 산책 불러오기 실패: $e');
+      LoggerService.debug('❌ 현재 산책 불러오기 실패: $e');
       return null;
     }
   }
@@ -169,10 +169,10 @@ class LocalWalkStorageService {
       final result1 = await prefs.remove(_walkRecordsKey);
       final result2 = await prefs.remove(_currentWalkKey);
 
-      debugPrint('📱 모든 산책 데이터 삭제 완료');
+      LoggerService.debug('📱 모든 산책 데이터 삭제 완료');
       return result1 && result2;
     } catch (e) {
-      debugPrint('❌ 데이터 삭제 실패: $e');
+      LoggerService.debug('❌ 데이터 삭제 실패: $e');
       return false;
     }
   }
@@ -190,7 +190,7 @@ class LocalWalkStorageService {
         'lastUpdateTime': DateTime.now().toIso8601String(),
       };
     } catch (e) {
-      debugPrint('❌ 저장소 통계 조회 실패: $e');
+      LoggerService.debug('❌ 저장소 통계 조회 실패: $e');
       return {};
     }
   }

@@ -32,7 +32,7 @@ class PetHealthLocalStorageService {
 
       return records;
     } catch (e) {
-      debugPrint('백신 기록 로드 실패: $e');
+      LoggerService.debug('백신 기록 로드 실패: $e');
       return [];
     }
   }
@@ -50,9 +50,9 @@ class PetHealthLocalStorageService {
       records.add(jsonEncode(record));
       await prefs.setStringList(_keyVaccineRecords, records);
 
-      debugPrint('백신 기록 추가 성공: ${record['id']}');
+      LoggerService.debug('백신 기록 추가 성공: ${record['id']}');
     } catch (e) {
-      debugPrint('백신 기록 추가 실패: $e');
+      LoggerService.debug('백신 기록 추가 실패: $e');
     }
   }
 
@@ -70,10 +70,10 @@ class PetHealthLocalStorageService {
       if (index != -1) {
         records[index] = jsonEncode(record);
         await prefs.setStringList(_keyVaccineRecords, records);
-        debugPrint('백신 기록 업데이트 성공: ${record['id']}');
+        LoggerService.debug('백신 기록 업데이트 성공: ${record['id']}');
       }
     } catch (e) {
-      debugPrint('백신 기록 업데이트 실패: $e');
+      LoggerService.debug('백신 기록 업데이트 실패: $e');
     }
   }
 
@@ -89,9 +89,9 @@ class PetHealthLocalStorageService {
       });
 
       await prefs.setStringList(_keyVaccineRecords, records);
-      debugPrint('백신 기록 삭제 성공: $recordId');
+      LoggerService.debug('백신 기록 삭제 성공: $recordId');
     } catch (e) {
-      debugPrint('백신 기록 삭제 실패: $e');
+      LoggerService.debug('백신 기록 삭제 실패: $e');
     }
   }
 
@@ -117,7 +117,7 @@ class PetHealthLocalStorageService {
 
       return records;
     } catch (e) {
-      debugPrint('체중 기록 로드 실패: $e');
+      LoggerService.debug('체중 기록 로드 실패: $e');
       return [];
     }
   }
@@ -139,9 +139,9 @@ class PetHealthLocalStorageService {
       records.add(jsonEncode(record));
       await prefs.setStringList(_keyWeightRecords, records);
 
-      debugPrint('체중 기록 추가 성공: ${record['id']}');
+      LoggerService.debug('체중 기록 추가 성공: ${record['id']}');
     } catch (e) {
-      debugPrint('체중 기록 추가 실패: $e');
+      LoggerService.debug('체중 기록 추가 실패: $e');
     }
   }
 
@@ -160,10 +160,10 @@ class PetHealthLocalStorageService {
         record['updatedAt'] = DateTime.now().toIso8601String();
         records[index] = jsonEncode(record);
         await prefs.setStringList(_keyWeightRecords, records);
-        debugPrint('체중 기록 업데이트 성공: ${record['id']}');
+        LoggerService.debug('체중 기록 업데이트 성공: ${record['id']}');
       }
     } catch (e) {
-      debugPrint('체중 기록 업데이트 실패: $e');
+      LoggerService.debug('체중 기록 업데이트 실패: $e');
     }
   }
 
@@ -179,9 +179,9 @@ class PetHealthLocalStorageService {
       });
 
       await prefs.setStringList(_keyWeightRecords, records);
-      debugPrint('체중 기록 삭제 성공: $recordId');
+      LoggerService.debug('체중 기록 삭제 성공: $recordId');
     } catch (e) {
-      debugPrint('체중 기록 삭제 실패: $e');
+      LoggerService.debug('체중 기록 삭제 실패: $e');
     }
   }
 

@@ -26,7 +26,7 @@ class SavedAnalysisRepository {
       return Result.success('${analyses.length}件の分析結果を読み込みました', analyses);
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('Error loading saved analyses: $e');
+        LoggerService.debug('Error loading saved analyses: $e');
       }
       return Result.failure(
         '分析結果の読み込み中にエラーが発生しました',
@@ -52,7 +52,7 @@ class SavedAnalysisRepository {
       return Result.success('分析結果を保存しました');
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('Error saving analysis: $e');
+        LoggerService.debug('Error saving analysis: $e');
       }
       return Result.failure(
         '分析結果の保存中にエラーが発生しました',
@@ -78,7 +78,7 @@ class SavedAnalysisRepository {
       return Result.success('分析結果を削除しました');
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('Error deleting analysis: $e');
+        LoggerService.debug('Error deleting analysis: $e');
       }
       return Result.failure(
         '分析結果の削除中にエラーが発生しました',
@@ -95,7 +95,7 @@ class SavedAnalysisRepository {
       return Result.success('すべての分析結果を削除しました');
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('Error deleting all analyses: $e');
+        LoggerService.debug('Error deleting all analyses: $e');
       }
       return Result.failure(
         'すべての分析結果の削除中にエラーが発生しました',

@@ -33,7 +33,7 @@ class NotificationActionHandler {
     );
 
     if (kDebugMode) {
-      debugPrint('🔔 Handling notification action: ${action?.type}');
+      LoggerService.debug('🔔 Handling notification action: ${action?.type}');
     }
 
     switch (action?.type) {

@@ -19,7 +19,7 @@ class NotificationSchedulerStorageHelper {
       await SecureStorageService.setString(schedulesKey, schedulesJson);
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('스케줄 저장 실패: $e');
+        LoggerService.debug('스케줄 저장 실패: $e');
       }
     }
   }
@@ -36,7 +36,7 @@ class NotificationSchedulerStorageHelper {
       }
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('스케줄 조회 실패: $e');
+        LoggerService.debug('스케줄 조회 실패: $e');
       }
     }
     return [];
@@ -62,7 +62,7 @@ class NotificationSchedulerStorageHelper {
       await SecureStorageService.remove(schedulesKey);
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('스케줄 삭제 실패: $e');
+        LoggerService.debug('스케줄 삭제 실패: $e');
       }
     }
   }
@@ -87,7 +87,7 @@ class NotificationSchedulerStorageHelper {
       return validSchedules;
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('만료된 스케줄 정리 실패: $e');
+        LoggerService.debug('만료된 스케줄 정리 실패: $e');
       }
       return [];
     }

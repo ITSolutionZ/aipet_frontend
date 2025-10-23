@@ -257,7 +257,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
         await launchUrl(uri, mode: LaunchMode.externalApplication);
       }
     } catch (e) {
-      debugPrint('Failed to open product page: $e');
+      LoggerService.debug('Failed to open product page: $e');
     }
   }
 

@@ -80,13 +80,13 @@ class TokenUsageService {
 
       // 경고 레벨 확인
       if (currentDailyUsage + totalTokens >= warningThreshold && kDebugMode) {
-        debugPrint(
+        LoggerService.debug(
           '[$_tag] ⚠️ 일일 토큰 사용량이 경고 임계값에 도달: ${currentDailyUsage + totalTokens}/$dailyTokenLimit',
         );
       }
 
       if (kDebugMode) {
-        debugPrint(
+        LoggerService.debug(
           '[$_tag] 토큰 사용량 기록: $totalTokens 토큰 (일일: ${currentDailyUsage + totalTokens}/$dailyTokenLimit)',
         );
       }
@@ -94,7 +94,7 @@ class TokenUsageService {
       return Result.success('토큰 사용량 기록 완료', usageRecord);
     } catch (error, stackTrace) {
       if (kDebugMode) {
-        debugPrint('[$_tag] Error recording token usage: $error\n$stackTrace');
+        LoggerService.debug('[$_tag] Error recording token usage: $error\n$stackTrace');
       }
       return Result.failure('토큰 사용량 기록 중 오류 발생');
     }
@@ -145,7 +145,7 @@ class TokenUsageService {
   static void clearUsageHistory() {
     _usageHistory.clear();
     if (kDebugMode) {
-      debugPrint('[$_tag] Token usage history cleared');
+      LoggerService.debug('[$_tag] Token usage history cleared');
     }
   }
 
@@ -177,7 +177,7 @@ class TokenUsageService {
     });
 
     if (kDebugMode) {
-      debugPrint('[$_tag] Old token usage data cleaned up');
+      LoggerService.debug('[$_tag] Old token usage data cleaned up');
     }
   }
 

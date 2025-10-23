@@ -110,10 +110,10 @@ class PetFeedingLocalStorageService {
       await prefs.remove('pet_recipes');
 
       if (kDebugMode) {
-        debugPrint('모든 급여 데이터 초기화 완료');
+        LoggerService.debug('모든 급여 데이터 초기화 완료');
       }
     } catch (e) {
-      debugPrint('데이터 초기화 실패: $e');
+      LoggerService.debug('데이터 초기화 실패: $e');
       rethrow;
     }
   }

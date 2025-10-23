@@ -57,7 +57,7 @@ class HomeController extends BaseController {
     AppointmentSummary appointment,
   ) {
     // TODO: GoRouterのパス定義後に実装
-    debugPrint('予約詳細へ遷移: ${appointment.id}');
+    LoggerService.debug('予約詳細へ遷移: ${appointment.id}');
     // context.push('/appointment/${appointment.id}');
   }
 
@@ -69,7 +69,7 @@ class HomeController extends BaseController {
 
     safeExecute<void>(() async {
       // TODO: 検索機能実装時に追加
-      debugPrint('検索クエリ: $query');
+      LoggerService.debug('検索クエリ: $query');
       // final result = await ref.read(searchUseCaseProvider).execute(query);
       // ...
     }, errorMessage: '検索処理');
@@ -80,7 +80,7 @@ class HomeController extends BaseController {
   /// [context] - ナビゲーション用のBuildContext
   /// [menuType] - メニュータイプ
   void handleMenuTap(BuildContext context, String menuType) {
-    debugPrint('メニュータップ: $menuType');
+    LoggerService.debug('メニュータップ: $menuType');
 
     // TODO: 各メニューに応じた画面遷移を実装
     // switch (menuType) {

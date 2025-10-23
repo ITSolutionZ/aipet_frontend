@@ -29,7 +29,7 @@ class PetCrudHelper {
 
       return Result.success('펫이 성공적으로 생성되었습니다', newPet);
     } catch (error) {
-      debugPrint('createPet error: $error');
+      LoggerService.debug('createPet error: $error');
       return Result.failure('펫 생성에 실패했습니다: ${error.toString()}');
     }
   }
@@ -59,7 +59,7 @@ class PetCrudHelper {
 
       return Result.success('펫 정보가 성공적으로 업데이트되었습니다', updatedPet);
     } catch (error) {
-      debugPrint('updatePet error: $error');
+      LoggerService.debug('updatePet error: $error');
       return Result.failure('펫 업데이트에 실패했습니다: ${error.toString()}');
     }
   }
@@ -86,7 +86,7 @@ class PetCrudHelper {
 
       return Result.success('펫이 성공적으로 삭제되었습니다', null);
     } catch (error) {
-      debugPrint('deletePet error: $error');
+      LoggerService.debug('deletePet error: $error');
       return Result.failure('펫 삭제에 실패했습니다: ${error.toString()}');
     }
   }
@@ -116,7 +116,7 @@ class PetCrudHelper {
 
       return Result.success('이미지가 성공적으로 업로드되었습니다', imagePath);
     } catch (error) {
-      debugPrint('uploadPetImage error: $error');
+      LoggerService.debug('uploadPetImage error: $error');
       return Result.failure('이미지 업로드에 실패했습니다: ${error.toString()}');
     }
   }

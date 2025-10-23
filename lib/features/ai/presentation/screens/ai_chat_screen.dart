@@ -56,7 +56,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
             .saveCurrentChatToHistory(isManualSave: false);
       } catch (error) {
         // 백그라운드 저장 실패는 로그만 남기고 UI에는 표시하지 않음
-        debugPrint('백그라운드 채팅 저장 실패: $error');
+        LoggerService.debug('백그라운드 채팅 저장 실패: $error');
       }
     }
   }
@@ -289,12 +289,12 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
     final chatState = ref.watch(aiChatProvider);
 
     // 디버그 로그
-    debugPrint('🐾 AI Chat Debug:');
-    debugPrint('  - hasPetSelected: ${chatState.hasPetSelected}');
-    debugPrint('  - hasCategorySelected: ${chatState.hasCategorySelected}');
-    debugPrint('  - messages count: ${chatState.messages.length}');
-    debugPrint('  - selectedPet: ${chatState.selectedPet?.name}');
-    debugPrint('  - selectedCategory: ${chatState.selectedCategory?.name}');
+    LoggerService.debug('🐾 AI Chat Debug:');
+    LoggerService.debug('  - hasPetSelected: ${chatState.hasPetSelected}');
+    LoggerService.debug('  - hasCategorySelected: ${chatState.hasCategorySelected}');
+    LoggerService.debug('  - messages count: ${chatState.messages.length}');
+    LoggerService.debug('  - selectedPet: ${chatState.selectedPet?.name}');
+    LoggerService.debug('  - selectedCategory: ${chatState.selectedCategory?.name}');
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),

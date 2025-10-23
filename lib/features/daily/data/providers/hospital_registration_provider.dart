@@ -107,7 +107,7 @@ class RegisteredHospitalsNotifier extends _$RegisteredHospitalsNotifier {
     } catch (e) {
       // 에러 로깅
       if (kDebugMode) {
-        debugPrint('병원 정보 저장 실패: $e');
+        LoggerService.debug('병원 정보 저장 실패: $e');
       }
     }
   }

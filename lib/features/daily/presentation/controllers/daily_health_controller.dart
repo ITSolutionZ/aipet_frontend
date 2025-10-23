@@ -28,7 +28,7 @@ class DailyHealthController extends _$DailyHealthController {
     await Future.delayed(const Duration(milliseconds: 500));
 
     // 로컬 데이터 처리
-    debugPrint('건강 기록 추가: ${record.toJson()}');
+    LoggerService.debug('건강 기록 추가: ${record.toJson()}');
   }
 
   /// 건강 기록 업데이트
@@ -37,7 +37,7 @@ class DailyHealthController extends _$DailyHealthController {
     await Future.delayed(const Duration(milliseconds: 500));
 
     // 로컬 데이터 처리
-    debugPrint('건강 기록 업데이트: ${record.toJson()}');
+    LoggerService.debug('건강 기록 업데이트: ${record.toJson()}');
   }
 
   /// 건강 기록 삭제
@@ -46,7 +46,7 @@ class DailyHealthController extends _$DailyHealthController {
     await Future.delayed(const Duration(milliseconds: 500));
 
     // 로컬 데이터 처리
-    debugPrint('건강 기록 삭제: $recordId');
+    LoggerService.debug('건강 기록 삭제: $recordId');
   }
 }
 

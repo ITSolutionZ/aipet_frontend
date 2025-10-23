@@ -24,7 +24,7 @@ class WeeklyTaskOpenAIService extends BaseLoggingService {
     }
 
     try {
-      debugPrint(
+      LoggerService.debug(
         '📅 WeeklyTaskOpenAI: Generating weekly task for $petType, week $weekOfYear...',
       );
 
@@ -55,13 +55,13 @@ class WeeklyTaskOpenAIService extends BaseLoggingService {
       );
 
       if (!response.isSuccess) {
-        debugPrint('❌ WeeklyTaskOpenAI: API call failed - ${response.message}');
+        LoggerService.debug('❌ WeeklyTaskOpenAI: API call failed - ${response.message}');
         return _getFallbackTask(petType, weekOfYear);
       }
 
       final responseData = response.dataOrNull;
       if (responseData == null) {
-        debugPrint('❌ WeeklyTaskOpenAI: No response data');
+        LoggerService.debug('❌ WeeklyTaskOpenAI: No response data');
         return _getFallbackTask(petType, weekOfYear);
       }
 
@@ -76,20 +76,20 @@ class WeeklyTaskOpenAIService extends BaseLoggingService {
           final content = choice['message']['content'].toString().trim();
 
           if (content.isEmpty) {
-            debugPrint('❌ WeeklyTaskOpenAI: Empty content');
+            LoggerService.debug('❌ WeeklyTaskOpenAI: Empty content');
             return _getFallbackTask(petType, weekOfYear);
           }
 
-          debugPrint('✅ WeeklyTaskOpenAI: Success - $content');
+          LoggerService.debug('✅ WeeklyTaskOpenAI: Success - $content');
           return Result.success('週別タスク生成成功', content);
         }
       }
 
-      debugPrint('❌ WeeklyTaskOpenAI: Invalid response structure');
+      LoggerService.debug('❌ WeeklyTaskOpenAI: Invalid response structure');
       return _getFallbackTask(petType, weekOfYear);
     } catch (e, stackTrace) {
-      debugPrint('❌ WeeklyTaskOpenAI: Error - $e');
-      debugPrint('Stack trace: $stackTrace');
+      LoggerService.debug('❌ WeeklyTaskOpenAI: Error - $e');
+      LoggerService.debug('Stack trace: $stackTrace');
       return _getFallbackTask(petType, weekOfYear);
     }
   }

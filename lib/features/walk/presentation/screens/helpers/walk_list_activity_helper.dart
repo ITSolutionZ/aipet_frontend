@@ -25,13 +25,13 @@ class WalkListActivityHelper {
         'timestamp': DateTime.now().toIso8601String(),
       };
 
-      debugPrint(
+      LoggerService.debug(
         '✅ 活動記録追加: ${activityType == 'poop' ? '💩' : '💧'} at (${position.latitude}, ${position.longitude})',
       );
 
       return activity;
     } catch (e) {
-      debugPrint('❌ 活動記録失敗: $e');
+      LoggerService.debug('❌ 活動記録失敗: $e');
       return null;
     }
   }

@@ -40,11 +40,11 @@ class RakutenApiService {
         },
       );
 
-      debugPrint('🔍 Genre Search URL: ${uri.toString()}');
+      LoggerService.debug('🔍 Genre Search URL: ${uri.toString()}');
 
       final response = await http.get(uri);
-      debugPrint('📊 Genre Response Status: ${response.statusCode}');
-      debugPrint('📝 Genre Response Body: ${response.body}');
+      LoggerService.debug('📊 Genre Response Status: ${response.statusCode}');
+      LoggerService.debug('📝 Genre Response Body: ${response.body}');
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -62,7 +62,7 @@ class RakutenApiService {
         throw Exception('Genre search failed: ${response.statusCode}');
       }
     } catch (e) {
-      debugPrint('⚠️ Genre search failed: $e');
+      LoggerService.debug('⚠️ Genre search failed: $e');
       return [];
     }
   }
@@ -86,11 +86,11 @@ class RakutenApiService {
         },
       );
 
-      debugPrint('🔍 Tag Search URL: ${uri.toString()}');
+      LoggerService.debug('🔍 Tag Search URL: ${uri.toString()}');
 
       final response = await http.get(uri);
-      debugPrint('📊 Tag Response Status: ${response.statusCode}');
-      debugPrint('📝 Tag Response Body: ${response.body}');
+      LoggerService.debug('📊 Tag Response Status: ${response.statusCode}');
+      LoggerService.debug('📝 Tag Response Body: ${response.body}');
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -119,7 +119,7 @@ class RakutenApiService {
         throw Exception('Tag search failed: ${response.statusCode}');
       }
     } catch (e) {
-      debugPrint('⚠️ Tag search failed: $e');
+      LoggerService.debug('⚠️ Tag search failed: $e');
       return [];
     }
   }
@@ -166,49 +166,49 @@ class RakutenApiService {
         _itemSearchUrl,
       ).replace(queryParameters: queryParams);
 
-      debugPrint('🔍 API Request URL: ${uri.toString()}');
-      debugPrint('🔍 Search keyword: $keyword');
-      debugPrint(
+      LoggerService.debug('🔍 API Request URL: ${uri.toString()}');
+      LoggerService.debug('🔍 Search keyword: $keyword');
+      LoggerService.debug(
         '🔑 Application ID: ${_applicationId.isNotEmpty ? "✅ Set" : "❌ Empty"}',
       );
-      debugPrint(
+      LoggerService.debug(
         '🔗 Affiliate ID: ${_affiliateId.isNotEmpty ? "✅ Set" : "❌ Empty"}',
       );
 
       final response = await http.get(uri);
 
-      debugPrint('📊 Response Status: ${response.statusCode}');
-      debugPrint('📝 Response Body: ${response.body}');
+      LoggerService.debug('📊 Response Status: ${response.statusCode}');
+      LoggerService.debug('📝 Response Body: ${response.body}');
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        debugPrint('📊 API Response data keys: ${data.keys.toList()}');
+        LoggerService.debug('📊 API Response data keys: ${data.keys.toList()}');
 
         final items = data['Items'] as List<dynamic>? ?? [];
-        debugPrint('📦 Items count: ${items.length}');
+        LoggerService.debug('📦 Items count: ${items.length}');
 
         if (items.isEmpty) {
-          debugPrint('⚠️ No items found for keyword: $keyword');
-          debugPrint('⚠️ Returning empty list instead of mock data');
+          LoggerService.debug('⚠️ No items found for keyword: $keyword');
+          LoggerService.debug('⚠️ Returning empty list instead of mock data');
           return [];
         }
 
         // 最初のアイテムの構造をログ出力
         if (items.isNotEmpty) {
-          debugPrint('📝 First item type: ${items[0].runtimeType}');
-          debugPrint('📝 First item: ${items[0]}');
+          LoggerService.debug('📝 First item type: ${items[0].runtimeType}');
+          LoggerService.debug('📝 First item: ${items[0]}');
 
           // アイテムのキーを詳細にログ出力
           if (items[0] is Map<String, dynamic>) {
             final firstItem = items[0] as Map<String, dynamic>;
-            debugPrint('📝 First item keys: ${firstItem.keys.toList()}');
+            LoggerService.debug('📝 First item keys: ${firstItem.keys.toList()}');
 
             // 重要なフィールドの値を個別にチェック
-            debugPrint('📝 itemCode: ${firstItem['itemCode']}');
-            debugPrint('📝 itemName: ${firstItem['itemName']}');
-            debugPrint('📝 catchcopy: ${firstItem['catchcopy']}');
-            debugPrint('📝 itemCaption: ${firstItem['itemCaption']}');
-            debugPrint('📝 itemPrice: ${firstItem['itemPrice']}');
+            LoggerService.debug('📝 itemCode: ${firstItem['itemCode']}');
+            LoggerService.debug('📝 itemName: ${firstItem['itemName']}');
+            LoggerService.debug('📝 catchcopy: ${firstItem['catchcopy']}');
+            LoggerService.debug('📝 itemCaption: ${firstItem['itemCaption']}');
+            LoggerService.debug('📝 itemPrice: ${firstItem['itemPrice']}');
           }
         }
 
@@ -218,24 +218,24 @@ class RakutenApiService {
           try {
             final item = items[i];
             if (item is Map<String, dynamic>) {
-              debugPrint('🔍 Parsing item $i...');
+              LoggerService.debug('🔍 Parsing item $i...');
 
               // アイテムの必須フィールドを事前チェック
-              debugPrint('🔍 Item $i keys: ${item.keys.toList()}');
+              LoggerService.debug('🔍 Item $i keys: ${item.keys.toList()}');
 
               final product = RakutenPetProduct.fromJson(item);
               products.add(product);
-              debugPrint('✅ Successfully parsed item $i: ${product.itemName}');
+              LoggerService.debug('✅ Successfully parsed item $i: ${product.itemName}');
             } else {
-              debugPrint(
+              LoggerService.debug(
                 '⚠️ Item $i has invalid type: ${item.runtimeType}, value: $item',
               );
               // 無効なアイテムはスキップして続行
               continue;
             }
           } catch (e, stackTrace) {
-            debugPrint('⚠️ Failed to parse item $i: $e');
-            debugPrint('⚠️ Stack trace: $stackTrace');
+            LoggerService.debug('⚠️ Failed to parse item $i: $e');
+            LoggerService.debug('⚠️ Stack trace: $stackTrace');
 
             // パースに失敗した場合、基本的な情報だけでも表示するために
             // 簡易的な商品情報を作成
@@ -244,12 +244,12 @@ class RakutenApiService {
                 final item = items[i] as Map<String, dynamic>;
                 final fallbackProduct = _createSimpleFallbackProduct(item, i);
                 products.add(fallbackProduct);
-                debugPrint(
+                LoggerService.debug(
                   '✅ Created fallback product $i: ${fallbackProduct.itemName}',
                 );
               }
             } catch (fallbackError) {
-              debugPrint(
+              LoggerService.debug(
                 '⚠️ Failed to create fallback product $i: $fallbackError',
               );
             }
@@ -257,8 +257,8 @@ class RakutenApiService {
         }
 
         if (products.isEmpty) {
-          debugPrint('⚠️ No valid products parsed for keyword: $keyword');
-          debugPrint('⚠️ Returning empty list instead of mock data');
+          LoggerService.debug('⚠️ No valid products parsed for keyword: $keyword');
+          LoggerService.debug('⚠️ Returning empty list instead of mock data');
           return [];
         }
 
@@ -269,12 +269,12 @@ class RakutenApiService {
           final errorData = json.decode(response.body);
           final errorMessage =
               errorData['error_description'] ?? 'Unknown error';
-          debugPrint('❌ API Error: $errorMessage');
-          debugPrint('⚠️ Returning empty list due to API error');
+          LoggerService.debug('❌ API Error: $errorMessage');
+          LoggerService.debug('⚠️ Returning empty list due to API error');
           return [];
         } catch (e) {
-          debugPrint('❌ API Error: ${response.body}');
-          debugPrint('⚠️ Returning empty list due to API error');
+          LoggerService.debug('❌ API Error: ${response.body}');
+          LoggerService.debug('⚠️ Returning empty list due to API error');
           return [];
         }
       }
@@ -461,7 +461,7 @@ class RakutenApiService {
   }) async {
     try {
       if (_applicationId.isEmpty) {
-        debugPrint('⚠️ Application ID is empty, returning default brands');
+        LoggerService.debug('⚠️ Application ID is empty, returning default brands');
         return _getDefaultBrands();
       }
 
@@ -480,20 +480,20 @@ class RakutenApiService {
 
       final uri = Uri.parse(_itemSearchUrl).replace(queryParameters: queryParams);
 
-      debugPrint('🔍 Brand Search URL: ${uri.toString()}');
+      LoggerService.debug('🔍 Brand Search URL: ${uri.toString()}');
 
       final response = await http.get(uri);
 
-      debugPrint('📊 Brand Response Status: ${response.statusCode}');
+      LoggerService.debug('📊 Brand Response Status: ${response.statusCode}');
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         final items = data['Items'] as List<dynamic>? ?? [];
 
-        debugPrint('📦 Found ${items.length} items for brand extraction');
+        LoggerService.debug('📦 Found ${items.length} items for brand extraction');
 
         if (items.isEmpty) {
-          debugPrint('⚠️ No items found, returning default brands');
+          LoggerService.debug('⚠️ No items found, returning default brands');
           return _getDefaultBrands();
         }
 
@@ -517,7 +517,7 @@ class RakutenApiService {
           final brandNameJapanese = brandInfo['brandNameJapanese'] ?? '';
           final description = brandInfo['description'] ?? '';
 
-          debugPrint('🏪 Shop: $shopName → Brand: $brandName');
+          LoggerService.debug('🏪 Shop: $shopName → Brand: $brandName');
 
           if (brandName.isNotEmpty && !brandMap.containsKey(shopCode)) {
             brandMap[shopCode] = RakutenBrand(
@@ -530,7 +530,7 @@ class RakutenApiService {
             );
             processedShops.add(shopCode);
 
-            debugPrint('✅ Brand added: $brandName (Logo: ${imageUrl.isNotEmpty ? "✓" : "✗"})');
+            LoggerService.debug('✅ Brand added: $brandName (Logo: ${imageUrl.isNotEmpty ? "✓" : "✗"})');
 
             // 최대 8개 브랜드만 수집
             if (brandMap.length >= 8) break;
@@ -538,7 +538,7 @@ class RakutenApiService {
         }
 
         final brands = brandMap.values.toList();
-        debugPrint('🏷️ Extracted ${brands.length} brands from API');
+        LoggerService.debug('🏷️ Extracted ${brands.length} brands from API');
 
         // ブランドが少ない場合はデフォルトブランドで補完
         if (brands.length < 8) {
@@ -555,11 +555,11 @@ class RakutenApiService {
 
         return brands.take(8).toList();
       } else {
-        debugPrint('❌ Brand search failed: ${response.statusCode}');
+        LoggerService.debug('❌ Brand search failed: ${response.statusCode}');
         return _getDefaultBrands();
       }
     } catch (e) {
-      debugPrint('⚠️ Brand search failed: $e');
+      LoggerService.debug('⚠️ Brand search failed: $e');
       return _getDefaultBrands();
     }
   }
@@ -696,7 +696,7 @@ class RakutenApiService {
     String sort = 'standard',
   }) async {
     // 価格帯検索は通常の検索と同じロジックを使用
-    debugPrint('🔍 Price range search: ¥$minPrice - ¥$maxPrice');
+    LoggerService.debug('🔍 Price range search: ¥$minPrice - ¥$maxPrice');
     return searchPetProducts(
       keyword: keyword,
       genreId: genreId,

@@ -13,7 +13,7 @@ class PetCacheClearService {
   static Future<bool> clearAllPetCache() async {
     try {
       if (kDebugMode) {
-        debugPrint('🧹 PetCacheClearService: 모든 펫 관련 캐시 클리어 시작');
+        LoggerService.debug('🧹 PetCacheClearService: 모든 펫 관련 캐시 클리어 시작');
       }
 
       // LocalDataManager의 펫 데이터 완전 초기화
@@ -29,14 +29,14 @@ class PetCacheClearService {
       await _clearDashboardCache();
 
       if (kDebugMode) {
-        debugPrint('✅ PetCacheClearService: 모든 펫 관련 캐시 클리어 완료');
+        LoggerService.debug('✅ PetCacheClearService: 모든 펫 관련 캐시 클리어 완료');
       }
 
       return true;
     } catch (error, stackTrace) {
       if (kDebugMode) {
-        debugPrint('❌ PetCacheClearService: 캐시 클리어 실패: $error');
-        debugPrint('Stack trace: $stackTrace');
+        LoggerService.debug('❌ PetCacheClearService: 캐시 클리어 실패: $error');
+        LoggerService.debug('Stack trace: $stackTrace');
       }
       return false;
     }
@@ -49,11 +49,11 @@ class PetCacheClearService {
       _cacheService.clearMemoryCache(CacheKeys.petProfiles);
 
       if (kDebugMode) {
-        debugPrint('🧹 PetCacheClearService: 펫 프로필 캐시 클리어 완료');
+        LoggerService.debug('🧹 PetCacheClearService: 펫 프로필 캐시 클리어 완료');
       }
     } catch (error) {
       if (kDebugMode) {
-        debugPrint('❌ PetCacheClearService: 펫 프로필 캐시 클리어 실패: $error');
+        LoggerService.debug('❌ PetCacheClearService: 펫 프로필 캐시 클리어 실패: $error');
       }
     }
   }
@@ -65,11 +65,11 @@ class PetCacheClearService {
       _cacheService.clearMemoryCache(CacheKeys.healthSummary);
 
       if (kDebugMode) {
-        debugPrint('🧹 PetCacheClearService: 건강 요약 캐시 클리어 완료');
+        LoggerService.debug('🧹 PetCacheClearService: 건강 요약 캐시 클리어 완료');
       }
     } catch (error) {
       if (kDebugMode) {
-        debugPrint('❌ PetCacheClearService: 건강 요약 캐시 클리어 실패: $error');
+        LoggerService.debug('❌ PetCacheClearService: 건강 요약 캐시 클리어 실패: $error');
       }
     }
   }
@@ -81,11 +81,11 @@ class PetCacheClearService {
       _cacheService.clearMemoryCache(CacheKeys.dashboard);
 
       if (kDebugMode) {
-        debugPrint('🧹 PetCacheClearService: 대시보드 캐시 클리어 완료');
+        LoggerService.debug('🧹 PetCacheClearService: 대시보드 캐시 클리어 완료');
       }
     } catch (error) {
       if (kDebugMode) {
-        debugPrint('❌ PetCacheClearService: 대시보드 캐시 클리어 실패: $error');
+        LoggerService.debug('❌ PetCacheClearService: 대시보드 캐시 클리어 실패: $error');
       }
     }
   }
@@ -99,13 +99,13 @@ class PetCacheClearService {
       _cacheService.clearMemoryCache(cacheKey);
 
       if (kDebugMode) {
-        debugPrint('🧹 PetCacheClearService: $cacheKey 캐시 클리어 완료');
+        LoggerService.debug('🧹 PetCacheClearService: $cacheKey 캐시 클리어 완료');
       }
 
       return true;
     } catch (error) {
       if (kDebugMode) {
-        debugPrint('❌ PetCacheClearService: $cacheKey 캐시 클리어 실패: $error');
+        LoggerService.debug('❌ PetCacheClearService: $cacheKey 캐시 클리어 실패: $error');
       }
       return false;
     }
@@ -137,7 +137,7 @@ class PetCacheClearService {
       };
     } catch (error) {
       if (kDebugMode) {
-        debugPrint('❌ PetCacheClearService: 캐시 상태 확인 실패: $error');
+        LoggerService.debug('❌ PetCacheClearService: 캐시 상태 확인 실패: $error');
       }
       return {'error': error.toString()};
     }
@@ -150,7 +150,7 @@ class PetCacheClearService {
   static Future<bool> forceRefreshAllPetData() async {
     try {
       if (kDebugMode) {
-        debugPrint('🔄 PetCacheClearService: 강제 펫 데이터 새로고침 시작');
+        LoggerService.debug('🔄 PetCacheClearService: 강제 펫 데이터 새로고침 시작');
       }
 
       // 모든 캐시 클리어
@@ -158,19 +158,19 @@ class PetCacheClearService {
 
       if (clearResult) {
         if (kDebugMode) {
-          debugPrint('✅ PetCacheClearService: 강제 펫 데이터 새로고침 완료');
+          LoggerService.debug('✅ PetCacheClearService: 강제 펫 데이터 새로고침 완료');
         }
         return true;
       } else {
         if (kDebugMode) {
-          debugPrint('❌ PetCacheClearService: 캐시 클리어 실패로 새로고침 불가');
+          LoggerService.debug('❌ PetCacheClearService: 캐시 클리어 실패로 새로고침 불가');
         }
         return false;
       }
     } catch (error, stackTrace) {
       if (kDebugMode) {
-        debugPrint('❌ PetCacheClearService: 강제 새로고침 실패: $error');
-        debugPrint('Stack trace: $stackTrace');
+        LoggerService.debug('❌ PetCacheClearService: 강제 새로고침 실패: $error');
+        LoggerService.debug('Stack trace: $stackTrace');
       }
       return false;
     }

@@ -53,7 +53,7 @@ class AiChatStateManager {
       );
 
       if (kDebugMode) {
-        debugPrint(
+        LoggerService.debug(
           '[$_tag] 🐕 Pet selected: ${pet?.name ?? 'None'} (messages: ${updatedMessages.length})',
         );
       }
@@ -61,7 +61,7 @@ class AiChatStateManager {
       return Result.success('Pet selection updated', updatedState);
     } catch (error, stackTrace) {
       if (kDebugMode) {
-        debugPrint('[$_tag] Error updating pet selection: $error\n$stackTrace');
+        LoggerService.debug('[$_tag] Error updating pet selection: $error\n$stackTrace');
       }
       return Result.failure('펫 선택 업데이트 중 오류 발생: $error');
     }
@@ -102,7 +102,7 @@ class AiChatStateManager {
       );
 
       if (kDebugMode) {
-        debugPrint(
+        LoggerService.debug(
           '[$_tag] 📂 Category selected: ${category.name} (suggestions: ${suggestedQuestions.length})',
         );
       }
@@ -110,7 +110,7 @@ class AiChatStateManager {
       return Result.success('Category selection updated', updatedState);
     } catch (error, stackTrace) {
       if (kDebugMode) {
-        debugPrint(
+        LoggerService.debug(
           '[$_tag] Error updating category selection: $error\n$stackTrace',
         );
       }
@@ -166,7 +166,7 @@ class AiChatStateManager {
         final userAdded = userMessage != null ? 'user+' : '';
         final assistantAdded = assistantMessage != null ? 'assistant+' : '';
         final typingStatus = isTyping ? 'typing' : 'idle';
-        debugPrint(
+        LoggerService.debug(
           '[$_tag] 💬 Message exchange: $userAdded$assistantAdded [$typingStatus] (total: ${updatedMessages.length})',
         );
       }
@@ -174,7 +174,7 @@ class AiChatStateManager {
       return Result.success('Message exchange updated', updatedState);
     } catch (error, stackTrace) {
       if (kDebugMode) {
-        debugPrint(
+        LoggerService.debug(
           '[$_tag] Error updating message exchange: $error\n$stackTrace',
         );
       }
@@ -233,7 +233,7 @@ class AiChatStateManager {
 
       if (kDebugMode) {
         final action = isCurrentlyFavorite ? 'Removed from' : 'Added to';
-        debugPrint(
+        LoggerService.debug(
           '[$_tag] ⭐ $action favorites: ${message.id} (total: ${result.favoriteIds.length})',
         );
       }
@@ -241,7 +241,7 @@ class AiChatStateManager {
       return Result.success(result.message, updatedState);
     } catch (error, stackTrace) {
       if (kDebugMode) {
-        debugPrint(
+        LoggerService.debug(
           '[$_tag] Error updating favorite toggle: $error\n$stackTrace',
         );
       }
@@ -260,7 +260,7 @@ class AiChatStateManager {
       final initialState = AiChatState(suggestedQuestions: suggestedQuestions);
 
       if (kDebugMode) {
-        debugPrint(
+        LoggerService.debug(
           '[$_tag] 🔄 State initialized with ${suggestedQuestions.length} suggestions',
         );
       }
@@ -343,9 +343,9 @@ class AiChatStateManager {
       );
 
       if (kDebugMode && issues.isNotEmpty) {
-        debugPrint('[$_tag] ⚠️ State validation issues: ${issues.length}');
+        LoggerService.debug('[$_tag] ⚠️ State validation issues: ${issues.length}');
         for (final issue in issues) {
-          debugPrint('[$_tag]   - $issue');
+          LoggerService.debug('[$_tag]   - $issue');
         }
       }
 
@@ -361,7 +361,7 @@ class AiChatStateManager {
       );
     } catch (error, stackTrace) {
       if (kDebugMode) {
-        debugPrint('[$_tag] Error validating state: $error\n$stackTrace');
+        LoggerService.debug('[$_tag] Error validating state: $error\n$stackTrace');
       }
       return Result.failure('상태 검증 중 오류 발생: $error');
     }
@@ -385,7 +385,7 @@ class AiChatStateManager {
       );
 
       if (kDebugMode) {
-        debugPrint('[$_tag] ❌ Error state set: $error');
+        LoggerService.debug('[$_tag] ❌ Error state set: $error');
       }
 
       return Result.success('Error state updated', updatedState);
@@ -425,7 +425,7 @@ class AiChatStateManager {
       );
     } catch (error) {
       if (kDebugMode) {
-        debugPrint('[$_tag] Error creating snapshot: $error');
+        LoggerService.debug('[$_tag] Error creating snapshot: $error');
       }
       return StateSnapshot.empty();
     }

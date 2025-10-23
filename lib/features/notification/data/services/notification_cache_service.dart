@@ -53,13 +53,13 @@ class NotificationCacheService {
       await prefs.setString(cacheKey, json.encode(cacheData));
 
       if (kDebugMode) {
-        debugPrint('[$_tag] ✅ 알림 캐시 저장 완료: ${notifications.length}개');
+        LoggerService.debug('[$_tag] ✅ 알림 캐시 저장 완료: ${notifications.length}개');
       }
 
       return Result.success('Notifications cached successfully', true);
     } catch (error) {
       if (kDebugMode) {
-        debugPrint('[$_tag] ❌ 알림 캐시 저장 실패: $error');
+        LoggerService.debug('[$_tag] ❌ 알림 캐시 저장 실패: $error');
       }
       return Result.failure('캐시 저장 중 오류 발생: $error');
     }
@@ -88,7 +88,7 @@ class NotificationCacheService {
       // 캐시 만료 확인
       if (DateTime.now().difference(timestamp) > _cacheExpiration) {
         if (kDebugMode) {
-          debugPrint('[$_tag] ⚠️ 캐시가 만료되었습니다');
+          LoggerService.debug('[$_tag] ⚠️ 캐시가 만료되었습니다');
         }
         return Result.failure('캐시가 만료되었습니다');
       }
@@ -98,13 +98,13 @@ class NotificationCacheService {
           .toList();
 
       if (kDebugMode) {
-        debugPrint('[$_tag] ✅ 캐시된 알림 조회 성공: ${notifications.length}개');
+        LoggerService.debug('[$_tag] ✅ 캐시된 알림 조회 성공: ${notifications.length}개');
       }
 
       return Result.success('Cached notifications retrieved', notifications);
     } catch (error) {
       if (kDebugMode) {
-        debugPrint('[$_tag] ❌ 캐시 조회 실패: $error');
+        LoggerService.debug('[$_tag] ❌ 캐시 조회 실패: $error');
       }
       return Result.failure('캐시 조회 중 오류 발생: $error');
     }
@@ -130,13 +130,13 @@ class NotificationCacheService {
       await prefs.setString(cacheKey, json.encode(cacheData));
 
       if (kDebugMode) {
-        debugPrint('[$_tag] ✅ 설정 캐시 저장 완료');
+        LoggerService.debug('[$_tag] ✅ 설정 캐시 저장 완료');
       }
 
       return Result.success('Settings cached successfully', true);
     } catch (error) {
       if (kDebugMode) {
-        debugPrint('[$_tag] ❌ 설정 캐시 저장 실패: $error');
+        LoggerService.debug('[$_tag] ❌ 설정 캐시 저장 실패: $error');
       }
       return Result.failure('설정 캐시 저장 중 오류 발생: $error');
     }
@@ -165,7 +165,7 @@ class NotificationCacheService {
       // 캐시 만료 확인
       if (DateTime.now().difference(timestamp) > _cacheExpiration) {
         if (kDebugMode) {
-          debugPrint('[$_tag] ⚠️ 설정 캐시가 만료되었습니다');
+          LoggerService.debug('[$_tag] ⚠️ 설정 캐시가 만료되었습니다');
         }
         return Result.failure('설정 캐시가 만료되었습니다');
       }
@@ -173,13 +173,13 @@ class NotificationCacheService {
       final settings = cacheData['data'] as Map<String, dynamic>;
 
       if (kDebugMode) {
-        debugPrint('[$_tag] ✅ 캐시된 설정 조회 성공');
+        LoggerService.debug('[$_tag] ✅ 캐시된 설정 조회 성공');
       }
 
       return Result.success('Cached settings retrieved', settings);
     } catch (error) {
       if (kDebugMode) {
-        debugPrint('[$_tag] ❌ 설정 캐시 조회 실패: $error');
+        LoggerService.debug('[$_tag] ❌ 설정 캐시 조회 실패: $error');
       }
       return Result.failure('설정 캐시 조회 중 오류 발생: $error');
     }
@@ -197,13 +197,13 @@ class NotificationCacheService {
       await prefs.remove('${_statsCacheKey}_$userId');
 
       if (kDebugMode) {
-        debugPrint('[$_tag] ✅ 사용자 캐시 삭제 완료: $userId');
+        LoggerService.debug('[$_tag] ✅ 사용자 캐시 삭제 완료: $userId');
       }
 
       return Result.success('User cache cleared successfully', true);
     } catch (error) {
       if (kDebugMode) {
-        debugPrint('[$_tag] ❌ 캐시 삭제 실패: $error');
+        LoggerService.debug('[$_tag] ❌ 캐시 삭제 실패: $error');
       }
       return Result.failure('캐시 삭제 중 오류 발생: $error');
     }
@@ -224,13 +224,13 @@ class NotificationCacheService {
       }
 
       if (kDebugMode) {
-        debugPrint('[$_tag] ✅ 전체 캐시 삭제 완료');
+        LoggerService.debug('[$_tag] ✅ 전체 캐시 삭제 완료');
       }
 
       return Result.success('All cache cleared successfully', true);
     } catch (error) {
       if (kDebugMode) {
-        debugPrint('[$_tag] ❌ 전체 캐시 삭제 실패: $error');
+        LoggerService.debug('[$_tag] ❌ 전체 캐시 삭제 실패: $error');
       }
       return Result.failure('전체 캐시 삭제 중 오류 발생: $error');
     }
@@ -257,7 +257,7 @@ class NotificationCacheService {
       return DateTime.now().difference(timestamp) <= _cacheExpiration;
     } catch (error) {
       if (kDebugMode) {
-        debugPrint('[$_tag] ❌ 캐시 유효성 검사 실패: $error');
+        LoggerService.debug('[$_tag] ❌ 캐시 유효성 검사 실패: $error');
       }
       return false;
     }
@@ -311,7 +311,7 @@ class NotificationCacheService {
       };
     } catch (error) {
       if (kDebugMode) {
-        debugPrint('[$_tag] ❌ 캐시 상태 조회 실패: $error');
+        LoggerService.debug('[$_tag] ❌ 캐시 상태 조회 실패: $error');
       }
       return <String, dynamic>{};
     }

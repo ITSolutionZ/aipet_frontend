@@ -112,7 +112,7 @@ class FirebaseAuthRealImpl implements AuthRepository {
     // When implementing, refer to: https://pub.dev/packages/google_sign_in
 
     if (kDebugMode) {
-      debugPrint('⚠️ Google Sign-In は現在利用できません (API更新が必要)');
+      LoggerService.debug('⚠️ Google Sign-In は現在利用できません (API更新が必要)');
     }
 
     return Result.failure('Google ログインは現在利用できません。開発中です。');
@@ -314,7 +314,7 @@ class FirebaseAuthRealImpl implements AuthRepository {
         await saveServerToken(serverToken, expiresInHours: expiresInHours);
 
         if (kDebugMode) {
-          debugPrint('서버 토큰 교환 성공 - 만료시간: $expiresInHours시간');
+          LoggerService.debug('서버 토큰 교환 성공 - 만료시간: $expiresInHours시간');
         }
 
         return serverToken;
@@ -371,7 +371,7 @@ class FirebaseAuthRealImpl implements AuthRepository {
       return token;
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('서버 토큰 가져오기 실패: $e');
+        LoggerService.debug('서버 토큰 가져오기 실패: $e');
       }
       return null;
     }
@@ -395,11 +395,11 @@ class FirebaseAuthRealImpl implements AuthRepository {
       ]);
 
       if (kDebugMode) {
-        debugPrint('서버 토큰 저장 완료 (만료: ${expiresAt.toIso8601String()})');
+        LoggerService.debug('서버 토큰 저장 완료 (만료: ${expiresAt.toIso8601String()})');
       }
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('서버 토큰 저장 실패: $e');
+        LoggerService.debug('서버 토큰 저장 실패: $e');
       }
       rethrow;
     }
@@ -417,11 +417,11 @@ class FirebaseAuthRealImpl implements AuthRepository {
       ]);
 
       if (kDebugMode) {
-        debugPrint('서버 토큰 삭제 완료');
+        LoggerService.debug('서버 토큰 삭제 완료');
       }
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('서버 토큰 삭제 실패: $e');
+        LoggerService.debug('서버 토큰 삭제 실패: $e');
       }
       // 삭제 실패는 로그아웃에 영향을 주지 않도록 무시
     }
@@ -450,7 +450,7 @@ class FirebaseAuthRealImpl implements AuthRepository {
       return true;
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('인증 상태 확인 실패: $e');
+        LoggerService.debug('인증 상태 확인 실패: $e');
       }
       return false;
     }

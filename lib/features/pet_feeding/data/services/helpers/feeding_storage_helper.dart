@@ -29,7 +29,7 @@ class FeedingStorageHelper {
 
       return records;
     } catch (e) {
-      debugPrint('급여 기록 로드 실패: $e');
+      LoggerService.debug('급여 기록 로드 실패: $e');
       return [];
     }
   }
@@ -53,9 +53,9 @@ class FeedingStorageHelper {
       records.add(jsonEncode(record));
       await prefs.setStringList(_keyFeedingRecords, records);
 
-      debugPrint('급여 기록 추가 성공: ${record['id']}');
+      LoggerService.debug('급여 기록 추가 성공: ${record['id']}');
     } catch (e) {
-      debugPrint('급여 기록 추가 실패: $e');
+      LoggerService.debug('급여 기록 추가 실패: $e');
       rethrow;
     }
   }
@@ -75,10 +75,10 @@ class FeedingStorageHelper {
         record['updatedAt'] = DateTime.now().toIso8601String();
         records[index] = jsonEncode(record);
         await prefs.setStringList(_keyFeedingRecords, records);
-        debugPrint('급여 기록 업데이트 성공: ${record['id']}');
+        LoggerService.debug('급여 기록 업데이트 성공: ${record['id']}');
       }
     } catch (e) {
-      debugPrint('급여 기록 업데이트 실패: $e');
+      LoggerService.debug('급여 기록 업데이트 실패: $e');
       rethrow;
     }
   }
@@ -95,9 +95,9 @@ class FeedingStorageHelper {
       });
 
       await prefs.setStringList(_keyFeedingRecords, records);
-      debugPrint('급여 기록 삭제 성공: $recordId');
+      LoggerService.debug('급여 기록 삭제 성공: $recordId');
     } catch (e) {
-      debugPrint('급여 기록 삭제 실패: $e');
+      LoggerService.debug('급여 기록 삭제 실패: $e');
       rethrow;
     }
   }
@@ -117,7 +117,7 @@ class FeedingStorageHelper {
             fedTime.day == date.day;
       }).toList();
     } catch (e) {
-      debugPrint('날짜별 급여 기록 로드 실패: $e');
+      LoggerService.debug('날짜별 급여 기록 로드 실패: $e');
       return [];
     }
   }
@@ -139,7 +139,7 @@ class FeedingStorageHelper {
         'completionRate': records.isNotEmpty ? completed / records.length : 0.0,
       };
     } catch (e) {
-      debugPrint('급여 기록 통계 실패: $e');
+      LoggerService.debug('급여 기록 통계 실패: $e');
       return {
         'total': 0,
         'completed': 0,

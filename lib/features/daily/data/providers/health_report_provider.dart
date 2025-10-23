@@ -75,35 +75,35 @@ Future<File> generateHealthReportPdf(Ref ref, PetProfileEntity pet) async {
     final collectionService = ref.read(healthDataCollectionServiceProvider);
     final pdfService = ref.read(healthReportPdfServiceProvider);
 
-    debugPrint('');
-    debugPrint('═══════════════════════════════════════════════');
-    debugPrint('📄 [PROVIDER] PDF 리포트 생성 시작: ${pet.name}');
-    debugPrint('═══════════════════════════════════════════════');
-    debugPrint('');
+    LoggerService.debug('');
+    LoggerService.debug('═══════════════════════════════════════════════');
+    LoggerService.debug('📄 [PROVIDER] PDF 리포트 생성 시작: ${pet.name}');
+    LoggerService.debug('═══════════════════════════════════════════════');
+    LoggerService.debug('');
 
     // 건강 데이터 수집
     final healthData = await collectionService.collectMonthlyHealthData(pet);
 
     // JSON 데이터 콘솔 출력
     final jsonString = collectionService.convertToJson(healthData);
-    debugPrint('');
-    debugPrint('═══════════════════════════════════════════════');
-    debugPrint('📊 [PROVIDER] 수집된 건강 데이터 (JSON):');
-    debugPrint('═══════════════════════════════════════════════');
-    debugPrint(jsonString);
-    debugPrint('═══════════════════════════════════════════════');
-    debugPrint('');
+    LoggerService.debug('');
+    LoggerService.debug('═══════════════════════════════════════════════');
+    LoggerService.debug('📊 [PROVIDER] 수집된 건강 데이터 (JSON):');
+    LoggerService.debug('═══════════════════════════════════════════════');
+    LoggerService.debug(jsonString);
+    LoggerService.debug('═══════════════════════════════════════════════');
+    LoggerService.debug('');
 
     // AI 리포트 생성
     final aiReport = await ref.read(generateHealthReportProvider(pet).future);
 
-    debugPrint('');
-    debugPrint('═══════════════════════════════════════════════');
-    debugPrint('🤖 [PROVIDER] AI 리포트:');
-    debugPrint('═══════════════════════════════════════════════');
-    debugPrint(aiReport);
-    debugPrint('═══════════════════════════════════════════════');
-    debugPrint('');
+    LoggerService.debug('');
+    LoggerService.debug('═══════════════════════════════════════════════');
+    LoggerService.debug('🤖 [PROVIDER] AI 리포트:');
+    LoggerService.debug('═══════════════════════════════════════════════');
+    LoggerService.debug(aiReport);
+    LoggerService.debug('═══════════════════════════════════════════════');
+    LoggerService.debug('');
 
     // PDF 생성
     final pdfFile = await pdfService.generateHealthReportPdf(
@@ -117,16 +117,16 @@ Future<File> generateHealthReportPdf(Ref ref, PetProfileEntity pet) async {
       allergyInfo: healthData['allergyInfo'],
     );
 
-    debugPrint('');
-    debugPrint('═══════════════════════════════════════════════');
-    debugPrint('✅ [PROVIDER] PDF 리포트 생성 완료!');
-    debugPrint('📁 경로: ${pdfFile.path}');
-    debugPrint('═══════════════════════════════════════════════');
-    debugPrint('');
+    LoggerService.debug('');
+    LoggerService.debug('═══════════════════════════════════════════════');
+    LoggerService.debug('✅ [PROVIDER] PDF 리포트 생성 완료!');
+    LoggerService.debug('📁 경로: ${pdfFile.path}');
+    LoggerService.debug('═══════════════════════════════════════════════');
+    LoggerService.debug('');
     return pdfFile;
   } catch (e, stackTrace) {
-    debugPrint('❌ PDF 리포트 생성 실패: $e');
-    debugPrint('Stack trace: $stackTrace');
+    LoggerService.debug('❌ PDF 리포트 생성 실패: $e');
+    LoggerService.debug('Stack trace: $stackTrace');
     rethrow;
   }
 }
@@ -162,35 +162,35 @@ Future<File> generateHealthReportPng(Ref ref, PetProfileEntity pet) async {
     final collectionService = ref.read(healthDataCollectionServiceProvider);
     final pdfService = ref.read(healthReportPdfServiceProvider);
 
-    debugPrint('');
-    debugPrint('═══════════════════════════════════════════════');
-    debugPrint('🖼️ [PROVIDER] PNG 리포트 생성 시작: ${pet.name}');
-    debugPrint('═══════════════════════════════════════════════');
-    debugPrint('');
+    LoggerService.debug('');
+    LoggerService.debug('═══════════════════════════════════════════════');
+    LoggerService.debug('🖼️ [PROVIDER] PNG 리포트 생성 시작: ${pet.name}');
+    LoggerService.debug('═══════════════════════════════════════════════');
+    LoggerService.debug('');
 
     // 건강 데이터 수집
     final healthData = await collectionService.collectMonthlyHealthData(pet);
 
     // JSON 데이터 콘솔 출력
     final jsonString = collectionService.convertToJson(healthData);
-    debugPrint('');
-    debugPrint('═══════════════════════════════════════════════');
-    debugPrint('📊 [PROVIDER] 수집된 건강 데이터 (JSON):');
-    debugPrint('═══════════════════════════════════════════════');
-    debugPrint(jsonString);
-    debugPrint('═══════════════════════════════════════════════');
-    debugPrint('');
+    LoggerService.debug('');
+    LoggerService.debug('═══════════════════════════════════════════════');
+    LoggerService.debug('📊 [PROVIDER] 수집된 건강 데이터 (JSON):');
+    LoggerService.debug('═══════════════════════════════════════════════');
+    LoggerService.debug(jsonString);
+    LoggerService.debug('═══════════════════════════════════════════════');
+    LoggerService.debug('');
 
     // AI 리포트 생성
     final aiReport = await ref.read(generateHealthReportProvider(pet).future);
 
-    debugPrint('');
-    debugPrint('═══════════════════════════════════════════════');
-    debugPrint('🤖 [PROVIDER] AI 리포트:');
-    debugPrint('═══════════════════════════════════════════════');
-    debugPrint(aiReport);
-    debugPrint('═══════════════════════════════════════════════');
-    debugPrint('');
+    LoggerService.debug('');
+    LoggerService.debug('═══════════════════════════════════════════════');
+    LoggerService.debug('🤖 [PROVIDER] AI 리포트:');
+    LoggerService.debug('═══════════════════════════════════════════════');
+    LoggerService.debug(aiReport);
+    LoggerService.debug('═══════════════════════════════════════════════');
+    LoggerService.debug('');
 
     // PNG 생성
     final pngFile = await pdfService.generateHealthReportPng(
@@ -204,16 +204,16 @@ Future<File> generateHealthReportPng(Ref ref, PetProfileEntity pet) async {
       allergyInfo: healthData['allergyInfo'],
     );
 
-    debugPrint('');
-    debugPrint('═══════════════════════════════════════════════');
-    debugPrint('✅ [PROVIDER] PNG 리포트 생성 완료!');
-    debugPrint('📁 경로: ${pngFile.path}');
-    debugPrint('═══════════════════════════════════════════════');
-    debugPrint('');
+    LoggerService.debug('');
+    LoggerService.debug('═══════════════════════════════════════════════');
+    LoggerService.debug('✅ [PROVIDER] PNG 리포트 생성 완료!');
+    LoggerService.debug('📁 경로: ${pngFile.path}');
+    LoggerService.debug('═══════════════════════════════════════════════');
+    LoggerService.debug('');
     return pngFile;
   } catch (e, stackTrace) {
-    debugPrint('❌ PNG 리포트 생성 실패: $e');
-    debugPrint('Stack trace: $stackTrace');
+    LoggerService.debug('❌ PNG 리포트 생성 실패: $e');
+    LoggerService.debug('Stack trace: $stackTrace');
     rethrow;
   }
 }

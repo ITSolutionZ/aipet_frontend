@@ -68,7 +68,7 @@ class OpenAIAllergyAnalysisService implements AllergyAnalysisService {
       }
     } catch (e) {
       // 에러 발생 시 기본 분석 결과 반환
-      debugPrint('OpenAI Analysis Error: $e');
+      LoggerService.debug('OpenAI Analysis Error: $e');
       return _getFallbackResult(allergyProducts, nonAllergyProducts);
     }
   }

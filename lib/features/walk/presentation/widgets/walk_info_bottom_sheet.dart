@@ -32,7 +32,7 @@ class WalkInfoBottomSheet extends StatelessWidget {
       if (notesStr.startsWith('activities:')) {
         final activitiesStr = notesStr.replaceFirst('activities:', '');
 
-        debugPrint('📝 활동 파싱 시도: $activitiesStr');
+        LoggerService.debug('📝 활동 파싱 시도: $activitiesStr');
 
         // 더 간단한 파싱 방식 사용
         final activities = <Map<String, dynamic>>[];
@@ -51,7 +51,7 @@ class WalkInfoBottomSheet extends StatelessWidget {
         return activities;
       }
     } catch (e) {
-      debugPrint('❌ 활동 파싱 오류: $e');
+      LoggerService.debug('❌ 활동 파싱 오류: $e');
     }
 
     return [];

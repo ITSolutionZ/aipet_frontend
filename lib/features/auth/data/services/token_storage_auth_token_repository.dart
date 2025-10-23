@@ -78,7 +78,7 @@ class TokenStorageAuthTokenRepository implements AuthTokenRepository {
         await TokenStorageService.saveToken(authToken);
 
         if (kDebugMode) {
-          debugPrint('토큰 갱신 완료 (만료: ${authToken.expiresAt.toIso8601String()})');
+          LoggerService.debug('토큰 갱신 완료 (만료: ${authToken.expiresAt.toIso8601String()})');
         }
 
         return AuthTokenBundle(
@@ -91,7 +91,7 @@ class TokenStorageAuthTokenRepository implements AuthTokenRepository {
         // Refresh token이 만료된 경우
         await TokenStorageService.clearToken();
         if (kDebugMode) {
-          debugPrint('Refresh token 만료됨 - 재로그인 필요');
+          LoggerService.debug('Refresh token 만료됨 - 재로그인 필요');
         }
         return null;
       } else {
@@ -102,7 +102,7 @@ class TokenStorageAuthTokenRepository implements AuthTokenRepository {
       }
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('토큰 갱신 실패: $e');
+        LoggerService.debug('토큰 갱신 실패: $e');
       }
 
       // 갱신 실패 시 기존 토큰 삭제 (보안상 이유)
@@ -110,7 +110,7 @@ class TokenStorageAuthTokenRepository implements AuthTokenRepository {
         await TokenStorageService.clearToken();
       } catch (clearError) {
         if (kDebugMode) {
-          debugPrint('토큰 삭제 실패: $clearError');
+          LoggerService.debug('토큰 삭제 실패: $clearError');
         }
       }
 
@@ -137,7 +137,7 @@ class TokenStorageAuthTokenRepository implements AuthTokenRepository {
 
       if (isExpiringSoon && currentToken.refreshToken != null) {
         if (kDebugMode) {
-          debugPrint(
+          LoggerService.debug(
             '토큰 자동 갱신 시작 (만료 예정: ${currentToken.expiresAt?.toIso8601String()})',
           );
         }
@@ -147,12 +147,12 @@ class TokenStorageAuthTokenRepository implements AuthTokenRepository {
 
         if (refreshedToken != null) {
           if (kDebugMode) {
-            debugPrint('토큰 자동 갱신 성공');
+            LoggerService.debug('토큰 자동 갱신 성공');
           }
           return refreshedToken;
         } else {
           if (kDebugMode) {
-            debugPrint('토큰 자동 갱신 실패');
+            LoggerService.debug('토큰 자동 갱신 실패');
           }
           return currentToken; // 갱신 실패 시 기존 토큰 반환
         }
@@ -162,7 +162,7 @@ class TokenStorageAuthTokenRepository implements AuthTokenRepository {
       return currentToken;
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('토큰 자동 갱신 확인 실패: $e');
+        LoggerService.debug('토큰 자동 갱신 확인 실패: $e');
       }
       return null;
     }

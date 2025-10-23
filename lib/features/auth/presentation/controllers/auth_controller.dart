@@ -94,7 +94,7 @@ class AuthController extends Notifier<AuthFormState> {
   /// 인증 성공 시 호출되어 폼 상태를 업데이트합니다.
   /// 로딩 상태를 해제하고 에러를 초기화합니다.
   void handleLoginSuccess() {
-    debugPrint('✅ AuthController: 로그인 성공 처리');
+    LoggerService.debug('✅ AuthController: 로그인 성공 처리');
 
     // 폼 상태 업데이트
     ref.read(authFormStateNotifierProvider.notifier).handleLoginSuccess();
@@ -106,7 +106,7 @@ class AuthController extends Notifier<AuthFormState> {
   /// [return] 로드된 펫 데이터
   Future<List<PetProfileEntity>> loadUserPetsOnLogin(String userId) async {
     try {
-      debugPrint('🐾 AuthController: 로그인 성공 시 펫 데이터 로드 시작 - 사용자: $userId');
+      LoggerService.debug('🐾 AuthController: 로그인 성공 시 펫 데이터 로드 시작 - 사용자: $userId');
 
       // 펫 프로필 프로바이더를 통해 사용자 펫 데이터 로드
       final petsAsync = ref.read(petProfilesProvider);
@@ -115,12 +115,12 @@ class AuthController extends Notifier<AuthFormState> {
         orElse: () => <PetProfileEntity>[],
       );
 
-      debugPrint('🐾 로그인 성공 - 펫 ${pets.length}마리 로드됨');
+      LoggerService.debug('🐾 로그인 성공 - 펫 ${pets.length}마리 로드됨');
 
       return pets;
     } catch (error, stackTrace) {
-      debugPrint('❌ AuthController: 펫 데이터 로드 실패: $error');
-      debugPrint('Stack trace: $stackTrace');
+      LoggerService.debug('❌ AuthController: 펫 데이터 로드 실패: $error');
+      LoggerService.debug('Stack trace: $stackTrace');
       return [];
     }
   }
@@ -150,7 +150,7 @@ class AuthController extends Notifier<AuthFormState> {
         final userId = currentState.email; // 임시로 이메일을 사용자 ID로 사용
         final pets = await loadUserPetsOnLogin(userId);
 
-        debugPrint('✅ AuthController: 로그인 성공 - 펫 ${pets.length}마리 로드됨');
+        LoggerService.debug('✅ AuthController: 로그인 성공 - 펫 ${pets.length}마리 로드됨');
 
         return Result.success('ログインが完了しました', '');
       } else {
@@ -388,8 +388,8 @@ class AuthController extends Notifier<AuthFormState> {
 
   /// 에러 처리 메서드
   void handleError(Object error, StackTrace stackTrace) {
-    debugPrint('❌ AuthController Error: $error');
-    debugPrint('StackTrace: $stackTrace');
+    LoggerService.debug('❌ AuthController Error: $error');
+    LoggerService.debug('StackTrace: $stackTrace');
   }
 
   /// 사용자 친화적 에러 메시지 변환

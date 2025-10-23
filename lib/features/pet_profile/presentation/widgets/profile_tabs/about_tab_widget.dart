@@ -58,24 +58,24 @@ class _AboutTabWidgetState extends ConsumerState<AboutTabWidget> {
   ImageProvider? _getBackgroundImage(String? imagePath) {
     if (imagePath == null) return null;
 
-    debugPrint('🖼️ AboutTabWidget - imagePath: $imagePath');
+    LoggerService.debug('🖼️ AboutTabWidget - imagePath: $imagePath');
 
     // 상대 경로를 절대 경로로 변환
     final storageService = ImageStorageService();
     final absolutePath = storageService.getAbsolutePath(imagePath) ?? imagePath;
-    debugPrint('🖼️ AboutTabWidget - absolutePath: $absolutePath');
+    LoggerService.debug('🖼️ AboutTabWidget - absolutePath: $absolutePath');
 
     final imageType = ImageService.getImageType(absolutePath);
-    debugPrint('🖼️ AboutTabWidget - imageType: $imageType');
+    LoggerService.debug('🖼️ AboutTabWidget - imageType: $imageType');
 
     switch (imageType) {
       case ImageType.file:
         final file = File(absolutePath);
         final fileExists = file.existsSync();
-        debugPrint('🖼️ AboutTabWidget - File exists: $fileExists');
+        LoggerService.debug('🖼️ AboutTabWidget - File exists: $fileExists');
 
         if (!fileExists) {
-          debugPrint('❌ AboutTabWidget - File does not exist: $absolutePath');
+          LoggerService.debug('❌ AboutTabWidget - File does not exist: $absolutePath');
           return null;
         }
 

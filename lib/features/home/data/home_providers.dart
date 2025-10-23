@@ -48,24 +48,24 @@ class HomeDashboardNotifier extends _$HomeDashboardNotifier {
     try {
       final getDashboardDataUseCase = ref.read(getDashboardDataUseCaseProvider);
 
-      debugPrint('🔍 HomeDashboardNotifier: 대시보드 데이터 요청 시작');
+      LoggerService.debug('🔍 HomeDashboardNotifier: 대시보드 데이터 요청 시작');
       final result = await getDashboardDataUseCase.call();
-      debugPrint(
+      LoggerService.debug(
         '📊 HomeDashboardNotifier: UseCase 결과 - Success: ${result.isSuccess}',
       );
 
       if (result.isSuccess && result.dataOrNull != null) {
-        debugPrint('✅ HomeDashboardNotifier: 대시보드 데이터 로드 성공');
+        LoggerService.debug('✅ HomeDashboardNotifier: 대시보드 데이터 로드 성공');
         return result.dataOrNull!;
       } else {
-        debugPrint('❌ HomeDashboardNotifier: UseCase 실패 - ${result.error}');
+        LoggerService.debug('❌ HomeDashboardNotifier: UseCase 실패 - ${result.error}');
         throw Exception(
           '대시보드 데이터 로드 실패: ${result.error?.toString() ?? 'Unknown error'}',
         );
       }
     } catch (error, stackTrace) {
-      debugPrint('💥 HomeDashboardNotifier: 예외 발생 - $error');
-      debugPrint('📍 StackTrace: $stackTrace');
+      LoggerService.debug('💥 HomeDashboardNotifier: 예외 발생 - $error');
+      LoggerService.debug('📍 StackTrace: $stackTrace');
       rethrow;
     }
   }

@@ -39,10 +39,10 @@ class HybridWalkRepository implements WalkRepository {
     // 2차: 로컬 저장소
     try {
       final localRecords = await LocalWalkStorageService.loadWalkRecords();
-      debugPrint('✅ HybridWalkRepository: 로컬 데이터 ${localRecords.length}개 로드');
+      LoggerService.debug('✅ HybridWalkRepository: 로컬 데이터 ${localRecords.length}개 로드');
       return localRecords;
     } catch (e) {
-      debugPrint('⚠️ HybridWalkRepository: 로컬 데이터 로드 실패 - $e');
+      LoggerService.debug('⚠️ HybridWalkRepository: 로컬 데이터 로드 실패 - $e');
       return [];
     }
   }
@@ -85,19 +85,19 @@ class HybridWalkRepository implements WalkRepository {
     // 1차: API 시도
     if (_useApi) {
       try {
-        debugPrint('🔄 HybridWalkRepository: API에서 현재 산책 조회');
+        LoggerService.debug('🔄 HybridWalkRepository: API에서 현재 산책 조회');
         final apiResult = await _apiService.getCurrentWalk();
 
         if (apiResult.isSuccess) {
           final record = apiResult.data;
           if (record != null) {
             await LocalWalkStorageService.saveCurrentWalk(record);
-            debugPrint('✅ HybridWalkRepository: 현재 산책 로드 완료');
+            LoggerService.debug('✅ HybridWalkRepository: 현재 산책 로드 완료');
           }
           return record;
         }
       } catch (e) {
-        debugPrint('⚠️ HybridWalkRepository: API 호출 실패 - $e');
+        LoggerService.debug('⚠️ HybridWalkRepository: API 호출 실패 - $e');
       }
     }
 
@@ -105,14 +105,14 @@ class HybridWalkRepository implements WalkRepository {
     try {
       final currentWalk = await LocalWalkStorageService.loadCurrentWalk();
       if (currentWalk != null) {
-        debugPrint('✅ HybridWalkRepository: 로컬 현재 산책 로드');
+        LoggerService.debug('✅ HybridWalkRepository: 로컬 현재 산책 로드');
         return currentWalk;
       }
     } catch (e) {
-      debugPrint('⚠️ HybridWalkRepository: 로컬 현재 산책 조회 실패 - $e');
+      LoggerService.debug('⚠️ HybridWalkRepository: 로컬 현재 산책 조회 실패 - $e');
     }
 
-    debugPrint('ℹ️ HybridWalkRepository: 진행 중인 산책 없음');
+    LoggerService.debug('ℹ️ HybridWalkRepository: 진행 중인 산책 없음');
     return null;
   }
 
@@ -121,7 +121,7 @@ class HybridWalkRepository implements WalkRepository {
     // 로컬 우선 저장 (빠른 UI 반영)
     await LocalWalkStorageService.addWalkRecord(walkRecord);
     await LocalWalkStorageService.saveCurrentWalk(walkRecord);
-    debugPrint('✅ HybridWalkRepository: 로컬에 산책 시작 저장 - ID: ${walkRecord.id}');
+    LoggerService.debug('✅ HybridWalkRepository: 로컬에 산책 시작 저장 - ID: ${walkRecord.id}');
 
     // API 동기화 (백그라운드)
     if (_useApi) {
@@ -132,13 +132,13 @@ class HybridWalkRepository implements WalkRepository {
           // API 응답으로 로컬 업데이트
           await LocalWalkStorageService.updateWalkRecord(syncedRecord);
           await LocalWalkStorageService.saveCurrentWalk(syncedRecord);
-          debugPrint(
+          LoggerService.debug(
             '✅ HybridWalkRepository: API 동기화 완료 - ID: ${syncedRecord.id}',
           );
           return syncedRecord;
         }
       } catch (e) {
-        debugPrint('⚠️ HybridWalkRepository: API 동기화 실패 (로컬 데이터 유지) - $e');
+        LoggerService.debug('⚠️ HybridWalkRepository: API 동기화 실패 (로컬 데이터 유지) - $e');
         // 동기화 큐에 추가
         await WalkSyncHelper.addToSyncQueue(
           WalkSyncHelper.createSyncOperation(walkRecord),
@@ -178,7 +178,7 @@ class HybridWalkRepository implements WalkRepository {
     // 로컬 우선 저장
     await LocalWalkStorageService.updateWalkRecord(updatedRecord);
     await LocalWalkStorageService.saveCurrentWalk(null); // 현재 산책 제거
-    debugPrint('✅ HybridWalkRepository: 로컬에 산책 종료 저장 - ID: $recordId');
+    LoggerService.debug('✅ HybridWalkRepository: 로컬에 산책 종료 저장 - ID: $recordId');
 
     // API 동기화
     if (_useApi) {
@@ -191,11 +191,11 @@ class HybridWalkRepository implements WalkRepository {
         if (apiResult.isSuccess && apiResult.data != null) {
           final syncedRecord = apiResult.dataOrThrow;
           await LocalWalkStorageService.updateWalkRecord(syncedRecord);
-          debugPrint('✅ HybridWalkRepository: API 동기화 완료 - ID: $recordId');
+          LoggerService.debug('✅ HybridWalkRepository: API 동기화 완료 - ID: $recordId');
           return syncedRecord;
         }
       } catch (e) {
-        debugPrint('⚠️ HybridWalkRepository: API 동기화 실패 (로컬 데이터 유지) - $e');
+        LoggerService.debug('⚠️ HybridWalkRepository: API 동기화 실패 (로컬 데이터 유지) - $e');
         // 동기화 큐에 추가
         await WalkSyncHelper.addToSyncQueue(
           WalkSyncHelper.updateSyncOperation(updatedRecord),
@@ -210,7 +210,7 @@ class HybridWalkRepository implements WalkRepository {
   Future<void> saveWalkRecord(WalkRecordEntity walkRecord) async {
     // 로컬 저장
     await LocalWalkStorageService.addWalkRecord(walkRecord);
-    debugPrint('✅ HybridWalkRepository: 로컬에 산책 기록 저장 - ID: ${walkRecord.id}');
+    LoggerService.debug('✅ HybridWalkRepository: 로컬에 산책 기록 저장 - ID: ${walkRecord.id}');
 
     // API 동기화
     if (_useApi) {
@@ -218,12 +218,12 @@ class HybridWalkRepository implements WalkRepository {
         // startWalk API 사용
         final apiResult = await _apiService.startWalk(walkRecord);
         if (apiResult.isSuccess) {
-          debugPrint(
+          LoggerService.debug(
             '✅ HybridWalkRepository: API 동기화 완료 - ID: ${walkRecord.id}',
           );
         }
       } catch (e) {
-        debugPrint('⚠️ HybridWalkRepository: API 동기화 실패 - $e');
+        LoggerService.debug('⚠️ HybridWalkRepository: API 동기화 실패 - $e');
         // 동기화 큐에 추가
         await WalkSyncHelper.addToSyncQueue(
           WalkSyncHelper.createSyncOperation(walkRecord),
@@ -236,19 +236,19 @@ class HybridWalkRepository implements WalkRepository {
   Future<void> updateWalkRecord(WalkRecordEntity walkRecord) async {
     // 로컬 업데이트
     await LocalWalkStorageService.updateWalkRecord(walkRecord);
-    debugPrint('✅ HybridWalkRepository: 로컬 산책 기록 업데이트 - ID: ${walkRecord.id}');
+    LoggerService.debug('✅ HybridWalkRepository: 로컬 산책 기록 업데이트 - ID: ${walkRecord.id}');
 
     // API 동기화
     if (_useApi) {
       try {
         final apiResult = await _apiService.updateWalkRecord(walkRecord);
         if (apiResult.isSuccess) {
-          debugPrint(
+          LoggerService.debug(
             '✅ HybridWalkRepository: API 동기화 완료 - ID: ${walkRecord.id}',
           );
         }
       } catch (e) {
-        debugPrint('⚠️ HybridWalkRepository: API 동기화 실패 (나중에 재시도 필요) - $e');
+        LoggerService.debug('⚠️ HybridWalkRepository: API 동기화 실패 (나중에 재시도 필요) - $e');
         // 동기화 큐에 추가
         await WalkSyncHelper.addToSyncQueue(
           WalkSyncHelper.updateSyncOperation(walkRecord),
@@ -261,17 +261,17 @@ class HybridWalkRepository implements WalkRepository {
   Future<void> deleteWalkRecord(String id) async {
     // 로컬 삭제
     await LocalWalkStorageService.deleteWalkRecord(id);
-    debugPrint('✅ HybridWalkRepository: 로컬 산책 기록 삭제 - ID: $id');
+    LoggerService.debug('✅ HybridWalkRepository: 로컬 산책 기록 삭제 - ID: $id');
 
     // API 동기화
     if (_useApi) {
       try {
         final apiResult = await _apiService.deleteWalkRecord(id);
         if (apiResult.isSuccess) {
-          debugPrint('✅ HybridWalkRepository: API 동기화 완료 - ID: $id');
+          LoggerService.debug('✅ HybridWalkRepository: API 동기화 완료 - ID: $id');
         }
       } catch (e) {
-        debugPrint('⚠️ HybridWalkRepository: API 동기화 실패 (나중에 재시도 필요) - $e');
+        LoggerService.debug('⚠️ HybridWalkRepository: API 동기화 실패 (나중에 재시도 필요) - $e');
         // 동기화 큐에 추가
         await WalkSyncHelper.addToSyncQueue(
           WalkSyncHelper.deleteSyncOperation(id),
@@ -283,7 +283,7 @@ class HybridWalkRepository implements WalkRepository {
   /// 대기 중인 동기화 작업 처리
   Future<void> processPendingSync() async {
     if (!_useApi) {
-      debugPrint('ℹ️ API 비활성화 상태, 동기화 건너뜀');
+      LoggerService.debug('ℹ️ API 비활성화 상태, 동기화 건너뜀');
       return;
     }
 
@@ -299,7 +299,7 @@ class HybridWalkRepository implements WalkRepository {
     // 1차: API 시도
     if (_useApi) {
       try {
-        debugPrint('🔄 HybridWalkRepository: API에서 산책 통계 조회');
+        LoggerService.debug('🔄 HybridWalkRepository: API에서 산책 통계 조회');
         final apiResult = await _apiService.getWalkStatistics(
           petId: petId,
           startDate: startDate,
@@ -307,11 +307,11 @@ class HybridWalkRepository implements WalkRepository {
         );
 
         if (apiResult.isSuccess && apiResult.data != null) {
-          debugPrint('✅ HybridWalkRepository: API 통계 데이터 로드 완료');
+          LoggerService.debug('✅ HybridWalkRepository: API 통계 데이터 로드 완료');
           return apiResult.dataOrThrow;
         }
       } catch (e) {
-        debugPrint('⚠️ HybridWalkRepository: API 호출 실패 - $e');
+        LoggerService.debug('⚠️ HybridWalkRepository: API 호출 실패 - $e');
       }
     }
 

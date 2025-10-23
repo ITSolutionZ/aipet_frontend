@@ -159,7 +159,7 @@ class _DevLoginScreenState extends ConsumerState<DevLoginScreen> {
           height: 120,
           fit: BoxFit.contain,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('로고 로드 실패: $error');
+            LoggerService.debug('로고 로드 실패: $error');
             return Container(
               width: 120,
               height: 120,

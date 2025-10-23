@@ -59,19 +59,19 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
     // SQLite에서 펫 불러와서 첫 번째 펫을 기본으로 설정 (펫이 있을 경우에만)
     try {
       final petsAsync = await ref.read(petProfilesProvider.future);
-      debugPrint('🐕 SQLite에서 로드된 펫 개수: ${petsAsync.length}');
+      LoggerService.debug('🐕 SQLite에서 로드된 펫 개수: ${petsAsync.length}');
 
       if (petsAsync.isNotEmpty) {
         final firstPet = petsAsync.first;
-        debugPrint('🐕 첫 번째 펫: ${firstPet.name} (ID: ${firstPet.id})');
+        LoggerService.debug('🐕 첫 번째 펫: ${firstPet.name} (ID: ${firstPet.id})');
         _controller.setSelectedPet(WalkPetInfo.fromPetProfile(firstPet));
       } else {
-        debugPrint('🐕 SQLite에 저장된 펫이 없습니다');
+        LoggerService.debug('🐕 SQLite에 저장된 펫이 없습니다');
       }
       // 펫이 없어도 산책 화면에는 접근 가능하도록 함
     } catch (e) {
       // 펫 데이터 로드 실패해도 산책 화면은 표시
-      debugPrint('🐕 SQLite 펫 데이터 로드 실패, 하지만 산책 화면은 표시: $e');
+      LoggerService.debug('🐕 SQLite 펫 데이터 로드 실패, 하지만 산책 화면은 표시: $e');
     }
   }
 

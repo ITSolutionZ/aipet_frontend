@@ -16,7 +16,7 @@ class PetLoginService {
   ) async {
     try {
       if (kDebugMode) {
-        debugPrint('🐾 PetLoginService: 사용자 $userId의 펫 데이터 로드 시작');
+        LoggerService.debug('🐾 PetLoginService: 사용자 $userId의 펫 데이터 로드 시작');
       }
 
       // 로그인 시 기존 캐시 클리어 (목업 데이터 제거)
@@ -31,23 +31,23 @@ class PetLoginService {
       // 저장된 펫이 없는 경우 빈 리스트 반환
       if (userPets.isEmpty) {
         if (kDebugMode) {
-          debugPrint('🐾 PetLoginService: 저장된 펫이 없음 - 빈 리스트 반환');
+          LoggerService.debug('🐾 PetLoginService: 저장된 펫이 없음 - 빈 리스트 반환');
         }
         return [];
       }
 
       if (kDebugMode) {
-        debugPrint('🐾 PetLoginService: 로드된 펫 수: ${userPets.length}');
+        LoggerService.debug('🐾 PetLoginService: 로드된 펫 수: ${userPets.length}');
         for (final pet in userPets) {
-          debugPrint('  - ${pet.name} (${pet.type}, ${pet.breed})');
+          LoggerService.debug('  - ${pet.name} (${pet.type}, ${pet.breed})');
         }
       }
 
       return userPets;
     } catch (error, stackTrace) {
       if (kDebugMode) {
-        debugPrint('❌ PetLoginService: 펫 데이터 로드 실패: $error');
-        debugPrint('Stack trace: $stackTrace');
+        LoggerService.debug('❌ PetLoginService: 펫 데이터 로드 실패: $error');
+        LoggerService.debug('Stack trace: $stackTrace');
       }
       return [];
     }
@@ -60,21 +60,21 @@ class PetLoginService {
   static Future<bool> initializePetsForNewUser(String userId) async {
     try {
       if (kDebugMode) {
-        debugPrint('🐾 PetLoginService: 새 사용자 $userId의 펫 데이터 초기화');
+        LoggerService.debug('🐾 PetLoginService: 새 사용자 $userId의 펫 데이터 초기화');
       }
 
       // 새 사용자용 빈 펫 리스트 저장
       await PetLocalStorageService.savePets([]);
 
       if (kDebugMode) {
-        debugPrint('✅ PetLoginService: 새 사용자 펫 데이터 초기화 완료');
+        LoggerService.debug('✅ PetLoginService: 새 사용자 펫 데이터 초기화 완료');
       }
 
       return true;
     } catch (error, stackTrace) {
       if (kDebugMode) {
-        debugPrint('❌ PetLoginService: 새 사용자 펫 데이터 초기화 실패: $error');
-        debugPrint('Stack trace: $stackTrace');
+        LoggerService.debug('❌ PetLoginService: 새 사용자 펫 데이터 초기화 실패: $error');
+        LoggerService.debug('Stack trace: $stackTrace');
       }
       return false;
     }
@@ -91,8 +91,8 @@ class PetLoginService {
   ) async {
     try {
       if (kDebugMode) {
-        debugPrint('🐾 PetLoginService: 사용자 $userId의 펫 데이터 백업 시작');
-        debugPrint('  - 백업할 펫 수: ${pets.length}');
+        LoggerService.debug('🐾 PetLoginService: 사용자 $userId의 펫 데이터 백업 시작');
+        LoggerService.debug('  - 백업할 펫 수: ${pets.length}');
       }
 
       // 사용자 ID로 펫 데이터 업데이트
@@ -104,14 +104,14 @@ class PetLoginService {
       await PetLocalStorageService.savePets(updatedPets);
 
       if (kDebugMode) {
-        debugPrint('✅ PetLoginService: 펫 데이터 백업 완료');
+        LoggerService.debug('✅ PetLoginService: 펫 데이터 백업 완료');
       }
 
       return true;
     } catch (error, stackTrace) {
       if (kDebugMode) {
-        debugPrint('❌ PetLoginService: 펫 데이터 백업 실패: $error');
-        debugPrint('Stack trace: $stackTrace');
+        LoggerService.debug('❌ PetLoginService: 펫 데이터 백업 실패: $error');
+        LoggerService.debug('Stack trace: $stackTrace');
       }
       return false;
     }
@@ -124,7 +124,7 @@ class PetLoginService {
   static Future<bool> cleanupUserPetsOnLogout(String userId) async {
     try {
       if (kDebugMode) {
-        debugPrint('🐾 PetLoginService: 사용자 $userId 로그아웃 시 펫 데이터 정리');
+        LoggerService.debug('🐾 PetLoginService: 사용자 $userId 로그아웃 시 펫 데이터 정리');
       }
 
       // 현재 사용자의 펫 데이터 가져오기
@@ -137,15 +137,15 @@ class PetLoginService {
       // 필요한 경우 캐시만 정리
 
       if (kDebugMode) {
-        debugPrint('✅ PetLoginService: 로그아웃 시 펫 데이터 정리 완료');
-        debugPrint('  - 유지된 펫 수: ${userPets.length}');
+        LoggerService.debug('✅ PetLoginService: 로그아웃 시 펫 데이터 정리 완료');
+        LoggerService.debug('  - 유지된 펫 수: ${userPets.length}');
       }
 
       return true;
     } catch (error, stackTrace) {
       if (kDebugMode) {
-        debugPrint('❌ PetLoginService: 로그아웃 시 펫 데이터 정리 실패: $error');
-        debugPrint('Stack trace: $stackTrace');
+        LoggerService.debug('❌ PetLoginService: 로그아웃 시 펫 데이터 정리 실패: $error');
+        LoggerService.debug('Stack trace: $stackTrace');
       }
       return false;
     }
@@ -194,7 +194,7 @@ class PetLoginService {
       };
     } catch (error) {
       if (kDebugMode) {
-        debugPrint('❌ PetLoginService: 펫 통계 정보 생성 실패: $error');
+        LoggerService.debug('❌ PetLoginService: 펫 통계 정보 생성 실패: $error');
       }
       return {
         'totalPets': 0,

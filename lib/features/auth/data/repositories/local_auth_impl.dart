@@ -40,7 +40,7 @@ class LocalAuthImpl implements AuthRepository {
     _userPasswords[email] = password;
 
     if (kDebugMode) {
-      debugPrint('🔐 [LocalAuth] ログイン成功: $email');
+      LoggerService.debug('🔐 [LocalAuth] ログイン成功: $email');
     }
 
     return Result.success('ログインが完了しました', user);
@@ -72,7 +72,7 @@ class LocalAuthImpl implements AuthRepository {
     _userPasswords[email] = password;
 
     if (kDebugMode) {
-      debugPrint('🔐 [LocalAuth] 会員登録成功: $email');
+      LoggerService.debug('🔐 [LocalAuth] 会員登録成功: $email');
     }
 
     return Result.success('会員登録が完了しました', user);
@@ -96,7 +96,7 @@ class LocalAuthImpl implements AuthRepository {
     _currentUser = user;
 
     if (kDebugMode) {
-      debugPrint('🔐 [LocalAuth] Googleログイン成功');
+      LoggerService.debug('🔐 [LocalAuth] Googleログイン成功');
     }
 
     return Result.success('Googleログインが完了しました', user);
@@ -120,7 +120,7 @@ class LocalAuthImpl implements AuthRepository {
     _currentUser = user;
 
     if (kDebugMode) {
-      debugPrint('🔐 [LocalAuth] Appleログイン成功');
+      LoggerService.debug('🔐 [LocalAuth] Appleログイン成功');
     }
 
     return Result.success('Appleログインが完了しました', user);
@@ -144,7 +144,7 @@ class LocalAuthImpl implements AuthRepository {
     _currentUser = user;
 
     if (kDebugMode) {
-      debugPrint('🔐 [LocalAuth] LINEログイン成功');
+      LoggerService.debug('🔐 [LocalAuth] LINEログイン成功');
     }
 
     return Result.success('LINEログインが完了しました', user);
@@ -157,7 +157,7 @@ class LocalAuthImpl implements AuthRepository {
     _serverToken = null;
 
     if (kDebugMode) {
-      debugPrint('🔐 [LocalAuth] ログアウト完了');
+      LoggerService.debug('🔐 [LocalAuth] ログアウト完了');
     }
   }
 
@@ -173,7 +173,7 @@ class LocalAuthImpl implements AuthRepository {
     await Future.delayed(const Duration(milliseconds: 300));
 
     if (kDebugMode) {
-      debugPrint('🔐 [LocalAuth] パスワードリセットメール送信 (Mock): $email');
+      LoggerService.debug('🔐 [LocalAuth] パスワードリセットメール送信 (Mock): $email');
     }
   }
 
@@ -183,7 +183,7 @@ class LocalAuthImpl implements AuthRepository {
     await Future.delayed(const Duration(milliseconds: 300));
 
     if (kDebugMode) {
-      debugPrint('🔐 [LocalAuth] 確認メール送信 (Mock)');
+      LoggerService.debug('🔐 [LocalAuth] 確認メール送信 (Mock)');
     }
   }
 
@@ -200,7 +200,7 @@ class LocalAuthImpl implements AuthRepository {
       );
 
       if (kDebugMode) {
-        debugPrint('🔐 [LocalAuth] プロフィール更新完了');
+        LoggerService.debug('🔐 [LocalAuth] プロフィール更新完了');
       }
     }
   }
@@ -213,7 +213,7 @@ class LocalAuthImpl implements AuthRepository {
       _currentUser = null;
 
       if (kDebugMode) {
-        debugPrint('🔐 [LocalAuth] アカウント削除完了');
+        LoggerService.debug('🔐 [LocalAuth] アカウント削除完了');
       }
     }
   }
@@ -228,7 +228,7 @@ class LocalAuthImpl implements AuthRepository {
     _serverToken = mockToken;
 
     if (kDebugMode) {
-      debugPrint('🔐 [LocalAuth] サーバートークン交換完了 (Mock)');
+      LoggerService.debug('🔐 [LocalAuth] サーバートークン交換完了 (Mock)');
     }
 
     return mockToken;
@@ -254,7 +254,7 @@ class LocalAuthImpl implements AuthRepository {
     _serverToken = token;
 
     if (kDebugMode) {
-      debugPrint('🔐 [LocalAuth] サーバートークン保存完了');
+      LoggerService.debug('🔐 [LocalAuth] サーバートークン保存完了');
     }
   }
 
@@ -264,7 +264,7 @@ class LocalAuthImpl implements AuthRepository {
     _serverToken = null;
 
     if (kDebugMode) {
-      debugPrint('🔐 [LocalAuth] サーバートークン削除完了');
+      LoggerService.debug('🔐 [LocalAuth] サーバートークン削除完了');
     }
   }
 

@@ -31,9 +31,9 @@ class PetLocalStorageService {
               ? _sanitizeAdditionalInfo(data['additionalInfo'] as Map<String, dynamic>)
               : <String, dynamic>{};
 
-          debugPrint('📖 Loading pet: ${data['name']}');
-          debugPrint('📖 additionalInfo keys: ${additionalInfo.keys.toList()}');
-          debugPrint('📖 forbiddenIngredients: ${additionalInfo['forbiddenIngredients']}');
+          LoggerService.debug('📖 Loading pet: ${data['name']}');
+          LoggerService.debug('📖 additionalInfo keys: ${additionalInfo.keys.toList()}');
+          LoggerService.debug('📖 forbiddenIngredients: ${additionalInfo['forbiddenIngredients']}');
 
           return PetProfileEntity(
             id: data['id'] as String,
@@ -51,14 +51,14 @@ class PetLocalStorageService {
             additionalInfo: additionalInfo,
           );
         } catch (e, stackTrace) {
-          debugPrint('⚠️  펫 파싱 실패: $e');
-          debugPrint('⚠️  스택트레이스: $stackTrace');
+          LoggerService.debug('⚠️  펫 파싱 실패: $e');
+          LoggerService.debug('⚠️  스택트레이스: $stackTrace');
           rethrow;
         }
       }).toList();
     } catch (e, stackTrace) {
-      debugPrint('❌ ペット取得エラー: $e');
-      debugPrint('❌ スタックトレース: $stackTrace');
+      LoggerService.debug('❌ ペット取得エラー: $e');
+      LoggerService.debug('❌ スタックトレース: $stackTrace');
       return [];
     }
   }
@@ -81,9 +81,9 @@ class PetLocalStorageService {
         // additionalInfo를 안전하게 직렬화
         final safeAdditionalInfo = _sanitizeAdditionalInfo(pet.additionalInfo);
 
-        debugPrint('💾 Saving pet: ${pet.name}');
-        debugPrint('💾 additionalInfo keys: ${safeAdditionalInfo.keys.toList()}');
-        debugPrint('💾 forbiddenIngredients: ${safeAdditionalInfo['forbiddenIngredients']}');
+        LoggerService.debug('💾 Saving pet: ${pet.name}');
+        LoggerService.debug('💾 additionalInfo keys: ${safeAdditionalInfo.keys.toList()}');
+        LoggerService.debug('💾 forbiddenIngredients: ${safeAdditionalInfo['forbiddenIngredients']}');
 
         return jsonEncode({
           'id': pet.id,
@@ -103,10 +103,10 @@ class PetLocalStorageService {
       }).toList();
 
       await prefs.setStringList(_keyPets, petsJson);
-      debugPrint('✅ ペット保存成功: ${pets.length}匹');
+      LoggerService.debug('✅ ペット保存成功: ${pets.length}匹');
     } catch (e, stackTrace) {
-      debugPrint('❌ ペット保存エラー: $e');
-      debugPrint('❌ スタックトレース: $stackTrace');
+      LoggerService.debug('❌ ペット保存エラー: $e');
+      LoggerService.debug('❌ スタックトレース: $stackTrace');
       rethrow; // 에러를 상위로 전달
     }
   }
@@ -129,7 +129,7 @@ class PetLocalStorageService {
           final sanitizedList = List<String>.from(value.whereType<String>());
           if (sanitizedList.isNotEmpty) {
             result[key] = sanitizedList;
-            debugPrint('💾 [$key] List saved: ${sanitizedList.length} items');
+            LoggerService.debug('💾 [$key] List saved: ${sanitizedList.length} items');
           }
         }
         // String 타입 필드 처리
@@ -151,10 +151,10 @@ class PetLocalStorageService {
         // 기타 타입은 toString() 처리
         else if (value != null) {
           result[key] = value.toString();
-          debugPrint('⚠️  [$key] 알 수 없는 타입 변환됨: ${value.runtimeType}');
+          LoggerService.debug('⚠️  [$key] 알 수 없는 타입 변환됨: ${value.runtimeType}');
         }
       } catch (e) {
-        debugPrint('⚠️  [$key] 필드 정제 실패: $e');
+        LoggerService.debug('⚠️  [$key] 필드 정제 실패: $e');
         // 실패한 필드는 제외
       }
     });

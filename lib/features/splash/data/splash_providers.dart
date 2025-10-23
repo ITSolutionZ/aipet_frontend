@@ -91,7 +91,7 @@ class SplashControllerNotifier extends _$SplashControllerNotifier {
         yield result;
       }
     } catch (error) {
-      debugPrint('❌ 스플래시 시퀀스 에러: $error');
+      LoggerService.debug('❌ 스플래시 시퀀스 에러: $error');
       // 에러 발생 시 기본 시퀀스 제공
       await for (final result in _getDefaultSplashSequence()) {
         yield result;
@@ -101,7 +101,7 @@ class SplashControllerNotifier extends _$SplashControllerNotifier {
 
   /// 기본 스플래시 시퀀스 (에러 발생 시 사용)
   Stream<Result<SplashState>> _getDefaultSplashSequence() async* {
-    debugPrint('🔄 기본 스플래시 시퀀스 시작');
+    LoggerService.debug('🔄 기본 스플래시 시퀀스 시작');
 
     // 1. 초기화 상태
     yield Result.success('스플래시 초기화', SplashState.initializing());
@@ -119,7 +119,7 @@ class SplashControllerNotifier extends _$SplashControllerNotifier {
     await Future.delayed(const Duration(seconds: 1));
 
     // 4. 완료
-    debugPrint('✅ 스플래시 시퀀스 완료');
+    LoggerService.debug('✅ 스플래시 시퀀스 완료');
     yield Result.success('스플래시 완료', SplashState.completed());
   }
 }

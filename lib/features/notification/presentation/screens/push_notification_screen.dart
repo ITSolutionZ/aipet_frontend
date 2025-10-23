@@ -159,7 +159,7 @@ class _PushNotificationScreenState
         SnackBarService.showError(context, '設定の保存に失敗しました: ${e.toString()}');
       }
       if (kDebugMode) {
-        debugPrint('알림 설정 저장 실패: $e');
+        LoggerService.debug('알림 설정 저장 실패: $e');
       }
     }
   }

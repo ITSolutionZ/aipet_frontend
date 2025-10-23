@@ -12,25 +12,25 @@ class PdfFileManager {
   /// PDF 파일 저장
   Future<File> savePdfFile(pw.Document pdf, String petName) async {
     try {
-      debugPrint('📄 PDF 바이트 생성 중...');
+      LoggerService.debug('📄 PDF 바이트 생성 중...');
       final bytes = await pdf.save();
-      debugPrint('✅ PDF 바이트 생성 완료: ${bytes.length} bytes');
+      LoggerService.debug('✅ PDF 바이트 생성 완료: ${bytes.length} bytes');
 
       final dir = await getApplicationDocumentsDirectory();
-      debugPrint('📁 저장 디렉토리: ${dir.path}');
+      LoggerService.debug('📁 저장 디렉토리: ${dir.path}');
 
       final timestamp = DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
       final safeName = _sanitizePetName(petName);
       final fileName = 'health_report_${safeName}_$timestamp.pdf';
       final file = File('${dir.path}/$fileName');
 
-      debugPrint('💾 파일 저장 중: $fileName');
+      LoggerService.debug('💾 파일 저장 중: $fileName');
       await file.writeAsBytes(bytes);
-      debugPrint('✅ 파일 저장 완료: ${file.path}');
+      LoggerService.debug('✅ 파일 저장 완료: ${file.path}');
 
       return file;
     } catch (e) {
-      debugPrint('❌ PDF 파일 저장 실패: $e');
+      LoggerService.debug('❌ PDF 파일 저장 실패: $e');
       rethrow;
     }
   }
@@ -49,7 +49,7 @@ class PdfFileManager {
 
     await file.writeAsBytes(pngBytes);
 
-    debugPrint('✅ PNG 파일 저장 완료: ${file.path}');
+    LoggerService.debug('✅ PNG 파일 저장 완료: ${file.path}');
     return file;
   }
 

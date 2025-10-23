@@ -89,7 +89,7 @@ class WalkListDialogHelper {
       petActivities,
     );
 
-    debugPrint(
+    LoggerService.debug(
       '🔄 산책 종료 시작 - 거리: $currentDistance, 활동: ${petActivities.length}개',
     );
 
@@ -99,7 +99,7 @@ class WalkListDialogHelper {
       notes: notesWithActivities,
     );
 
-    debugPrint(
+    LoggerService.debug(
       '✅ 산책 종료 결과: ${result.isSuccess ? "성공" : "실패"} - ${result.message}',
     );
 

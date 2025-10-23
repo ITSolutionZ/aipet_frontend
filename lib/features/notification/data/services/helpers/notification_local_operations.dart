@@ -14,11 +14,11 @@ class NotificationLocalOperations {
   static Future<void> saveNotification(NotificationModel notification) async {
     try {
       if (kDebugMode) {
-        debugPrint('[$_tag] 📝 알림 수신 기록: ${notification.title}');
+        LoggerService.debug('[$_tag] 📝 알림 수신 기록: ${notification.title}');
       }
     } catch (error) {
       if (kDebugMode) {
-        debugPrint('[$_tag] ❌ 알림 기록 중 오류: $error');
+        LoggerService.debug('[$_tag] ❌ 알림 기록 중 오류: $error');
       }
     }
   }
@@ -44,7 +44,7 @@ class NotificationLocalOperations {
       await prefs.setStringList(_notificationsKey, updatedNotifications);
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('[$_tag] ❌ 읽음 처리 실패: $e');
+        LoggerService.debug('[$_tag] ❌ 읽음 처리 실패: $e');
       }
     }
   }
@@ -78,12 +78,12 @@ class NotificationLocalOperations {
         await localNotifications.cancel(id);
       } catch (e) {
         if (kDebugMode) {
-          debugPrint('[$_tag] ℹ️ 로컬 알림 취소 건너뛰기 (ID가 숫자가 아님)');
+          LoggerService.debug('[$_tag] ℹ️ 로컬 알림 취소 건너뛰기 (ID가 숫자가 아님)');
         }
       }
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('[$_tag] ❌ 알림 삭제 실패: $e');
+        LoggerService.debug('[$_tag] ❌ 알림 삭제 실패: $e');
       }
     }
   }
@@ -98,7 +98,7 @@ class NotificationLocalOperations {
       await localNotifications.cancelAll();
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('[$_tag] ❌ 전체 알림 삭제 실패: $e');
+        LoggerService.debug('[$_tag] ❌ 전체 알림 삭제 실패: $e');
       }
     }
   }
@@ -125,7 +125,7 @@ class NotificationLocalOperations {
       return unreadCount;
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('[$_tag] ❌ 읽지 않은 알림 개수 조회 실패: $e');
+        LoggerService.debug('[$_tag] ❌ 읽지 않은 알림 개수 조회 실패: $e');
       }
       return 0;
     }

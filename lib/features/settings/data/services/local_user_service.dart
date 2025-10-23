@@ -51,7 +51,7 @@ class LocalUserService {
 
       return true;
     } catch (e) {
-      debugPrint('❌ 사용자 프로필 저장 실패: $e');
+      LoggerService.debug('❌ 사용자 프로필 저장 실패: $e');
       return false;
     }
   }
@@ -76,7 +76,7 @@ class LocalUserService {
         updatedAt: DateTime.parse(profile['updated_at'] as String),
       );
     } catch (e) {
-      debugPrint('❌ 사용자 프로필 로드 실패: $e');
+      LoggerService.debug('❌ 사용자 프로필 로드 실패: $e');
       return null;
     }
   }
@@ -88,7 +88,7 @@ class LocalUserService {
       await db.delete('user_profiles', where: 'id = ?', whereArgs: [id]);
       return true;
     } catch (e) {
-      debugPrint('❌ 사용자 프로필 삭제 실패: $e');
+      LoggerService.debug('❌ 사용자 프로필 삭제 실패: $e');
       return false;
     }
   }

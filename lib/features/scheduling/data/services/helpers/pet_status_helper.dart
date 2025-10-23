@@ -22,9 +22,9 @@ class PetStatusHelper {
       };
 
       await prefs.setString(statusKey, jsonEncode(statusData));
-      debugPrint('ペット状態更新成功: $petId');
+      LoggerService.debug('ペット状態更新成功: $petId');
     } catch (e) {
-      debugPrint('ペット状態更新エラー: $e');
+      LoggerService.debug('ペット状態更新エラー: $e');
     }
   }
 
@@ -44,7 +44,7 @@ class PetStatusHelper {
         'lastUpdated': DateTime.now().toIso8601String(),
       };
     } catch (e) {
-      debugPrint('ペット状態取得エラー: $e');
+      LoggerService.debug('ペット状態取得エラー: $e');
       return {
         'selectedStatuses': [],
         'lastUpdated': DateTime.now().toIso8601String(),

@@ -112,24 +112,24 @@ class DrawerHeaderWidget extends ConsumerWidget {
       return _buildDefaultUserImage();
     }
 
-    debugPrint('🖼️ DrawerHeaderWidget - imagePath: $imagePath');
+    LoggerService.debug('🖼️ DrawerHeaderWidget - imagePath: $imagePath');
 
     // 상대 경로를 절대 경로로 변환
     final storageService = ImageStorageService();
     final absolutePath = storageService.getAbsolutePath(imagePath) ?? imagePath;
-    debugPrint('🖼️ DrawerHeaderWidget - absolutePath: $absolutePath');
+    LoggerService.debug('🖼️ DrawerHeaderWidget - absolutePath: $absolutePath');
 
     final imageType = ImageService.getImageType(absolutePath);
-    debugPrint('🖼️ DrawerHeaderWidget - imageType: $imageType');
+    LoggerService.debug('🖼️ DrawerHeaderWidget - imageType: $imageType');
 
     switch (imageType) {
       case ImageType.file:
         final file = File(absolutePath);
         final fileExists = file.existsSync();
-        debugPrint('🖼️ DrawerHeaderWidget - File exists: $fileExists');
+        LoggerService.debug('🖼️ DrawerHeaderWidget - File exists: $fileExists');
 
         if (!fileExists) {
-          debugPrint(
+          LoggerService.debug(
             '❌ DrawerHeaderWidget - File does not exist: $absolutePath',
           );
           return _buildDefaultUserImage();
@@ -141,7 +141,7 @@ class DrawerHeaderWidget extends ConsumerWidget {
           width: 60,
           height: 60,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🖼️ DrawerHeaderWidget - File image error: $error');
+            LoggerService.debug('🖼️ DrawerHeaderWidget - File image error: $error');
             return _buildDefaultUserImage();
           },
         );
@@ -152,7 +152,7 @@ class DrawerHeaderWidget extends ConsumerWidget {
           width: 60,
           height: 60,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🖼️ DrawerHeaderWidget - Network image error: $error');
+            LoggerService.debug('🖼️ DrawerHeaderWidget - Network image error: $error');
             return _buildDefaultUserImage();
           },
         );
@@ -163,7 +163,7 @@ class DrawerHeaderWidget extends ConsumerWidget {
           width: 60,
           height: 60,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🖼️ DrawerHeaderWidget - Asset image error: $error');
+            LoggerService.debug('🖼️ DrawerHeaderWidget - Asset image error: $error');
             return _buildDefaultUserImage();
           },
         );

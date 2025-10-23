@@ -123,7 +123,7 @@ class HealthDataCollectionService {
         'confidence': analysisResult['confidence'] ?? 0.0,
       };
     } catch (e) {
-      debugPrint('Error loading allergy info: $e');
+      LoggerService.debug('Error loading allergy info: $e');
       return {'items': [], 'source': 'none'};
     }
   }

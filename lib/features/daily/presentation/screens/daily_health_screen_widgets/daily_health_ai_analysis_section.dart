@@ -119,7 +119,7 @@ class DailyHealthAIAnalysisSection extends ConsumerWidget {
               .timeout(
                 const Duration(seconds: 30),
                 onTimeout: () {
-                  debugPrint('⏰ PDF generation timeout');
+                  LoggerService.debug('⏰ PDF generation timeout');
                   throw Exception('レポート生成がタイムアウトしました。もう一度お試しください。');
                 },
               );
@@ -134,7 +134,7 @@ class DailyHealthAIAnalysisSection extends ConsumerWidget {
               .timeout(
                 const Duration(seconds: 45),
                 onTimeout: () {
-                  debugPrint('⏰ PNG generation timeout');
+                  LoggerService.debug('⏰ PNG generation timeout');
                   throw Exception('PNG生成がタイムアウトしました。もう一度お試しください。');
                 },
               );
@@ -176,8 +176,8 @@ class DailyHealthAIAnalysisSection extends ConsumerWidget {
         }
       }
     } catch (e, stackTrace) {
-      debugPrint('❌ PDF generation error: $e');
-      debugPrint('Stack trace: $stackTrace');
+      LoggerService.debug('❌ PDF generation error: $e');
+      LoggerService.debug('Stack trace: $stackTrace');
 
       // 에러 메시지 표시
       if (context.mounted) {
@@ -193,7 +193,7 @@ class DailyHealthAIAnalysisSection extends ConsumerWidget {
         try {
           Navigator.of(context, rootNavigator: true).pop();
         } catch (e) {
-          debugPrint('⚠️ Failed to close dialog: $e');
+          LoggerService.debug('⚠️ Failed to close dialog: $e');
         }
       }
     }

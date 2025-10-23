@@ -100,7 +100,7 @@ class OfflineAuthStateManager {
       await _syncOfflineChanges();
       await _refreshTokenIfNeeded();
     } catch (e) {
-      debugPrint('⚠️ Error handling network reconnection: $e');
+      LoggerService.debug('⚠️ Error handling network reconnection: $e');
     }
   }
 
@@ -114,7 +114,7 @@ class OfflineAuthStateManager {
         await _clearPendingChanges();
       }
     } catch (e) {
-      debugPrint('⚠️ Error syncing offline changes: $e');
+      LoggerService.debug('⚠️ Error syncing offline changes: $e');
     }
   }
 
@@ -127,7 +127,7 @@ class OfflineAuthStateManager {
         return List<Map<String, dynamic>>.from(changesJson['changes']);
       }
     } catch (e) {
-      debugPrint('⚠️ Error getting pending offline changes: $e');
+      LoggerService.debug('⚠️ Error getting pending offline changes: $e');
     }
     return [];
   }
@@ -138,7 +138,7 @@ class OfflineAuthStateManager {
     try {
       await SecureStorageService.remove('pending_auth_changes');
     } catch (e) {
-      debugPrint('⚠️ Error clearing pending changes: $e');
+      LoggerService.debug('⚠️ Error clearing pending changes: $e');
     }
   }
 
@@ -148,7 +148,7 @@ class OfflineAuthStateManager {
         await _tokenManager.refreshToken();
       }
     } catch (e) {
-      debugPrint('⚠️ Error refreshing token: $e');
+      LoggerService.debug('⚠️ Error refreshing token: $e');
     }
   }
 
@@ -226,7 +226,7 @@ class OfflineAuthStateManager {
         DateTime.now().millisecondsSinceEpoch,
       );
     } catch (e) {
-      debugPrint('⚠️ Error updating offline validation: $e');
+      LoggerService.debug('⚠️ Error updating offline validation: $e');
     }
   }
 
@@ -243,7 +243,7 @@ class OfflineAuthStateManager {
         'changes': existingChanges,
       });
     } catch (e) {
-      debugPrint('⚠️ Error adding pending change: $e');
+      LoggerService.debug('⚠️ Error adding pending change: $e');
     }
   }
 

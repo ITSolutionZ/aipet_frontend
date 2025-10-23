@@ -797,25 +797,25 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
       return const Icon(Icons.pets, color: AppColors.pointGray, size: 30);
     }
 
-    debugPrint('🖼️ PetManagementScreen - imagePath: ${pet.imagePath}');
+    LoggerService.debug('🖼️ PetManagementScreen - imagePath: ${pet.imagePath}');
 
     // 상대 경로를 절대 경로로 변환
     final storageService = ImageStorageService();
     final absolutePath =
         storageService.getAbsolutePath(pet.imagePath!) ?? pet.imagePath!;
-    debugPrint('🖼️ PetManagementScreen - absolutePath: $absolutePath');
+    LoggerService.debug('🖼️ PetManagementScreen - absolutePath: $absolutePath');
 
     final imageType = ImageService.getImageType(absolutePath);
-    debugPrint('🖼️ PetManagementScreen - imageType: $imageType');
+    LoggerService.debug('🖼️ PetManagementScreen - imageType: $imageType');
 
     switch (imageType) {
       case ImageType.file:
         final file = File(absolutePath);
         final fileExists = file.existsSync();
-        debugPrint('🖼️ PetManagementScreen - File exists: $fileExists');
+        LoggerService.debug('🖼️ PetManagementScreen - File exists: $fileExists');
 
         if (!fileExists) {
-          debugPrint(
+          LoggerService.debug(
             '❌ PetManagementScreen - File does not exist: $absolutePath',
           );
           return const Icon(Icons.pets, color: AppColors.pointGray, size: 30);
@@ -825,7 +825,7 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
           file,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🖼️ PetManagementScreen - File image error: $error');
+            LoggerService.debug('🖼️ PetManagementScreen - File image error: $error');
             return const Icon(Icons.pets, color: AppColors.pointGray, size: 30);
           },
         );
@@ -834,7 +834,7 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
           absolutePath,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🖼️ PetManagementScreen - Network image error: $error');
+            LoggerService.debug('🖼️ PetManagementScreen - Network image error: $error');
             return const Icon(Icons.pets, color: AppColors.pointGray, size: 30);
           },
         );
@@ -843,7 +843,7 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
           absolutePath,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🖼️ PetManagementScreen - Asset image error: $error');
+            LoggerService.debug('🖼️ PetManagementScreen - Asset image error: $error');
             return const Icon(Icons.pets, color: AppColors.pointGray, size: 30);
           },
         );

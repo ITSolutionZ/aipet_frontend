@@ -31,7 +31,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
 
       if (isCacheValid) {
         if (kDebugMode) {
-          debugPrint('[$_tag] 🗄️ 유효한 캐시 데이터 사용');
+          LoggerService.debug('[$_tag] 🗄️ 유효한 캐시 데이터 사용');
         }
         return await NotificationCacheService.getCachedNotifications(userId);
       }
@@ -54,21 +54,21 @@ class NotificationRepositoryImpl implements NotificationRepository {
         );
 
         if (kDebugMode) {
-          debugPrint('[$_tag] ✅ 로컬 저장소에서 알림 조회 및 캐시 저장 완료');
+          LoggerService.debug('[$_tag] ✅ 로컬 저장소에서 알림 조회 및 캐시 저장 완료');
         }
 
         return localResult;
       } else {
         // 4. 로컬 조회 실패 시 캐시된 데이터라도 반환 시도
         if (kDebugMode) {
-          debugPrint('[$_tag] ⚠️ 로컬 조회 실패, 캐시된 데이터 조회 시도');
+          LoggerService.debug('[$_tag] ⚠️ 로컬 조회 실패, 캐시된 데이터 조회 시도');
         }
 
         final cacheResult =
             await NotificationCacheService.getCachedNotifications(userId);
         if (cacheResult.isSuccess) {
           if (kDebugMode) {
-            debugPrint('[$_tag] 🗄️ 만료된 캐시 데이터 사용');
+            LoggerService.debug('[$_tag] 🗄️ 만료된 캐시 데이터 사용');
           }
           return cacheResult;
         }
@@ -77,7 +77,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
       }
     } catch (error) {
       if (kDebugMode) {
-        debugPrint('[$_tag] ❌ 알림 조회 중 예외 발생: $error');
+        LoggerService.debug('[$_tag] ❌ 알림 조회 중 예외 발생: $error');
       }
       return Result.failure('알림 조회 중 오류 발생: $error');
     }
@@ -99,7 +99,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
 
         if (notification != null) {
           if (kDebugMode) {
-            debugPrint('[$_tag] 🗄️ 캐시에서 특정 알림 조회 성공: $notificationId');
+            LoggerService.debug('[$_tag] 🗄️ 캐시에서 특정 알림 조회 성공: $notificationId');
           }
           return Result.success('Notification found in cache', notification);
         }
@@ -114,19 +114,19 @@ class NotificationRepositoryImpl implements NotificationRepository {
 
         if (notification != null) {
           if (kDebugMode) {
-            debugPrint('[$_tag] ✅ API에서 특정 알림 조회 성공: $notificationId');
+            LoggerService.debug('[$_tag] ✅ API에서 특정 알림 조회 성공: $notificationId');
           }
           return Result.success('Notification found via API', notification);
         }
       }
 
       if (kDebugMode) {
-        debugPrint('[$_tag] ⚠️ 알림을 찾을 수 없음: $notificationId');
+        LoggerService.debug('[$_tag] ⚠️ 알림을 찾을 수 없음: $notificationId');
       }
       return Result.success('Notification not found', null);
     } catch (error) {
       if (kDebugMode) {
-        debugPrint('[$_tag] ❌ 특정 알림 조회 중 예외 발생: $error');
+        LoggerService.debug('[$_tag] ❌ 특정 알림 조회 중 예외 발생: $error');
       }
       return Result.failure('알림 조회 중 오류 발생: $error');
     }
@@ -150,14 +150,14 @@ class NotificationRepositoryImpl implements NotificationRepository {
         await NotificationCacheService.clearUserCache(userId);
 
         if (kDebugMode) {
-          debugPrint('[$_tag] ✅ 읽음 상태 업데이트 및 캐시 무효화 완료');
+          LoggerService.debug('[$_tag] ✅ 읽음 상태 업데이트 및 캐시 무효화 완료');
         }
       }
 
       return result;
     } catch (error) {
       if (kDebugMode) {
-        debugPrint('[$_tag] ❌ 읽음 상태 업데이트 중 예외 발생: $error');
+        LoggerService.debug('[$_tag] ❌ 읽음 상태 업데이트 중 예외 발생: $error');
       }
       return Result.failure('읽음 상태 업데이트 중 오류 발생: $error');
     }
@@ -177,14 +177,14 @@ class NotificationRepositoryImpl implements NotificationRepository {
         await NotificationCacheService.clearUserCache(userId);
 
         if (kDebugMode) {
-          debugPrint('[$_tag] ✅ 알림 삭제 및 캐시 무효화 완료');
+          LoggerService.debug('[$_tag] ✅ 알림 삭제 및 캐시 무효화 완료');
         }
       }
 
       return result;
     } catch (error) {
       if (kDebugMode) {
-        debugPrint('[$_tag] ❌ 알림 삭제 중 예외 발생: $error');
+        LoggerService.debug('[$_tag] ❌ 알림 삭제 중 예외 발생: $error');
       }
       return Result.failure('알림 삭제 중 오류 발생: $error');
     }
@@ -201,7 +201,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
       );
       if (cachedSettings.isSuccess) {
         if (kDebugMode) {
-          debugPrint('[$_tag] 🗄️ 캐시된 설정 사용');
+          LoggerService.debug('[$_tag] 🗄️ 캐시된 설정 사용');
         }
         return cachedSettings;
       }
@@ -218,14 +218,14 @@ class NotificationRepositoryImpl implements NotificationRepository {
         );
 
         if (kDebugMode) {
-          debugPrint('[$_tag] ✅ 로컬 저장소에서 설정 조회 및 캐시 저장 완료');
+          LoggerService.debug('[$_tag] ✅ 로컬 저장소에서 설정 조회 및 캐시 저장 완료');
         }
       }
 
       return localResult;
     } catch (error) {
       if (kDebugMode) {
-        debugPrint('[$_tag] ❌ 설정 조회 중 예외 발생: $error');
+        LoggerService.debug('[$_tag] ❌ 설정 조회 중 예외 발생: $error');
       }
       return Result.failure('설정 조회 중 오류 발생: $error');
     }
@@ -251,14 +251,14 @@ class NotificationRepositoryImpl implements NotificationRepository {
         );
 
         if (kDebugMode) {
-          debugPrint('[$_tag] ✅ 설정 업데이트 및 캐시 동기화 완료');
+          LoggerService.debug('[$_tag] ✅ 설정 업데이트 및 캐시 동기화 완료');
         }
       }
 
       return result;
     } catch (error) {
       if (kDebugMode) {
-        debugPrint('[$_tag] ❌ 설정 업데이트 중 예외 발생: $error');
+        LoggerService.debug('[$_tag] ❌ 설정 업데이트 중 예외 발생: $error');
       }
       return Result.failure('설정 업데이트 중 오류 발생: $error');
     }
@@ -273,7 +273,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
       return await _localService.getNotificationStats(userId);
     } catch (error) {
       if (kDebugMode) {
-        debugPrint('[$_tag] ❌ 통계 조회 중 예외 발생: $error');
+        LoggerService.debug('[$_tag] ❌ 통계 조회 중 예외 발생: $error');
       }
       return Result.failure('통계 조회 중 오류 발생: $error');
     }

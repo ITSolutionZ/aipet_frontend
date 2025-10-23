@@ -51,20 +51,20 @@ class UserProfileController extends _$UserProfileController {
 
       // 프로필이 없으면 기본 사용자 생성
       if (profile == null) {
-        debugPrint('👤 사용자 프로필이 없음. 기본 사용자 생성 중...');
+        LoggerService.debug('👤 사용자 프로필이 없음. 기본 사용자 생성 중...');
         final defaultProfile = await _userService.createUserProfile(
           userName: 'ゲストユーザー',
           email: 'guest@example.com',
         );
         await _userService.saveUserProfile(defaultProfile);
         state = state.copyWith(profile: defaultProfile, isLoading: false);
-        debugPrint('👤 기본 사용자 생성 완료: ${defaultProfile.userName}');
+        LoggerService.debug('👤 기본 사용자 생성 완료: ${defaultProfile.userName}');
       } else {
         state = state.copyWith(profile: profile, isLoading: false);
-        debugPrint('👤 기존 사용자 프로필 로드 완료: ${profile.userName}');
+        LoggerService.debug('👤 기존 사용자 프로필 로드 완료: ${profile.userName}');
       }
     } catch (e) {
-      debugPrint('❌ 프로필 로드 실패: $e');
+      LoggerService.debug('❌ 프로필 로드 실패: $e');
       state = state.copyWith(isLoading: false, error: '프로필 로드 실패: $e');
     }
   }

@@ -66,7 +66,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     // 앱이 백그라운드에서 포그라운드로 돌아왔을 때
     if (state == AppLifecycleState.resumed) {
       // TODO: 캐시 정리 로직 추가 필요시 구현
-      debugPrint('앱이 포그라운드로 돌아왔습니다');
+      LoggerService.debug('앱이 포그라운드로 돌아왔습니다');
     }
   }
 
@@ -423,11 +423,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   /// Pull-to-Refresh 핸들러
   Future<void> _handleRefresh() async {
-    // debugPrint('🔄 HomeScreen: Pull-to-Refresh 시작');
+    // LoggerService.debug('🔄 HomeScreen: Pull-to-Refresh 시작');
 
     // 대시보드 데이터 다시 로드
     ref.invalidate(homeDashboardProvider);
 
-    // debugPrint('✅ HomeScreen: Pull-to-Refresh 완료');
+    // LoggerService.debug('✅ HomeScreen: Pull-to-Refresh 완료');
   }
 }

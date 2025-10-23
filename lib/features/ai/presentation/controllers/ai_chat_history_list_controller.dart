@@ -99,7 +99,7 @@ class AiChatHistoryListNotifier extends _$AiChatHistoryListNotifier {
         isLoading: false,
       );
     } catch (e) {
-      debugPrint('Failed to load chat history: $e');
+      LoggerService.debug('Failed to load chat history: $e');
       state = state.copyWith(
         allHistoryItems: [],
         savedHistoryItems: [],

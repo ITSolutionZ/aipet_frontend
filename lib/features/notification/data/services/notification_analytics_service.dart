@@ -73,13 +73,13 @@ class NotificationAnalyticsService {
       _analyticsController.add(analytics);
 
       if (kDebugMode) {
-        debugPrint(
+        LoggerService.debug(
           '모의 통계 데이터 생성 완료: ${mockStats.length}개 통계, ${mockUserEngagement.length}개 사용자 참여도',
         );
       }
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('통계 데이터 생성 실패: $e');
+        LoggerService.debug('통계 데이터 생성 실패: $e');
       }
     }
   }

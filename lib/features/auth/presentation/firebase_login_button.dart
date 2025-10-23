@@ -43,11 +43,11 @@ class FirebaseLoginController extends Notifier<FirebaseLoginState> {
       final credential = await FirebaseAuth.instance.signInAnonymously();
 
       if (credential.user != null) {
-        debugPrint('✅ Firebase 익명 로그인 성공: ${credential.user!.uid}');
+        LoggerService.debug('✅ Firebase 익명 로그인 성공: ${credential.user!.uid}');
         onSuccess?.call();
       }
     } catch (e) {
-      debugPrint('❌ Firebase 로그인 실패: $e');
+      LoggerService.debug('❌ Firebase 로그인 실패: $e');
       onError?.call(e.toString());
     } finally {
       setLoading(false);
@@ -57,9 +57,9 @@ class FirebaseLoginController extends Notifier<FirebaseLoginState> {
   Future<void> signOut() async {
     try {
       await FirebaseAuth.instance.signOut();
-      debugPrint('✅ Firebase 로그아웃 성공');
+      LoggerService.debug('✅ Firebase 로그아웃 성공');
     } catch (e) {
-      debugPrint('❌ Firebase 로그아웃 실패: $e');
+      LoggerService.debug('❌ Firebase 로그아웃 실패: $e');
     }
   }
 }

@@ -16,26 +16,26 @@ class PetProfileLogic {
   /// 펫 프로필 로드
   Future<Result<PetProfileEntity?>> loadPetProfile(String petId) async {
     try {
-      debugPrint('🔍 PetProfileLogic: Loading pet with ID: $petId');
+      LoggerService.debug('🔍 PetProfileLogic: Loading pet with ID: $petId');
       final repository = _ref.read(petProfileRepositoryProvider);
       final result = await repository.getPetById(petId);
 
       if (result.isSuccess) {
         if (result.dataOrNull != null) {
-          debugPrint(
+          LoggerService.debug(
             '✅ PetProfileLogic: Pet found: ${result.dataOrNull!.name}',
           );
           return Result.success('ペット情報を取得しました', result.dataOrNull);
         } else {
-          debugPrint('❌ PetProfileLogic: Pet not found with ID: $petId');
+          LoggerService.debug('❌ PetProfileLogic: Pet not found with ID: $petId');
           return Result.failure('ペットが見つかりません (ID: $petId)');
         }
       } else {
-        debugPrint('❌ PetProfileLogic: Repository error: ${result.message}');
+        LoggerService.debug('❌ PetProfileLogic: Repository error: ${result.message}');
         return Result.failure(result.message);
       }
     } catch (e) {
-      debugPrint('❌ PetProfileLogic: Exception: ${e.toString()}');
+      LoggerService.debug('❌ PetProfileLogic: Exception: ${e.toString()}');
       return Result.failure('ペット情報の取得に失敗しました: ${e.toString()}');
     }
   }

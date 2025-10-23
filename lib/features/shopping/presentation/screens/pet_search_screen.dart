@@ -89,7 +89,7 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
 
     final notifier = ref.read(rakutenProductsProvider.notifier);
 
-    debugPrint('🔍 Tab changed to: $baseKeyword');
+    LoggerService.debug('🔍 Tab changed to: $baseKeyword');
     notifier.searchPetProducts(keyword: baseKeyword);
 
     // タブに対応するブランドを検索
@@ -233,14 +233,14 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
     final keyword = allKeywords.join(' ');
 
     // 6. デバッグログ
-    debugPrint('═══════════════════════════════════════');
-    debugPrint('🔍 検索条件 (AND条件)');
-    debugPrint('═══════════════════════════════════════');
-    debugPrint('📌 タブ: $baseKeyword');
-    debugPrint('🏷️ チップフィルター (${chipFilters.length}個): $chipFilters');
-    debugPrint('🎯 ブランド (${selectedBrands.length}個): $selectedBrands');
-    debugPrint('🔎 最終検索キーワード: "$keyword"');
-    debugPrint('═══════════════════════════════════════');
+    LoggerService.debug('═══════════════════════════════════════');
+    LoggerService.debug('🔍 検索条件 (AND条件)');
+    LoggerService.debug('═══════════════════════════════════════');
+    LoggerService.debug('📌 タブ: $baseKeyword');
+    LoggerService.debug('🏷️ チップフィルター (${chipFilters.length}個): $chipFilters');
+    LoggerService.debug('🎯 ブランド (${selectedBrands.length}個): $selectedBrands');
+    LoggerService.debug('🔎 最終検索キーワード: "$keyword"');
+    LoggerService.debug('═══════════════════════════════════════');
 
     // 7. 検索を実行
     notifier.searchPetProducts(keyword: keyword);
@@ -284,7 +284,7 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
 
     final notifier = ref.read(rakutenProductsProvider.notifier);
 
-    debugPrint('🔍 Filters cleared, searching with: $baseKeyword');
+    LoggerService.debug('🔍 Filters cleared, searching with: $baseKeyword');
     notifier.searchPetProducts(keyword: baseKeyword);
 
     // ✅ Shared SnackBarService 사용
@@ -758,8 +758,8 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
   /// 商品ページを開く
   Future<void> _openProductPage(RakutenPetProduct product) async {
     try {
-      debugPrint('🔗 Opening product page: ${product.itemName}');
-      debugPrint('🔗 Product URL: ${product.itemUrl}');
+      LoggerService.debug('🔗 Opening product page: ${product.itemName}');
+      LoggerService.debug('🔗 Product URL: ${product.itemUrl}');
 
       final Uri url = Uri.parse(product.itemUrl);
 
@@ -790,7 +790,7 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
         }
       }
     } catch (e) {
-      debugPrint('❌ Error opening product page: $e');
+      LoggerService.debug('❌ Error opening product page: $e');
       if (mounted) {
         // ✅ Shared SnackBarService 사용
         SnackBarService.showError(
@@ -901,7 +901,7 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
     final brandState = ref.watch(rakutenBrandsProvider);
 
     // 디버그 로그 추가
-    debugPrint(
+    LoggerService.debug(
       '🏷️ Brand State: isLoading=${brandState.isLoading}, error=${brandState.error}, brands=${brandState.brands.length}',
     );
 

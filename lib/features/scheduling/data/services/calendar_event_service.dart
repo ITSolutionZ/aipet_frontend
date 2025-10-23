@@ -42,9 +42,9 @@ class CalendarEventService {
         'updated_at': DateTime.now().toIso8601String(),
       }, conflictAlgorithm: ConflictAlgorithm.replace);
 
-      debugPrint('✅ イベント保存成功: ${event.title} (ID: ${event.id})');
+      LoggerService.debug('✅ イベント保存成功: ${event.title} (ID: ${event.id})');
     } catch (e) {
-      debugPrint('❌ イベント保存失敗: $e');
+      LoggerService.debug('❌ イベント保存失敗: $e');
       rethrow;
     }
   }
@@ -60,10 +60,10 @@ class CalendarEventService {
       );
 
       final events = maps.map((map) => _mapToEntity(map)).toList();
-      debugPrint('✅ イベント取得成功: ${events.length}件');
+      LoggerService.debug('✅ イベント取得成功: ${events.length}件');
       return events;
     } catch (e) {
-      debugPrint('❌ イベント取得失敗: $e');
+      LoggerService.debug('❌ イベント取得失敗: $e');
       return [];
     }
   }

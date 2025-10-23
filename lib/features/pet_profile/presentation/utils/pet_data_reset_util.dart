@@ -12,21 +12,21 @@ class PetDataResetUtil {
   static Future<bool> forceResetAllPetData() async {
     try {
       if (kDebugMode) {
-        debugPrint('🔄 PetDataResetUtil: 펫 데이터 강제 리셋 시작');
+        LoggerService.debug('🔄 PetDataResetUtil: 펫 데이터 강제 리셋 시작');
       }
 
       // 1단계: LocalDataManager의 모든 펫 데이터 삭제
       await LocalDataManager.instance.clearAllPetData();
 
       if (kDebugMode) {
-        debugPrint('✅ PetDataResetUtil: LocalDataManager 펫 데이터 삭제 완료');
+        LoggerService.debug('✅ PetDataResetUtil: LocalDataManager 펫 데이터 삭제 완료');
       }
 
       // 2단계: 모든 펫 관련 캐시 클리어
       final cacheClearResult = await PetCacheClearService.clearAllPetCache();
 
       if (kDebugMode) {
-        debugPrint('✅ PetDataResetUtil: 펫 캐시 클리어 완료: $cacheClearResult');
+        LoggerService.debug('✅ PetDataResetUtil: 펫 캐시 클리어 완료: $cacheClearResult');
       }
 
       // 3단계: 빈 펫 프로필 리스트 저장 (마이그레이션 완료 상태로)
@@ -34,7 +34,7 @@ class PetDataResetUtil {
       await LocalDataManager.instance.setMigrationCompleted('pet_profiles');
 
       if (kDebugMode) {
-        debugPrint('✅ PetDataResetUtil: 빈 펫 프로필 리스트 저장 완료');
+        LoggerService.debug('✅ PetDataResetUtil: 빈 펫 프로필 리스트 저장 완료');
       }
 
       // 4단계: 최종 확인
@@ -43,26 +43,26 @@ class PetDataResetUtil {
           .isMigrationCompleted('pet_profiles');
 
       if (kDebugMode) {
-        debugPrint('🔍 PetDataResetUtil: 최종 확인');
-        debugPrint('  - 펫 프로필 수: ${finalPets.length}');
-        debugPrint('  - 마이그레이션 완료: $isMigrationCompleted');
+        LoggerService.debug('🔍 PetDataResetUtil: 최종 확인');
+        LoggerService.debug('  - 펫 프로필 수: ${finalPets.length}');
+        LoggerService.debug('  - 마이그레이션 완료: $isMigrationCompleted');
       }
 
       if (finalPets.isEmpty && isMigrationCompleted) {
         if (kDebugMode) {
-          debugPrint('✅ PetDataResetUtil: 펫 데이터 강제 리셋 성공!');
+          LoggerService.debug('✅ PetDataResetUtil: 펫 데이터 강제 리셋 성공!');
         }
         return true;
       } else {
         if (kDebugMode) {
-          debugPrint('❌ PetDataResetUtil: 펫 데이터 리셋 실패 - 데이터가 남아있음');
+          LoggerService.debug('❌ PetDataResetUtil: 펫 데이터 리셋 실패 - 데이터가 남아있음');
         }
         return false;
       }
     } catch (error, stackTrace) {
       if (kDebugMode) {
-        debugPrint('❌ PetDataResetUtil: 펫 데이터 강제 리셋 실패: $error');
-        debugPrint('Stack trace: $stackTrace');
+        LoggerService.debug('❌ PetDataResetUtil: 펫 데이터 강제 리셋 실패: $error');
+        LoggerService.debug('Stack trace: $stackTrace');
       }
       return false;
     }
@@ -94,19 +94,19 @@ class PetDataResetUtil {
   static Future<void> printDebugInfo() async {
     if (!kDebugMode) return;
 
-    debugPrint('🔍 === 펫 데이터 디버그 정보 ===');
+    LoggerService.debug('🔍 === 펫 데이터 디버그 정보 ===');
 
     final status = await getPetDataStatus();
-    debugPrint('펫 개수: ${status['petCount']}');
-    debugPrint('마이그레이션 완료: ${status['isMigrationCompleted']}');
-    debugPrint('깨끗한 상태: ${status['isClean']}');
-    debugPrint('펫 이름들: ${status['pets']}');
-    debugPrint('캐시 상태: ${status['cacheStatus']}');
+    LoggerService.debug('펫 개수: ${status['petCount']}');
+    LoggerService.debug('마이그레이션 완료: ${status['isMigrationCompleted']}');
+    LoggerService.debug('깨끗한 상태: ${status['isClean']}');
+    LoggerService.debug('펫 이름들: ${status['pets']}');
+    LoggerService.debug('캐시 상태: ${status['cacheStatus']}');
 
     if (status['error'] != null) {
-      debugPrint('에러: ${status['error']}');
+      LoggerService.debug('에러: ${status['error']}');
     }
 
-    debugPrint('==============================');
+    LoggerService.debug('==============================');
   }
 }

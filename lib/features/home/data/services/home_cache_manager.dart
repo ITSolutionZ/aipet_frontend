@@ -15,7 +15,7 @@ class HomeCacheManager {
   ///
   /// 사용자가 Pull-to-Refresh를 수행하거나 특정 데이터 변경 시 호출
   Future<void> refreshHomeDashboard() async {
-    debugPrint('🔄 HomeCacheManager: 홈 대시보드 캐시 새로고침');
+    LoggerService.debug('🔄 HomeCacheManager: 홈 대시보드 캐시 새로고침');
 
     // 홈 관련 모든 캐시 삭제
     await Future.wait([
@@ -27,7 +27,7 @@ class HomeCacheManager {
       _cacheService.clearCache(CacheKeys.appointments),
     ]);
 
-    debugPrint('✅ HomeCacheManager: 홈 대시보드 캐시 새로고침 완료');
+    LoggerService.debug('✅ HomeCacheManager: 홈 대시보드 캐시 새로고침 완료');
   }
 
   /// 특정 데이터 캐시 무효화
@@ -61,11 +61,11 @@ class HomeCacheManager {
     }
 
     await _cacheService.clearCache(cacheKey);
-    debugPrint('🗑️ HomeCacheManager: $description 캐시 무효화');
+    LoggerService.debug('🗑️ HomeCacheManager: $description 캐시 무효화');
 
     // 홈 대시보드 캐시도 함께 무효화 (종속성 때문)
     await _cacheService.clearCache(CacheKeys.homeDashboard);
-    debugPrint('🗑️ HomeCacheManager: 홈 대시보드 캐시도 무효화');
+    LoggerService.debug('🗑️ HomeCacheManager: 홈 대시보드 캐시도 무효화');
   }
 
   /// 백그라운드 캐시 정리
@@ -73,7 +73,7 @@ class HomeCacheManager {
   /// 앱이 백그라운드에서 포그라운드로 돌아왔을 때 호출
   Future<void> cleanupExpiredCache() async {
     _cacheService.cleanupExpiredMemoryCache();
-    debugPrint('🧹 HomeCacheManager: 만료된 캐시 정리 완료');
+    LoggerService.debug('🧹 HomeCacheManager: 만료된 캐시 정리 완료');
   }
 
   /// 캐시 상태 확인 (디버그용)

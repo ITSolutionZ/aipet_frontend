@@ -11,24 +11,24 @@ import '../pet_basic_info_tab.dart';
 class PetInfoImageHelper {
   /// 이미지 위젯 빌드 - 강화된 로컬 저장 지원
   static Widget buildImageWidget(String imagePath) {
-    debugPrint('🖼️ buildImageWidget - imagePath: $imagePath');
+    LoggerService.debug('🖼️ buildImageWidget - imagePath: $imagePath');
 
     // 상대 경로를 절대 경로로 변환
     final storageService = ImageStorageService();
     final absolutePath = storageService.getAbsolutePath(imagePath) ?? imagePath;
-    debugPrint('🖼️ absolutePath: $absolutePath');
+    LoggerService.debug('🖼️ absolutePath: $absolutePath');
 
     final imageType = ImageService.getImageType(absolutePath);
-    debugPrint('🖼️ imageType: $imageType');
+    LoggerService.debug('🖼️ imageType: $imageType');
 
     switch (imageType) {
       case ImageType.file:
         final file = File(absolutePath);
         final fileExists = file.existsSync();
-        debugPrint('🖼️ File exists: $fileExists');
+        LoggerService.debug('🖼️ File exists: $fileExists');
 
         if (!fileExists) {
-          debugPrint('❌ File does not exist: $absolutePath');
+          LoggerService.debug('❌ File does not exist: $absolutePath');
           // 백업에서 복원 시도
           return _buildImageWithBackup(imagePath);
         }
@@ -37,7 +37,7 @@ class PetInfoImageHelper {
           file,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🖼️ Image.file error: $error');
+            LoggerService.debug('🖼️ Image.file error: $error');
             return _buildErrorWidget(context, error, stackTrace);
           },
         );
@@ -46,7 +46,7 @@ class PetInfoImageHelper {
           absolutePath,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🖼️ Image.network error: $error');
+            LoggerService.debug('🖼️ Image.network error: $error');
             return _buildErrorWidget(context, error, stackTrace);
           },
         );
@@ -55,7 +55,7 @@ class PetInfoImageHelper {
           absolutePath,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🖼️ Image.asset error: $error');
+            LoggerService.debug('🖼️ Image.asset error: $error');
             return _buildErrorWidget(context, error, stackTrace);
           },
         );
@@ -70,7 +70,7 @@ class PetInfoImageHelper {
         if (snapshot.hasData && snapshot.data!.isNotEmpty) {
           // 가장 최근 이미지 사용
           final latestImagePath = snapshot.data!.last;
-          debugPrint('🔄 Using backup image: $latestImagePath');
+          LoggerService.debug('🔄 Using backup image: $latestImagePath');
 
           final file = File(latestImagePath);
           if (file.existsSync()) {
@@ -96,7 +96,7 @@ class PetInfoImageHelper {
     Object error,
     StackTrace? stackTrace,
   ) {
-    debugPrint('🖼️ Building error widget for: $error');
+    LoggerService.debug('🖼️ Building error widget for: $error');
     return Container(
       color: AppColors.pointOffWhite,
       child: Image.asset(
@@ -165,13 +165,13 @@ class PetInfoImageHelper {
     String tabId,
   ) async {
     final imagePath = await ImageService.pickFromGallery(context);
-    debugPrint('📸 Selected image path: $imagePath');
+    LoggerService.debug('📸 Selected image path: $imagePath');
 
     if (imagePath != null && context.mounted) {
       // ファイルが実際に存在するか確認
       final file = File(imagePath);
       final exists = file.existsSync();
-      debugPrint('📸 File exists: $exists');
+      LoggerService.debug('📸 File exists: $exists');
 
       ref
           .read(petBasicInfoTabControllerProvider(tabId).notifier)

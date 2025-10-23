@@ -14,13 +14,13 @@ class PetRegistrationValidator with ValidationMixin {
   /// 펫 이름 검증 (shared ValidationMixin 사용)
   @override
   String? validatePetName(String? value) {
-    debugPrint('🔍 Validating pet name: "$value"');
+    LoggerService.debug('🔍 Validating pet name: "$value"');
     final result = validateMultiple(value, [
       (v) => validateRequired(v, fieldName: 'ペットの名前'),
       (v) =>
           validateLength(v, minLength: 2, maxLength: 10, fieldName: 'ペットの名前'),
     ]);
-    debugPrint(
+    LoggerService.debug(
       result == null
           ? '✅ Pet name validation passed'
           : '❌ Pet name validation failed',
@@ -30,7 +30,7 @@ class PetRegistrationValidator with ValidationMixin {
 
   /// 생년월일 검증 (shared ValidationMixin 사용)
   String? validateBirthDate(String? value) {
-    debugPrint('🔍 Validating birth date: "$value"');
+    LoggerService.debug('🔍 Validating birth date: "$value"');
     final result = validateMultiple(value, [
       (v) => validateRequired(v, fieldName: '生年月日'),
       (v) => validateRegex(
@@ -40,7 +40,7 @@ class PetRegistrationValidator with ValidationMixin {
         errorMessage: 'YYYY-MM-DD形式で入力してください',
       ),
     ]);
-    debugPrint(
+    LoggerService.debug(
       result == null
           ? '✅ Birth date validation passed'
           : '❌ Birth date validation failed',
@@ -64,12 +64,12 @@ class PetRegistrationValidator with ValidationMixin {
 
   /// 체중 검증 (shared ValidationMixin 사용)
   String? validateWeight(String? value) {
-    debugPrint('🔍 Validating weight: "$value"');
+    LoggerService.debug('🔍 Validating weight: "$value"');
     final result = validateMultiple(value, [
       (v) => validateRequired(v, fieldName: '体重'),
       (v) => validateNumberRange(v, min: 0.1, max: 100, fieldName: '体重'),
     ]);
-    debugPrint(
+    LoggerService.debug(
       result == null
           ? '✅ Weight validation passed'
           : '❌ Weight validation failed',
@@ -88,9 +88,9 @@ class PetRegistrationValidator with ValidationMixin {
 
   /// 품종 검증 (shared ValidationMixin 사용)
   String? validateBreed(String breed) {
-    debugPrint('🔍 Validating breed: "$breed" (empty: ${breed.isEmpty})');
+    LoggerService.debug('🔍 Validating breed: "$breed" (empty: ${breed.isEmpty})');
     final result = validateRequired(breed, fieldName: '品種');
-    debugPrint(
+    LoggerService.debug(
       result == null
           ? '✅ Breed validation passed'
           : '❌ Breed validation failed',
@@ -100,9 +100,9 @@ class PetRegistrationValidator with ValidationMixin {
 
   /// 성별 검증 (shared ValidationMixin 사용)
   String? validateGender(String gender) {
-    debugPrint('🔍 Validating gender: "$gender" (empty: ${gender.isEmpty})');
+    LoggerService.debug('🔍 Validating gender: "$gender" (empty: ${gender.isEmpty})');
     final result = validateRequired(gender, fieldName: '性別');
-    debugPrint(
+    LoggerService.debug(
       result == null
           ? '✅ Gender validation passed'
           : '❌ Gender validation failed',

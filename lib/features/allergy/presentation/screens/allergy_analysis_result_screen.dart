@@ -741,7 +741,7 @@ class AllergyAnalysisResultScreen extends ConsumerWidget {
       return pw.MemoryImage(imageData.buffer.asUint8List());
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('배경 이미지 로드 실패: $e');
+        LoggerService.debug('배경 이미지 로드 실패: $e');
       }
       return null;
     }

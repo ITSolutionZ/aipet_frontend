@@ -19,7 +19,7 @@ class NotificationTemplateStorageHelper {
       await SecureStorageService.setString(templatesKey, templatesJson);
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('템플릿 저장 실패: $e');
+        LoggerService.debug('템플릿 저장 실패: $e');
       }
     }
   }
@@ -36,7 +36,7 @@ class NotificationTemplateStorageHelper {
       }
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('템플릿 조회 실패: $e');
+        LoggerService.debug('템플릿 조회 실패: $e');
       }
     }
     return [];
@@ -48,7 +48,7 @@ class NotificationTemplateStorageHelper {
       await SecureStorageService.remove(templatesKey);
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('템플릿 삭제 실패: $e');
+        LoggerService.debug('템플릿 삭제 실패: $e');
       }
     }
   }

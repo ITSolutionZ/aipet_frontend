@@ -29,24 +29,24 @@ class PetImageProviderHelper {
       return null;
     }
 
-    debugPrint('🖼️ PetImageProviderHelper - path: $path');
+    LoggerService.debug('🖼️ PetImageProviderHelper - path: $path');
 
     // 상대 경로를 절대 경로로 변환
     final storageService = ImageStorageService();
     final absolutePath = storageService.getAbsolutePath(path) ?? path;
-    debugPrint('🖼️ PetImageProviderHelper - absolutePath: $absolutePath');
+    LoggerService.debug('🖼️ PetImageProviderHelper - absolutePath: $absolutePath');
 
     final imageType = _getImageType(absolutePath);
-    debugPrint('🖼️ PetImageProviderHelper - imageType: $imageType');
+    LoggerService.debug('🖼️ PetImageProviderHelper - imageType: $imageType');
 
     switch (imageType) {
       case _ImageType.file:
         final file = File(absolutePath);
         final fileExists = file.existsSync();
-        debugPrint('🖼️ PetImageProviderHelper - File exists: $fileExists');
+        LoggerService.debug('🖼️ PetImageProviderHelper - File exists: $fileExists');
 
         if (!fileExists) {
-          debugPrint(
+          LoggerService.debug(
             '❌ PetImageProviderHelper - File does not exist: $absolutePath',
           );
           return const AssetImage('assets/icons/logos/aipet_logo.png');

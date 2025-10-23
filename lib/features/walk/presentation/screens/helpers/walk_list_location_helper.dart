@@ -18,7 +18,7 @@ class WalkListLocationHelper {
       final mapController = ref.read(globalMapControllerProvider);
 
       if (mapController == null) {
-        debugPrint('❌ 지도 컨트롤러가 아직 초기화되지 않았습니다');
+        LoggerService.debug('❌ 지도 컨트롤러가 아직 초기화되지 않았습니다');
         if (context.mounted) {
           _showLocationErrorSnackBar(context, message: '地図が読み込まれていません');
         }
@@ -38,7 +38,7 @@ class WalkListLocationHelper {
             },
           );
 
-      debugPrint('📍 현재 위치: ${position.latitude}, ${position.longitude}');
+      LoggerService.debug('📍 현재 위치: ${position.latitude}, ${position.longitude}');
 
       // 지도 카메라를 현재 위치로 이동
       await mapController.animateCamera(
@@ -54,7 +54,7 @@ class WalkListLocationHelper {
         _showLocationSuccessSnackBar(context);
       }
     } catch (e) {
-      debugPrint('❌ 현재 위치 이동 에러: $e');
+      LoggerService.debug('❌ 현재 위치 이동 에러: $e');
       if (context.mounted) {
         _showLocationErrorSnackBar(context, message: '現在地の取得に失敗しました');
       }

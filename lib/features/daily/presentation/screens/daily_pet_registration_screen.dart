@@ -16,7 +16,7 @@ class DailyPetRegistrationScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    debugPrint('🔍 DailyPetRegistrationScreen 빌드됨, petId: $petId');
+    LoggerService.debug('🔍 DailyPetRegistrationScreen 빌드됨, petId: $petId');
     return _PetRegistrationForm(petId: petId);
   }
 }
@@ -128,7 +128,7 @@ class _PetRegistrationFormState extends ConsumerState<_PetRegistrationForm> {
   /// 기존 펫 데이터 로드
   Future<void> _loadExistingPetData(String petId) async {
     try {
-      debugPrint('🔍 Loading existing pet data for ID: $petId');
+      LoggerService.debug('🔍 Loading existing pet data for ID: $petId');
 
       // 펫 프로필 로드
       final petProfileNotifier = ref.read(
@@ -140,7 +140,7 @@ class _PetRegistrationFormState extends ConsumerState<_PetRegistrationForm> {
 
       if (petProfileState.selectedPet != null) {
         final pet = petProfileState.selectedPet!;
-        debugPrint('✅ Pet loaded: ${pet.name}');
+        LoggerService.debug('✅ Pet loaded: ${pet.name}');
 
         // 폼 데이터에 기존 펫 정보 설정
         _controller.updatePetName(pet.name);
@@ -200,12 +200,12 @@ class _PetRegistrationFormState extends ConsumerState<_PetRegistrationForm> {
           _controller.updateTreat(additionalInfo['treat'] ?? '');
         }
 
-        debugPrint('✅ Existing pet data loaded successfully');
+        LoggerService.debug('✅ Existing pet data loaded successfully');
       } else {
-        debugPrint('❌ Pet not found with ID: $petId');
+        LoggerService.debug('❌ Pet not found with ID: $petId');
       }
     } catch (e) {
-      debugPrint('❌ Failed to load existing pet data: $e');
+      LoggerService.debug('❌ Failed to load existing pet data: $e');
     }
   }
 

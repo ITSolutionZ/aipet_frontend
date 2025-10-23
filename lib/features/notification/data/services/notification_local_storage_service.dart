@@ -31,7 +31,7 @@ class NotificationLocalStorageService {
           .map((json) => jsonDecode(json) as Map<String, dynamic>)
           .toList();
     } catch (e) {
-      debugPrint('알림 로드 실패: $e');
+      LoggerService.debug('알림 로드 실패: $e');
       return [];
     }
   }
@@ -55,9 +55,9 @@ class NotificationLocalStorageService {
       notifications.add(jsonEncode(notification));
       await prefs.setStringList(_keyNotifications, notifications);
 
-      debugPrint('알림 추가 성공: ${notification['id']}');
+      LoggerService.debug('알림 추가 성공: ${notification['id']}');
     } catch (e) {
-      debugPrint('알림 추가 실패: $e');
+      LoggerService.debug('알림 추가 실패: $e');
     }
   }
 
@@ -78,10 +78,10 @@ class NotificationLocalStorageService {
         notification['updatedAt'] = DateTime.now().toIso8601String();
         notifications[index] = jsonEncode(notification);
         await prefs.setStringList(_keyNotifications, notifications);
-        debugPrint('알림 업데이트 성공: ${notification['id']}');
+        LoggerService.debug('알림 업데이트 성공: ${notification['id']}');
       }
     } catch (e) {
-      debugPrint('알림 업데이트 실패: $e');
+      LoggerService.debug('알림 업데이트 실패: $e');
     }
   }
 
@@ -97,9 +97,9 @@ class NotificationLocalStorageService {
       });
 
       await prefs.setStringList(_keyNotifications, notifications);
-      debugPrint('알림 삭제 성공: $notificationId');
+      LoggerService.debug('알림 삭제 성공: $notificationId');
     } catch (e) {
-      debugPrint('알림 삭제 실패: $e');
+      LoggerService.debug('알림 삭제 실패: $e');
     }
   }
 
@@ -108,9 +108,9 @@ class NotificationLocalStorageService {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove(_keyNotifications);
-      debugPrint('모든 알림 삭제 성공');
+      LoggerService.debug('모든 알림 삭제 성공');
     } catch (e) {
-      debugPrint('모든 알림 삭제 실패: $e');
+      LoggerService.debug('모든 알림 삭제 실패: $e');
     }
   }
 
@@ -129,7 +129,7 @@ class NotificationLocalStorageService {
 
       return jsonDecode(settingsJson) as Map<String, dynamic>;
     } catch (e) {
-      debugPrint('알림 설정 로드 실패: $e');
+      LoggerService.debug('알림 설정 로드 실패: $e');
       final prefs = await SharedPreferences.getInstance();
       return NotificationStorageDefaultsHelper.initializeDefaultSettings(
         prefs,
@@ -143,9 +143,9 @@ class NotificationLocalStorageService {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_keySettings, jsonEncode(settings));
-      debugPrint('알림 설정 저장 성공');
+      LoggerService.debug('알림 설정 저장 성공');
     } catch (e) {
-      debugPrint('알림 설정 저장 실패: $e');
+      LoggerService.debug('알림 설정 저장 실패: $e');
     }
   }
 
@@ -174,7 +174,7 @@ class NotificationLocalStorageService {
         return date.isAfter(cutoffDate);
       }).toList();
     } catch (e) {
-      debugPrint('알림 통계 로드 실패: $e');
+      LoggerService.debug('알림 통계 로드 실패: $e');
       return [];
     }
   }
@@ -188,9 +188,9 @@ class NotificationLocalStorageService {
       statsList.add(jsonEncode(stats));
       await prefs.setStringList(_keyStats, statsList);
 
-      debugPrint('알림 통계 추가 성공');
+      LoggerService.debug('알림 통계 추가 성공');
     } catch (e) {
-      debugPrint('알림 통계 추가 실패: $e');
+      LoggerService.debug('알림 통계 추가 실패: $e');
     }
   }
 
@@ -221,7 +221,7 @@ class NotificationLocalStorageService {
         return date.isAfter(cutoffDate);
       }).toList();
     } catch (e) {
-      debugPrint('사용자 참여도 로드 실패: $e');
+      LoggerService.debug('사용자 참여도 로드 실패: $e');
       return [];
     }
   }
@@ -235,9 +235,9 @@ class NotificationLocalStorageService {
       engagementList.add(jsonEncode(engagement));
       await prefs.setStringList(_keyUserEngagement, engagementList);
 
-      debugPrint('사용자 참여도 추가 성공');
+      LoggerService.debug('사용자 참여도 추가 성공');
     } catch (e) {
-      debugPrint('사용자 참여도 추가 실패: $e');
+      LoggerService.debug('사용자 참여도 추가 실패: $e');
     }
   }
 }

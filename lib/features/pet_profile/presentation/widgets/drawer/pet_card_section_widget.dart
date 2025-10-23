@@ -217,25 +217,25 @@ class PetCardSectionWidget extends ConsumerWidget {
     try {
       // pet.imagePath가 있는 경우 실제 이미지 사용
       if (pet.imagePath != null && pet.imagePath!.isNotEmpty) {
-        debugPrint('🖼️ PetCardSectionWidget - imagePath: ${pet.imagePath}');
+        LoggerService.debug('🖼️ PetCardSectionWidget - imagePath: ${pet.imagePath}');
 
         // 상대 경로를 절대 경로로 변환
         final storageService = ImageStorageService();
         final absolutePath =
             storageService.getAbsolutePath(pet.imagePath!) ?? pet.imagePath!;
-        debugPrint('🖼️ PetCardSectionWidget - absolutePath: $absolutePath');
+        LoggerService.debug('🖼️ PetCardSectionWidget - absolutePath: $absolutePath');
 
         final imageType = ImageService.getImageType(absolutePath);
-        debugPrint('🖼️ PetCardSectionWidget - imageType: $imageType');
+        LoggerService.debug('🖼️ PetCardSectionWidget - imageType: $imageType');
 
         switch (imageType) {
           case ImageType.file:
             final file = File(absolutePath);
             final fileExists = file.existsSync();
-            debugPrint('🖼️ PetCardSectionWidget - File exists: $fileExists');
+            LoggerService.debug('🖼️ PetCardSectionWidget - File exists: $fileExists');
 
             if (!fileExists) {
-              debugPrint(
+              LoggerService.debug(
                 '❌ PetCardSectionWidget - File does not exist: $absolutePath',
               );
               return _getDefaultPetImageDecoration(pet.type, pet.breed);
@@ -260,7 +260,7 @@ class PetCardSectionWidget extends ConsumerWidget {
         return _getDefaultPetImageDecoration(pet.type, pet.breed);
       }
     } catch (e) {
-      debugPrint('❌ PetCardSectionWidget - Image load error: $e');
+      LoggerService.debug('❌ PetCardSectionWidget - Image load error: $e');
     }
     return null;
   }

@@ -21,7 +21,7 @@ class RegistrationFormHandlers {
   /// 이미지 선택 핸들러
   Future<void> handleImageSelection(String? currentImagePath) async {
     try {
-      debugPrint(
+      LoggerService.debug(
         '📸 Starting image selection, current path: $currentImagePath',
       );
       controller.setImageLoading(true);
@@ -31,23 +31,23 @@ class RegistrationFormHandlers {
         currentImagePath: currentImagePath,
       );
 
-      debugPrint('📸 Image selection result: $result');
+      LoggerService.debug('📸 Image selection result: $result');
 
       if (result == null) {
-        debugPrint('📸 Image selection cancelled');
+        LoggerService.debug('📸 Image selection cancelled');
         return;
       }
 
       if (result == 'REMOVE') {
-        debugPrint('📸 Removing image');
+        LoggerService.debug('📸 Removing image');
         controller.updatePetImagePath(null);
       } else {
-        debugPrint('📸 Setting new image path: $result');
+        LoggerService.debug('📸 Setting new image path: $result');
         controller.updatePetImagePath(result);
       }
     } finally {
       controller.setImageLoading(false);
-      debugPrint('📸 Image loading finished');
+      LoggerService.debug('📸 Image loading finished');
     }
   }
 
@@ -103,8 +103,8 @@ class RegistrationFormHandlers {
     } catch (error) {
       if (context.mounted) {
         final errorMessage = logic.getErrorMessage(error);
-        debugPrint('🚨 Registration error: $errorMessage');
-        debugPrint('🚨 Error details: $error');
+        LoggerService.debug('🚨 Registration error: $errorMessage');
+        LoggerService.debug('🚨 Error details: $error');
         _showErrorMessage(errorMessage);
       }
     } finally {

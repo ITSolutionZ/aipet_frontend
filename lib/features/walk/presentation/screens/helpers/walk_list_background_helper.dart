@@ -21,9 +21,9 @@ class WalkListBackgroundHelper {
 
       if (currentWalk == null) return;
 
-      debugPrint('⚠️ 백그라운드 산책 발견: ${currentWalk.id}');
-      debugPrint('시작 시간: ${currentWalk.startTime}');
-      debugPrint('상태: ${currentWalk.status}');
+      LoggerService.debug('⚠️ 백그라운드 산책 발견: ${currentWalk.id}');
+      LoggerService.debug('시작 시간: ${currentWalk.startTime}');
+      LoggerService.debug('상태: ${currentWalk.status}');
 
       // 진행 중 또는 일시정지 상태인 산책만 처리
       if (currentWalk.status != WalkStatus.inProgress &&
@@ -53,7 +53,7 @@ class WalkListBackgroundHelper {
         ref.read(currentWalkProvider.notifier).startWalk(currentWalk);
       }
     } catch (e) {
-      debugPrint('❌ 백그라운드 산책 확인 실패: $e');
+      LoggerService.debug('❌ 백그라운드 산책 확인 실패: $e');
     }
   }
 

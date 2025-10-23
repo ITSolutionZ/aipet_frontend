@@ -34,15 +34,15 @@ class _WalkDetailMapWidgetState extends State<WalkDetailMapWidget> {
       walkRecords: [widget.walkRecord],
     );
 
-    debugPrint('🗺️ 마커 생성 완료: ${initialMarkers.length}개');
-    debugPrint('📍 notes 데이터: ${widget.walkRecord.notes}');
+    LoggerService.debug('🗺️ 마커 생성 완료: ${initialMarkers.length}개');
+    LoggerService.debug('📍 notes 데이터: ${widget.walkRecord.notes}');
 
     // 금지구역 마커 로드 및 추가
     markers = await WalkMapMarkerBuilder.loadAndBuildNoEntryZoneMarkers(
       initialMarkers,
     );
 
-    debugPrint('🚫 최종 마커 개수: ${markers.length}개 (금지구역 포함)');
+    LoggerService.debug('🚫 최종 마커 개수: ${markers.length}개 (금지구역 포함)');
 
     if (mounted) {
       setState(() {});
@@ -57,7 +57,7 @@ class _WalkDetailMapWidgetState extends State<WalkDetailMapWidget> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint(
+    LoggerService.debug(
       '🗺️ WalkDetailMapWidget: 산책 ID=${widget.walkRecord.id}, 경로 포인트=${widget.walkRecord.route.length}',
     );
 
@@ -66,7 +66,7 @@ class _WalkDetailMapWidgetState extends State<WalkDetailMapWidget> {
       final preview = recordStr.length > 100
           ? recordStr.substring(0, 100)
           : recordStr;
-      debugPrint('❌ 경로 데이터가 없습니다. 산책 기록: $preview...');
+      LoggerService.debug('❌ 경로 데이터가 없습니다. 산책 기록: $preview...');
       return Container(
         height: 300,
         decoration: BoxDecoration(
@@ -139,7 +139,7 @@ class _WalkDetailMapWidgetState extends State<WalkDetailMapWidget> {
       final cameraUpdate = CameraUpdate.newLatLngBounds(bounds, 100);
       await mapController.animateCamera(cameraUpdate);
     } catch (e) {
-      debugPrint('지도 카메라 조정 실패: $e');
+      LoggerService.debug('지도 카메라 조정 실패: $e');
     }
   }
 }

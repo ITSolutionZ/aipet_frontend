@@ -305,24 +305,24 @@ class PetProfileHeader extends StatelessWidget {
 
   /// 이미지 경로에 따라 적절한 ImageProvider 반환 - 강화된 로컬 저장 지원
   ImageProvider _getImageProvider(String imagePath) {
-    debugPrint('🖼️ PetProfileCard - imagePath: $imagePath');
+    LoggerService.debug('🖼️ PetProfileCard - imagePath: $imagePath');
 
     // 상대 경로를 절대 경로로 변환
     final storageService = ImageStorageService();
     final absolutePath = storageService.getAbsolutePath(imagePath) ?? imagePath;
-    debugPrint('🖼️ PetProfileCard - absolutePath: $absolutePath');
+    LoggerService.debug('🖼️ PetProfileCard - absolutePath: $absolutePath');
 
     final imageType = ImageService.getImageType(absolutePath);
-    debugPrint('🖼️ PetProfileCard - imageType: $imageType');
+    LoggerService.debug('🖼️ PetProfileCard - imageType: $imageType');
 
     switch (imageType) {
       case ImageType.file:
         final file = File(absolutePath);
         final fileExists = file.existsSync();
-        debugPrint('🖼️ PetProfileCard - File exists: $fileExists');
+        LoggerService.debug('🖼️ PetProfileCard - File exists: $fileExists');
 
         if (!fileExists) {
-          debugPrint('❌ PetProfileCard - File does not exist: $absolutePath');
+          LoggerService.debug('❌ PetProfileCard - File does not exist: $absolutePath');
           // 기본 이미지 반환
           return const AssetImage('assets/icons/logos/aipet_logo.png');
         }

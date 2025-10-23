@@ -118,8 +118,8 @@ class SelectedAllergyProducts extends _$SelectedAllergyProducts {
       return Result.success('分析が正常に完了しました', analysisData);
     } catch (error, stackTrace) {
       if (kDebugMode) {
-        debugPrint('アレルギー分析エラー: $error');
-        debugPrint('StackTrace: $stackTrace');
+        LoggerService.debug('アレルギー分析エラー: $error');
+        LoggerService.debug('StackTrace: $stackTrace');
       }
       return Result.failure(
         AllergyConstants.analysisErrorMessage,

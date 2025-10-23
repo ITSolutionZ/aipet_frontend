@@ -14,23 +14,23 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
   @override
   Future<Result<List<PetProfileEntity>>> getAllPets() async {
     try {
-      debugPrint('=== getAllPets called ===');
+      LoggerService.debug('=== getAllPets called ===');
 
       // 로컬 저장소 초기화
       await _localStorageService.initialize();
 
       // 로컬 저장소에서 펫 데이터 로드
       final localPets = await _localStorageService.pet.getAllPets();
-      debugPrint('Loaded ${localPets.length} pets from local storage');
+      LoggerService.debug('Loaded ${localPets.length} pets from local storage');
 
       // 로컬 데이터를 엔티티로 변환
       final pets = localPets
           .map((petData) => _safeCreatePetEntity(petData))
           .toList();
-      debugPrint('Converted ${pets.length} pets to entities');
+      LoggerService.debug('Converted ${pets.length} pets to entities');
       return Result.success('펫 목록을 성공적으로 조회했습니다', pets);
     } catch (error) {
-      debugPrint('getAllPets error: $error');
+      LoggerService.debug('getAllPets error: $error');
       return Result.failure('펫 목록 조회에 실패했습니다: ${error.toString()}');
     }
   }
@@ -38,11 +38,11 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
   @override
   Future<Result<PetProfileEntity?>> getPetById(String id) async {
     try {
-      debugPrint('=== getPetById called with id: $id ===');
+      LoggerService.debug('=== getPetById called with id: $id ===');
 
       // 먼저 모든 펫 목록을 확인해보자
       final allPets = await _localStorageService.pet.getAllPets();
-      debugPrint(
+      LoggerService.debug(
         'Available pets: ${allPets.map((p) => '${p['petId']}: ${p['name']}').toList()}',
       );
 
@@ -50,39 +50,39 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
       final petData = await _localStorageService.pet.getPetById(id);
 
       if (petData == null) {
-        debugPrint('Pet not found with id: $id');
-        debugPrint(
+        LoggerService.debug('Pet not found with id: $id');
+        LoggerService.debug(
           'Available pet IDs: ${allPets.map((p) => p['petId']).toList()}',
         );
         return Result.success('해당 ID의 펫을 찾을 수 없습니다', null);
       }
 
-      debugPrint('Found pet data: ${petData.keys.toList()}');
-      debugPrint('📋 === 펫 데이터 로드 로그 ===');
-      debugPrint('📋 펫 ID: ${petData['petId']}');
-      debugPrint('📋 펫 이름: ${petData['name']}');
-      debugPrint('📋 펫 타입: ${petData['type']}');
-      debugPrint('📋 펫 품종: ${petData['breed']}');
-      debugPrint('📋 펫 성별: ${petData['gender']}');
-      debugPrint('📋 펫 체중: ${petData['weight']}');
-      debugPrint('📋 펫 이미지: ${petData['imagePath']}');
-      debugPrint('📋 보호자 이름: ${petData['guardianName']}');
-      debugPrint('📋 기관 이름: ${petData['institutionName']}');
-      debugPrint('📋 등록번호: ${petData['registrationNumber']}');
-      debugPrint('📋 중성화 여부: ${petData['neutered']}');
-      debugPrint('📋 추가 정보: ${petData['additionalInfo']}');
-      debugPrint('📋 ================================');
+      LoggerService.debug('Found pet data: ${petData.keys.toList()}');
+      LoggerService.debug('📋 === 펫 데이터 로드 로그 ===');
+      LoggerService.debug('📋 펫 ID: ${petData['petId']}');
+      LoggerService.debug('📋 펫 이름: ${petData['name']}');
+      LoggerService.debug('📋 펫 타입: ${petData['type']}');
+      LoggerService.debug('📋 펫 품종: ${petData['breed']}');
+      LoggerService.debug('📋 펫 성별: ${petData['gender']}');
+      LoggerService.debug('📋 펫 체중: ${petData['weight']}');
+      LoggerService.debug('📋 펫 이미지: ${petData['imagePath']}');
+      LoggerService.debug('📋 보호자 이름: ${petData['guardianName']}');
+      LoggerService.debug('📋 기관 이름: ${petData['institutionName']}');
+      LoggerService.debug('📋 등록번호: ${petData['registrationNumber']}');
+      LoggerService.debug('📋 중성화 여부: ${petData['neutered']}');
+      LoggerService.debug('📋 추가 정보: ${petData['additionalInfo']}');
+      LoggerService.debug('📋 ================================');
 
       final pet = _safeCreatePetEntity(petData);
-      debugPrint('Created PetProfileEntity: ${pet.name}');
-      debugPrint('📋 === PetProfileEntity 생성 후 ===');
-      debugPrint('📋 엔티티 이름: ${pet.name}');
-      debugPrint('📋 엔티티 이미지: ${pet.imagePath}');
-      debugPrint('📋 엔티티 추가정보: ${pet.additionalInfo}');
-      debugPrint('📋 ================================');
+      LoggerService.debug('Created PetProfileEntity: ${pet.name}');
+      LoggerService.debug('📋 === PetProfileEntity 생성 후 ===');
+      LoggerService.debug('📋 엔티티 이름: ${pet.name}');
+      LoggerService.debug('📋 엔티티 이미지: ${pet.imagePath}');
+      LoggerService.debug('📋 엔티티 추가정보: ${pet.additionalInfo}');
+      LoggerService.debug('📋 ================================');
       return Result.success('펫 정보를 성공적으로 조회했습니다', pet);
     } catch (error) {
-      debugPrint('getPetById error: $error');
+      LoggerService.debug('getPetById error: $error');
       return Result.failure('펫 조회에 실패했습니다: ${error.toString()}');
     }
   }
@@ -103,7 +103,7 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
 
       return Result.success('펫이 성공적으로 생성되었습니다', createdPet);
     } catch (error) {
-      debugPrint('createPet error: $error');
+      LoggerService.debug('createPet error: $error');
       return Result.failure('펫 생성에 실패했습니다: ${error.toString()}');
     }
   }
@@ -126,7 +126,7 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
 
       return Result.success('펫 정보가 성공적으로 업데이트되었습니다', updatedPet);
     } catch (error) {
-      debugPrint('updatePet error: $error');
+      LoggerService.debug('updatePet error: $error');
       return Result.failure('펫 업데이트에 실패했습니다: ${error.toString()}');
     }
   }
@@ -143,7 +143,7 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
 
       return Result.success('펫이 성공적으로 삭제되었습니다', null);
     } catch (error) {
-      debugPrint('deletePet error: $error');
+      LoggerService.debug('deletePet error: $error');
       return Result.failure('펫 삭제에 실패했습니다: ${error.toString()}');
     }
   }
@@ -151,17 +151,17 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
   @override
   Future<Result<String>> uploadPetImage(String petId, String imagePath) async {
     try {
-      debugPrint('💾 uploadPetImage - petId: $petId, imagePath: $imagePath');
+      LoggerService.debug('💾 uploadPetImage - petId: $petId, imagePath: $imagePath');
 
       // 로컬 저장소에서 펫 정보 가져오기
       final petData = await _localStorageService.pet.getPetById(petId);
 
       if (petData == null) {
-        debugPrint('💾 Pet not found: $petId');
+        LoggerService.debug('💾 Pet not found: $petId');
         return Result.failure('해당 펫을 찾을 수 없습니다');
       }
 
-      debugPrint('💾 Current pet data: ${petData['imagePath']}');
+      LoggerService.debug('💾 Current pet data: ${petData['imagePath']}');
 
       // 이미지 경로 업데이트
       petData['imagePath'] = imagePath;
@@ -170,10 +170,10 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
       // 로컬 저장소에 저장
       await _localStorageService.pet.updatePet(petId, petData);
 
-      debugPrint('💾 Image path saved successfully: $imagePath');
+      LoggerService.debug('💾 Image path saved successfully: $imagePath');
       return Result.success('이미지가 성공적으로 업로드되었습니다', imagePath);
     } catch (error) {
-      debugPrint('uploadPetImage error: $error');
+      LoggerService.debug('uploadPetImage error: $error');
       return Result.failure('이미지 업로드에 실패했습니다: ${error.toString()}');
     }
   }
@@ -259,18 +259,18 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
   /// 안전한 PetProfileEntity 생성 (필드가 없거나 잘못된 형식일 때 대응)
   PetProfileEntity _safeCreatePetEntity(Map<String, dynamic> petData) {
     // 통일된 필드명으로 PetProfileEntity 생성
-    debugPrint('📋 === _safeCreatePetEntity 통일된 필드명 로그 ===');
-    debugPrint('📋 펫 ID: ${petData['id']}');
-    debugPrint('📋 펫 이름: ${petData['name']}');
-    debugPrint('📋 펫 타입: ${petData['type']}');
-    debugPrint('📋 펫 품종: ${petData['breed']}');
-    debugPrint('📋 펫 성별: ${petData['gender']}');
-    debugPrint('📋 펫 체중: ${petData['weight']}');
-    debugPrint('📋 펫 이미지: ${petData['imagePath']}');
-    debugPrint('📋 펫 상태: ${petData['petStatus']}');
-    debugPrint('📋 중성화 여부: ${petData['neutered']}');
-    debugPrint('📋 추가 정보: ${petData['additionalInfo']}');
-    debugPrint('📋 ===========================================');
+    LoggerService.debug('📋 === _safeCreatePetEntity 통일된 필드명 로그 ===');
+    LoggerService.debug('📋 펫 ID: ${petData['id']}');
+    LoggerService.debug('📋 펫 이름: ${petData['name']}');
+    LoggerService.debug('📋 펫 타입: ${petData['type']}');
+    LoggerService.debug('📋 펫 품종: ${petData['breed']}');
+    LoggerService.debug('📋 펫 성별: ${petData['gender']}');
+    LoggerService.debug('📋 펫 체중: ${petData['weight']}');
+    LoggerService.debug('📋 펫 이미지: ${petData['imagePath']}');
+    LoggerService.debug('📋 펫 상태: ${petData['petStatus']}');
+    LoggerService.debug('📋 중성화 여부: ${petData['neutered']}');
+    LoggerService.debug('📋 추가 정보: ${petData['additionalInfo']}');
+    LoggerService.debug('📋 ===========================================');
 
     // additionalInfo 정리 (필요한 필드만 유지)
     final additionalInfo = <String, dynamic>{};

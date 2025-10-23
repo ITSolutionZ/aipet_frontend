@@ -40,10 +40,10 @@ class NotificationsNotifier extends _$NotificationsNotifier {
         notifications.add(notification);
       }
 
-      debugPrint('🔔 알림 리스트 로드 완료: ${notifications.length}개');
+      LoggerService.debug('🔔 알림 리스트 로드 완료: ${notifications.length}개');
       return notifications;
     } catch (e) {
-      debugPrint('🔔 알림 리스트 로드 실패: $e');
+      LoggerService.debug('🔔 알림 리스트 로드 실패: $e');
       return [];
     }
   }

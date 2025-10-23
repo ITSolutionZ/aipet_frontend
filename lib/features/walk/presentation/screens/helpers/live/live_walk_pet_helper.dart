@@ -134,25 +134,25 @@ class LiveWalkPetHelper {
   /// 펫 이미지 위젯 빌드 - 강화된 로컬 저장 지원
   static Widget _buildPetImage(String imagePath, bool isSelected) {
     try {
-      debugPrint('🖼️ LiveWalkPetHelper - imagePath: $imagePath');
+      LoggerService.debug('🖼️ LiveWalkPetHelper - imagePath: $imagePath');
 
       // 상대 경로를 절대 경로로 변환
       final storageService = ImageStorageService();
       final absolutePath =
           storageService.getAbsolutePath(imagePath) ?? imagePath;
-      debugPrint('🖼️ LiveWalkPetHelper - absolutePath: $absolutePath');
+      LoggerService.debug('🖼️ LiveWalkPetHelper - absolutePath: $absolutePath');
 
       final imageType = ImageService.getImageType(absolutePath);
-      debugPrint('🖼️ LiveWalkPetHelper - imageType: $imageType');
+      LoggerService.debug('🖼️ LiveWalkPetHelper - imageType: $imageType');
 
       switch (imageType) {
         case ImageType.file:
           final file = File(absolutePath);
           final fileExists = file.existsSync();
-          debugPrint('🖼️ LiveWalkPetHelper - File exists: $fileExists');
+          LoggerService.debug('🖼️ LiveWalkPetHelper - File exists: $fileExists');
 
           if (!fileExists) {
-            debugPrint(
+            LoggerService.debug(
               '❌ LiveWalkPetHelper - File does not exist: $absolutePath',
             );
             return Icon(
@@ -166,7 +166,7 @@ class LiveWalkPetHelper {
             file,
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) {
-              debugPrint('🖼️ LiveWalkPetHelper - File image error: $error');
+              LoggerService.debug('🖼️ LiveWalkPetHelper - File image error: $error');
               return Icon(
                 Icons.pets,
                 color: isSelected ? AppColors.pointPink : AppColors.pointGray,
@@ -179,7 +179,7 @@ class LiveWalkPetHelper {
             absolutePath,
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) {
-              debugPrint('🖼️ LiveWalkPetHelper - Network image error: $error');
+              LoggerService.debug('🖼️ LiveWalkPetHelper - Network image error: $error');
               return Icon(
                 Icons.pets,
                 color: isSelected ? AppColors.pointPink : AppColors.pointGray,
@@ -192,7 +192,7 @@ class LiveWalkPetHelper {
             absolutePath,
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) {
-              debugPrint('🖼️ LiveWalkPetHelper - Asset image error: $error');
+              LoggerService.debug('🖼️ LiveWalkPetHelper - Asset image error: $error');
               return Icon(
                 Icons.pets,
                 color: isSelected ? AppColors.pointPink : AppColors.pointGray,
@@ -202,7 +202,7 @@ class LiveWalkPetHelper {
           );
       }
     } catch (e) {
-      debugPrint('❌ LiveWalkPetHelper - Image load error: $e');
+      LoggerService.debug('❌ LiveWalkPetHelper - Image load error: $e');
       return Icon(
         Icons.pets,
         color: isSelected ? AppColors.pointPink : AppColors.pointGray,
