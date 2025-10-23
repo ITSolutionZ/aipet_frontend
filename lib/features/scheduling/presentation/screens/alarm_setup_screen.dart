@@ -244,7 +244,7 @@ class _AlarmSetupScreenState extends ConsumerState<AlarmSetupScreen> {
           Expanded(
             child: Center(
               child: Text(
-                value.toString().padLeft(2, '0'),
+                DateTimeUtils.formatTwoDigits(value),
                 style: const TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.w600,

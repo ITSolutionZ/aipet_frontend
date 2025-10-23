@@ -155,7 +155,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
       final currentValue = isMinute
           ? _selectedTime.minute
           : (_selectedTime.hour % 12 == 0 ? 12 : _selectedTime.hour % 12);
-      controller.text = currentValue.toString().padLeft(2, '0');
+      controller.text = DateTimeUtils.formatTwoDigits(currentValue);
       setState(() {
         if (isMinute) {
           _isEditingMinute = false;

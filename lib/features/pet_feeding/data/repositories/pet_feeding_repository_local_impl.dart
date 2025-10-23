@@ -145,8 +145,8 @@ class PetFeedingRepositoryLocalImpl implements PetFeedingRepository {
         : 0.0;
 
     final feedingsByHour = <String, int>{};
-    for (var record in petRecords) {
       // ✅ DateTimeUtils 사용
+      final timeStr = DateTimeUtils.formatTime(record.fedTime);
       feedingsByHour[hour] = (feedingsByHour[hour] ?? 0) + 1;
     }
 
