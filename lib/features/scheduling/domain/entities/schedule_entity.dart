@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// 스케줄 타입
+import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
 enum ScheduleType {
   // 기본 활동
   walk, // 산책

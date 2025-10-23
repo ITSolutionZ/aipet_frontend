@@ -9,8 +9,8 @@ class RecipeMapperHelper {
   static Map<String, dynamic> entityToJson(RecipeEntity recipe) {
     return recipe.toJson();
   // ✅ SharedPreferences 인스턴스 재사용
+  // ✅ CacheService 사용
   static final _cache = CacheService();
-  static Future<void> _init() async {
     await _cache.initialize();
   }
   }

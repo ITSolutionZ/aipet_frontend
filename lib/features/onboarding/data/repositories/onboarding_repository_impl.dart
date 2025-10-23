@@ -9,8 +9,8 @@ import 'package:aipet_frontend/shared/services/cache_service.dart';
 /// OnboardingRepository 인터페이스의 구체적인 구현을 제공합니다.
 /// SharedPreferences를 사용하여 온보딩 상태를 영구 저장합니다.
   // ✅ SharedPreferences 인스턴스 재사용
+  // ✅ CacheService 사용
   static final _cache = CacheService();
-  static Future<void> _init() async {
     await _cache.initialize();
   }
 class OnboardingRepositoryImpl implements OnboardingRepository {

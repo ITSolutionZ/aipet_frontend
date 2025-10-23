@@ -1,6 +1,7 @@
 import 'package:aipet_frontend/shared/services/local_database_service.dart';
 
 /// 스케줄 로컬 스토리지 서비스
+import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
 class LocalScheduleService {
   final LocalDatabaseService _dbService = LocalDatabaseService.instance;
 

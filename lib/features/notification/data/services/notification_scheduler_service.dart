@@ -9,8 +9,8 @@ import 'helpers/notification_scheduler_storage_helper.dart';
 import 'notification_service.dart' as local;
 
   // ✅ SharedPreferences 인스턴스 재사용
+  // ✅ CacheService 사용
   static final _cache = CacheService();
-  static Future<void> _init() async {
     await _cache.initialize();
   }
 /// 알림 스케줄링 서비스
