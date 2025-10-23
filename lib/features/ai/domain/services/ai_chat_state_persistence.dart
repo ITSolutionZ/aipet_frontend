@@ -28,10 +28,7 @@ class AiChatStatePersistence {
   Future<Result<void>> saveSelectedPet(String petId) async {
     try {
       await _init();
-      await _cache.setString(
-        '$_keyPrefix$_keySelectedPet',
-        petId,
-      );
+      await _cache.setString('$_keyPrefix$_keySelectedPet', petId);
 
       if (kDebugMode) {
         LoggerService.debug('💾 Selected pet saved: $petId');
@@ -69,7 +66,10 @@ class AiChatStatePersistence {
           'name': category.name,
           'description': category.description,
         });
-        await _cache.setString('$_keyPrefix$_keySelectedCategory', categoryJson);
+        await _cache.setString(
+          '$_keyPrefix$_keySelectedCategory',
+          categoryJson,
+        );
       }
 
       if (kDebugMode) {
@@ -219,7 +219,7 @@ class AiChatStatePersistence {
   Future<Result<void>> clearAllChatState() async {
     try {
       await _init();
-      
+
       // AI 채팅 관련 주요 키들 직접 삭제
       await _cache.removeKey('$_keyPrefix$_keySelectedPet');
       await _cache.removeKey('$_keyPrefix$_keySelectedCategory');
