@@ -43,10 +43,13 @@ class _BiometricSecurityScreenState
   }
 
   Future<void> _loadSettings() async {
-    final prefs = await SharedPreferences.getInstance();
+    // ✅ SecureStorageService 사용
+    final pinEnabled = await SecureStorageService.getBool('pin_enabled') ?? false;
+    final biometricEnabled = await SecureStorageService.getBool('biometric_enabled') ?? false;
+    
     setState(() {
-      _isPinEnabled = prefs.getBool('pin_enabled') ?? false;
-      _isBiometricEnabled = prefs.getBool('biometric_enabled') ?? false;
+      _isPinEnabled = pinEnabled;
+      _isBiometricEnabled = biometricEnabled;
     });
   }
 
@@ -65,19 +68,16 @@ class _BiometricSecurityScreenState
       return;
     }
 
-    // SharedPreferences에 PIN 저장
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('user_pin', _pinController.text);
-    await prefs.setBool('pin_enabled', true);
+    // ✅ SecureStorageService 사용
+    await SecureStorageService.setString('user_pin', _pinController.text);
+    await SecureStorageService.setBool('pin_enabled', true);
 
     setState(() {
       _isPinEnabled = true;
     });
 
     if (mounted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('PIN이 설정되었습니다')));
+      SnackBarService.showSuccess(context, 'PINが設定されました');
     }
   }
 
@@ -85,9 +85,8 @@ class _BiometricSecurityScreenState
     final isAuthenticated = await _biometricService.authenticate();
 
     if (isAuthenticated) {
-      // SharedPreferences에 생체인증 활성화 저장
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setBool('biometric_enabled', true);
+      // ✅ SecureStorageService 사용
+      await SecureStorageService.setBool('biometric_enabled', true);
 
       if (mounted) {
         setState(() {

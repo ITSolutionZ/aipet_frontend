@@ -59,7 +59,7 @@ class PetProfileConstants {
   // saveSuccessMessage → AppTexts.saved
   // deleteSuccessMessage → AppTexts.deleted
   // nameRequiredMessage, weightInvalidMessage 등 → AppTexts 참조
-  
+
   /// Feature-specific 메시지만 유지
   static const String petNotFoundMessage = 'ペットが見つかりません';
   static const String noPermissionMessage = '権限がありません';
@@ -72,7 +72,7 @@ class PetProfileConstants {
 
   // 공통 메시지 대체 가이드:
   // - loadingMessage -> AppTexts.loading
-  // - errorMessage -> AppTexts.error  
+  // - errorMessage -> AppTexts.error
   // - successMessage -> AppTexts.success
   // - saveSuccessMessage -> AppTexts.saved
   // - saveErrorMessage -> AppTexts.saveError

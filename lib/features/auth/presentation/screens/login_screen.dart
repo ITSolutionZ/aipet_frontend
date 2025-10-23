@@ -40,9 +40,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Future<void> _checkAppLock() async {
-    final prefs = await SharedPreferences.getInstance();
-    final pinEnabled = prefs.getBool('pin_enabled') ?? false;
-    final biometricEnabled = prefs.getBool('biometric_enabled') ?? false;
+    // ✅ SecureStorageService 사용으로 Clean Architecture 준수
+    final pinEnabled = await SecureStorageService.getBool('pin_enabled') ?? false;
+    final biometricEnabled = await SecureStorageService.getBool('biometric_enabled') ?? false;
 
     if ((pinEnabled || biometricEnabled) && mounted) {
       unawaited(
