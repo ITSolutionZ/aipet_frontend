@@ -932,7 +932,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
           },
           onTap: () {
             // When tapping the TextField, ensure it's pre-filled with the current value
-            controller.text = value.toString().padLeft(2, '0');
+            controller.text = DateTimeUtils.formatTwoDigits(value);
             controller.selection = TextSelection(
               baseOffset: 0,
               extentOffset: controller.text.length,
@@ -947,11 +947,11 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
           setState(() {
             if (isMinute) {
               _isEditingMinute = true;
-              _minuteController.text = value.toString().padLeft(2, '0');
+              _minuteController.text = DateTimeUtils.formatTwoDigits(value);
               _minuteFocusNode.requestFocus(); // Request focus
             } else {
               _isEditingHour = true;
-              _hourController.text = value.toString().padLeft(2, '0');
+              _hourController.text = DateTimeUtils.formatTwoDigits(value);
               _hourFocusNode.requestFocus(); // Request focus
             }
           });
@@ -960,7 +960,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
           padding: const EdgeInsets.symmetric(vertical: 8),
           child: Center(
             child: Text(
-              value.toString().padLeft(2, '0'),
+              DateTimeUtils.formatTwoDigits(value),
               style: const TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w600,
