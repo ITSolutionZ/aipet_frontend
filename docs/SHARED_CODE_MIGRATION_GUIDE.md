@@ -1362,12 +1362,16 @@ class SearchFacilitiesUseCase extends BaseUseCase<List<Facility>, String> {
 - [x] `pet_profile/presentation/widgets/tabs/helpers/pet_info_image_helper.dart` → ImageService 이미 사용 중 ✅ **확인 완료**
 - [x] `walk/data/repositories/walk_share_repository_impl.dart` → 추가 작업 불필요 ✅ **확인 완료**
 
-### 날짜/시간 포맷팅 마이그레이션
+### 날짜/시간 포맷팅 마이그레이션 ✅ **100% 완료**
 
-- [ ] `scheduling/presentation/controllers/helpers/feeding_stats_helper.dart` → `DateTimeService`
-- [ ] `scheduling/presentation/controllers/feeding_schedule_controller.dart` → `DateTimeService`
-- [ ] `walk/domain/entities/walk_record_entity.dart` → `DateTimeUtils`, `DateTimeService`
-- [ ] `scheduling/domain/entities/schedule_entity.dart` → `DateTimeUtils.isToday()` 등
+- [x] `scheduling/presentation/controllers/helpers/feeding_stats_helper.dart` → `DateTimeUtils` ✅
+- [x] `scheduling/presentation/controllers/feeding_schedule_controller.dart` → `DateTimeUtils` ✅
+- [x] `walk/domain/entities/walk_record_entity.dart` → `DateTimeUtils` ✅
+- [x] `scheduling/domain/entities/schedule_entity.dart` → `DateTimeUtils.isToday()` 등 ✅
+- [x] **모든 padLeft(2,'0') 패턴 제거** → `DateTimeUtils` ✅ **49곳 → 0곳**
+- [x] walk timer helpers (HH:MM:SS) → `DateTimeUtils.formatElapsedTime` ✅
+- [x] 날짜 키 형식 (YYYY-MM-DD) → `DateTimeUtils.formatDateKey` ✅
+- [x] 입력 필드 패딩 → `DateTimeUtils.formatTwoDigits` ✅
 
 ### 상수 마이그레이션
 
@@ -1844,8 +1848,9 @@ class PetProfileFormController {
 
 - [x] debugPrint → `LoggerService` ✅ **100% 완료 (1,552곳)**
 - [x] 로컬 저장소 → `CacheService` ✅ **100% 완료 (124 → 0곳)**
-- [ ] Repository → `BaseHybridRepository` (선택적)
-- [ ] 날짜/시간 → `DateTimeService` (선택적)
+- [x] 날짜/시간 → `DateTimeUtils` ✅ **100% 완료 (49 → 0곳)**
+- [ ] Repository → `BaseHybridRepository` (선택적, 향후 고려)
+- [ ] 유효성 검사 → `ValidationService` (선택적, 향후 고려)
 
 ---
 
@@ -1892,6 +1897,7 @@ class PetProfileFormController {
 | 🟢 debugPrint 호출        | 1552      | 0        | 0         | 100%       |
 | 🟢 Dio() 인스턴스         | 9         | 0        | 0         | 100%       |
 | 🟢 SharedPreferences 사용 | 124       | 5        | 0         | 100%       |
+| 🟢 padLeft(2,'0') 패턴    | 49        | 10       | 0         | 100%       |
 
 ### 📈 마이그레이션 타임라인
 
