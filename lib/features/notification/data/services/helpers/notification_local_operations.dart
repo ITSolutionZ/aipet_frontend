@@ -1,25 +1,32 @@
 import 'dart:convert';
 
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
+import 'package:aipet_frontend/shared/services/cache_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../domain/domain.dart';
 
 /// 알림 로컬 작업 헬퍼
 class NotificationLocalOperations {
   static const String _tag = 'NotificationLocalOperations';
+  // ✅ SharedPreferences 인스턴스 재사용
+  static final _cache = CacheService();
+  static Future<void> _init() async {
+    await _cache.initialize();
+  }
+
   static const String _notificationsKey = 'notifications';
 
   /// 알림 저장 (로그만 기록)
   static Future<void> saveNotification(NotificationModel notification) async {
     try {
       if (kDebugMode) {
-        debugPrint('[$_tag] 📝 알림 수신 기록: ${notification.title}');
+        LoggerService.debug('[$_tag] 📝 알림 수신 기록: ${notification.title}');
       }
     } catch (error) {
       if (kDebugMode) {
-        debugPrint('[$_tag] ❌ 알림 기록 중 오류: $error');
+        LoggerService.debug('[$_tag] ❌ 알림 기록 중 오류: $error');
       }
     }
   }
@@ -27,8 +34,8 @@ class NotificationLocalOperations {
   /// 알림 읽음 처리
   static Future<void> markAsRead(String notificationId) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final notificationsJson = prefs.getStringList(_notificationsKey) ?? [];
+      await _init();
+      final notificationsJson = _cache.getStringList(_notificationsKey) ?? [];
 
       final updatedNotifications = notificationsJson.map((json) {
         try {
@@ -42,10 +49,10 @@ class NotificationLocalOperations {
         }
       }).toList();
 
-      await prefs.setStringList(_notificationsKey, updatedNotifications);
+      await _cache.setStringList(_notificationsKey, updatedNotifications);
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('[$_tag] ❌ 읽음 처리 실패: $e');
+        LoggerService.debug('[$_tag] ❌ 읽음 처리 실패: $e');
       }
     }
   }
@@ -56,8 +63,8 @@ class NotificationLocalOperations {
     FlutterLocalNotificationsPlugin localNotifications,
   ) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final notificationsJson = prefs.getStringList(_notificationsKey) ?? [];
+      await _init();
+      final notificationsJson = _cache.getStringList(_notificationsKey) ?? [];
 
       final updatedNotifications = notificationsJson.map((json) {
         try {
@@ -71,7 +78,7 @@ class NotificationLocalOperations {
         }
       }).toList();
 
-      await prefs.setStringList(_notificationsKey, updatedNotifications);
+      await _cache.setStringList(_notificationsKey, updatedNotifications);
 
       // 로컬 알림도 취소 (ID가 숫자인 경우에만)
       try {
@@ -79,12 +86,12 @@ class NotificationLocalOperations {
         await localNotifications.cancel(id);
       } catch (e) {
         if (kDebugMode) {
-          debugPrint('[$_tag] ℹ️ 로컬 알림 취소 건너뛰기 (ID가 숫자가 아님)');
+          LoggerService.debug('[$_tag] ℹ️ 로컬 알림 취소 건너뛰기 (ID가 숫자가 아님)');
         }
       }
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('[$_tag] ❌ 알림 삭제 실패: $e');
+        LoggerService.debug('[$_tag] ❌ 알림 삭제 실패: $e');
       }
     }
   }
@@ -94,12 +101,12 @@ class NotificationLocalOperations {
     FlutterLocalNotificationsPlugin localNotifications,
   ) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.remove(_notificationsKey);
+      await _init();
+      await _cache.removeKey(_notificationsKey);
       await localNotifications.cancelAll();
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('[$_tag] ❌ 전체 알림 삭제 실패: $e');
+        LoggerService.debug('[$_tag] ❌ 전체 알림 삭제 실패: $e');
       }
     }
   }
@@ -107,8 +114,8 @@ class NotificationLocalOperations {
   /// 읽지 않은 알림 개수 가져오기
   static Future<int> getUnreadCount() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final notificationsJson = prefs.getStringList(_notificationsKey) ?? [];
+      await _init();
+      final notificationsJson = _cache.getStringList(_notificationsKey) ?? [];
 
       int unreadCount = 0;
       for (final json in notificationsJson) {
@@ -126,7 +133,7 @@ class NotificationLocalOperations {
       return unreadCount;
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('[$_tag] ❌ 읽지 않은 알림 개수 조회 실패: $e');
+        LoggerService.debug('[$_tag] ❌ 읽지 않은 알림 개수 조회 실패: $e');
       }
       return 0;
     }

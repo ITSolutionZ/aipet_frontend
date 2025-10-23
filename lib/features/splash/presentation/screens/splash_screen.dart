@@ -143,7 +143,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       ]);
     } catch (error) {
       // 이미지 프리로딩 실패는 치명적이지 않으므로 로그만 남김
-      debugPrint('Image preloading failed: $error');
+      LoggerService.debug('Image preloading failed: $error');
     }
   }
 
@@ -190,7 +190,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   /// 스플래시 에러 처리
   void _handleSplashError(Object error) {
     // 에러 로깅
-    debugPrint('Splash sequence error: $error');
+    LoggerService.debug('Splash sequence error: $error');
 
     if (mounted) {
       // 에러 상태를 UI에 반영
@@ -237,7 +237,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     try {
       // 앱 부트스트랩 초기화 완료 확인
       if (!AppBootstrap.isInitialized) {
-        debugPrint('⚠️ App bootstrap not completed, initializing...');
+        LoggerService.debug('⚠️ App bootstrap not completed, initializing...');
         await AppBootstrap.initialize();
       }
 
@@ -262,7 +262,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
         }
       }
     } catch (error) {
-      debugPrint('Navigation error: $error');
+      LoggerService.debug('Navigation error: $error');
       // 에러 발생 시 기본 경로로 이동
       if (mounted) {
         context.go(AppRouter.onboardingRoute);

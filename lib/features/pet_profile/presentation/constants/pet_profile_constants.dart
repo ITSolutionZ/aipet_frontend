@@ -53,35 +53,36 @@ class PetProfileConstants {
     'default': '不明',
   };
 
-  /// 메시지 상수
-  static const String loadingMessage = '読み込み中...';
-  static const String errorMessage = 'エラーが発生しました';
-  static const String successMessage = '操作が完了しました';
+  // ✅ 공통 메시지는 AppTexts 사용
+  // loadingMessage → AppTexts.loading
+  // successMessage → AppTexts.success
+  // saveSuccessMessage → AppTexts.saved
+  // deleteSuccessMessage → AppTexts.deleted
+  // nameRequiredMessage, weightInvalidMessage 등 → AppTexts 참조
+
+  /// Feature-specific 메시지만 유지
   static const String petNotFoundMessage = 'ペットが見つかりません';
   static const String noPermissionMessage = '権限がありません';
-
-  /// 편집 관련 메시지
   static const String editModeEntered = '編集モードに入りました';
   static const String editModeExited = '編集モードを終了しました';
-  static const String saveSuccessMessage = '保存しました';
-  static const String saveErrorMessage = '保存に失敗しました';
   static const String cancelEditMessage = '編集をキャンセルしました';
-
-  /// 이미지 관련 메시지
-  static const String imageUploadSuccess = '画像をアップロードしました';
-  static const String imageUploadError = '画像のアップロードに失敗しました';
   static const String imageChangeSuccess = '画像を変更しました';
   static const String imageChangeError = '画像の変更に失敗しました';
-
-  /// 삭제 관련 메시지
-  static const String deleteSuccessMessage = '削除しました';
-  static const String deleteErrorMessage = '削除に失敗しました';
-  static const String deleteConfirmMessage = '本当に削除しますか？';
-
-  /// 검증 관련 메시지
-  static const String nameRequiredMessage = '名前を入力してください';
-  static const String weightInvalidMessage = '有効な体重を入力してください';
   static const String weightPositiveMessage = '体重は0より大きい値を入力してください';
+
+  // 공통 메시지 대체 가이드:
+  // - loadingMessage -> AppTexts.loading
+  // - errorMessage -> AppTexts.error
+  // - successMessage -> AppTexts.success
+  // - saveSuccessMessage -> AppTexts.saved
+  // - saveErrorMessage -> AppTexts.saveError
+  // - deleteSuccessMessage -> AppTexts.deleted
+  // - deleteErrorMessage -> AppTexts.deleteError
+  // - deleteConfirmMessage -> AppTexts.deleteConfirm
+  // - imageUploadSuccess -> AppTexts.uploaded
+  // - imageUploadError -> AppTexts.uploadError
+  // - nameRequiredMessage -> AppTexts.nameHint
+  // - weightInvalidMessage -> AppTexts.weightHint
 
   /// UI 레이블
   static const String editLabel = '編集';

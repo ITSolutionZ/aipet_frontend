@@ -32,7 +32,7 @@ class WalkListDialogHelper {
             Text('${currentWalk.petName}との散歩を終了しますか？'),
             const SizedBox(height: 16),
             Text(
-              '経過時間: $hours:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}',
+              '経過時間: ' + DateTimeUtils.formatElapsedTime(hours * 3600 + minutes * 60 + seconds),
               style: AppTextStyles.bodySmall.copyWith(
                 color: AppColors.textSecondary,
               ),
@@ -89,7 +89,7 @@ class WalkListDialogHelper {
       petActivities,
     );
 
-    debugPrint(
+    LoggerService.debug(
       '🔄 산책 종료 시작 - 거리: $currentDistance, 활동: ${petActivities.length}개',
     );
 
@@ -99,7 +99,7 @@ class WalkListDialogHelper {
       notes: notesWithActivities,
     );
 
-    debugPrint(
+    LoggerService.debug(
       '✅ 산책 종료 결과: ${result.isSuccess ? "성공" : "실패"} - ${result.message}',
     );
 
@@ -148,12 +148,10 @@ class WalkListDialogHelper {
             onPressed: () {
               Navigator.of(context).pop();
               onDelete();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('$labelを削除しました'),
-                  backgroundColor: AppColors.pointGreen,
-                  duration: const Duration(seconds: 1),
-                ),
+              SnackBarService.showSuccess(
+                context,
+                '$labelを削除しました',
+                duration: const Duration(seconds: 1),
               );
             },
             style: ElevatedButton.styleFrom(

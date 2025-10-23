@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
 class WeatherData {
   final double temperature;
@@ -41,25 +41,25 @@ class WeatherData {
     final uvi = current['uvi'];
     double uvIndex = 0.0;
 
-    debugPrint('🌞 One Call API UV Index 파싱 시작:');
-    debugPrint('   원본 uvi 데이터: $uvi (타입: ${uvi.runtimeType})');
+    LoggerService.debug('🌞 One Call API UV Index 파싱 시작:');
+    LoggerService.debug('   원본 uvi 데이터: $uvi (타입: ${uvi.runtimeType})');
 
     if (uvi != null) {
       if (uvi is num) {
         uvIndex = uvi.toDouble();
-        debugPrint('   ✅ num 타입으로 파싱: $uvIndex');
+        LoggerService.debug('   ✅ num 타입으로 파싱: $uvIndex');
       } else if (uvi is String) {
         uvIndex = double.tryParse(uvi) ?? 0.0;
-        debugPrint('   ✅ String 타입으로 파싱: $uvIndex');
+        LoggerService.debug('   ✅ String 타입으로 파싱: $uvIndex');
       } else {
-        debugPrint('   ⚠️ 예상치 못한 타입: ${uvi.runtimeType}');
+        LoggerService.debug('   ⚠️ 예상치 못한 타입: ${uvi.runtimeType}');
         uvIndex = 0.0;
       }
     } else {
-      debugPrint('   ❌ uvi 데이터가 null입니다');
+      LoggerService.debug('   ❌ uvi 데이터가 null입니다');
     }
 
-    debugPrint('   최종 UV Index: $uvIndex');
+    LoggerService.debug('   최종 UV Index: $uvIndex');
 
     return WeatherData(
       temperature: (current['temp'] as num?)?.toDouble() ?? 0.0,

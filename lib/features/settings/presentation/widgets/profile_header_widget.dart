@@ -95,7 +95,7 @@ class ProfileHeaderWidget extends ConsumerWidget {
       future: ImagePickerService().loadUserProfileImagePath(),
       builder: (context, snapshot) {
         if (snapshot.hasData && snapshot.data != null) {
-          debugPrint(
+          LoggerService.debug(
             '🖼️ ProfileHeaderWidget - Loading from preferences: ${snapshot.data}',
           );
           return _buildProfileImageWidget(snapshot.data!);
@@ -122,21 +122,21 @@ class ProfileHeaderWidget extends ConsumerWidget {
 
   /// 프로필 이미지 위젯 빌드 (이미지 타입 감지)
   Widget _buildProfileImageWidget(String imagePath) {
-    debugPrint('🖼️ ProfileHeaderWidget - imagePath: $imagePath');
+    LoggerService.debug('🖼️ ProfileHeaderWidget - imagePath: $imagePath');
 
     // 상대 경로를 절대 경로로 변환
     final storageService = ImageStorageService();
     final absolutePath = storageService.getAbsolutePath(imagePath) ?? imagePath;
-    debugPrint('🖼️ ProfileHeaderWidget - absolutePath: $absolutePath');
+    LoggerService.debug('🖼️ ProfileHeaderWidget - absolutePath: $absolutePath');
 
     final imageType = ImageService.getImageType(absolutePath);
-    debugPrint('🖼️ ProfileHeaderWidget - imageType: $imageType');
+    LoggerService.debug('🖼️ ProfileHeaderWidget - imageType: $imageType');
 
     switch (imageType) {
       case ImageType.file:
         // ファイルが存在するかチェック
         final file = File(absolutePath);
-        debugPrint(
+        LoggerService.debug(
           '🖼️ ProfileHeaderWidget - File exists: ${file.existsSync()}',
         );
 
@@ -146,7 +146,7 @@ class ProfileHeaderWidget extends ConsumerWidget {
           width: 100,
           height: 100,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🖼️ ProfileHeaderWidget - File image error: $error');
+            LoggerService.debug('🖼️ ProfileHeaderWidget - File image error: $error');
             return _buildDefaultUserImage();
           },
         );
@@ -157,7 +157,7 @@ class ProfileHeaderWidget extends ConsumerWidget {
           width: 100,
           height: 100,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🖼️ ProfileHeaderWidget - Network image error: $error');
+            LoggerService.debug('🖼️ ProfileHeaderWidget - Network image error: $error');
             return _buildDefaultUserImage();
           },
         );
@@ -168,7 +168,7 @@ class ProfileHeaderWidget extends ConsumerWidget {
           width: 100,
           height: 100,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🖼️ ProfileHeaderWidget - Asset image error: $error');
+            LoggerService.debug('🖼️ ProfileHeaderWidget - Asset image error: $error');
             return _buildDefaultUserImage();
           },
         );

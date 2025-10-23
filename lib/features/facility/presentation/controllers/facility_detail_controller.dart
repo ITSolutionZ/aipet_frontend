@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
 import '../../data/data.dart';
 import '../../domain/domain.dart';
@@ -18,7 +19,7 @@ class FacilityDetailController extends BaseFacilityController {
         );
       } catch (e) {
         // 시설을 찾을 수 없으면 null 반환
-        debugPrint('시설을 찾을 수 없습니다: $facilityId');
+        LoggerService.debug('시설을 찾을 수 없습니다: $facilityId');
         return null;
       }
     } catch (error) {

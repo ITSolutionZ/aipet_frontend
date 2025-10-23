@@ -127,23 +127,13 @@ class EditWalkBottomSheet extends ConsumerWidget {
 
       if (context.mounted) {
         context.pop();
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('散歩記録が更新されました'),
-            backgroundColor: AppColors.pointGreen,
-          ),
-        );
+        SnackBarService.showSuccess(context, '散歩記録が更新されました');
         // 상태 초기화
         ref.read(selectedCoManagerProvider.notifier).select(null);
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('更新に失敗しました: $e'),
-            backgroundColor: AppColors.pointPink,
-          ),
-        );
+        SnackBarService.showError(context, '更新に失敗しました: $e');
       }
     }
   }

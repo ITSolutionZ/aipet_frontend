@@ -120,17 +120,9 @@ class PetProfileActionButtons extends ConsumerWidget {
                             onEditComplete?.call();
 
                             // 성공 메시지 표시
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: const Text('프로필이 성공적으로 저장되었습니다.'),
-                                backgroundColor: AppColors.pointGreen,
-                                behavior: SnackBarBehavior.floating,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                    AppRadius.small,
-                                  ),
-                                ),
-                              ),
+                            SnackBarService.showSuccess(
+                              context,
+                              'プロフィールが正常に保存されました',
                             );
                           }
                         },

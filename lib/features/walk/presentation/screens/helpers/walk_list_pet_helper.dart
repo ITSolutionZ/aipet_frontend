@@ -1,8 +1,8 @@
 import 'package:aipet_frontend/features/walk/data/providers/walk_providers.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/pet_info.dart';
 import 'package:aipet_frontend/features/walk/presentation/controllers/walk_controller.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:aipet_frontend/shared/domain/entities/pet_profile_entity.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../pet_profile/data/providers/pet_profile_providers.dart';
@@ -15,7 +15,7 @@ class WalkListPetHelper {
     required WalkController controller,
     required WidgetRef ref,
   }) {
-    debugPrint('🐾 펫 탭: ${pet.name} (ID: ${pet.id})');
+    LoggerService.debug('🐾 펫 탭: ${pet.name} (ID: ${pet.id})');
 
     // 펫 선택 토글
     controller.togglePet(WalkPetInfo.fromPetProfile(pet));
@@ -27,7 +27,9 @@ class WalkListPetHelper {
   /// 선택된 펫 로깅
   static void _logSelectedPets(WidgetRef ref) {
     final currentSelected = ref.read(selectedPetsProvider);
-    debugPrint('✅ 선택된 펫들: ${currentSelected.map((p) => p.name).join(', ')}');
+    LoggerService.debug(
+      '✅ 선택된 펫들: ${currentSelected.map((p) => p.name).join(', ')}',
+    );
   }
 
   /// 추천 산책 시간 가져오기
@@ -101,7 +103,8 @@ class WalkListPetHelper {
     final additionalInfo = pet.additionalInfo ?? {};
 
     // 현재 건강 상태 확인
-    final currentHealthStatus = additionalInfo['currentHealthStatus'] as String?;
+    final currentHealthStatus =
+        additionalInfo['currentHealthStatus'] as String?;
     final isRecovering = additionalInfo['isRecovering'] as bool? ?? false;
 
     // 나이 계산

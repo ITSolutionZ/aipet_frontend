@@ -1,8 +1,8 @@
 import 'package:aipet_frontend/features/pet_profile/data/repositories/pet_profile_repository_impl.dart';
 import 'package:aipet_frontend/features/pet_profile/data/services/pet_local_storage_service.dart';
 import 'package:aipet_frontend/features/pet_profile/domain/repositories/pet_profile_repository.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
-import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'pet_profile_providers.g.dart';
@@ -34,7 +34,7 @@ class PetProfilesNotifier extends _$PetProfilesNotifier {
   /// 펫 목록 새로고침
   Future<void> refresh() async {
     if (!ref.mounted) {
-      debugPrint(
+      LoggerService.debug(
         '⚠️ PetProfilesNotifier.refresh: Provider is disposed, skipping refresh',
       );
       return;
@@ -58,7 +58,7 @@ class PetProfilesNotifier extends _$PetProfilesNotifier {
   /// 펫 생성
   Future<PetProfileEntity> createPet(PetProfileEntity pet) async {
     if (!ref.mounted) {
-      debugPrint(
+      LoggerService.debug(
         '⚠️ PetProfilesNotifier.createPet: Provider is disposed, skipping creation',
       );
       throw Exception('Provider disposed');
@@ -71,7 +71,7 @@ class PetProfilesNotifier extends _$PetProfilesNotifier {
         try {
           await refresh();
         } catch (e) {
-          debugPrint(
+          LoggerService.debug(
             '⚠️ PetProfilesNotifier.createPet: Refresh failed (provider disposed): $e',
           );
           // Provider가 disposed된 경우 무시하고 계속 진행
@@ -87,7 +87,7 @@ class PetProfilesNotifier extends _$PetProfilesNotifier {
   Future<void> updatePet(PetProfileEntity pet) async {
     // Providerが破棄されていないかチェック
     if (!ref.mounted) {
-      debugPrint(
+      LoggerService.debug(
         '⚠️ PetProfilesNotifier.updatePet: Provider is disposed, skipping update',
       );
       return;
@@ -100,7 +100,7 @@ class PetProfilesNotifier extends _$PetProfilesNotifier {
         try {
           await refresh();
         } catch (e) {
-          debugPrint(
+          LoggerService.debug(
             '⚠️ PetProfilesNotifier.updatePet: Refresh failed (provider disposed): $e',
           );
           // Provider가 disposed된 경우 무시하고 계속 진행
@@ -114,7 +114,7 @@ class PetProfilesNotifier extends _$PetProfilesNotifier {
   /// 펫 삭제
   Future<void> deletePet(String id) async {
     if (!ref.mounted) {
-      debugPrint(
+      LoggerService.debug(
         '⚠️ PetProfilesNotifier.deletePet: Provider is disposed, skipping deletion',
       );
       return;
@@ -127,7 +127,7 @@ class PetProfilesNotifier extends _$PetProfilesNotifier {
         try {
           await refresh();
         } catch (e) {
-          debugPrint(
+          LoggerService.debug(
             '⚠️ PetProfilesNotifier.deletePet: Refresh failed (provider disposed): $e',
           );
           // Provider가 disposed된 경우 무시하고 계속 진행
@@ -218,7 +218,7 @@ class PetList extends _$PetList {
         }).then((result) {
           // 상태 업데이트 후 mounted 확인
           if (!ref.mounted) {
-            debugPrint(
+            LoggerService.debug(
               '⚠️ PetList.addPet: Provider is disposed after operation',
             );
           }
@@ -236,7 +236,7 @@ class PetList extends _$PetList {
         }).then((result) {
           // 상태 업데이트 후 mounted 확인
           if (!ref.mounted) {
-            debugPrint(
+            LoggerService.debug(
               '⚠️ PetList.updatePet: Provider is disposed after operation',
             );
           }
@@ -254,7 +254,7 @@ class PetList extends _$PetList {
         }).then((result) {
           // 상태 업데이트 후 mounted 확인
           if (!ref.mounted) {
-            debugPrint(
+            LoggerService.debug(
               '⚠️ PetList.deletePet: Provider is disposed after operation',
             );
           }

@@ -5,7 +5,6 @@ import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 /// 개발용 로그인 화면
 ///
@@ -33,9 +32,11 @@ class _DevLoginScreenState extends ConsumerState<DevLoginScreen> {
   }
 
   Future<void> _checkAppLock() async {
-    final prefs = await SharedPreferences.getInstance();
-    final pinEnabled = prefs.getBool('pin_enabled') ?? false;
-    final biometricEnabled = prefs.getBool('biometric_enabled') ?? false;
+    // ✅ SecureStorageService 사용으로 Clean Architecture 준수
+    final pinEnabled =
+        await SecureStorageService.getBool('pin_enabled') ?? false;
+    final biometricEnabled =
+        await SecureStorageService.getBool('biometric_enabled') ?? false;
 
     if ((pinEnabled || biometricEnabled) && mounted) {
       unawaited(
@@ -61,12 +62,7 @@ class _DevLoginScreenState extends ConsumerState<DevLoginScreen> {
     await Future.delayed(const Duration(seconds: 1));
 
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('開発モードでログインしました'),
-          backgroundColor: AppColors.pointGreen,
-        ),
-      );
+      SnackBarService.showSuccess(context, '開発モードでログインしました');
 
       if (mounted) {
         context.go(AppRouter.homeRoute);
@@ -93,12 +89,7 @@ class _DevLoginScreenState extends ConsumerState<DevLoginScreen> {
 
       // 성공 메시지 표시
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('開発モードでログインしました'),
-            backgroundColor: AppColors.pointGreen,
-          ),
-        );
+        SnackBarService.showSuccess(context, '開発モードでログインしました');
 
         // 홈 화면으로 이동
         if (mounted) {
@@ -107,12 +98,7 @@ class _DevLoginScreenState extends ConsumerState<DevLoginScreen> {
       }
     } catch (error) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('ログインエラー: $error'),
-            backgroundColor: AppColors.pointBrown,
-          ),
-        );
+        SnackBarService.showError(context, 'ログインエラー: $error');
       }
     } finally {
       if (mounted) {
@@ -174,7 +160,7 @@ class _DevLoginScreenState extends ConsumerState<DevLoginScreen> {
           height: 120,
           fit: BoxFit.contain,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('로고 로드 실패: $error');
+            LoggerService.debug('로고 로드 실패: $error');
             return Container(
               width: 120,
               height: 120,

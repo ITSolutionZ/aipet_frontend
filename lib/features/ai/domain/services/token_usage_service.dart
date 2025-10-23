@@ -1,6 +1,8 @@
 import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:flutter/foundation.dart';
 
+import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
 /// 🪙 OpenAI 토큰 사용량 추적 및 관리 서비스
 ///
 /// OpenAI API 사용량을 모니터링하고 비용을 추적하여 남용을 방지합니다.
@@ -80,13 +82,13 @@ class TokenUsageService {
 
       // 경고 레벨 확인
       if (currentDailyUsage + totalTokens >= warningThreshold && kDebugMode) {
-        debugPrint(
+        LoggerService.debug(
           '[$_tag] ⚠️ 일일 토큰 사용량이 경고 임계값에 도달: ${currentDailyUsage + totalTokens}/$dailyTokenLimit',
         );
       }
 
       if (kDebugMode) {
-        debugPrint(
+        LoggerService.debug(
           '[$_tag] 토큰 사용량 기록: $totalTokens 토큰 (일일: ${currentDailyUsage + totalTokens}/$dailyTokenLimit)',
         );
       }
@@ -94,7 +96,7 @@ class TokenUsageService {
       return Result.success('토큰 사용량 기록 완료', usageRecord);
     } catch (error, stackTrace) {
       if (kDebugMode) {
-        debugPrint('[$_tag] Error recording token usage: $error\n$stackTrace');
+        LoggerService.debug('[$_tag] Error recording token usage: $error\n$stackTrace');
       }
       return Result.failure('토큰 사용량 기록 중 오류 발생');
     }
@@ -145,7 +147,7 @@ class TokenUsageService {
   static void clearUsageHistory() {
     _usageHistory.clear();
     if (kDebugMode) {
-      debugPrint('[$_tag] Token usage history cleared');
+      LoggerService.debug('[$_tag] Token usage history cleared');
     }
   }
 
@@ -177,7 +179,7 @@ class TokenUsageService {
     });
 
     if (kDebugMode) {
-      debugPrint('[$_tag] Old token usage data cleaned up');
+      LoggerService.debug('[$_tag] Old token usage data cleaned up');
     }
   }
 
@@ -203,11 +205,11 @@ class TokenUsageService {
 
   // 내부 헬퍼 메서드들
   static String _formatDateKey(DateTime date) {
-    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+    return DateTimeUtils.formatDateKey(date);
   }
 
   static String _formatHourKey(DateTime dateTime) {
-    return '${_formatDateKey(dateTime)}-${dateTime.hour.toString().padLeft(2, '0')}';
+    return (_formatDateKey(dateTime) + '-' + DateTimeUtils.formatTwoDigits(dateTime.hour));
   }
 
   static int _getRequestCountForDate(DateTime date) {

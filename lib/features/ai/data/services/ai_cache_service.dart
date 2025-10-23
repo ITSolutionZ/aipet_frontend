@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/shared/services/base_logging_service.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:flutter/foundation.dart';
 
 import 'ai_cache_strategy.dart';
@@ -202,12 +203,12 @@ class AiCacheService extends BaseLoggingService {
     if (!kDebugMode) return;
 
     final status = getCacheStatus();
-    debugPrint('=== AI Cache Statistics ===');
-    debugPrint('Total Keys: ${status['totalKeys']}');
-    debugPrint(
+    LoggerService.debug('=== AI Cache Statistics ===');
+    LoggerService.debug('Total Keys: ${status['totalKeys']}');
+    LoggerService.debug(
       'Memory Usage: ${status['totalMemoryMB']}MB / ${status['maxMemoryMB']}MB (${status['memoryUsagePercent']}%)',
     );
-    debugPrint('Expired Keys: ${(status['expiredKeys'] as List).length}');
+    LoggerService.debug('Expired Keys: ${(status['expiredKeys'] as List).length}');
 
     // 優先度別の集計
     final metadataList = status['metadata'] as List<Map<String, dynamic>>;
@@ -217,12 +218,12 @@ class AiCacheService extends BaseLoggingService {
       byPriority[priority] = (byPriority[priority] ?? 0) + 1;
     }
 
-    debugPrint('By Priority:');
+    LoggerService.debug('By Priority:');
     for (final entry
         in byPriority.entries.toList()
           ..sort((a, b) => b.key.compareTo(a.key))) {
-      debugPrint('  Priority ${entry.key}: ${entry.value} entries');
+      LoggerService.debug('  Priority ${entry.key}: ${entry.value} entries');
     }
-    debugPrint('===========================');
+    LoggerService.debug('===========================');
   }
 }

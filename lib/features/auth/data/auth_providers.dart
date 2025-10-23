@@ -1,8 +1,6 @@
-/// Auth Data Layer Providers
-///
-/// 개발 모드용 Provider 설정
 library;
 
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -18,12 +16,12 @@ import 'repositories/local_auth_impl.dart';
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
   // 🚧 개발 중: 로컬 전용 구현체 사용
   if (kDebugMode) {
-    debugPrint('🔐 [Auth] 개발 모드 - 로컬 전용 인증 사용');
+    LoggerService.debug('🔐 [Auth] 개발 모드 - 로컬 전용 인증 사용');
     return LocalAuthImpl();
   }
 
   // 프로덕션: Firebase Auth 사용 (추후 활성화)
-  debugPrint('🔐 [Auth] 프로덕션 모드 - Firebase Auth 사용');
+  LoggerService.debug('🔐 [Auth] 프로덕션 모드 - Firebase Auth 사용');
   return FirebaseAuthRealImpl();
 });
 

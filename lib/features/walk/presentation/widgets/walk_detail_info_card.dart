@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
+import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
 import 'package:aipet_frontend/shared/ui.dart';
 import 'package:flutter/material.dart';
 
@@ -38,7 +39,7 @@ class WalkDetailInfoCard extends StatelessWidget {
 
   Widget _buildTimeRow() {
     final endTimeString = walkRecord.endTime != null
-        ? '${walkRecord.endTime!.hour.toString().padLeft(2, '0')}:${walkRecord.endTime!.minute.toString().padLeft(2, '0')}'
+        ? DateTimeUtils.formatTime(walkRecord.endTime!)
         : '進行中';
 
     return Row(

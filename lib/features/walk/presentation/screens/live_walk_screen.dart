@@ -5,11 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../widgets/live_walk/live_walk_widget.dart'
-    show
-        LiveWalkWidget,
-        liveWalkControllerProvider,
-        WalkTimerState;
+    show LiveWalkWidget, liveWalkControllerProvider, WalkTimerState;
 import 'helpers/live/helpers.dart';
+import 'helpers/live/live_walk_dialog_helper.dart';
 
 /// 실시간 산책 화면
 class LiveWalkScreen extends ConsumerStatefulWidget {
@@ -121,7 +119,6 @@ class _LiveWalkScreenState extends ConsumerState<LiveWalkScreen> {
       },
     );
   }
-
 
   /// 옵션 메뉴 표시
   void _showWalkOptions() {

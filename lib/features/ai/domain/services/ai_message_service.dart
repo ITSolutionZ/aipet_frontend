@@ -40,7 +40,7 @@ class AiMessageService {
   }) async {
     try {
       if (kDebugMode) {
-        debugPrint(
+        LoggerService.debug(
           '📤 Sending AI message: ${message.substring(0, message.length.clamp(0, 50))}...',
         );
       }
@@ -55,12 +55,12 @@ class AiMessageService {
       final result = await _sendMessageUseCase(params);
 
       if (result.isSuccess && kDebugMode) {
-        debugPrint('✅ Message sent successfully');
+        LoggerService.debug('✅ Message sent successfully');
       }
 
       return result;
     } catch (e) {
-      debugPrint('❌ Failed to send message: $e');
+      LoggerService.debug('❌ Failed to send message: $e');
       return Result.failure('메시지 전송 중 오류가 발생했습니다: $e');
     }
   }
@@ -87,7 +87,7 @@ class AiMessageService {
         ),
       );
     } catch (e) {
-      debugPrint('❌ Failed to analyze message: $e');
+      LoggerService.debug('❌ Failed to analyze message: $e');
       return Result.failure('메시지 분석 중 오류가 발생했습니다: $e');
     }
   }
@@ -108,7 +108,7 @@ class AiMessageService {
 
       return await _loadHistoryUseCase.call(params);
     } catch (e) {
-      debugPrint('❌ Failed to load chat history: $e');
+      LoggerService.debug('❌ Failed to load chat history: $e');
       return Result.failure('채팅 기록 로드 중 오류가 발생했습니다: $e');
     }
   }
@@ -139,7 +139,7 @@ class AiMessageService {
 
       return Result.success('제안 질문 생성 완료', suggestions);
     } catch (e) {
-      debugPrint('❌ Failed to get suggested questions: $e');
+      LoggerService.debug('❌ Failed to get suggested questions: $e');
       return Result.failure('제안 질문 로드 중 오류가 발생했습니다: $e');
     }
   }

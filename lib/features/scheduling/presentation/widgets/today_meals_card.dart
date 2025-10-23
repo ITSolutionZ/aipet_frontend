@@ -1,6 +1,7 @@
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
+import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
 import 'meal_status_widget.dart';
 
 class TodayMealsCard extends StatelessWidget {
@@ -11,7 +12,7 @@ class TodayMealsCard extends StatelessWidget {
   /// DateTime을 시간 문자열로 변환
   String _formatTime(DateTime? dateTime) {
     if (dateTime == null) return '--:--';
-    return '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
+    return DateTimeUtils.formatTime(dateTime);
   }
 
   @override

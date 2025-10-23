@@ -1,3 +1,4 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
 /// 건강 관리 다이얼로그 헬퍼
@@ -12,13 +13,9 @@ class HealthDialogHelper {
       onSave: (value) {
         final temp = double.tryParse(value);
         if (temp != null && temp >= 35 && temp <= 42) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('体温 $temp°C を記録しました')));
+          SnackBarService.showSuccess(context, '体温 $temp°C を記録しました');
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('有効な体温を入力してください (35-42°C)')),
-          );
+          SnackBarService.showWarning(context, '有効な体温を入力してください (35-42°C)');
         }
       },
     );
@@ -34,13 +31,9 @@ class HealthDialogHelper {
       onSave: (value) {
         final rate = int.tryParse(value);
         if (rate != null && rate >= 60 && rate <= 200) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('心拍数 ${rate}bpm を記録しました')));
+          SnackBarService.showSuccess(context, '心拍数 ${rate}bpm を記録しました');
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('有効な心拍数を入力してください (60-200 bpm)')),
-          );
+          SnackBarService.showWarning(context, '有効な心拍数を入力してください (60-200 bpm)');
         }
       },
     );

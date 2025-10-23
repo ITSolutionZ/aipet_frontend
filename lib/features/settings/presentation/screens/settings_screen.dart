@@ -92,7 +92,7 @@ class SettingsScreen extends ConsumerWidget {
             backgroundColor: const Color(0xFFA88B5A),
             tileColor: AppColors.pureWhite,
             onTap: () {
-              debugPrint('🔍 ペット情報編集 버튼 클릭됨 - 간단 테스트');
+              LoggerService.debug('🔍 ペット情報編集 버튼 클릭됨 - 간단 테스트');
               // 간단한 테스트: 바로 펫 등록 화면으로 이동
               context.push('/daily-pet-registration');
             },
@@ -220,24 +220,24 @@ class SettingsScreen extends ConsumerWidget {
 
   /// 프로필 이미지 위젯 빌드 (이미지 타입 감지) - 강화된 로컬 저장 지원
   Widget _buildProfileImageWidget(String imagePath, {double size = 35}) {
-    debugPrint('🖼️ SettingsScreen - imagePath: $imagePath');
+    LoggerService.debug('🖼️ SettingsScreen - imagePath: $imagePath');
 
     // 상대 경로를 절대 경로로 변환
     final storageService = ImageStorageService();
     final absolutePath = storageService.getAbsolutePath(imagePath) ?? imagePath;
-    debugPrint('🖼️ SettingsScreen - absolutePath: $absolutePath');
+    LoggerService.debug('🖼️ SettingsScreen - absolutePath: $absolutePath');
 
     final imageType = ImageService.getImageType(absolutePath);
-    debugPrint('🖼️ SettingsScreen - imageType: $imageType');
+    LoggerService.debug('🖼️ SettingsScreen - imageType: $imageType');
 
     switch (imageType) {
       case ImageType.file:
         final file = File(absolutePath);
         final fileExists = file.existsSync();
-        debugPrint('🖼️ SettingsScreen - File exists: $fileExists');
+        LoggerService.debug('🖼️ SettingsScreen - File exists: $fileExists');
 
         if (!fileExists) {
-          debugPrint('❌ SettingsScreen - File does not exist: $absolutePath');
+          LoggerService.debug('❌ SettingsScreen - File does not exist: $absolutePath');
           return _buildDefaultUserImage(size);
         }
 
@@ -247,7 +247,7 @@ class SettingsScreen extends ConsumerWidget {
           width: size,
           height: size,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🖼️ SettingsScreen - File image error: $error');
+            LoggerService.debug('🖼️ SettingsScreen - File image error: $error');
             return _buildDefaultUserImage(size);
           },
         );
@@ -258,7 +258,7 @@ class SettingsScreen extends ConsumerWidget {
           width: size,
           height: size,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🖼️ SettingsScreen - Network image error: $error');
+            LoggerService.debug('🖼️ SettingsScreen - Network image error: $error');
             return _buildDefaultUserImage(size);
           },
         );
@@ -269,7 +269,7 @@ class SettingsScreen extends ConsumerWidget {
           width: size,
           height: size,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🖼️ SettingsScreen - Asset image error: $error');
+            LoggerService.debug('🖼️ SettingsScreen - Asset image error: $error');
             return _buildDefaultUserImage(size);
           },
         );

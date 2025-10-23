@@ -1,8 +1,8 @@
 import '../../../../app/app.dart';
+import '../../../../shared/core/services/http_client_service.dart';
 import '../../domain/domain.dart';
 import 'ai_cache_service.dart';
 import 'ai_data_service.dart';
-import 'ai_dio_service.dart';
 
 /// 🎯 AI 설정 서비스 (의존성 주입 패턴으로 리팩토링됨)
 ///
@@ -21,9 +21,10 @@ class AiConfigService {
 
   /// 팩토리 생성자 - 기본 설정으로 인스턴스 생성
   factory AiConfigService.createDefault() {
-    final dioService = AiDioService.instance;
+    // ✅ Shared HttpClientService 사용
+    final httpClient = HttpClientService.instance;
     final cacheService = AiCacheService();
-    final dataService = AiDataService(cacheService, dioService);
+    final dataService = AiDataService(cacheService, httpClient: httpClient);
 
     return AiConfigService(
       dataService: dataService,

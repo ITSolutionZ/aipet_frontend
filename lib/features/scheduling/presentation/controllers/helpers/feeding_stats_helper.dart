@@ -1,3 +1,5 @@
+import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
+
 import 'feeding_filter_helper.dart';
 
 /// 급여 통계 계산 헬퍼
@@ -38,6 +40,7 @@ class FeedingStatsHelper {
 
   /// 시간 포맷팅
   static String formatTime(DateTime time) {
-    return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
+    // ✅ DateTimeUtils 사용
+    return DateTimeUtils.formatTime(time);
   }
 }

@@ -1,5 +1,5 @@
 import 'package:aipet_frontend/app/config/app_config.dart';
-import 'package:flutter/foundation.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
 import '../../domain/domain.dart';
 
@@ -64,7 +64,7 @@ class AuthModeService {
   /// 임시 로그인 로그 출력
   static void logTempLogin(String email, String method) {
     if (isMockMode) {
-      debugPrint('🚨 AuthModeService: 임시 $method - 이메일: $email');
+      LoggerService.debug('🚨 AuthModeService: 임시 $method - 이메일: $email');
     }
   }
 

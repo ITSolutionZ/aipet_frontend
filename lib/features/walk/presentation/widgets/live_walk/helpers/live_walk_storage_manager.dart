@@ -1,6 +1,6 @@
 import 'package:aipet_frontend/features/walk/data/services/local_walk_storage_service.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
-import 'package:flutter/foundation.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
 /// Live Walk 저장 관리자
 class LiveWalkStorageManager {
@@ -9,12 +9,12 @@ class LiveWalkStorageManager {
     try {
       final savedWalk = await LocalWalkStorageService.loadCurrentWalk();
       if (savedWalk != null && savedWalk.isActive) {
-        debugPrint('💾 저장된 산책 복원: ${savedWalk.id}');
+        LoggerService.debug('💾 저장된 산책 복원: ${savedWalk.id}');
         return savedWalk;
       }
       return null;
     } catch (e) {
-      debugPrint('❌ 저장된 산책 불러오기 실패: $e');
+      LoggerService.debug('❌ 저장된 산책 불러오기 실패: $e');
       return null;
     }
   }
@@ -24,10 +24,10 @@ class LiveWalkStorageManager {
     try {
       if (walkRecord != null) {
         await LocalWalkStorageService.saveCurrentWalk(walkRecord);
-        debugPrint('💾 현재 산책 저장: ${walkRecord.id}');
+        LoggerService.debug('💾 현재 산책 저장: ${walkRecord.id}');
       }
     } catch (e) {
-      debugPrint('❌ 현재 산책 저장 실패: $e');
+      LoggerService.debug('❌ 현재 산책 저장 실패: $e');
     }
   }
 
@@ -50,9 +50,9 @@ class LiveWalkStorageManager {
       // 현재 산책 제거
       await LocalWalkStorageService.saveCurrentWalk(null);
 
-      debugPrint('💾 산책 완료 저장: ${completedWalk.id}');
+      LoggerService.debug('💾 산책 완료 저장: ${completedWalk.id}');
     } catch (e) {
-      debugPrint('❌ 완료된 산책 저장 실패: $e');
+      LoggerService.debug('❌ 완료된 산책 저장 실패: $e');
     }
   }
 
@@ -60,9 +60,9 @@ class LiveWalkStorageManager {
   static Future<void> cancelWalk() async {
     try {
       await LocalWalkStorageService.saveCurrentWalk(null);
-      debugPrint('💾 산책 취소됨');
+      LoggerService.debug('💾 산책 취소됨');
     } catch (e) {
-      debugPrint('❌ 산책 취소 실패: $e');
+      LoggerService.debug('❌ 산책 취소 실패: $e');
     }
   }
 }

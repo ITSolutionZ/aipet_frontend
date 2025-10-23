@@ -154,8 +154,8 @@ class AiQuestionRequestBubble extends StatelessWidget {
     List<String> examples = [];
 
     // 디버그: 선택된 카테고리 확인
-    debugPrint('Selected Category ID: ${selectedCategory?.id}');
-    debugPrint('Selected Category Name: ${selectedCategory?.name}');
+    LoggerService.debug('Selected Category ID: ${selectedCategory?.id}');
+    LoggerService.debug('Selected Category Name: ${selectedCategory?.name}');
 
     // 카테고리별 질문 예시
     switch (selectedCategory?.id) {
@@ -251,9 +251,9 @@ class AiQuestionRequestBubble extends StatelessWidget {
     }
 
     // 디버그: examples 배열 확인
-    debugPrint('Examples count: ${examples.length}');
+    LoggerService.debug('Examples count: ${examples.length}');
     for (int i = 0; i < examples.length; i++) {
-      debugPrint('Example $i: ${examples[i]}');
+      LoggerService.debug('Example $i: ${examples[i]}');
     }
 
     return Column(
@@ -279,7 +279,7 @@ class AiQuestionRequestBubble extends StatelessWidget {
 
   Widget _buildSuggestedQuestion(String question) {
     // 디버그: 질문 텍스트 확인
-    debugPrint('Building question widget for: "$question"');
+    LoggerService.debug('Building question widget for: "$question"');
 
     // 이모지를 제거하여 실제 질문 텍스트만 추출 (전송용)
     final questionText = question.replaceAll(
@@ -289,7 +289,7 @@ class AiQuestionRequestBubble extends StatelessWidget {
       '',
     );
 
-    debugPrint('Cleaned question text: "$questionText"');
+    LoggerService.debug('Cleaned question text: "$questionText"');
 
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.xs),
@@ -301,7 +301,7 @@ class AiQuestionRequestBubble extends StatelessWidget {
                   // 펫 이름을 포함한 완전한 질문으로 만들기 (이모지 포함된 원본 사용)
                   final petName = selectedPet?.name ?? 'ペット';
                   final fullQuestion = '$petNameの$question';
-                  debugPrint('Sending question: "$fullQuestion"');
+                  LoggerService.debug('Sending question: "$fullQuestion"');
                   onQuestionTap!(fullQuestion);
                 }
               : null,

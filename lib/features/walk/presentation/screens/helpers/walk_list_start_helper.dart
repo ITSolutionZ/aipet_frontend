@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/features/walk/presentation/controllers/walk_controller.dart';
+import 'package:aipet_frontend/shared/core/services/snackbar_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -35,18 +36,11 @@ class WalkListStartHelper {
 
   /// 펫 미선택 스낵바
   static void _showNoPetSelectedSnackBar(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('ペットを選択してください'),
-        backgroundColor: AppColors.pointPink,
-      ),
-    );
+    SnackBarService.showWarning(context, 'ペットを選択してください');
   }
 
   /// 시작 에러 스낵바
   static void _showStartErrorSnackBar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: AppColors.pointPink),
-    );
+    SnackBarService.showError(context, message);
   }
 }

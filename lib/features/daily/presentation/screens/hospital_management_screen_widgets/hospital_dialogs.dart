@@ -69,12 +69,8 @@ class HospitalDialogs {
 
                 if (!context.mounted) return;
                 Navigator.of(context).pop();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('病院が登録されました'),
-                    backgroundColor: AppColors.pointGreen,
-                  ),
-                );
+                // ✅ Shared SnackBarService 사용
+                SnackBarService.showSuccess(context, '病院が登録されました');
               }
             },
             style: ElevatedButton.styleFrom(
@@ -111,12 +107,7 @@ class HospitalDialogs {
 
               if (!context.mounted) return;
               Navigator.of(context).pop();
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('病院が削除されました'),
-                  backgroundColor: Colors.orange,
-                ),
-              );
+              SnackBarService.showSuccess(context, '病院が削除されました');
             },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             child: const Text('削除'),
@@ -177,18 +168,13 @@ class HospitalDialogs {
         await launchUrl(telUri);
       } else {
         if (!context.mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('電話をかけることができません'),
-            backgroundColor: Colors.orange,
-          ),
-        );
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showWarning(context, '電話をかけることができません');
       }
     } catch (e) {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('エラーが発生しました: $e'), backgroundColor: Colors.red),
-      );
+      // ✅ Shared SnackBarService 사용
+      SnackBarService.showError(context, 'エラーが発生しました: $e');
     }
   }
 }

@@ -62,24 +62,24 @@ class PetProfileImageWidget extends StatelessWidget {
   }
 
   Widget _buildImageWidget(String imagePath) {
-    debugPrint('🖼️ PetProfileImageWidget - imagePath: $imagePath');
+    LoggerService.debug('🖼️ PetProfileImageWidget - imagePath: $imagePath');
 
     // 상대 경로를 절대 경로로 변환
     final storageService = ImageStorageService();
     final absolutePath = storageService.getAbsolutePath(imagePath) ?? imagePath;
-    debugPrint('🖼️ PetProfileImageWidget - absolutePath: $absolutePath');
+    LoggerService.debug('🖼️ PetProfileImageWidget - absolutePath: $absolutePath');
 
     final imageType = ImageService.getImageType(absolutePath);
-    debugPrint('🖼️ PetProfileImageWidget - imageType: $imageType');
+    LoggerService.debug('🖼️ PetProfileImageWidget - imageType: $imageType');
 
     switch (imageType) {
       case ImageType.file:
         final file = File(absolutePath);
         final fileExists = file.existsSync();
-        debugPrint('🖼️ PetProfileImageWidget - File exists: $fileExists');
+        LoggerService.debug('🖼️ PetProfileImageWidget - File exists: $fileExists');
 
         if (!fileExists) {
-          debugPrint(
+          LoggerService.debug(
             '❌ PetProfileImageWidget - File does not exist: $absolutePath',
           );
           return _buildDefaultImage();

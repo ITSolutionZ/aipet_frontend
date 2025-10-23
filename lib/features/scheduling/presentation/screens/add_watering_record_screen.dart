@@ -4,7 +4,7 @@ import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+// ✅ Removed SharedPreferences
 
 /// 급수 기록 추가 화면
 class AddWateringRecordScreen extends ConsumerStatefulWidget {
@@ -245,7 +245,8 @@ class _AddWateringRecordScreenState
   Future<void> _saveWateringRecord() async {
     if (_formKey.currentState!.validate()) {
       // 로컬 데이터로 저장
-      final prefs = await SharedPreferences.getInstance();
+      final cache = CacheService();
+      await cache.initialize();
 
       final wateringRecord = {
         'id': DateTime.now().millisecondsSinceEpoch.toString(),
@@ -257,17 +258,12 @@ class _AddWateringRecordScreenState
       };
 
       // 기존 기록 가져오기
-      final records = prefs.getStringList('watering_records') ?? [];
+      final records = cache.getPersistentCacheList('watering_records') ?? [];
       records.add(jsonEncode(wateringRecord));
-      await prefs.setStringList('watering_records', records);
+      await cache.setPersistentCacheList('watering_records', records);
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('給水記録を保存しました'),
-            backgroundColor: AppColors.pointGreen,
-          ),
-        );
+        SnackBarService.showSuccess(context, '給水記録を保存しました');
         context.pop();
       }
     }

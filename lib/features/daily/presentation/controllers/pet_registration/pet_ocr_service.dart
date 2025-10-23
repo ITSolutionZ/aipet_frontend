@@ -1,6 +1,7 @@
 // TODO: google_mlkit_text_recognition 패키지 활성화 시 복원 필요
 // import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:aipet_frontend/shared/core/services/image_service.dart';
+import 'package:flutter/material.dart';
 
 /// 펫 등록증 OCR 처리 서비스
 ///
@@ -8,18 +9,18 @@ import 'package:image_picker/image_picker.dart';
 /// 현재는 Mock 구현 (google_mlkit_text_recognition 패키지 호환성 문제로 임시 비활성화)
 class PetOcrService {
   /// 이미지 선택 및 OCR 처리
-  Future<OcrResult> selectAndProcessImage() async {
-    final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(
-      source: ImageSource.gallery,
+  /// ✅ ImageService 사용으로 중복 제거
+  Future<OcrResult> selectAndProcessImage(BuildContext context) async {
+    final String? imagePath = await ImageService.pickFromGallery(
+      context,
       imageQuality: 80,
     );
 
-    if (image == null) {
+    if (imagePath == null) {
       return OcrResult.cancelled();
     }
 
-    return processImageWithOCR(image.path);
+    return processImageWithOCR(imagePath);
   }
 
   /// Google ML Kit을 사용한 OCR 처리

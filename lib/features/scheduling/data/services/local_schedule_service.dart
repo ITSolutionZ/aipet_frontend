@@ -1,6 +1,7 @@
 import 'package:aipet_frontend/shared/services/local_database_service.dart';
 
 /// 스케줄 로컬 스토리지 서비스
+import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
 class LocalScheduleService {
   final LocalDatabaseService _dbService = LocalDatabaseService.instance;
 
@@ -102,8 +103,7 @@ class LocalScheduleService {
   Future<List<Map<String, dynamic>>> getTodaySchedules() async {
     final db = await _dbService.database;
     final today = DateTime.now();
-    final todayStr =
-        '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
+    final todayStr = DateTimeUtils.formatDateKey(today);
 
     return db.rawQuery(
       '''

@@ -1,19 +1,25 @@
 import 'dart:convert';
-
-import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
 /// 펫 상태 관리 헬퍼
+import 'package:aipet_frontend/shared/services/cache_service.dart';
+
 class PetStatusHelper {
   static const String _keyPetStatuses = 'pet_statuses';
 
   /// 펫 상태 저장
+  // ✅ SharedPreferences 인스턴스 재사용
+  static final _cache = CacheService();
+  static Future<void> _init() async {
+    await _cache.initialize();
+  }
+
   static Future<void> updatePetStatus(
     String petId,
     Map<String, String> statusValues,
   ) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final statusKey = '${_keyPetStatuses}_$petId';
 
       final statusData = {
@@ -21,19 +27,19 @@ class PetStatusHelper {
         'lastUpdated': DateTime.now().toIso8601String(),
       };
 
-      await prefs.setString(statusKey, jsonEncode(statusData));
-      debugPrint('ペット状態更新成功: $petId');
+      await _cache.setString(statusKey, jsonEncode(statusData));
+      LoggerService.debug('ペット状態更新成功: $petId');
     } catch (e) {
-      debugPrint('ペット状態更新エラー: $e');
+      LoggerService.debug('ペット状態更新エラー: $e');
     }
   }
 
   /// 펫 상태 가져오기
   static Future<Map<String, dynamic>> getPetStatus(String petId) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final statusKey = '${_keyPetStatuses}_$petId';
-      final statusJson = prefs.getString(statusKey);
+      final statusJson = _cache.getString(statusKey);
 
       if (statusJson != null) {
         return jsonDecode(statusJson) as Map<String, dynamic>;
@@ -44,7 +50,7 @@ class PetStatusHelper {
         'lastUpdated': DateTime.now().toIso8601String(),
       };
     } catch (e) {
-      debugPrint('ペット状態取得エラー: $e');
+      LoggerService.debug('ペット状態取得エラー: $e');
       return {
         'selectedStatuses': [],
         'lastUpdated': DateTime.now().toIso8601String(),

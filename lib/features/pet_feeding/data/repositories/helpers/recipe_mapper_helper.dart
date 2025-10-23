@@ -1,7 +1,4 @@
-import 'dart:convert';
-
 import 'package:aipet_frontend/features/pet_feeding/domain/entities/recipe_entity.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 /// 레시피 매퍼 헬퍼
 class RecipeMapperHelper {
@@ -27,15 +24,6 @@ class RecipeMapperHelper {
     List<RecipeEntity> entities,
   ) {
     return entities.map((entity) => entityToJson(entity)).toList();
-  }
-
-  /// SharedPreferences에 레시피 저장
-  static Future<void> saveRecipesToPreferences(
-    List<Map<String, dynamic>> recipes,
-  ) async {
-    final prefs = await SharedPreferences.getInstance();
-    final recipesJson = recipes.map((r) => jsonEncode(r)).toList();
-    await prefs.setStringList('pet_recipes', recipesJson);
   }
 
   /// 레시피 업데이트 시 타임스탬프 추가

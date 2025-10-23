@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/app/controllers/base_controller.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:aipet_frontend/features/walk/data/data.dart';
 import 'package:aipet_frontend/features/walk/domain/domain.dart';
 import 'package:aipet_frontend/features/walk/domain/usecases/update_walk_record_usecase.dart';
@@ -35,17 +36,17 @@ class WalkController extends BaseController {
   /// 모든 산책 기록 조회 (Hybrid Repository 사용)
   Future<Result<List<WalkRecordEntity>>> getAll() async {
     try {
-      debugPrint('🔄 WalkController: 산책 기록 조회 시작 (Hybrid Repository)');
+      LoggerService.debug('🔄 WalkController: 산책 기록 조회 시작 (Hybrid Repository)');
 
       // Hybrid Repository가 자동으로 API, 로컬, Mock 순서로 시도
       final walkRecords = await _getAllWalkRecordsUseCase();
 
       ref.read(walkRecordsProvider.notifier).setWalkRecords(walkRecords);
 
-      debugPrint('✅ WalkController: ${walkRecords.length}개 산책 기록 로드 완료');
+      LoggerService.debug('✅ WalkController: ${walkRecords.length}개 산책 기록 로드 완료');
       return Result.success('散歩記録をロードしました', walkRecords);
     } catch (e) {
-      debugPrint('❌ WalkController: 산책 기록 로드 실패 - $e');
+      LoggerService.debug('❌ WalkController: 산책 기록 로드 실패 - $e');
       return Result.failure('散歩記録のロードに失敗しました: ${e.toString()}');
     }
   }
@@ -67,16 +68,16 @@ class WalkController extends BaseController {
   /// 새 산책 기록 생성
   Future<Result<WalkRecordEntity>> create(WalkRecordEntity item) async {
     try {
-      debugPrint('🔄 WalkController: 산책 생성 시작 (Hybrid Repository)');
+      LoggerService.debug('🔄 WalkController: 산책 생성 시작 (Hybrid Repository)');
 
       // Repository가 로컬 저장 및 API 동기화 처리
       final newWalk = await _startWalkUseCase(item);
       ref.read(walkRecordsProvider.notifier).addWalkRecord(newWalk);
 
-      debugPrint('✅ WalkController: 산책 생성 완료 - ID: ${newWalk.id}');
+      LoggerService.debug('✅ WalkController: 산책 생성 완료 - ID: ${newWalk.id}');
       return Result.success('散歩が開始されました', newWalk);
     } catch (e) {
-      debugPrint('❌ WalkController: 산책 시작 실패 - $e');
+      LoggerService.debug('❌ WalkController: 산책 시작 실패 - $e');
       return Result.failure('散歩の開始に失敗しました: ${e.toString()}');
     }
   }
@@ -84,16 +85,16 @@ class WalkController extends BaseController {
   /// 산책 기록 업데이트
   Future<Result<WalkRecordEntity>> update(WalkRecordEntity item) async {
     try {
-      debugPrint('🔄 WalkController: 산책 업데이트 시작 (Hybrid Repository)');
+      LoggerService.debug('🔄 WalkController: 산책 업데이트 시작 (Hybrid Repository)');
 
       // Repository가 로컬 업데이트 및 API 동기화 처리
       await _updateWalkRecordUseCase(item);
       ref.read(walkRecordsProvider.notifier).updateWalkRecord(item);
 
-      debugPrint('✅ WalkController: 산책 업데이트 완료 - ID: ${item.id}');
+      LoggerService.debug('✅ WalkController: 산책 업데이트 완료 - ID: ${item.id}');
       return Result.success('散歩記録が更新されました', item);
     } catch (e) {
-      debugPrint('❌ WalkController: 산책 업데이트 실패 - $e');
+      LoggerService.debug('❌ WalkController: 산책 업데이트 실패 - $e');
       return Result.failure('散歩記録の更新に失敗しました: ${e.toString()}');
     }
   }
@@ -101,16 +102,16 @@ class WalkController extends BaseController {
   /// 산책 기록 삭제
   Future<Result<void>> delete(String id) async {
     try {
-      debugPrint('🔄 WalkController: 산책 삭제 시작 (Hybrid Repository)');
+      LoggerService.debug('🔄 WalkController: 산책 삭제 시작 (Hybrid Repository)');
 
       // Repository가 로컬 삭제 및 API 동기화 처리
       await _repository.deleteWalkRecord(id);
       ref.read(walkRecordsProvider.notifier).removeWalkRecord(id);
 
-      debugPrint('✅ WalkController: 산책 삭제 완료 - ID: $id');
+      LoggerService.debug('✅ WalkController: 산책 삭제 완료 - ID: $id');
       return Result.success('散歩記録が削除されました');
     } catch (e) {
-      debugPrint('❌ WalkController: 산책 삭제 실패 - $e');
+      LoggerService.debug('❌ WalkController: 산책 삭제 실패 - $e');
       return Result.failure('散歩記録の削除に失敗しました: ${e.toString()}');
     }
   }
@@ -139,7 +140,7 @@ class WalkController extends BaseController {
     );
 
     try {
-      debugPrint('🔄 WalkController: 새 산책 시작 (Hybrid Repository)');
+      LoggerService.debug('🔄 WalkController: 새 산책 시작 (Hybrid Repository)');
 
       // Repository가 로컬 저장 및 API 동기화 처리
       final walkRecord = await _startWalkUseCase.call(newWalkRecord);
@@ -151,10 +152,10 @@ class WalkController extends BaseController {
       // 실시간 위치 추적 시작
       _startLocationTrackingWithRecovery();
 
-      debugPrint('✅ WalkController: 산책 시작 완료 - ID: ${walkRecord.id}');
+      LoggerService.debug('✅ WalkController: 산책 시작 완료 - ID: ${walkRecord.id}');
       return Result.success('散歩を開始しました', walkRecord);
     } catch (e) {
-      debugPrint('❌ WalkController: 산책 시작 실패 - $e');
+      LoggerService.debug('❌ WalkController: 산책 시작 실패 - $e');
       return Result.failure('散歩の開始に失敗しました: ${e.toString()}');
     }
   }
@@ -171,11 +172,11 @@ class WalkController extends BaseController {
   Future<WalkResult> endCurrentWalk({double? distance, String? notes}) async {
     final currentWalk = ref.read(currentWalkProvider);
     if (currentWalk == null) {
-      debugPrint('⚠️ WalkController: 진행 중인 산책 없음');
+      LoggerService.debug('⚠️ WalkController: 진행 중인 산책 없음');
       return Result.failure('進行中の散歩がありません');
     }
 
-    debugPrint('🔄 WalkController: 산책 종료 시작 (Hybrid Repository)');
+    LoggerService.debug('🔄 WalkController: 산책 종료 시작 (Hybrid Repository)');
 
     final result = await safeExecuteWithTimeout(
       () async {
@@ -193,7 +194,7 @@ class WalkController extends BaseController {
         ref.read(currentWalkProvider.notifier).endWalk();
         ref.read(walkRecordsProvider.notifier).updateWalkRecord(completedWalk);
 
-        debugPrint('✅ WalkController: 산책 종료 완료 - ID: ${currentWalk.id}');
+        LoggerService.debug('✅ WalkController: 산책 종료 완료 - ID: ${currentWalk.id}');
         return completedWalk;
       },
       timeout: const Duration(seconds: 15),
@@ -203,25 +204,25 @@ class WalkController extends BaseController {
     if (result != null) {
       return Result.success('散歩が終了されました', result);
     } else {
-      debugPrint('❌ WalkController: 산책 종료 실패');
+      LoggerService.debug('❌ WalkController: 산책 종료 실패');
       return Result.failure('散歩の終了に失敗しました');
     }
   }
 
   /// 산책 기록 수정
   Future<WalkResult> updateWalkRecord(WalkRecordEntity walkRecord) async {
-    debugPrint('🔄 WalkController: 산책 기록 수정 시작 (Hybrid Repository)');
-    debugPrint('🔄 수정 데이터 - ID: ${walkRecord.id}, 거리: ${walkRecord.distance}m');
+    LoggerService.debug('🔄 WalkController: 산책 기록 수정 시작 (Hybrid Repository)');
+    LoggerService.debug('🔄 수정 데이터 - ID: ${walkRecord.id}, 거리: ${walkRecord.distance}m');
 
     final result = await safeExecuteWithRetry(
       () async {
         // Repository가 로컬 저장 및 API 동기화 처리
         await _updateWalkRecordUseCase(walkRecord);
-        debugPrint('✅ Repository 업데이트 완료');
+        LoggerService.debug('✅ Repository 업데이트 완료');
 
         // Provider에 결과 저장
         ref.read(walkRecordsProvider.notifier).updateWalkRecord(walkRecord);
-        debugPrint('✅ Provider 상태 업데이트 완료');
+        LoggerService.debug('✅ Provider 상태 업데이트 완료');
 
         return walkRecord;
       },
@@ -230,10 +231,10 @@ class WalkController extends BaseController {
     );
 
     if (result != null) {
-      debugPrint('✅ 산책 기록 수정 완료 - ID: ${walkRecord.id}');
+      LoggerService.debug('✅ 산책 기록 수정 완료 - ID: ${walkRecord.id}');
       return Result.success('散歩記録が更新されました', result);
     } else {
-      debugPrint('❌ 산책 기록 수정 실패 - ID: ${walkRecord.id}');
+      LoggerService.debug('❌ 산책 기록 수정 실패 - ID: ${walkRecord.id}');
       return Result.failure('散歩記録の更新に失敗しました');
     }
   }
@@ -260,7 +261,7 @@ class WalkController extends BaseController {
 
   /// 산책 기록 삭제
   Future<WalkResult> deleteWalkRecord(String recordId) async {
-    debugPrint(
+    LoggerService.debug(
       '🔄 WalkController: 산책 기록 삭제 (Hybrid Repository) - ID: $recordId',
     );
 
@@ -271,14 +272,14 @@ class WalkController extends BaseController {
       // Provider에서도 제거
       ref.read(walkRecordsProvider.notifier).removeWalkRecord(recordId);
 
-      debugPrint('✅ 산책 기록 삭제 완료 - ID: $recordId');
+      LoggerService.debug('✅ 산책 기록 삭제 완료 - ID: $recordId');
       return true;
     }, errorMessage: '散歩記録の削除');
 
     if (result != null && result) {
       return Result.success('散歩記録が削除されました');
     } else {
-      debugPrint('❌ 산책 기록 삭제 실패 - ID: $recordId');
+      LoggerService.debug('❌ 산책 기록 삭제 실패 - ID: $recordId');
       return Result.failure('散歩記録の削除に失敗しました');
     }
   }

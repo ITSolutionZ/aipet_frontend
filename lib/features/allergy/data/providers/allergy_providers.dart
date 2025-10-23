@@ -1,5 +1,7 @@
 import 'package:aipet_frontend/features/shopping/data/providers/rakuten_brands_provider.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/core/constants/app_texts.dart';
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -90,7 +92,7 @@ class SelectedAllergyProducts extends _$SelectedAllergyProducts {
     try {
       final data = state[petId];
       if (data == null) {
-        return Result.failure(AllergyConstants.noProductsSelectedError);
+        return Result.failure(AppTexts.noData);
       }
 
       if (data.allergyProducts.isEmpty) {
@@ -118,11 +120,11 @@ class SelectedAllergyProducts extends _$SelectedAllergyProducts {
       return Result.success('分析が正常に完了しました', analysisData);
     } catch (error, stackTrace) {
       if (kDebugMode) {
-        debugPrint('アレルギー分析エラー: $error');
-        debugPrint('StackTrace: $stackTrace');
+        LoggerService.debug('アレルギー分析エラー: $error');
+        LoggerService.debug('StackTrace: $stackTrace');
       }
       return Result.failure(
-        AllergyConstants.analysisErrorMessage,
+        AppTexts.error,
         error is Exception ? error : Exception(error.toString()),
       );
     }

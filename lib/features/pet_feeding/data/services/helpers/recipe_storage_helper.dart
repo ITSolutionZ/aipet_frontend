@@ -1,17 +1,22 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
+import 'package:aipet_frontend/shared/services/cache_service.dart';
 
 /// 레시피 저장소 헬퍼
 class RecipeStorageHelper {
   static const String _keyRecipes = 'pet_recipes';
+  // ✅ SharedPreferences 인스턴스 재사용
+  static final _cache = CacheService();
+  static Future<void> _init() async {
+    await _cache.initialize();
+  }
 
   /// 레시피 가져오기
   static Future<List<Map<String, dynamic>>> getRecipes() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final recipesJson = prefs.getStringList(_keyRecipes) ?? [];
+      await _init();
+      final recipesJson = _cache.getStringList(_keyRecipes) ?? [];
 
       if (recipesJson.isEmpty) {
         return await _initializeDefaultRecipes();
@@ -21,7 +26,7 @@ class RecipeStorageHelper {
           .map((json) => jsonDecode(json) as Map<String, dynamic>)
           .toList();
     } catch (e) {
-      debugPrint('레시피 로드 실패: $e');
+      LoggerService.debug('레시피 로드 실패: $e');
       return [];
     }
   }
@@ -29,8 +34,8 @@ class RecipeStorageHelper {
   /// 레시피 추가
   static Future<void> addRecipe(Map<String, dynamic> recipe) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final recipes = prefs.getStringList(_keyRecipes) ?? [];
+      await _init();
+      final recipes = _cache.getStringList(_keyRecipes) ?? [];
 
       if (recipe['id'] == null || (recipe['id'] as String).isEmpty) {
         recipe['id'] = 'recipe-${DateTime.now().millisecondsSinceEpoch}';
@@ -41,11 +46,11 @@ class RecipeStorageHelper {
       }
 
       recipes.add(jsonEncode(recipe));
-      await prefs.setStringList(_keyRecipes, recipes);
+      await _cache.setStringList(_keyRecipes, recipes);
 
-      debugPrint('레시피 추가 성공: ${recipe['id']}');
+      LoggerService.debug('레시피 추가 성공: ${recipe['id']}');
     } catch (e) {
-      debugPrint('레시피 추가 실패: $e');
+      LoggerService.debug('레시피 추가 실패: $e');
       rethrow;
     }
   }
@@ -56,8 +61,8 @@ class RecipeStorageHelper {
     Map<String, dynamic> updates,
   ) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final recipes = prefs.getStringList(_keyRecipes) ?? [];
+      await _init();
+      final recipes = _cache.getStringList(_keyRecipes) ?? [];
 
       final index = recipes.indexWhere((r) {
         final recipeData = jsonDecode(r) as Map<String, dynamic>;
@@ -71,11 +76,11 @@ class RecipeStorageHelper {
         existingRecipe['updatedAt'] = DateTime.now().toIso8601String();
 
         recipes[index] = jsonEncode(existingRecipe);
-        await prefs.setStringList(_keyRecipes, recipes);
-        debugPrint('레시피 업데이트 성공: $recipeId');
+        await _cache.setStringList(_keyRecipes, recipes);
+        LoggerService.debug('레시피 업데이트 성공: $recipeId');
       }
     } catch (e) {
-      debugPrint('레시피 업데이트 실패: $e');
+      LoggerService.debug('레시피 업데이트 실패: $e');
       rethrow;
     }
   }
@@ -83,18 +88,18 @@ class RecipeStorageHelper {
   /// 레시피 삭제
   static Future<void> deleteRecipe(String recipeId) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final recipes = prefs.getStringList(_keyRecipes) ?? [];
+      await _init();
+      final recipes = _cache.getStringList(_keyRecipes) ?? [];
 
       recipes.removeWhere((r) {
         final recipeData = jsonDecode(r) as Map<String, dynamic>;
         return recipeData['id'] == recipeId;
       });
 
-      await prefs.setStringList(_keyRecipes, recipes);
-      debugPrint('레시피 삭제 성공: $recipeId');
+      await _cache.setStringList(_keyRecipes, recipes);
+      LoggerService.debug('레시피 삭제 성공: $recipeId');
     } catch (e) {
-      debugPrint('레시피 삭제 실패: $e');
+      LoggerService.debug('레시피 삭제 실패: $e');
       rethrow;
     }
   }
@@ -118,7 +123,7 @@ class RecipeStorageHelper {
             ingredients.any((i) => i.contains(lowerQuery));
       }).toList();
     } catch (e) {
-      debugPrint('레시피 검색 실패: $e');
+      LoggerService.debug('레시피 검색 실패: $e');
       return [];
     }
   }
@@ -136,7 +141,7 @@ class RecipeStorageHelper {
         return recipeDifficulty == difficulty.toLowerCase();
       }).toList();
     } catch (e) {
-      debugPrint('난이도별 레시피 로드 실패: $e');
+      LoggerService.debug('난이도별 레시피 로드 실패: $e');
       return [];
     }
   }
@@ -152,7 +157,7 @@ class RecipeStorageHelper {
         return recipe['isFavorite'] == true && recipe['userId'] == userId;
       }).toList();
     } catch (e) {
-      debugPrint('즐겨찾기 레시피 로드 실패: $e');
+      LoggerService.debug('즐겨찾기 레시피 로드 실패: $e');
       return [];
     }
   }
@@ -172,7 +177,7 @@ class RecipeStorageHelper {
 
       return allRecipes.take(limit).toList();
     } catch (e) {
-      debugPrint('최고 평점 레시피 로드 실패: $e');
+      LoggerService.debug('최고 평점 레시피 로드 실패: $e');
       return [];
     }
   }
@@ -188,14 +193,14 @@ class RecipeStorageHelper {
         return time <= 30;
       }).toList();
     } catch (e) {
-      debugPrint('빠른 조리 레시피 로드 실패: $e');
+      LoggerService.debug('빠른 조리 레시피 로드 실패: $e');
       return [];
     }
   }
 
   /// 초기 기본 레시피 생성
   static Future<List<Map<String, dynamic>>> _initializeDefaultRecipes() async {
-    final prefs = await SharedPreferences.getInstance();
+    await _init();
     final defaultRecipes = [
       {
         'id': 'recipe-1',
@@ -233,7 +238,7 @@ class RecipeStorageHelper {
     ];
 
     final recipesJson = defaultRecipes.map((r) => jsonEncode(r)).toList();
-    await prefs.setStringList(_keyRecipes, recipesJson);
+    await _cache.setStringList(_keyRecipes, recipesJson);
 
     return defaultRecipes;
   }

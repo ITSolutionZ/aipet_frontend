@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// 스케줄 타입
+import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
 enum ScheduleType {
   // 기본 활동
   walk, // 산책
@@ -281,29 +282,20 @@ class ScheduleEntity {
 
   /// 스케줄이 오늘인지 확인
   bool get isToday {
-    final now = DateTime.now();
-    return startDateTime.year == now.year &&
-        startDateTime.month == now.month &&
-        startDateTime.day == now.day;
+    // ✅ DateTimeUtils 사용
+    return DateTimeUtils.isToday(startDateTime);
   }
 
   /// 스케줄이 내일인지 확인
   bool get isTomorrow {
-    final tomorrow = DateTime.now().add(const Duration(days: 1));
-    return startDateTime.year == tomorrow.year &&
-        startDateTime.month == tomorrow.month &&
-        startDateTime.day == tomorrow.day;
+    // ✅ DateTimeUtils 사용
+    return DateTimeUtils.isTomorrow(startDateTime);
   }
 
   /// 스케줄이 이번 주인지 확인
   bool get isThisWeek {
-    final now = DateTime.now();
-    final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-    final endOfWeek = startOfWeek.add(const Duration(days: 6));
-    return startDateTime.isAfter(
-          startOfWeek.subtract(const Duration(days: 1)),
-        ) &&
-        startDateTime.isBefore(endOfWeek.add(const Duration(days: 1)));
+    // ✅ DateTimeUtils 사용
+    return DateTimeUtils.isThisWeek(startDateTime);
   }
 
   @override

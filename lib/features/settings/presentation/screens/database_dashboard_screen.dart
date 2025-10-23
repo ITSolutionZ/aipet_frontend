@@ -109,29 +109,20 @@ class _DatabaseDashboardScreenState
           Navigator.pop(context); // 로딩 다이얼로그 닫기
 
           if (success) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('データクリーンアップが完了しました'),
-                backgroundColor: Colors.green,
-              ),
-            );
+            // ✅ Shared SnackBarService 사용
+            SnackBarService.showSuccess(context, 'データクリーンアップが完了しました');
             // 데이터 새로고침
             _loadDatabaseInfo();
           } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('データクリーンアップ中にエラーが発生しました'),
-                backgroundColor: Colors.red,
-              ),
-            );
+            // ✅ Shared SnackBarService 사용
+            SnackBarService.showError(context, 'データクリーンアップ中にエラーが発生しました');
           }
         }
       } catch (e) {
         if (mounted) {
           Navigator.pop(context); // 로딩 다이얼로그 닫기
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('エラー: $e'), backgroundColor: Colors.red),
-          );
+          // ✅ Shared SnackBarService 사용
+          SnackBarService.showError(context, 'エラー: $e');
         }
       }
     }
@@ -192,12 +183,8 @@ class _DatabaseDashboardScreenState
         if (mounted) {
           Navigator.pop(context); // 로딩 다이얼로그 닫기
 
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('全てのデータを削除しました'),
-              backgroundColor: Colors.green,
-            ),
-          );
+          // ✅ Shared SnackBarService 사용
+          SnackBarService.showSuccess(context, '全てのデータを削除しました');
 
           // 데이터 새로고침
           _loadDatabaseInfo();
@@ -205,12 +192,8 @@ class _DatabaseDashboardScreenState
       } catch (e) {
         if (mounted) {
           Navigator.pop(context); // 로딩 다이얼로그 닫기
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('データ削除中にエラーが発生しました: $e'),
-              backgroundColor: Colors.red,
-            ),
-          );
+          // ✅ Shared SnackBarService 사용
+          SnackBarService.showError(context, 'データ削除中にエラーが発生しました: $e');
         }
       }
     }

@@ -7,6 +7,7 @@ import 'package:path/path.dart' as path;
 import '../../../../shared/core/api/api_client.dart';
 import '../../../../shared/core/data/result_types.dart';
 import '../../../../shared/core/domain/common_errors.dart';
+import '../../../../shared/core/services/image_service.dart';
 import '../../../../shared/core/services/secure_storage_service.dart';
 import 'pet_api_service.dart';
 
@@ -57,11 +58,11 @@ class PetImageUploadService {
         return Success(response.imageUrl);
       }
 
-      return Result.failure(
+      return ResultState.failure(
         uploadResult.errorOrNull ?? UnknownError(details: 'Upload failed'),
       );
     } catch (e) {
-      return Result.failure(UnknownError(details: e.toString()));
+      return ResultState.failure(UnknownError(details: 'Upload failed'));
     }
   }
 
@@ -90,56 +91,51 @@ class PetImageUploadService {
         if (uploadResult.isSuccess) {
           uploadedUrls.add(uploadResult.dataOrNull!);
         } else {
-          return Result.failure(uploadResult.errorOrNull!);
+          return ResultState.failure(uploadResult.errorOrNull!);
         }
       }
 
       return Success(uploadedUrls);
     } catch (e) {
-      return Result.failure(UnknownError(details: e.toString()));
+      return ResultState.failure(UnknownError(details: 'Upload failed'));
     }
   }
 
+  /// ✅ ImageService 사용으로 중복 제거
   Future<ResultState<File>> _processImage(
     File imageFile,
     ImageQuality quality,
   ) async {
     try {
-      final bytes = await imageFile.readAsBytes();
-      final image = img.decodeImage(bytes);
+      final jpegQuality = _getJpegQualityForQuality(quality);
+      final maxDimension = _getMaxDimensionForQuality(quality);
 
-      if (image == null) {
-        return Result.failure(
+      // ImageService를 사용하여 이미지 압축
+      final compressedBytes = await ImageService.compressImage(
+        imageFile.path,
+        quality: jpegQuality,
+        maxWidth: maxDimension,
+        maxHeight: maxDimension,
+      );
+
+      if (compressedBytes == null) {
+        return ResultState.failure(
           ValidationError(field: 'image', reason: '画像の処理に失敗しました'),
         );
       }
 
-      img.Image processedImage = image;
-
-      final maxDimension = _getMaxDimensionForQuality(quality);
-      if (image.width > maxDimension || image.height > maxDimension) {
-        processedImage = img.copyResize(
-          image,
-          width: image.width > image.height ? maxDimension : null,
-          height: image.height > image.width ? maxDimension : null,
-        );
-      }
-
-      final jpegQuality = _getJpegQualityForQuality(quality);
-      final processedBytes = img.encodeJpg(
-        processedImage,
-        quality: jpegQuality,
-      );
-
+      // 압축된 이미지를 임시 파일로 저장
       final tempDir = Directory.systemTemp;
       final fileName = '${DateTime.now().millisecondsSinceEpoch}_processed.jpg';
       final processedFile = File(path.join(tempDir.path, fileName));
 
-      await processedFile.writeAsBytes(processedBytes);
+      await processedFile.writeAsBytes(compressedBytes);
 
       return Success(processedFile);
     } catch (e) {
-      return Result.failure(UnknownError(details: e.toString()));
+      return ResultState.failure(
+        UnknownError(details: 'Image processing failed'),
+      );
     }
   }
 
@@ -214,7 +210,7 @@ class PetImageUploadService {
 
       return const Success(null);
     } catch (e) {
-      return Result.failure(
+      return ResultState.failure(
         CacheError('キャッシュ画像の取得に失敗しました', details: e.toString()),
       );
     }
@@ -236,7 +232,7 @@ class PetImageUploadService {
 
       return const Success(null);
     } catch (e) {
-      return Result.failure(
+      return ResultState.failure(
         CacheError('画像キャッシュの削除に失敗しました', details: e.toString()),
       );
     }
@@ -250,7 +246,7 @@ class PetImageUploadService {
       final image = img.decodeImage(bytes);
 
       if (image == null) {
-        return Result.failure(
+        return ResultState.failure(
           ValidationError(field: 'image', reason: '画像メタデータを読み取れません'),
         );
       }
@@ -265,14 +261,16 @@ class PetImageUploadService {
 
       return Success(metadata);
     } catch (e) {
-      return Result.failure(UnknownError(details: e.toString()));
+      return ResultState.failure(
+        UnknownError(details: 'Image metadata failed: $e'),
+      );
     }
   }
 
   Future<ResultState<bool>> validateImageFile(File imageFile) async {
     try {
       if (!await imageFile.exists()) {
-        return Result.failure(
+        return ResultState.failure(
           ValidationError(field: 'image', reason: '画像ファイルが存在しません'),
         );
       }
@@ -281,7 +279,7 @@ class PetImageUploadService {
       const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
 
       if (!allowedExtensions.contains(extension)) {
-        return Result.failure(
+        return ResultState.failure(
           ValidationError(field: 'image', reason: 'サポートされていない画像形式です'),
         );
       }
@@ -290,19 +288,21 @@ class PetImageUploadService {
       const maxSizeBytes = 10 * 1024 * 1024; // 10MB
 
       if (sizeBytes > maxSizeBytes) {
-        return Result.failure(
+        return ResultState.failure(
           ValidationError(field: 'image', reason: '画像サイズが大きすぎます（最大10MB）'),
         );
       }
 
       final metadataResult = await getImageMetadata(imageFile);
       if (metadataResult.isFailure) {
-        return Result.failure(metadataResult.errorOrNull!);
+        return ResultState.failure(metadataResult.errorOrNull!);
       }
 
       return const Success(true);
     } catch (e) {
-      return Result.failure(UnknownError(details: e.toString()));
+      return ResultState.failure(
+        UnknownError(details: 'Image validation failed: $e'),
+      );
     }
   }
 }

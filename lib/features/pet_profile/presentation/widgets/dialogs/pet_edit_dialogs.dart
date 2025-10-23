@@ -41,12 +41,7 @@ class PetEditDialogs {
                 Navigator.pop(context);
                 onSave(newName);
               } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(PetProfileConstants.nameRequiredMessage),
-                    backgroundColor: AppColors.pointRed,
-                  ),
-                );
+                SnackBarService.showWarning(context, '名前を入力してください');
               }
             },
             child: const Text(PetProfileConstants.saveLabel),
@@ -147,12 +142,7 @@ class PetEditDialogs {
                 Navigator.pop(context);
                 onSave(weight);
               } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(PetProfileConstants.weightInvalidMessage),
-                    backgroundColor: AppColors.pointRed,
-                  ),
-                );
+                SnackBarService.showWarning(context, '体重は0より大きい値を入力してください');
               }
             },
             child: const Text(PetProfileConstants.saveLabel),

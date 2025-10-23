@@ -1,5 +1,5 @@
 import 'package:aipet_frontend/features/scheduling/data/services/calendar_event_service.dart';
-import 'package:flutter/foundation.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../domain/domain.dart';
@@ -40,10 +40,10 @@ class NotificationsNotifier extends _$NotificationsNotifier {
         notifications.add(notification);
       }
 
-      debugPrint('🔔 알림 리스트 로드 완료: ${notifications.length}개');
+      LoggerService.debug('🔔 알림 리스트 로드 완료: ${notifications.length}개');
       return notifications;
     } catch (e) {
-      debugPrint('🔔 알림 리스트 로드 실패: $e');
+      LoggerService.debug('🔔 알림 리스트 로드 실패: $e');
       return [];
     }
   }

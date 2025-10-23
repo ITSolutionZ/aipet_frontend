@@ -1,6 +1,8 @@
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:flutter/material.dart';
 
+import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
 /// 산책 정보 바텀시트
 class WalkInfoBottomSheet extends StatelessWidget {
   final WalkRecordEntity walkRecord;
@@ -32,7 +34,7 @@ class WalkInfoBottomSheet extends StatelessWidget {
       if (notesStr.startsWith('activities:')) {
         final activitiesStr = notesStr.replaceFirst('activities:', '');
 
-        debugPrint('📝 활동 파싱 시도: $activitiesStr');
+        LoggerService.debug('📝 활동 파싱 시도: $activitiesStr');
 
         // 더 간단한 파싱 방식 사용
         final activities = <Map<String, dynamic>>[];
@@ -51,7 +53,7 @@ class WalkInfoBottomSheet extends StatelessWidget {
         return activities;
       }
     } catch (e) {
-      debugPrint('❌ 활동 파싱 오류: $e');
+      LoggerService.debug('❌ 활동 파싱 오류: $e');
     }
 
     return [];
@@ -89,7 +91,7 @@ class WalkInfoBottomSheet extends StatelessWidget {
 
   /// 시간 포맷팅 (HH:MM 형식)
   String _formatTime(DateTime dateTime) {
-    return '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
+    return DateTimeUtils.formatTime(dateTime);
   }
 
   /// 시간 문자열 포맷팅

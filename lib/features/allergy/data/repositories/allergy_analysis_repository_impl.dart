@@ -1,3 +1,4 @@
+import '../../../../shared/shared.dart';
 import '../../domain/entities/allergy_analysis_entities.dart';
 import '../../domain/entities/product_entity.dart';
 import '../../domain/repositories/allergy_analysis_repository.dart';
@@ -5,6 +6,7 @@ import '../../domain/services/allergy_analysis_service.dart';
 import '../datasources/allergy_analysis_datasource.dart';
 
 /// 알레르기 분석 Repository 구현체
+/// 서비스 기반 아키텍처: AI 분석 서비스 + 데이터소스
 class AllergyAnalysisRepositoryImpl implements AllergyAnalysisRepository {
   final AllergyAnalysisService _analysisService;
   final AllergyAnalysisDatasource _datasource;
@@ -19,6 +21,10 @@ class AllergyAnalysisRepositoryImpl implements AllergyAnalysisRepository {
     String? petId,
   }) async {
     try {
+      LoggerService.debug(
+        '✅ AllergyRepository: AI 분석 시작 - 알레르기 제품: ${allergyProducts.length}개',
+      );
+
       // AI 서비스를 통한 분석
       final serviceResult = await _analysisService.analyzeIngredients(
         allergyProducts: allergyProducts,
@@ -36,10 +42,14 @@ class AllergyAnalysisRepositoryImpl implements AllergyAnalysisRepository {
       // 로컬 저장 (기록 유지용)
       if (petId != null) {
         await _datasource.saveAnalysisResult(petId, domainResult);
+        LoggerService.debug('✅ AllergyRepository: 분석 결과 저장 완료 - petId: $petId');
       }
 
       return domainResult;
     } catch (error) {
+      LoggerService.debug(
+        '⚠️ AllergyRepository: AI 분석 실패, 기본 분석으로 폴백 - $error',
+      );
       // AI 분석 실패 시 기본 분석으로 폴백
       return _datasource.performBasicAnalysis(
         allergyProducts,
@@ -189,6 +199,8 @@ class AllergyAnalysisRepositoryImpl implements AllergyAnalysisRepository {
     required String petId,
     required AllergyAnalysisResult analysisResult,
   }) async {
+    LoggerService.debug('✅ AllergyRepository: 알레르기 보고서 생성 시작 - petId: $petId');
+
     final petInfo = await _datasource.getPetInfo(petId);
     final alternatives = await recommendAlternativeProducts(
       avoidIngredients: analysisResult.suspectedIngredients,
@@ -208,6 +220,7 @@ class AllergyAnalysisRepositoryImpl implements AllergyAnalysisRepository {
 
     // 보고서 저장
     await _datasource.saveAllergyReport(report);
+    LoggerService.debug('✅ AllergyRepository: 알레르기 보고서 저장 완료 - ${report.id}');
 
     return report;
   }
@@ -215,8 +228,11 @@ class AllergyAnalysisRepositoryImpl implements AllergyAnalysisRepository {
   @override
   Future<List<AllergyAnalysisResult>> getAnalysisHistory(String petId) async {
     try {
-      return await _datasource.getAnalysisHistory(petId);
+      final history = await _datasource.getAnalysisHistory(petId);
+      LoggerService.debug('✅ AllergyRepository: 분석 이력 조회 - ${history.length}개');
+      return history;
     } catch (e) {
+      LoggerService.debug('⚠️ AllergyRepository: 분석 이력 조회 실패 - $e');
       return [];
     }
   }

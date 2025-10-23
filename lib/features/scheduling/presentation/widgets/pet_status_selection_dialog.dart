@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/shared/ui.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -228,11 +228,9 @@ class _PetStatusSelectionDialogContentState
                               onTap: () {
                                 if (!isSelected &&
                                     state.selectedStatuses.length >= 2) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('最大2つまで選択できます'),
-                                      backgroundColor: AppColors.pointBrown,
-                                    ),
+                                  SnackBarService.showWarning(
+                                    context,
+                                    '最大2つまで選択できます',
                                   );
                                   return;
                                 }

@@ -72,12 +72,7 @@ class _NotificationDetailScreenState
       setState(() => _isLoading = false);
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('通知を読み込む際にエラーが発生しました: $error'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        SnackBarService.showError(context, '通知を読み込む際にエラーが発生しました: $error');
       }
     }
   }

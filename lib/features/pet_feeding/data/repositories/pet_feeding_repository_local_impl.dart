@@ -1,6 +1,7 @@
 import 'package:aipet_frontend/features/pet_feeding/data/models/feeding_record_model.dart';
 import 'package:aipet_frontend/features/pet_feeding/domain/entities/feeding_record_entity.dart';
 import 'package:aipet_frontend/features/pet_feeding/domain/repositories/pet_feeding_repository.dart';
+import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
 import 'package:aipet_frontend/shared/services/local_data_manager.dart';
 
 /// Pet Feeding Repository - 로컬 저장소 구현체
@@ -143,8 +144,9 @@ class PetFeedingRepositoryLocalImpl implements PetFeedingRepository {
         : 0.0;
 
     final feedingsByHour = <String, int>{};
-    for (var record in petRecords) {
-      final hour = record.fedTime.hour.toString().padLeft(2, '0');
+    for (final record in completedRecords) {
+      final timeStr = DateTimeUtils.formatTime(record.fedTime);
+      final hour = timeStr.split(':')[0];
       feedingsByHour[hour] = (feedingsByHour[hour] ?? 0) + 1;
     }
 

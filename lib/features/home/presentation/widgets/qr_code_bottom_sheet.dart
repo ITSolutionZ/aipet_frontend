@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../../../shared/design/tokens/tokens.dart';
+import '../../../../shared/shared.dart';
 import 'qr_code_scanner_screen.dart';
 
 /// QR 코드 바텀시트 위젯 (70% 크기)
@@ -167,8 +168,9 @@ class _QRCodeBottomSheetState extends ConsumerState<QRCodeBottomSheet>
     return petsAsync.when(
       data: (pets) {
         // 활성 펫만 필터링
-        final activePets =
-            pets.where((p) => p.petStatus != PetStatus.hidden).toList();
+        final activePets = pets
+            .where((p) => p.petStatus != PetStatus.hidden)
+            .toList();
 
         return SingleChildScrollView(
           padding: const EdgeInsets.all(20),
@@ -309,7 +311,9 @@ class _QRCodeBottomSheetState extends ConsumerState<QRCodeBottomSheet>
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: AppColors.pointGray.withValues(alpha: 0.3)),
+            border: Border.all(
+              color: AppColors.pointGray.withValues(alpha: 0.3),
+            ),
           ),
           child: DropdownButtonHideUnderline(
             child: DropdownButton<PetProfileEntity>(
@@ -417,10 +421,7 @@ class _QRCodeBottomSheetState extends ConsumerState<QRCodeBottomSheet>
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                pet.typeIcon,
-                style: const TextStyle(fontSize: 24),
-              ),
+              Text(pet.typeIcon, style: const TextStyle(fontSize: 24)),
               const SizedBox(width: 8),
               Text(
                 pet.name,
@@ -477,10 +478,7 @@ class _QRCodeBottomSheetState extends ConsumerState<QRCodeBottomSheet>
                   child: Text(
                     'QR コード生成エラー',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: AppColors.pointGray,
-                      fontSize: 12,
-                    ),
+                    style: TextStyle(color: AppColors.pointGray, fontSize: 12),
                   ),
                 );
               },
@@ -510,8 +508,9 @@ class _QRCodeBottomSheetState extends ConsumerState<QRCodeBottomSheet>
     return petsAsync.when(
       data: (pets) {
         // 활성 펫만 필터링
-        final activePets =
-            pets.where((p) => p.petStatus != PetStatus.hidden).toList();
+        final activePets = pets
+            .where((p) => p.petStatus != PetStatus.hidden)
+            .toList();
 
         return SingleChildScrollView(
           padding: const EdgeInsets.all(20),
@@ -652,7 +651,9 @@ class _QRCodeBottomSheetState extends ConsumerState<QRCodeBottomSheet>
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: AppColors.pointGray.withValues(alpha: 0.3)),
+            border: Border.all(
+              color: AppColors.pointGray.withValues(alpha: 0.3),
+            ),
           ),
           child: DropdownButtonHideUnderline(
             child: DropdownButton<PetProfileEntity>(
@@ -718,9 +719,7 @@ class _QRCodeBottomSheetState extends ConsumerState<QRCodeBottomSheet>
               icon: Icon(
                 _showReservationQRCode ? Icons.visibility_off : Icons.qr_code,
               ),
-              label: Text(
-                _showReservationQRCode ? 'QRコードを隠す' : 'QRコードを表示',
-              ),
+              label: Text(_showReservationQRCode ? 'QRコードを隠す' : 'QRコードを表示'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.pointBrown,
                 foregroundColor: Colors.white,
@@ -765,10 +764,7 @@ class _QRCodeBottomSheetState extends ConsumerState<QRCodeBottomSheet>
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                pet.typeIcon,
-                style: const TextStyle(fontSize: 24),
-              ),
+              Text(pet.typeIcon, style: const TextStyle(fontSize: 24)),
               const SizedBox(width: 8),
               Text(
                 pet.name,
@@ -825,10 +821,7 @@ class _QRCodeBottomSheetState extends ConsumerState<QRCodeBottomSheet>
                   child: Text(
                     'QR コード生成エラー',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: AppColors.pointGray,
-                      fontSize: 12,
-                    ),
+                    style: TextStyle(color: AppColors.pointGray, fontSize: 12),
                   ),
                 );
               },
@@ -932,13 +925,7 @@ class _QRCodeBottomSheetState extends ConsumerState<QRCodeBottomSheet>
           final petName = parts.length > 1 ? parts[1] : '不明';
           final petType = parts.length > 2 ? parts[2] : '';
           final petWeight = parts.length > 3 ? parts[3] : '';
-          _showReservationDialog(
-            context,
-            petId,
-            petName,
-            petType,
-            petWeight,
-          );
+          _showReservationDialog(context, petId, petName, petType, petWeight);
         } else {
           _showErrorMessage(context, 'QRコードの形式が正しくありません');
         }
@@ -959,10 +946,9 @@ class _QRCodeBottomSheetState extends ConsumerState<QRCodeBottomSheet>
   }
 
   /// 에러 메시지 표시
+  /// ✅ Shared SnackBarService 사용
   void _showErrorMessage(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: Colors.red),
-    );
+    SnackBarService.showError(context, message);
   }
 
   /// 예약 다이얼로그 표시
@@ -1059,19 +1045,11 @@ class _QRCodeBottomSheetState extends ConsumerState<QRCodeBottomSheet>
   }
 
   /// 예약 처리
-  void _processReservation(
-    BuildContext context,
-    String petId,
-    String petName,
-  ) {
+  void _processReservation(BuildContext context, String petId, String petName) {
     // TODO: 실제 예약 처리 로직 구현
     final displayName = petName.isNotEmpty ? petName : petId;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('$displayName の予約が確認されました'),
-        backgroundColor: Colors.green,
-      ),
-    );
+    // ✅ Shared SnackBarService 사용
+    SnackBarService.showSuccess(context, '$displayName の予約が確認されました');
   }
 
   /// 가족 추가 다이얼로그
@@ -1131,10 +1109,7 @@ class _QRCodeBottomSheetState extends ConsumerState<QRCodeBottomSheet>
               ),
               const SizedBox(height: 8),
               if (typeDisplay.isNotEmpty)
-                Text(
-                  '種類: $typeDisplay',
-                  style: const TextStyle(fontSize: 14),
-                ),
+                Text('種類: $typeDisplay', style: const TextStyle(fontSize: 14)),
               if (weightDisplay.isNotEmpty)
                 Text(
                   '体重: $weightDisplay',

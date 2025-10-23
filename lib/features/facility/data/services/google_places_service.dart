@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:aipet_frontend/app/config/app_config.dart';
 import 'package:aipet_frontend/shared/shared.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
@@ -42,7 +41,7 @@ class GooglePlacesService {
         '$_baseUrl/nearbysearch/json',
       ).replace(queryParameters: params);
 
-      debugPrint('🗺️ Google Places API 요청: $uri');
+      LoggerService.debug('🗺️ Google Places API 요청: $uri');
 
       final response = await http.get(uri).timeout(_timeout);
 
@@ -72,7 +71,7 @@ class GooglePlacesService {
         );
       }
     } catch (error) {
-      debugPrint('Google Places API 오류: $error');
+      LoggerService.debug('Google Places API 오류: $error');
       if (AppConfig.current.isMockMode) {
         return _getMockFacilities();
       }
@@ -112,7 +111,7 @@ class GooglePlacesService {
         '$_baseUrl/textsearch/json',
       ).replace(queryParameters: params);
 
-      debugPrint('🔍 Google Places 텍스트 검색: $uri');
+      LoggerService.debug('🔍 Google Places 텍스트 검색: $uri');
 
       final response = await http.get(uri).timeout(_timeout);
 
@@ -142,7 +141,7 @@ class GooglePlacesService {
         );
       }
     } catch (error) {
-      debugPrint('Google Places 텍스트 검색 오류: $error');
+      LoggerService.debug('Google Places 텍스트 검색 오류: $error');
       if (AppConfig.current.isMockMode) {
         return _getMockFacilities();
       }
@@ -196,7 +195,7 @@ class GooglePlacesService {
         );
       }
     } catch (error) {
-      debugPrint('Google Places 상세 정보 오류: $error');
+      LoggerService.debug('Google Places 상세 정보 오류: $error');
       return Result.failure('시설 상세 정보를 가져오는데 실패했습니다: ${error.toString()}');
     }
   }
@@ -234,7 +233,7 @@ class GooglePlacesService {
         hasHistory: false,
       );
     } catch (error) {
-      debugPrint('Place 데이터 변환 오류: $error');
+      LoggerService.debug('Place 데이터 변환 오류: $error');
       return null;
     }
   }

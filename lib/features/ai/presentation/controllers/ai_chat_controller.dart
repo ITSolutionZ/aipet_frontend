@@ -131,9 +131,9 @@ class AiChatNotifier extends _$AiChatNotifier {
             favoriteQAs: favoriteQAs,
           );
 
-          debugPrint('⭐ 즐겨찾기 로컬 저장소에서 로드 완료: ${favoriteQAs.length}개');
+          LoggerService.debug('⭐ 즐겨찾기 로컬 저장소에서 로드 완료: ${favoriteQAs.length}개');
         } catch (e) {
-          debugPrint('⭐ 즐겨찾기 로컬 저장소 로드 실패: $e');
+          LoggerService.debug('⭐ 즐겨찾기 로컬 저장소 로드 실패: $e');
         }
       } else {
         state =
@@ -283,14 +283,14 @@ class AiChatNotifier extends _$AiChatNotifier {
           );
 
           await aiLocalStorageService.saveFavoriteQA(favoriteQA);
-          debugPrint('⭐ 즐겨찾기 로컬 저장소에 저장 완료: ${message.id}');
+          LoggerService.debug('⭐ 즐겨찾기 로컬 저장소에 저장 완료: ${message.id}');
         } else {
           // 즐겨찾기에서 제거된 경우 - 로컬 저장소에서 삭제
           await aiLocalStorageService.removeFavoriteQA(message.id);
-          debugPrint('⭐ 즐겨찾기 로컬 저장소에서 삭제 완료: ${message.id}');
+          LoggerService.debug('⭐ 즐겨찾기 로컬 저장소에서 삭제 완료: ${message.id}');
         }
       } catch (e) {
-        debugPrint('⭐ 즐겨찾기 로컬 저장소 저장/삭제 실패: $e');
+        LoggerService.debug('⭐ 즐겨찾기 로컬 저장소 저장/삭제 실패: $e');
       }
     } else {
       state =
@@ -330,7 +330,7 @@ class AiChatNotifier extends _$AiChatNotifier {
         },
       );
     } catch (e) {
-      debugPrint('사용자 메시지 저장 실패: $e');
+      LoggerService.debug('사용자 메시지 저장 실패: $e');
     }
 
     // 사용자 메시지 추가
@@ -370,7 +370,7 @@ class AiChatNotifier extends _$AiChatNotifier {
         }
       }
     } catch (e) {
-      debugPrint('날씨/산책 정보 가져오기 실패: $e');
+      LoggerService.debug('날씨/산책 정보 가져오기 실패: $e');
     }
 
     final result = await useCase.callWithPetContext(
@@ -397,7 +397,7 @@ class AiChatNotifier extends _$AiChatNotifier {
           },
         );
       } catch (e) {
-        debugPrint('AI 응답 저장 실패: $e');
+        LoggerService.debug('AI 응답 저장 실패: $e');
       }
 
       // AI 응답 추가
@@ -477,7 +477,7 @@ class AiChatNotifier extends _$AiChatNotifier {
   String _getCurrentConversationId() {
     // 현재 날짜를 기준으로 대화 ID 생성 (일별 대화)
     final now = DateTime.now();
-    return 'conversation_${now.year}_${now.month.toString().padLeft(2, '0')}_${now.day.toString().padLeft(2, '0')}';
+    return ('conversation_' + DateTimeUtils.formatDateKey(now).replaceAll('-', '_'));
   }
 
   Future<void> clearChatHistory({bool saveBeforeClear = true}) async {
@@ -530,7 +530,7 @@ class AiChatNotifier extends _$AiChatNotifier {
     if (optimizedResult.isSuccess) {
       state = state.copyWith(messages: optimizedResult.dataOrNull!);
       if (kDebugMode) {
-        debugPrint(
+        LoggerService.debug(
           '[AiChatController] Manual memory optimization completed: ${optimizedResult.error?.toString() ?? 'Success'}',
         );
       }

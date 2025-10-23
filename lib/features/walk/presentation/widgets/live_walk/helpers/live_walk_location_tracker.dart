@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
 import 'package:aipet_frontend/features/walk/domain/entities/walk_location_entity.dart';
 import 'package:aipet_frontend/features/walk/domain/services/walk_tracking_optimizer.dart'
@@ -43,22 +44,22 @@ class LiveWalkLocationTracker {
 
           // 위치 데이터 유효성 검증
           if (WalkTrackingOptimizer.isValidLocation(location)) {
-            debugPrint(
+            LoggerService.debug(
               '📍 위치 업데이트 수신: (${location.latitude.toStringAsFixed(6)}, ${location.longitude.toStringAsFixed(6)}) 정확도: ${location.accuracy?.toStringAsFixed(1)}m',
             );
             onLocationUpdate(location);
           } else {
-            debugPrint('🚶 유효하지 않은 위치 데이터 무시: 정확도 ${location.accuracy}m');
+            LoggerService.debug('🚶 유효하지 않은 위치 데이터 무시: 정확도 ${location.accuracy}m');
           }
         },
         onError: (error) {
-          debugPrint('❌ 위치 추적 에러: $error');
+          LoggerService.debug('❌ 위치 추적 에러: $error');
           onError();
         },
         cancelOnError: false,
       );
     } catch (e) {
-      debugPrint('❌ 위치 스트림 시작 실패: $e');
+      LoggerService.debug('❌ 위치 스트림 시작 실패: $e');
       onError();
     }
   }
@@ -92,7 +93,7 @@ class LiveWalkLocationTracker {
         ),
       ).timeout(const Duration(seconds: 10));
     } catch (e) {
-      debugPrint('위치 권한 또는 GPS 오류: $e');
+      LoggerService.debug('위치 권한 또는 GPS 오류: $e');
       return null;
     }
   }

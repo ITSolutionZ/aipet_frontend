@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -46,14 +46,14 @@ class HealthReportPdfService {
     Map<String, dynamic>? allergyInfo,
   }) async {
     try {
-      debugPrint('');
-      debugPrint('═══════════════════════════════════════════════');
-      debugPrint('🚀 [PDF SERVICE] PDF 생성 시작: $petName');
-      debugPrint('  - 백신 데이터: ${vaccineData.length}개');
-      debugPrint('  - 체중 기록: ${weightHistory.length}개');
-      debugPrint('  - 알레르기 정보: ${allergyInfo != null ? "있음" : "없음"}');
-      debugPrint('═══════════════════════════════════════════════');
-      debugPrint('');
+      LoggerService.debug('');
+      LoggerService.debug('═══════════════════════════════════════════════');
+      LoggerService.debug('🚀 [PDF SERVICE] PDF 생성 시작: $petName');
+      LoggerService.debug('  - 백신 데이터: ${vaccineData.length}개');
+      LoggerService.debug('  - 체중 기록: ${weightHistory.length}개');
+      LoggerService.debug('  - 알레르기 정보: ${allergyInfo != null ? "있음" : "없음"}');
+      LoggerService.debug('═══════════════════════════════════════════════');
+      LoggerService.debug('');
 
       final pdf = pw.Document();
 
@@ -61,7 +61,7 @@ class HealthReportPdfService {
       final fontSet = await _assetsLoader.loadJapaneseFonts();
       final backgroundImage = await _assetsLoader.loadBackgroundImage();
 
-      debugPrint('📄 PDF 생성 중...');
+      LoggerService.debug('📄 PDF 생성 중...');
       return await _generatePdfWithAssets(
         pdf,
         fontSet,
@@ -76,14 +76,14 @@ class HealthReportPdfService {
         allergyInfo: allergyInfo,
       );
     } catch (e, stackTrace) {
-      debugPrint('');
-      debugPrint('═══════════════════════════════════════════════');
-      debugPrint('❌ [PDF SERVICE] 풀 PDF 생성 실패!');
-      debugPrint('🔴 에러: $e');
-      debugPrint('📋 Stack trace: $stackTrace');
-      debugPrint('⚠️ 간단한 버전으로 대체합니다...');
-      debugPrint('═══════════════════════════════════════════════');
-      debugPrint('');
+      LoggerService.debug('');
+      LoggerService.debug('═══════════════════════════════════════════════');
+      LoggerService.debug('❌ [PDF SERVICE] 풀 PDF 생성 실패!');
+      LoggerService.debug('🔴 에러: $e');
+      LoggerService.debug('📋 Stack trace: $stackTrace');
+      LoggerService.debug('⚠️ 간단한 버전으로 대체합니다...');
+      LoggerService.debug('═══════════════════════════════════════════════');
+      LoggerService.debug('');
       // Fallback to simple PDF without assets
       return _generateSimplePdf(
         petName: petName,
@@ -117,7 +117,9 @@ class HealthReportPdfService {
         ? '${aiReport.substring(0, 2000)}...\n\n※ レポートが長いため一部省略されました'
         : aiReport;
 
-    debugPrint('📊 AI 리포트 길이: ${aiReport.length} → ${limitedAiReport.length}');
+    LoggerService.debug(
+      '📊 AI 리포트 길이: ${aiReport.length} → ${limitedAiReport.length}',
+    );
 
     // PDF 페이지 생성
     pdf.addPage(
@@ -153,15 +155,15 @@ class HealthReportPdfService {
     );
 
     // PDF 파일 저장
-    debugPrint('');
-    debugPrint('💾 [PDF SERVICE] PDF 파일 저장 시작');
+    LoggerService.debug('');
+    LoggerService.debug('💾 [PDF SERVICE] PDF 파일 저장 시작');
     final output = await _fileManager.savePdfFile(pdf, petName);
-    debugPrint('');
-    debugPrint('═══════════════════════════════════════════════');
-    debugPrint('✅ [PDF SERVICE] PDF 생성 완료!');
-    debugPrint('📁 경로: ${output.path}');
-    debugPrint('═══════════════════════════════════════════════');
-    debugPrint('');
+    LoggerService.debug('');
+    LoggerService.debug('═══════════════════════════════════════════════');
+    LoggerService.debug('✅ [PDF SERVICE] PDF 생성 완료!');
+    LoggerService.debug('📁 경로: ${output.path}');
+    LoggerService.debug('═══════════════════════════════════════════════');
+    LoggerService.debug('');
     return output;
   }
 
@@ -209,7 +211,7 @@ class HealthReportPdfService {
     required List<Map<String, dynamic>> weightHistory,
     Map<String, dynamic>? allergyInfo,
   }) async {
-    debugPrint('📄 간단한 PDF 생성 시작');
+    LoggerService.debug('📄 간단한 PDF 생성 시작');
     final pdf = pw.Document();
 
     // 일본어 폰트 로드
@@ -281,9 +283,9 @@ class HealthReportPdfService {
       ),
     );
 
-    debugPrint('💾 간단한 PDF 파일 저장 시작');
+    LoggerService.debug('💾 간단한 PDF 파일 저장 시작');
     final output = await _fileManager.savePdfFile(pdf, petName);
-    debugPrint('✅ 간단한 PDF 생성 완료: ${output.path}');
+    LoggerService.debug('✅ 간단한 PDF 생성 완료: ${output.path}');
     return output;
   }
 
@@ -304,11 +306,11 @@ class HealthReportPdfService {
     Map<String, dynamic>? allergyInfo,
   }) async {
     try {
-      debugPrint('');
-      debugPrint('═══════════════════════════════════════════════');
-      debugPrint('🖼️ [PNG SERVICE] PNG 생성 시작: $petName');
-      debugPrint('═══════════════════════════════════════════════');
-      debugPrint('');
+      LoggerService.debug('');
+      LoggerService.debug('═══════════════════════════════════════════════');
+      LoggerService.debug('🖼️ [PNG SERVICE] PNG 생성 시작: $petName');
+      LoggerService.debug('═══════════════════════════════════════════════');
+      LoggerService.debug('');
 
       // 먼저 PDF를 생성
       final pdfFile = await generateHealthReportPdf(
@@ -337,22 +339,22 @@ class HealthReportPdfService {
       // PNG 파일로 저장
       final file = await _fileManager.savePngFile(pngBytes, petName);
 
-      debugPrint('');
-      debugPrint('═══════════════════════════════════════════════');
-      debugPrint('✅ [PNG SERVICE] PNG 생성 완료!');
-      debugPrint('📁 경로: ${file.path}');
-      debugPrint('═══════════════════════════════════════════════');
-      debugPrint('');
+      LoggerService.debug('');
+      LoggerService.debug('═══════════════════════════════════════════════');
+      LoggerService.debug('✅ [PNG SERVICE] PNG 생성 완료!');
+      LoggerService.debug('📁 경로: ${file.path}');
+      LoggerService.debug('═══════════════════════════════════════════════');
+      LoggerService.debug('');
       return file;
     } catch (e, stackTrace) {
-      debugPrint('');
-      debugPrint('═══════════════════════════════════════════════');
-      debugPrint('❌ [PNG SERVICE] PNG 생성 실패!');
-      debugPrint('🔴 에러: $e');
-      debugPrint('📋 Stack trace: $stackTrace');
-      debugPrint('⚠️ 간단한 버전으로 대체합니다...');
-      debugPrint('═══════════════════════════════════════════════');
-      debugPrint('');
+      LoggerService.debug('');
+      LoggerService.debug('═══════════════════════════════════════════════');
+      LoggerService.debug('❌ [PNG SERVICE] PNG 생성 실패!');
+      LoggerService.debug('🔴 에러: $e');
+      LoggerService.debug('📋 Stack trace: $stackTrace');
+      LoggerService.debug('⚠️ 간단한 버전으로 대체합니다...');
+      LoggerService.debug('═══════════════════════════════════════════════');
+      LoggerService.debug('');
       // 폴백: 간단한 PNG 생성
       return _generateSimplePng(
         petName: petName,
@@ -378,7 +380,7 @@ class HealthReportPdfService {
     required List<Map<String, dynamic>> weightHistory,
     Map<String, dynamic>? allergyInfo,
   }) async {
-    debugPrint('🔄 간단한 PNG 생성 시작...');
+    LoggerService.debug('🔄 간단한 PNG 생성 시작...');
 
     // 간단한 PDF 생성
     final pdfFile = await _generateSimplePdf(
@@ -405,7 +407,7 @@ class HealthReportPdfService {
       isSimple: true,
     );
 
-    debugPrint('✅ 간단한 PNG 생성 완료: ${file.path}');
+    LoggerService.debug('✅ 간단한 PNG 생성 완료: ${file.path}');
     return file;
   }
 

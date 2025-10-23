@@ -1,3 +1,4 @@
+import 'package:aipet_frontend/shared/core/services/snackbar_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -24,13 +25,13 @@ class WalkListActivityHelper {
         'timestamp': DateTime.now().toIso8601String(),
       };
 
-      debugPrint(
+      LoggerService.debug(
         '✅ 活動記録追加: ${activityType == 'poop' ? '💩' : '💧'} at (${position.latitude}, ${position.longitude})',
       );
 
       return activity;
     } catch (e) {
-      debugPrint('❌ 活動記録失敗: $e');
+      LoggerService.debug('❌ 活動記録失敗: $e');
       return null;
     }
   }
@@ -88,12 +89,10 @@ class WalkListActivityHelper {
   ) {
     if (!context.mounted) return;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(getActivityLabel(activityType)),
-        backgroundColor: AppColors.pointGreen,
-        duration: const Duration(milliseconds: 800),
-      ),
+    SnackBarService.showSuccess(
+      context,
+      getActivityLabel(activityType),
+      duration: const Duration(milliseconds: 800),
     );
   }
 
@@ -101,11 +100,6 @@ class WalkListActivityHelper {
   static void showActivityErrorSnackBar(BuildContext context) {
     if (!context.mounted) return;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('位置情報を取得できませんでした'),
-        backgroundColor: AppColors.pointPink,
-      ),
-    );
+    SnackBarService.showError(context, '位置情報を取得できませんでした');
   }
 }

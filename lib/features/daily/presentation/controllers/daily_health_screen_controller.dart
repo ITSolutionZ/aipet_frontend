@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
 import 'package:aipet_frontend/features/daily/data/providers/vaccine_provider.dart';
 import 'package:aipet_frontend/features/daily/presentation/controllers/daily_health_controller.dart';
@@ -62,7 +63,7 @@ class DailyHealthScreenController extends _$DailyHealthScreenController {
   void updateSelectedPet(String? petId) {
     if (petId == null || petId == state.selectedPetId) return;
 
-    debugPrint('🔄 Updating selected pet: ${state.selectedPetId} → $petId');
+    LoggerService.debug('🔄 Updating selected pet: ${state.selectedPetId} → $petId');
 
     // 이전 펫의 provider 무효화
     if (state.selectedPetId != null) {
@@ -70,7 +71,7 @@ class DailyHealthScreenController extends _$DailyHealthScreenController {
       ref.invalidate(dailyHealthAnalysisProvider(state.selectedPetId!));
       ref.invalidate(scheduledVaccinesProvider(state.selectedPetId!));
       ref.invalidate(completedVaccinesProvider(state.selectedPetId!));
-      debugPrint('🗑️ Invalidated providers for pet: ${state.selectedPetId}');
+      LoggerService.debug('🗑️ Invalidated providers for pet: ${state.selectedPetId}');
     }
 
     // 상태 업데이트
@@ -88,7 +89,7 @@ class DailyHealthScreenController extends _$DailyHealthScreenController {
     unawaited(ref.read(scheduledVaccinesProvider(petId).future));
     unawaited(ref.read(completedVaccinesProvider(petId).future));
 
-    debugPrint('✅ Selected pet updated to: $petId');
+    LoggerService.debug('✅ Selected pet updated to: $petId');
   }
 
   /// 펫 목록 새로고침

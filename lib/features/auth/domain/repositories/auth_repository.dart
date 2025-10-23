@@ -65,41 +65,5 @@ abstract class AuthRepository {
   Future<bool> isAuthenticated();
 }
 
-/// 인증 결과 (공통 Result 패턴 사용)
-///
-/// @deprecated 이 클래스는 더 이상 사용되지 않습니다.
-/// 대신 공통 `Result<AuthUser>` 패턴을 사용하세요.
-class AuthResult {
-  final bool isSuccess;
-  final String message;
-  final AuthUser? user;
-  final String? errorCode;
-
-  const AuthResult._({
-    required this.isSuccess,
-    required this.message,
-    this.user,
-    this.errorCode,
-  });
-
-  factory AuthResult.success(String message, {AuthUser? user}) {
-    return AuthResult._(isSuccess: true, message: message, user: user);
-  }
-
-  factory AuthResult.failure(String message, {String? errorCode}) {
-    return AuthResult._(
-      isSuccess: false,
-      message: message,
-      errorCode: errorCode,
-    );
-  }
-
-  /// 공통 Result 패턴으로 변환
-  Result<AuthUser> toResult() {
-    if (isSuccess && user != null) {
-      return Result.success(message, user!);
-    } else {
-      return Result.failure(message);
-    }
-  }
-}
+// ✅ AuthResult 클래스 제거 완료
+// 모든 auth 기능은 공통 Result<AuthUser> 패턴을 사용합니다.

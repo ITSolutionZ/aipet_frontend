@@ -44,10 +44,10 @@ class MessagePaginationService {
       final removedCount = messages.length - limitedMessages.length;
 
       if (kDebugMode) {
-        debugPrint(
+        LoggerService.debug(
           '[$_tag] Memory limit applied: removed $removedCount old messages',
         );
-        debugPrint('[$_tag] Memory messages count: ${limitedMessages.length}');
+        LoggerService.debug('[$_tag] Memory messages count: ${limitedMessages.length}');
       }
 
       return Result.success(
@@ -56,7 +56,7 @@ class MessagePaginationService {
       );
     } catch (error, stackTrace) {
       if (kDebugMode) {
-        debugPrint('[$_tag] Error limiting messages: $error\n$stackTrace');
+        LoggerService.debug('[$_tag] Error limiting messages: $error\n$stackTrace');
       }
       return Result.failure('メッセージ制限適用中にエラーが発生しました');
     }
@@ -157,7 +157,7 @@ class MessagePaginationService {
       final removedCount = messages.length - uniqueMessages.length;
 
       if (removedCount > 0 && kDebugMode) {
-        debugPrint('[$_tag] Removed $removedCount duplicate messages');
+        LoggerService.debug('[$_tag] Removed $removedCount duplicate messages');
       }
 
       return Result.success(
@@ -190,7 +190,7 @@ class MessagePaginationService {
       return totalSize;
     } catch (error) {
       if (kDebugMode) {
-        debugPrint('[$_tag] Error estimating memory usage: $error');
+        LoggerService.debug('[$_tag] Error estimating memory usage: $error');
       }
       return 0;
     }
@@ -205,7 +205,7 @@ class MessagePaginationService {
     final usageMB = usageBytes / (1024 * 1024);
 
     if (kDebugMode && usageMB > memoryThresholdMb * 0.8) {
-      debugPrint(
+      LoggerService.debug(
         '[$_tag] Memory usage approaching threshold: ${usageMB.toStringAsFixed(1)}MB',
       );
     }
@@ -248,10 +248,10 @@ class MessagePaginationService {
           estimateMemoryUsage(optimizedMessages) / (1024 * 1024);
 
       if (kDebugMode) {
-        debugPrint('[$_tag] Messages optimized:');
-        debugPrint('[$_tag] - Original count: ${messages.length}');
-        debugPrint('[$_tag] - Optimized count: ${optimizedMessages.length}');
-        debugPrint(
+        LoggerService.debug('[$_tag] Messages optimized:');
+        LoggerService.debug('[$_tag] - Original count: ${messages.length}');
+        LoggerService.debug('[$_tag] - Optimized count: ${optimizedMessages.length}');
+        LoggerService.debug(
           '[$_tag] - Estimated memory: ${memoryUsageMB.toStringAsFixed(2)}MB',
         );
       }
@@ -262,7 +262,7 @@ class MessagePaginationService {
       );
     } catch (error, stackTrace) {
       if (kDebugMode) {
-        debugPrint('[$_tag] Error optimizing messages: $error\n$stackTrace');
+        LoggerService.debug('[$_tag] Error optimizing messages: $error\n$stackTrace');
       }
       return Result.failure('메시지 최적화 중 에러가 발생했습니다');
     }
@@ -300,7 +300,7 @@ class MessagePaginationService {
       );
     } catch (error) {
       if (kDebugMode) {
-        debugPrint('[$_tag] Error generating statistics: $error');
+        LoggerService.debug('[$_tag] Error generating statistics: $error');
       }
       return MessageMemoryStatistics.empty();
     }

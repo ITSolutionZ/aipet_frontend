@@ -1,7 +1,6 @@
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../data/models/favorite_product_model.dart';
@@ -89,13 +88,13 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
 
     final notifier = ref.read(rakutenProductsProvider.notifier);
 
-    debugPrint('🔍 Tab changed to: $baseKeyword');
+    LoggerService.debug('🔍 Tab changed to: $baseKeyword');
     notifier.searchPetProducts(keyword: baseKeyword);
 
     // タブに対応するブランドを検索
-    ref.read(rakutenBrandsProvider.notifier).searchPopularBrands(
-          keyword: baseKeyword,
-        );
+    ref
+        .read(rakutenBrandsProvider.notifier)
+        .searchPopularBrands(keyword: baseKeyword);
   }
 
   /// 現在のタブの基本キーワードを取得
@@ -233,14 +232,14 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
     final keyword = allKeywords.join(' ');
 
     // 6. デバッグログ
-    debugPrint('═══════════════════════════════════════');
-    debugPrint('🔍 検索条件 (AND条件)');
-    debugPrint('═══════════════════════════════════════');
-    debugPrint('📌 タブ: $baseKeyword');
-    debugPrint('🏷️ チップフィルター (${chipFilters.length}個): $chipFilters');
-    debugPrint('🎯 ブランド (${selectedBrands.length}個): $selectedBrands');
-    debugPrint('🔎 最終検索キーワード: "$keyword"');
-    debugPrint('═══════════════════════════════════════');
+    LoggerService.debug('═══════════════════════════════════════');
+    LoggerService.debug('🔍 検索条件 (AND条件)');
+    LoggerService.debug('═══════════════════════════════════════');
+    LoggerService.debug('📌 タブ: $baseKeyword');
+    LoggerService.debug('🏷️ チップフィルター (${chipFilters.length}個): $chipFilters');
+    LoggerService.debug('🎯 ブランド (${selectedBrands.length}個): $selectedBrands');
+    LoggerService.debug('🔎 最終検索キーワード: "$keyword"');
+    LoggerService.debug('═══════════════════════════════════════');
 
     // 7. 検索を実行
     notifier.searchPetProducts(keyword: keyword);
@@ -248,14 +247,11 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
     // 8. スナックバーで通知
     final totalFilters = chipFilters.length + selectedBrands.length;
     if (totalFilters > 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            '$totalFilters個のフィルターを適用しました (AND条件)',
-          ),
-          duration: const Duration(seconds: 2),
-          backgroundColor: const Color(0xFF1E3A8A),
-        ),
+      // ✅ Shared SnackBarService 사용
+      SnackBarService.showInfo(
+        context,
+        '$totalFilters個のフィルターを適用しました (AND条件)',
+        duration: const Duration(seconds: 2),
       );
     }
   }
@@ -287,15 +283,14 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
 
     final notifier = ref.read(rakutenProductsProvider.notifier);
 
-    debugPrint('🔍 Filters cleared, searching with: $baseKeyword');
+    LoggerService.debug('🔍 Filters cleared, searching with: $baseKeyword');
     notifier.searchPetProducts(keyword: baseKeyword);
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('すべてのフィルターをクリアしました'),
-        duration: Duration(seconds: 2),
-        backgroundColor: Color(0xFF1E3A8A),
-      ),
+    // ✅ Shared SnackBarService 사용
+    SnackBarService.showInfo(
+      context,
+      'すべてのフィルターをクリアしました',
+      duration: const Duration(seconds: 2),
     );
   }
 
@@ -762,8 +757,8 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
   /// 商品ページを開く
   Future<void> _openProductPage(RakutenPetProduct product) async {
     try {
-      debugPrint('🔗 Opening product page: ${product.itemName}');
-      debugPrint('🔗 Product URL: ${product.itemUrl}');
+      LoggerService.debug('🔗 Opening product page: ${product.itemName}');
+      LoggerService.debug('🔗 Product URL: ${product.itemUrl}');
 
       final Uri url = Uri.parse(product.itemUrl);
 
@@ -775,35 +770,32 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
 
         // 成功メッセージ
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('${product.itemName}の商品ページを開きました'),
-              duration: const Duration(seconds: 2),
-              backgroundColor: AppColors.pointBrown,
-            ),
+          // ✅ Shared SnackBarService 사용
+          SnackBarService.showSuccess(
+            context,
+            '${product.itemName}の商品ページを開きました',
+            duration: const Duration(seconds: 2),
           );
         }
       } else {
         // URLを開けない場合のエラーハンドリング
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('商品ページを開けませんでした'),
-              duration: Duration(seconds: 2),
-              backgroundColor: Colors.red,
-            ),
+          // ✅ Shared SnackBarService 사용
+          SnackBarService.showError(
+            context,
+            '商品ページを開けませんでした',
+            duration: const Duration(seconds: 2),
           );
         }
       }
     } catch (e) {
-      debugPrint('❌ Error opening product page: $e');
+      LoggerService.debug('❌ Error opening product page: $e');
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('エラーが発生しました: $e'),
-            duration: const Duration(seconds: 3),
-            backgroundColor: Colors.red,
-          ),
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showError(
+          context,
+          'エラーが発生しました: $e',
+          duration: const Duration(seconds: 3),
         );
       }
     }
@@ -832,27 +824,16 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
     if (!mounted) return;
 
     if (success) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('${product.itemName}をお気に入りに追加しました'),
-          duration: const Duration(seconds: 2),
-          backgroundColor: AppColors.pointBrown,
-          action: SnackBarAction(
-            label: '見る',
-            textColor: Colors.white,
-            onPressed: () {
-              context.push('/favorites');
-            },
-          ),
-        ),
+      SnackBarService.showSuccess(
+        context,
+        '${product.itemName}をお気に入りに追加しました',
+        duration: const Duration(seconds: 2),
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('既にお気に入りに追加されています'),
-          duration: Duration(seconds: 2),
-          backgroundColor: Colors.orange,
-        ),
+      SnackBarService.showWarning(
+        context,
+        '既にお気に入りに追加されています',
+        duration: const Duration(seconds: 2),
       );
     }
   }
@@ -919,7 +900,7 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
     final brandState = ref.watch(rakutenBrandsProvider);
 
     // 디버그 로그 추가
-    debugPrint(
+    LoggerService.debug(
       '🏷️ Brand State: isLoading=${brandState.isLoading}, error=${brandState.error}, brands=${brandState.brands.length}',
     );
 
@@ -1017,8 +998,9 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
                                   border: Border.all(
                                     color: isSelected
                                         ? AppColors.pointBrown
-                                        : AppColors.pointGray
-                                            .withValues(alpha: 0.2),
+                                        : AppColors.pointGray.withValues(
+                                            alpha: 0.2,
+                                          ),
                                     width: isSelected ? 2 : 1,
                                   ),
                                 ),
@@ -1032,37 +1014,40 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
                                           fit: BoxFit.cover,
                                           errorBuilder:
                                               (context, error, stackTrace) {
-                                            return Center(
-                                              child: Text(
-                                                brand.brandName.isNotEmpty
-                                                    ? brand.brandName[0]
-                                                        .toUpperCase()
-                                                    : '?',
-                                                style: AppFonts.titleLarge
-                                                    .copyWith(
-                                                  color: isSelected
-                                                      ? AppColors.pointBrown
-                                                      : AppColors.pointGray,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 28,
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                          loadingBuilder:
-                                              (context, child, loadingProgress) {
+                                                return Center(
+                                                  child: Text(
+                                                    brand.brandName.isNotEmpty
+                                                        ? brand.brandName[0]
+                                                              .toUpperCase()
+                                                        : '?',
+                                                    style: AppFonts.titleLarge
+                                                        .copyWith(
+                                                          color: isSelected
+                                                              ? AppColors
+                                                                    .pointBrown
+                                                              : AppColors
+                                                                    .pointGray,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 28,
+                                                        ),
+                                                  ),
+                                                );
+                                              },
+                                          loadingBuilder: (context, child, loadingProgress) {
                                             if (loadingProgress == null) {
                                               return child;
                                             }
                                             return Center(
                                               child: CircularProgressIndicator(
-                                                value: loadingProgress
+                                                value:
+                                                    loadingProgress
                                                             .expectedTotalBytes !=
                                                         null
                                                     ? loadingProgress
-                                                            .cumulativeBytesLoaded /
-                                                        loadingProgress
-                                                            .expectedTotalBytes!
+                                                              .cumulativeBytesLoaded /
+                                                          loadingProgress
+                                                              .expectedTotalBytes!
                                                     : null,
                                                 strokeWidth: 2,
                                                 color: AppColors.pointBrown,
@@ -1074,10 +1059,9 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
                                           child: Text(
                                             brand.brandName.isNotEmpty
                                                 ? brand.brandName[0]
-                                                    .toUpperCase()
+                                                      .toUpperCase()
                                                 : '?',
-                                            style:
-                                                AppFonts.titleLarge.copyWith(
+                                            style: AppFonts.titleLarge.copyWith(
                                               color: isSelected
                                                   ? AppColors.pointBrown
                                                   : AppColors.pointGray,

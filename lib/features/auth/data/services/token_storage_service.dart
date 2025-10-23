@@ -30,10 +30,10 @@ class TokenStorageService {
       ]);
 
       if (kDebugMode) {
-        debugPrint('토큰 저장 완료');
+        LoggerService.debug('토큰 저장 완료');
       }
     } catch (e) {
-      debugPrint('토큰 저장 실패: $e');
+      LoggerService.debug('토큰 저장 실패: $e');
       rethrow;
     }
   }
@@ -64,7 +64,7 @@ class TokenStorageService {
         tokenType: tokenType ?? 'Bearer',
       );
     } catch (e) {
-      debugPrint('토큰 불러오기 실패: $e');
+      LoggerService.debug('토큰 불러오기 실패: $e');
       return null;
     }
   }
@@ -80,10 +80,10 @@ class TokenStorageService {
       ]);
 
       if (kDebugMode) {
-        debugPrint('토큰 삭제 완료');
+        LoggerService.debug('토큰 삭제 완료');
       }
     } catch (e) {
-      debugPrint('토큰 삭제 실패: $e');
+      LoggerService.debug('토큰 삭제 실패: $e');
       rethrow;
     }
   }
@@ -97,10 +97,10 @@ class TokenStorageService {
       ]);
 
       if (kDebugMode) {
-        debugPrint('Remember Me 이메일 저장 완료');
+        LoggerService.debug('Remember Me 이메일 저장 완료');
       }
     } catch (e) {
-      debugPrint('Remember Me 저장 실패: $e');
+      LoggerService.debug('Remember Me 저장 실패: $e');
       rethrow;
     }
   }
@@ -116,7 +116,7 @@ class TokenStorageService {
 
       return await SecureStorageService.getString(_savedEmailKey);
     } catch (e) {
-      debugPrint('Remember Me 정보 불러오기 실패: $e');
+      LoggerService.debug('Remember Me 정보 불러오기 실패: $e');
       return null;
     }
   }
@@ -130,10 +130,10 @@ class TokenStorageService {
       ]);
 
       if (kDebugMode) {
-        debugPrint('Remember Me 정보 삭제 완료');
+        LoggerService.debug('Remember Me 정보 삭제 완료');
       }
     } catch (e) {
-      debugPrint('Remember Me 정보 삭제 실패: $e');
+      LoggerService.debug('Remember Me 정보 삭제 실패: $e');
       rethrow;
     }
   }

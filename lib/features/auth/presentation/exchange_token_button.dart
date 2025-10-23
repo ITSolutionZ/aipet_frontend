@@ -1,3 +1,4 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -123,18 +124,11 @@ class ExchangeTokenButton extends ConsumerWidget {
               if (context.mounted) {
                 final newState = ref.read(authControllerProvider);
                 if (newState.isSuccess) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('✅ 서버 JWT 저장 완료!'),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
+                  SnackBarService.showSuccess(context, '✅ サーバーJWT保存完了!');
                 } else if (newState.errorMessage != null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('❌ ${newState.errorMessage}'),
-                      backgroundColor: Colors.red,
-                    ),
+                  SnackBarService.showError(
+                    context,
+                    '❌ ${newState.errorMessage}',
                   );
                 }
               }

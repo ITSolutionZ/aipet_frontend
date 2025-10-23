@@ -102,21 +102,13 @@ class WalkShareDialog extends ConsumerWidget {
     try {
       await Clipboard.setData(ClipboardData(text: text));
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('テキストがコピーされました'),
-            backgroundColor: AppColors.pointGreen,
-          ),
-        );
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showSuccess(context, 'テキストがコピーされました');
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('コピーに失敗しました: $e'),
-            backgroundColor: AppColors.pointPink,
-          ),
-        );
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showError(context, 'コピーに失敗しました: $e');
       }
     }
   }
@@ -137,25 +129,21 @@ class WalkShareDialog extends ConsumerWidget {
       await file.writeAsString(walkRecordText);
 
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('記録が保存されました: $fileName'),
-            backgroundColor: AppColors.pointGreen,
-            action: SnackBarAction(
-              label: '共有',
-              onPressed: () => _systemShare(context, walkRecordText),
-            ),
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showSuccess(
+          context,
+          '記録が保存されました: $fileName',
+          action: SnackBarAction(
+            label: '共有',
+            textColor: AppColors.pureWhite,
+            onPressed: () => _systemShare(context, walkRecordText),
           ),
         );
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('保存に失敗しました: $e'),
-            backgroundColor: AppColors.pointPink,
-          ),
-        );
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showError(context, '保存に失敗しました: $e');
       }
     }
   }
@@ -166,21 +154,13 @@ class WalkShareDialog extends ConsumerWidget {
       await Share.share(text, subject: '散歩記録の共有');
 
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('共有が完了しました'),
-            backgroundColor: AppColors.pointGreen,
-          ),
-        );
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showSuccess(context, '共有が完了しました');
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('共有に失敗しました: $e'),
-            backgroundColor: AppColors.pointPink,
-          ),
-        );
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showError(context, '共有に失敗しました: $e');
       }
     }
   }

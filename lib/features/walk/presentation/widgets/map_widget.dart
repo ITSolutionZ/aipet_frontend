@@ -115,7 +115,7 @@ class MapWidgetController extends _$MapWidgetController {
     this.params = params;
     // keepAlive를 사용하여 dispose 방지
     ref.keepAlive();
-    debugPrint('🗺️ MapWidgetProvider 생성됨 - keepAlive 설정');
+    LoggerService.debug('🗺️ MapWidgetProvider 생성됨 - keepAlive 설정');
 
     // 비동기 초기화
     Future.microtask(() {
@@ -185,9 +185,9 @@ class MapWidgetController extends _$MapWidgetController {
       );
 
       setupMarkersAndPolylines();
-      debugPrint('✅ MapWidget: 원형 마커 로드 완료 (24px)');
+      LoggerService.debug('✅ MapWidget: 원형 마커 로드 완료 (24px)');
     } catch (e) {
-      debugPrint('⚠️ MapWidget: 마커 로드 실패 - $e');
+      LoggerService.debug('⚠️ MapWidget: 마커 로드 실패 - $e');
     } finally {
       _iconsLoading = false;
     }
@@ -208,27 +208,27 @@ class MapWidgetController extends _$MapWidgetController {
         return;
       }
 
-      debugPrint('🗺️ MapWidget: 현재 위치 가져오기 시작 (캐시 없음)');
+      LoggerService.debug('🗺️ MapWidget: 현재 위치 가져오기 시작 (캐시 없음)');
       LocationPermission permission = await Geolocator.checkPermission();
-      debugPrint('🗺️ MapWidget: 위치 권한 상태 - $permission');
+      LoggerService.debug('🗺️ MapWidget: 위치 권한 상태 - $permission');
 
       if (permission == LocationPermission.denied) {
-        debugPrint('🗺️ MapWidget: 위치 권한 요청 중...');
+        LoggerService.debug('🗺️ MapWidget: 위치 권한 요청 중...');
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
-          debugPrint('❌ MapWidget: 위치 권한 거부됨 - 기본 위치 사용');
+          LoggerService.debug('❌ MapWidget: 위치 권한 거부됨 - 기본 위치 사용');
           _setDefaultLocation();
           return;
         }
       }
 
       if (permission == LocationPermission.deniedForever) {
-        debugPrint('❌ MapWidget: 위치 권한 영구 거부됨 - 기본 위치 사용');
+        LoggerService.debug('❌ MapWidget: 위치 권한 영구 거부됨 - 기본 위치 사용');
         _setDefaultLocation();
         return;
       }
 
-      debugPrint('🗺️ MapWidget: GPS 위치 가져오는 중...');
+      LoggerService.debug('🗺️ MapWidget: GPS 위치 가져오는 중...');
       final Position position =
           await Geolocator.getCurrentPosition(
             locationSettings: const LocationSettings(
@@ -237,12 +237,12 @@ class MapWidgetController extends _$MapWidgetController {
           ).timeout(
             const Duration(seconds: 5),
             onTimeout: () {
-              debugPrint('⚠️ MapWidget: GPS 위치 취득 타임아웃 - 기본 위치 사용');
+              LoggerService.debug('⚠️ MapWidget: GPS 위치 취득 타임아웃 - 기본 위치 사용');
               throw Exception('GPS 위치 취득 タイムアウト');
             },
           );
 
-      debugPrint(
+      LoggerService.debug(
         '✅ MapWidget: 현재 위치 가져오기 성공 - lat: ${position.latitude}, lng: ${position.longitude}',
       );
 
@@ -257,7 +257,7 @@ class MapWidgetController extends _$MapWidgetController {
         );
       }
     } catch (e) {
-      debugPrint('❌ MapWidget: 위치 가져오기 실패 - $e');
+      LoggerService.debug('❌ MapWidget: 위치 가져오기 실패 - $e');
       _setDefaultLocation();
     }
   }
@@ -283,7 +283,7 @@ class MapWidgetController extends _$MapWidgetController {
       headingAccuracy: 0,
     );
 
-    debugPrint('🗺️ MapWidget: 기본 위치 설정 (도쿄) - lat: 35.6762, lng: 139.6503');
+    LoggerService.debug('🗺️ MapWidget: 기본 위치 설정 (도쿄) - lat: 35.6762, lng: 139.6503');
     state = state.copyWith(currentPosition: defaultPosition);
   }
 
@@ -448,20 +448,20 @@ class MapWidget extends ConsumerWidget {
     final controller = ref.read(mapWidgetControllerProvider(params).notifier);
     final state = ref.watch(mapWidgetControllerProvider(params));
 
-    debugPrint(
+    LoggerService.debug(
       '🗺️ MapWidget: build() - currentPosition: ${state.currentPosition != null ? '있음' : 'null'}',
     );
 
     if (state.currentPosition == null) {
-      debugPrint('🗺️ MapWidget: 로딩 화면 표시');
+      LoggerService.debug('🗺️ MapWidget: 로딩 화면 표시');
       return _buildLoadingState();
     }
 
-    debugPrint('🗺️ MapWidget: GoogleMap 렌더링 시작');
+    LoggerService.debug('🗺️ MapWidget: GoogleMap 렌더링 시작');
     return GoogleMap(
       key: const ValueKey('google_map_view'),
       onMapCreated: (GoogleMapController mapController) {
-        debugPrint('🗺️ MapWidget: GoogleMap 생성 완료');
+        LoggerService.debug('🗺️ MapWidget: GoogleMap 생성 완료');
         controller.setMapController(mapController, ref);
         controller.setupMarkersAndPolylines();
 
@@ -490,7 +490,7 @@ class MapWidget extends ConsumerWidget {
   }
 
   Widget _buildLoadingState() {
-    debugPrint('🗺️ MapWidget: _buildLoadingState() 호출됨 - 위치 정보가 없어서 로딩 화면 표시');
+    LoggerService.debug('🗺️ MapWidget: _buildLoadingState() 호출됨 - 위치 정보가 없어서 로딩 화면 표시');
 
     return Container(
       color: Colors.grey[100],

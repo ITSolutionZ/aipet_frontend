@@ -1,5 +1,7 @@
 import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../../../shared/core/api/api_client.dart';
 import '../../../../shared/core/data/result_types.dart';
 import '../../../../shared/core/domain/common_errors.dart';
@@ -34,7 +36,7 @@ class TokenManagerService {
       _scheduleTokenRefresh(token);
       return const Success(null);
     } catch (e) {
-      return Result.failure(CacheError('토큰 저장 실패', details: e.toString()));
+      return ResultState.failure(CacheError('토큰 저장 실패', details: e.toString()));
     }
   }
 
@@ -49,7 +51,7 @@ class TokenManagerService {
 
       return const Success(null);
     } catch (e) {
-      return Result.failure(CacheError('토큰 삭제 실패', details: e.toString()));
+      return ResultState.failure(CacheError('토큰 삭제 실패', details: e.toString()));
     }
   }
 
@@ -57,12 +59,12 @@ class TokenManagerService {
     try {
       final currentTokenResult = await getCurrentToken();
       if (currentTokenResult.isFailure) {
-        return Result.failure(currentTokenResult.errorOrNull!);
+        return ResultState.failure(currentTokenResult.errorOrNull!);
       }
 
       final currentToken = currentTokenResult.dataOrNull;
       if (currentToken == null) {
-        return Result.failure(AuthenticationError('토큰이 없습니다.'));
+        return ResultState.failure(AuthenticationError('토큰이 없습니다'));
       }
 
       final refreshResult = await _apiAuthService.refreshToken(
@@ -70,7 +72,7 @@ class TokenManagerService {
       );
       if (refreshResult.isFailure) {
         await clearToken();
-        return Result.failure(refreshResult.errorOrNull!);
+        return ResultState.failure(refreshResult.errorOrNull!);
       }
 
       final newToken = refreshResult.dataOrNull!;
@@ -78,7 +80,7 @@ class TokenManagerService {
 
       return Success(newToken);
     } catch (e) {
-      return Result.failure(UnknownError(details: e.toString()));
+      return ResultState.failure(UnknownError(details: e.toString()));
     }
   }
 
@@ -106,7 +108,7 @@ class TokenManagerService {
 
       return Success(token);
     } catch (e) {
-      return Result.failure(CacheError('토큰 로드 실패', details: e.toString()));
+      return ResultState.failure(CacheError('토큰 로드 실패', details: e.toString()));
     }
   }
 

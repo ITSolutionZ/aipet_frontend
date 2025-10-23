@@ -1,7 +1,7 @@
 import 'package:aipet_frontend/features/walk/data/services/local_walk_storage_service.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_statistics_entity.dart';
-import 'package:flutter/foundation.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
 /// Walk 로컬 저장소 헬퍼
 class WalkLocalHelper {
@@ -12,14 +12,18 @@ class WalkLocalHelper {
       final record = localRecords.where((r) => r.id == recordId).firstOrNull;
 
       if (record != null) {
-        debugPrint('✅ HybridWalkRepository: 로컬 데이터 로드 - ID: $recordId');
+        LoggerService.debug(
+          '✅ HybridWalkRepository: 로컬 데이터 로드 - ID: $recordId',
+        );
         return record;
       }
     } catch (e) {
-      debugPrint('⚠️ HybridWalkRepository: 로컬 데이터 조회 실패 - $e');
+      LoggerService.debug('⚠️ HybridWalkRepository: 로컬 데이터 조회 실패 - $e');
     }
 
-    debugPrint('ℹ️ HybridWalkRepository: 산책 기록을 찾을 수 없음 - ID: $recordId');
+    LoggerService.debug(
+      'ℹ️ HybridWalkRepository: 산책 기록을 찾을 수 없음 - ID: $recordId',
+    );
     return null;
   }
 
@@ -28,10 +32,12 @@ class WalkLocalHelper {
     try {
       final localRecords = await LocalWalkStorageService.loadWalkRecords();
       final petRecords = localRecords.where((r) => r.petId == petId).toList();
-      debugPrint('✅ HybridWalkRepository: 로컬 펫 데이터 ${petRecords.length}개 로드');
+      LoggerService.debug(
+        '✅ HybridWalkRepository: 로컬 펫 데이터 ${petRecords.length}개 로드',
+      );
       return petRecords;
     } catch (e) {
-      debugPrint('⚠️ HybridWalkRepository: 로컬 데이터 조회 실패 - $e');
+      LoggerService.debug('⚠️ HybridWalkRepository: 로컬 데이터 조회 실패 - $e');
       return [];
     }
   }
@@ -42,7 +48,7 @@ class WalkLocalHelper {
     DateTime? startDate,
     DateTime? endDate,
   }) async {
-    debugPrint('ℹ️ HybridWalkRepository: 로컬 데이터로 통계 계산');
+    LoggerService.debug('ℹ️ HybridWalkRepository: 로컬 데이터로 통계 계산');
 
     try {
       final localRecords = await LocalWalkStorageService.loadWalkRecords();
@@ -87,7 +93,7 @@ class WalkLocalHelper {
             : null,
       );
     } catch (e) {
-      debugPrint('⚠️ HybridWalkRepository: 로컬 통계 계산 실패 - $e');
+      LoggerService.debug('⚠️ HybridWalkRepository: 로컬 통계 계산 실패 - $e');
       return WalkStatistics.empty();
     }
   }

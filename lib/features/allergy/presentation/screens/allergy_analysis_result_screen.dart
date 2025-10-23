@@ -300,12 +300,7 @@ class AllergyAnalysisResultScreen extends ConsumerWidget {
       // 로딩 다이얼로그 닫기
       if (context.mounted) {
         Navigator.of(context).pop();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('PDF生成エラー: $e'),
-            backgroundColor: AppColors.pointRed,
-          ),
-        );
+        SnackBarService.showError(context, 'PDF生成エラー: $e');
       }
     }
   }
@@ -394,12 +389,10 @@ class AllergyAnalysisResultScreen extends ConsumerWidget {
   /// PDF 생성 취소 처리
   void _cancelPdfGeneration(BuildContext context) {
     // PDF 생성 취소 시 사용자에게 알림
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('PDF生成がキャンセルされました'),
-        backgroundColor: AppColors.pointGray,
-        duration: Duration(seconds: 2),
-      ),
+    SnackBarService.showInfo(
+      context,
+      'PDF生成がキャンセルされました',
+      duration: const Duration(seconds: 2),
     );
   }
 
@@ -748,7 +741,7 @@ class AllergyAnalysisResultScreen extends ConsumerWidget {
       return pw.MemoryImage(imageData.buffer.asUint8List());
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('배경 이미지 로드 실패: $e');
+        LoggerService.debug('배경 이미지 로드 실패: $e');
       }
       return null;
     }
@@ -770,9 +763,7 @@ class AllergyAnalysisResultScreen extends ConsumerWidget {
           .saveAnalysis(savedAnalysis);
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('保存エラー: $e'), backgroundColor: Colors.red),
-        );
+        SnackBarService.showError(context, '保存エラー: $e');
       }
     }
   }

@@ -68,7 +68,7 @@ class OnboardingBottomSheet extends StatelessWidget {
                       'assets/icons/logos/aipet_black.png',
                       fit: BoxFit.contain,
                       errorBuilder: (context, error, stackTrace) {
-                        debugPrint('❌ 로고 로드 실패: aipet_black.png');
+                        LoggerService.debug('❌ 로고 로드 실패: aipet_black.png');
                         // Fallback: 텍스트 로고
                         return const Column(
                           mainAxisSize: MainAxisSize.min,

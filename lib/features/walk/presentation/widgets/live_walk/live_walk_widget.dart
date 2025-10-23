@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_location_entity.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 import 'package:aipet_frontend/features/walk/domain/services/walk_tracking_optimizer.dart';
@@ -86,9 +87,9 @@ class LiveWalkState {
     final seconds = elapsedTime.inSeconds % 60;
 
     if (hours > 0) {
-      return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+      return DateTimeUtils.formatElapsedTime(hours * 3600 + minutes * 60 + seconds);
     } else {
-      return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+      return DateTimeUtils.formatElapsedShort(minutes * 60 + seconds);
     }
   }
 
@@ -107,9 +108,9 @@ class LiveWalkState {
     final seconds = duration.inSeconds % 60;
 
     if (hours > 0) {
-      return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+      return DateTimeUtils.formatElapsedTime(hours * 3600 + minutes * 60 + seconds);
     } else {
-      return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+      return DateTimeUtils.formatElapsedShort(minutes * 60 + seconds);
     }
   }
 }
@@ -152,13 +153,13 @@ class LiveWalkController extends _$LiveWalkController {
       if (position != null) {
         state = state.copyWith(currentPosition: position);
         _updateMapMarkers();
-        debugPrint('현재 위치 초기화 성공: ${position.latitude}, ${position.longitude}');
+        LoggerService.debug('현재 위치 초기화 성공: ${position.latitude}, ${position.longitude}');
       } else {
-        debugPrint('위치 권한이 거부되어 기본 위치를 사용합니다');
+        LoggerService.debug('위치 권한이 거부되어 기본 위치를 사용합니다');
         _setDefaultLocation();
       }
     } catch (e) {
-      debugPrint('초기 위치 가져오기 실패: $e');
+      LoggerService.debug('초기 위치 가져오기 실패: $e');
       _setDefaultLocation();
     }
   }
@@ -198,7 +199,7 @@ class LiveWalkController extends _$LiveWalkController {
 
     final currentPosition = await LiveWalkLocationTracker.getCurrentPosition();
     if (currentPosition == null) {
-      debugPrint('위치를 가져올 수 없어 산책을 시작할 수 없습니다');
+      LoggerService.debug('위치를 가져올 수 없어 산책을 시작할 수 없습니다');
       return;
     }
 
@@ -254,86 +255,86 @@ class LiveWalkController extends _$LiveWalkController {
 
   void pauseWalk() {
     try {
-      debugPrint('⏸️ pauseWalk() 시작');
+      LoggerService.debug('⏸️ pauseWalk() 시작');
 
       if (state.timerState != WalkTimerState.running) {
-        debugPrint('⏸️ pauseWalk() - 현재 상태가 running이 아님: ${state.timerState}');
+        LoggerService.debug('⏸️ pauseWalk() - 현재 상태가 running이 아님: ${state.timerState}');
         return;
       }
 
-      debugPrint('⏸️ pauseWalk() - 타이머 정지');
+      LoggerService.debug('⏸️ pauseWalk() - 타이머 정지');
       _timerManager.stopTimer();
 
-      debugPrint('⏸️ pauseWalk() - 위치 추적 정지');
+      LoggerService.debug('⏸️ pauseWalk() - 위치 추적 정지');
       _locationTracker.stopTracking();
 
       // 🚀 timerState만 변경! (다른 필드는 건드리지 않음)
       // _ControlSection에서는 ref.read()를 사용하므로 자동 rebuild 안됨
-      debugPrint('⏸️ pauseWalk() - state 업데이트');
+      LoggerService.debug('⏸️ pauseWalk() - state 업데이트');
       state = state.copyWith(timerState: WalkTimerState.paused);
 
-      debugPrint('⏸️ pauseWalk() - 상태 저장');
+      LoggerService.debug('⏸️ pauseWalk() - 상태 저장');
       // 일시정지 상태 저장
       LiveWalkStorageManager.saveCurrentWalk(state.currentWalkRecord);
 
-      debugPrint('✅ pauseWalk() 완료');
+      LoggerService.debug('✅ pauseWalk() 완료');
     } catch (e) {
-      debugPrint('❌ pauseWalk() 에러: $e');
+      LoggerService.debug('❌ pauseWalk() 에러: $e');
       rethrow;
     }
   }
 
   void resumeWalk() {
     try {
-      debugPrint('▶️ resumeWalk() 시작');
+      LoggerService.debug('▶️ resumeWalk() 시작');
 
       if (state.timerState != WalkTimerState.running &&
           state.timerState != WalkTimerState.paused) {
-        debugPrint(
+        LoggerService.debug(
           '▶️ resumeWalk() - 상태가 running/paused 아님: ${state.timerState}',
         );
         return;
       }
 
       // 🚀 timerState만 변경!
-      debugPrint('▶️ resumeWalk() - state 업데이트');
+      LoggerService.debug('▶️ resumeWalk() - state 업데이트');
       state = state.copyWith(timerState: WalkTimerState.running);
 
-      debugPrint('▶️ resumeWalk() - 타이머 시작');
+      LoggerService.debug('▶️ resumeWalk() - 타이머 시작');
       _timerManager.startTimer(() {
         // ValueNotifier로만 업데이트 (state 변경 X)
         _elapsedTimeNotifier.value = _timerManager.elapsedTime;
       });
 
-      debugPrint('▶️ resumeWalk() - 위치 추적 시작');
+      LoggerService.debug('▶️ resumeWalk() - 위치 추적 시작');
       _startLocationTracking();
 
-      debugPrint('▶️ resumeWalk() - 상태 저장');
+      LoggerService.debug('▶️ resumeWalk() - 상태 저장');
       // 재시작 상태 저장
       LiveWalkStorageManager.saveCurrentWalk(state.currentWalkRecord);
 
-      debugPrint('✅ resumeWalk() 완료');
+      LoggerService.debug('✅ resumeWalk() 완료');
     } catch (e) {
-      debugPrint('❌ resumeWalk() 에러: $e');
+      LoggerService.debug('❌ resumeWalk() 에러: $e');
       rethrow;
     }
   }
 
   void stopWalk() {
     try {
-      debugPrint('⏹️ stopWalk() 시작');
+      LoggerService.debug('⏹️ stopWalk() 시작');
 
       // 🚀 timerState만 변경!
-      debugPrint('⏹️ stopWalk() - state 업데이트');
+      LoggerService.debug('⏹️ stopWalk() - state 업데이트');
       state = state.copyWith(timerState: WalkTimerState.stopped);
 
-      debugPrint('⏹️ stopWalk() - 타이머 정지');
+      LoggerService.debug('⏹️ stopWalk() - 타이머 정지');
       _timerManager.stopTimer();
 
-      debugPrint('⏹️ stopWalk() - 위치 추적 정지');
+      LoggerService.debug('⏹️ stopWalk() - 위치 추적 정지');
       _locationTracker.stopTracking();
 
-      debugPrint('⏹️ stopWalk() - 산책 저장');
+      LoggerService.debug('⏹️ stopWalk() - 산책 저장');
       // 완료된 산책 저장
       if (state.currentWalkRecord != null) {
         LiveWalkStorageManager.saveCompletedWalk(
@@ -342,9 +343,9 @@ class LiveWalkController extends _$LiveWalkController {
         );
       }
 
-      debugPrint('✅ stopWalk() 완료');
+      LoggerService.debug('✅ stopWalk() 완료');
     } catch (e) {
-      debugPrint('❌ stopWalk() 에러: $e');
+      LoggerService.debug('❌ stopWalk() 에러: $e');
       rethrow;
     }
   }
@@ -404,7 +405,7 @@ class LiveWalkController extends _$LiveWalkController {
     _locationTracker.startTracking(
       onLocationUpdate: (location) => _updateLocation(location),
       onError: () {
-        debugPrint('위치 추적 에러 발생');
+        LoggerService.debug('위치 추적 에러 발생');
       },
     );
   }
@@ -413,7 +414,7 @@ class LiveWalkController extends _$LiveWalkController {
     try {
       // 📊 위치 업데이트 수신 통지
       final now = DateTime.now();
-      debugPrint(
+      LoggerService.debug(
         '📍 위치 콜백 수신[${now.toIso8601String()}]: lat=${location.latitude.toStringAsFixed(6)}, lng=${location.longitude.toStringAsFixed(6)}, accuracy=${location.accuracy?.toStringAsFixed(1)}m',
       );
 
@@ -421,7 +422,7 @@ class LiveWalkController extends _$LiveWalkController {
       if (_lastLocationUpdateTime != null) {
         final timeSinceLastUpdate = now.difference(_lastLocationUpdateTime!);
         if (timeSinceLastUpdate.inSeconds < 3) {
-          debugPrint(
+          LoggerService.debug(
             '⏰ 업데이트 너무 빠름: ${timeSinceLastUpdate.inSeconds}초 경과 (최소 3초 필요)',
           );
           return;
@@ -430,14 +431,14 @@ class LiveWalkController extends _$LiveWalkController {
 
       // WalkTrackingOptimizer를 사용한 위치 데이터 유효성 검증
       if (!WalkTrackingOptimizer.isValidLocation(location)) {
-        debugPrint('❌ 유효하지 않은 위치 데이터 무시: 정확도 ${location.accuracy}m');
+        LoggerService.debug('❌ 유효하지 않은 위치 데이터 무시: 정확도 ${location.accuracy}m');
         return;
       }
 
       // 기존 경로가 있는 경우 WalkTrackingOptimizer로 위치 추가 여부 결정
       if (state.route.isNotEmpty) {
         if (!WalkTrackingOptimizer.shouldAddLocation(location, state.route)) {
-          debugPrint('⏭️ 위치 변화 무시: 최적화 필터에 의해 제외됨');
+          LoggerService.debug('⏭️ 위치 변화 무시: 최적화 필터에 의해 제외됨');
           return;
         }
       }
@@ -457,13 +458,13 @@ class LiveWalkController extends _$LiveWalkController {
 
         // GPS 오차 범위 내 이동은 무시
         if (distance < minDistance) {
-          debugPrint(
+          LoggerService.debug(
             '🚫 동일한 위치로 판단 (GPS 오차범위): ${distance.toStringAsFixed(2)}m < ${minDistance.toStringAsFixed(1)}m (정확도: ${accuracy.toStringAsFixed(1)}m)',
           );
           return;
         }
 
-        debugPrint(
+        LoggerService.debug(
           '✅ 의미있는 위치 변경 감지: ${distance.toStringAsFixed(2)}m 이동 (최소: ${minDistance.toStringAsFixed(1)}m)',
         );
       }
@@ -478,13 +479,13 @@ class LiveWalkController extends _$LiveWalkController {
 
       // 🚀 핵심: 거리가 실제로 변경되었을 때만 state를 업데이트
       if (newDistance == state.distance) {
-        debugPrint(
+        LoggerService.debug(
           '⏸️ 거리 변화 없음 (이전: ${state.distance}m, 현재: $newDistance m), state 업데이트 무시',
         );
         return;
       }
 
-      debugPrint(
+      LoggerService.debug(
         '📊 거리 변화 감지: ${state.distance}m -> $newDistance m (${(newDistance - state.distance).toStringAsFixed(1)}m 증가)',
       );
 
@@ -520,7 +521,7 @@ class LiveWalkController extends _$LiveWalkController {
       _lastSavedPosition = position;
       _lastLocationUpdateTime = now;
 
-      debugPrint(
+      LoggerService.debug(
         '🔄 State 업데이트됨: 거리 $newDistance m, 경로 포인트 ${newRoute.length}개',
       );
 
@@ -531,7 +532,7 @@ class LiveWalkController extends _$LiveWalkController {
       // 위치 업데이트 시 현재 상태 저장 (백그라운드에서 실행)
       LiveWalkStorageManager.saveCurrentWalk(state.currentWalkRecord).ignore();
     } catch (e) {
-      debugPrint('❌ 위치 업데이트 실패: $e');
+      LoggerService.debug('❌ 위치 업데이트 실패: $e');
     }
   }
 
@@ -604,7 +605,7 @@ class LiveWalkController extends _$LiveWalkController {
       // 🚀 엄격한 중복 방지: Set 내용을 정확히 비교
       if (state.polylines.length != newPolylines.length ||
           !_arePolylinesEqual(state.polylines, newPolylines)) {
-        debugPrint(
+        LoggerService.debug(
           '🔄 Polylines 업데이트: ${state.polylines.length} -> ${newPolylines.length}',
         );
         state = state.copyWith(polylines: newPolylines);
@@ -651,7 +652,7 @@ class LiveWalkController extends _$LiveWalkController {
     // 🚀 엄격한 중복 방지: Set 내용을 정확히 비교
     if (state.markers.length != markers.length ||
         !_areMarkersEqual(state.markers, markers)) {
-      debugPrint(
+      LoggerService.debug(
         '🔄 Markers 업데이트: ${state.markers.length} -> ${markers.length}',
       );
       state = state.copyWith(markers: markers);
@@ -704,7 +705,7 @@ class _LiveWalkWidgetState extends ConsumerState<LiveWalkWidget> {
   @override
   Widget build(BuildContext context) {
     _buildCount++;
-    debugPrint(
+    LoggerService.debug(
       '👨‍👧‍👦 LiveWalkWidget.build() 호출 #$_buildCount - ${DateTime.now()}',
     );
 
@@ -747,7 +748,7 @@ class _ControlSectionState extends ConsumerState<_ControlSection> {
           next,
         ) {
           if (prev != next) {
-            debugPrint('⏰ timerState 변경: $prev -> $next');
+            LoggerService.debug('⏰ timerState 변경: $prev -> $next');
             if (mounted) setState(() {});
           }
         });
@@ -756,7 +757,7 @@ class _ControlSectionState extends ConsumerState<_ControlSection> {
           next,
         ) {
           if (prev != next) {
-            debugPrint('📏 distance 변경: $prev -> $next');
+            LoggerService.debug('📏 distance 변경: $prev -> $next');
             if (mounted) setState(() {});
           }
         });
@@ -766,7 +767,7 @@ class _ControlSectionState extends ConsumerState<_ControlSection> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('🔄 _ControlSection.build() 호출됨 - ${DateTime.now()}');
+    LoggerService.debug('🔄 _ControlSection.build() 호출됨 - ${DateTime.now()}');
 
     // 🚀 watch 완전 제거! ref.read()만 사용
     // listen으로 필요한 상태만 감지하여 setState 호출
@@ -776,7 +777,7 @@ class _ControlSectionState extends ConsumerState<_ControlSection> {
     final formattedDistance =
         '${(state.distance / 1000).toStringAsFixed(2)} km';
 
-    debugPrint(
+    LoggerService.debug(
       '📊 _ControlSection - distance: ${state.distance}, timerState: ${state.timerState}',
     );
 
@@ -1042,20 +1043,7 @@ class _ControlSectionState extends ConsumerState<_ControlSection> {
     walkController.completeWalk(notes);
     Navigator.of(context).pop();
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Row(
-          children: [
-            Icon(Icons.check_circle, color: Colors.white),
-            SizedBox(width: 8),
-            Text('산책이 완료되었습니다!'),
-          ],
-        ),
-        backgroundColor: Colors.green,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      ),
-    );
+    SnackBarService.showSuccess(context, '산책이 완료되었습니다!');
 
     Future.delayed(const Duration(seconds: 2), () {
       if (context.mounted) {
@@ -1206,22 +1194,22 @@ class _GoogleMapWidgetState extends State<_GoogleMapWidget> {
 
     // 🚀 위치가 실제로 변경된 경우에만 카메라 이동
     if (oldPositionKey != newPositionKey) {
-      debugPrint('📍 GPS 위치 변경 감지: $oldPositionKey -> $newPositionKey');
+      LoggerService.debug('📍 GPS 위치 변경 감지: $oldPositionKey -> $newPositionKey');
       _moveCamera();
     } else {
-      debugPrint('⏸️ GPS 이동 없음 - 카메라 이동 생략');
+      LoggerService.debug('⏸️ GPS 이동 없음 - 카메라 이동 생략');
     }
 
     // 마커 변경 로그
     if (oldWidget.markers != widget.markers) {
-      debugPrint(
+      LoggerService.debug(
         '📍 마커 변경: ${oldWidget.markers.length} -> ${widget.markers.length}',
       );
     }
 
     // 폴리라인 변경 로그
     if (oldWidget.polylines != widget.polylines) {
-      debugPrint(
+      LoggerService.debug(
         '🛣️ 폴리라인 변경: ${oldWidget.polylines.length} -> ${widget.polylines.length}',
       );
     }
@@ -1250,7 +1238,7 @@ class _GoogleMapWidgetState extends State<_GoogleMapWidget> {
         : 0;
     _lastBuildTime = now;
 
-    debugPrint(
+    LoggerService.debug(
       '🗺️ GoogleMap build() #$_buildCount (이전 빌드로부터 ${timeSinceLastBuild}ms 경과)',
     );
 

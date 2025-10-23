@@ -851,11 +851,11 @@ class _HospitalDetailScreenState extends ConsumerState<HospitalDetailScreen> {
           .read(registeredHospitalsProvider.notifier)
           .removeHospital(widget.hospitalId);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('よく行く病院から削除されました'),
-            duration: Duration(seconds: 2),
-          ),
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showWarning(
+          context,
+          'よく行く病院から削除されました',
+          duration: const Duration(seconds: 2),
         );
       }
     } else {
@@ -871,12 +871,11 @@ class _HospitalDetailScreenState extends ConsumerState<HospitalDetailScreen> {
           .read(registeredHospitalsProvider.notifier)
           .addHospital(hospital);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('よく行く病院に登録されました'),
-            backgroundColor: Colors.green,
-            duration: Duration(seconds: 2),
-          ),
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showSuccess(
+          context,
+          'よく行く病院に登録されました',
+          duration: const Duration(seconds: 2),
         );
       }
     }

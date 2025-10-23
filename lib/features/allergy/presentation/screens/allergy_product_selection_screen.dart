@@ -873,12 +873,10 @@ class _AllergyProductSelectionScreenState
           ? 'アレルギー商品から削除しました'
           : 'アレルギーなし商品から削除しました';
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: AppColors.pointGray,
-          duration: const Duration(seconds: 2),
-        ),
+      SnackBarService.showInfo(
+        context,
+        message,
+        duration: const Duration(seconds: 2),
       );
     } else {
       // 선택되지 않은 제품이면 선택
@@ -894,12 +892,10 @@ class _AllergyProductSelectionScreenState
 
       // 기존 스낵바 제거 후 새 스낵바 표시
       ScaffoldMessenger.of(context).clearSnackBars();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: AppColors.pointBrown,
-          duration: const Duration(seconds: 2),
-        ),
+      SnackBarService.showSuccess(
+        context,
+        message,
+        duration: const Duration(seconds: 2),
       );
     }
   }
@@ -1064,12 +1060,10 @@ class _AllergyProductSelectionScreenState
 
     // 기존 스낵바 제거 후 새 스낵바 표시
     ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: AppColors.pointBrown,
-        duration: const Duration(seconds: 2),
-      ),
+    SnackBarService.showInfo(
+      context,
+      message,
+      duration: const Duration(seconds: 2),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
 import 'package:aipet_frontend/shared/core/services/secure_storage_service.dart';
 import 'package:flutter/foundation.dart';
@@ -107,7 +108,7 @@ class RegisteredHospitalsNotifier extends _$RegisteredHospitalsNotifier {
     } catch (e) {
       // 에러 로깅
       if (kDebugMode) {
-        debugPrint('병원 정보 저장 실패: $e');
+        LoggerService.debug('병원 정보 저장 실패: $e');
       }
     }
   }

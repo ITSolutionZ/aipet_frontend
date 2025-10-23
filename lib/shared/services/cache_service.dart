@@ -1,174 +1,164 @@
-import 'dart:async';
-import 'dart:convert';
-
-import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// 캐시 서비스
+/// 전역 캐시 서비스 (SharedPreferences 래퍼)
 ///
-/// 앱 전반의 데이터 캐싱을 관리합니다.
-/// 메모리 캐시와 영속 캐시를 제공합니다.
+/// 앱 전체에서 사용하는 로컬 저장소 관리
+/// - SharedPreferences의 싱글톤 래퍼
+/// - TTL 기반 캐시 관리
+/// - 타입 안전 메서드 제공
 class CacheService {
   static final CacheService _instance = CacheService._internal();
   factory CacheService() => _instance;
   CacheService._internal();
 
-  final Map<String, CacheEntry> _memoryCache = {};
   SharedPreferences? _prefs;
+  final Map<String, CacheEntry> _memoryCache = {};
 
-  /// SharedPreferences 초기화
+  /// 초기화
   Future<void> initialize() async {
     _prefs ??= await SharedPreferences.getInstance();
   }
 
-  /// 메모리 캐시에 데이터 저장
-  void setMemoryCache<T>(String key, T data, {Duration? ttl}) {
-    final entry = CacheEntry(data: data, timestamp: DateTime.now(), ttl: ttl);
-    _memoryCache[key] = entry;
-    debugPrint('💾 CacheService: 메모리 캐시 저장 - $key');
+  // ========== String 관련 ==========
+
+  /// String 저장
+  Future<void> setString(String key, String value) async {
+    await initialize();
+    await _prefs!.setString(key, value);
   }
 
-  /// 메모리 캐시에서 데이터 조회
-  T? getMemoryCache<T>(String key) {
+  /// String 조회
+  String? getString(String key) {
+    return _prefs?.getString(key);
+  }
+
+  /// List<String> 저장
+  Future<void> setStringList(String key, List<String> value) async {
+    await initialize();
+    await _prefs!.setStringList(key, value);
+  }
+
+  /// List<String> 조회
+  List<String>? getStringList(String key) {
+    return _prefs?.getStringList(key);
+  }
+
+  // ========== Bool 관련 ==========
+
+  /// Bool 값 저장
+  Future<void> setBoolValue(String key, bool value) async {
+    await initialize();
+    await _prefs!.setBool(key, value);
+  }
+
+  /// Bool 값 조회
+  bool? getBoolValue(String key) {
+    return _prefs?.getBool(key);
+  }
+
+  // ========== Int 관련 ==========
+
+  /// Int 값 저장
+  Future<void> setIntValue(String key, int value) async {
+    await initialize();
+    await _prefs!.setInt(key, value);
+  }
+
+  /// Int 값 조회
+  int? getIntValue(String key) {
+    return _prefs?.getInt(key);
+  }
+
+  // ========== Double 관련 ==========
+
+  /// Double 값 저장
+  Future<void> setDoubleValue(String key, double value) async {
+    await initialize();
+    await _prefs!.setDouble(key, value);
+  }
+
+  /// Double 값 조회
+  double? getDoubleValue(String key) {
+    return _prefs?.getDouble(key);
+  }
+
+  // ========== 유틸리티 메서드 ==========
+
+  /// 키 존재 여부 확인 (동기)
+  bool containsKeySync(String key) {
+    return _prefs?.containsKey(key) ?? false;
+  }
+
+  /// 키 제거
+  Future<void> removeKey(String key) async {
+    await initialize();
+    await _prefs!.remove(key);
+    _memoryCache.remove(key);
+  }
+
+  /// 전체 캐시 클리어
+  Future<void> clearAll() async {
+    await initialize();
+    await _prefs!.clear();
+    _memoryCache.clear();
+  }
+
+  // ========== 호환성 메서드 (기존 코드 지원) ==========
+
+  /// List<String> 조회 (호환성 - 동기)
+  List<String>? getPersistentCacheList(String key) {
+    return _prefs?.getStringList(key);
+  }
+
+  /// List<String> 저장 (호환성 - 비동기)
+  Future<void> setPersistentCacheList(String key, List<String> value) async {
+    await initialize();
+    await _prefs!.setStringList(key, value);
+  }
+
+  // ========== TTL 기반 캐시 ==========
+
+  /// TTL 캐시 저장
+  Future<void> setCache(String key, dynamic data, {Duration? ttl}) async {
+    _memoryCache[key] = CacheEntry(
+      data: data,
+      timestamp: DateTime.now(),
+      ttl: ttl,
+    );
+  }
+
+  /// TTL 캐시 조회
+  T? getCache<T>(String key) {
     final entry = _memoryCache[key];
     if (entry == null) return null;
-
-    // TTL 체크
     if (entry.isExpired) {
       _memoryCache.remove(key);
-      debugPrint('⏰ CacheService: 메모리 캐시 만료 - $key');
       return null;
     }
-
-    debugPrint('✅ CacheService: 메모리 캐시 히트 - $key');
     return entry.data as T?;
   }
 
-  /// 메모리 캐시에서 특정 키 제거
-  void clearMemoryCache(String key) {
-    if (_memoryCache.containsKey(key)) {
-      _memoryCache.remove(key);
-      debugPrint('🧹 CacheService: 메모리 캐시 제거 - $key');
-    }
+  /// 캐시 유효성 확인
+  bool isCacheValid(String key) {
+    final entry = _memoryCache[key];
+    if (entry == null) return false;
+    return !entry.isExpired;
   }
 
-  /// 모든 메모리 캐시 제거
-  void clearAllMemoryCache() {
-    _memoryCache.clear();
-    debugPrint('🧹 CacheService: 모든 메모리 캐시 제거');
-  }
-
-  /// 영속 캐시에 데이터 저장
-  Future<void> setPersistentCache(
-    String key,
-    Map<String, dynamic> data, {
-    Duration? ttl,
-  }) async {
-    await initialize();
-
-    final cacheData = {
-      'data': data,
-      'timestamp': DateTime.now().millisecondsSinceEpoch,
-      'ttl': ttl?.inMilliseconds,
-    };
-
-    await _prefs!.setString(key, jsonEncode(cacheData));
-    debugPrint('💿 CacheService: 영속 캐시 저장 - $key');
-  }
-
-  /// 영속 캐시에 객체 저장 (JSON 직렬화)
-  Future<void> setPersistentCacheObject<T>(
-    String key,
-    T object, {
-    Duration? ttl,
-    required Map<String, dynamic> Function(T) toJson,
-  }) async {
-    final data = toJson(object);
-    await setPersistentCache(key, data, ttl: ttl);
-  }
-
-  /// 영속 캐시에서 데이터 조회
-  Future<Map<String, dynamic>?> getPersistentCache(String key) async {
-    await initialize();
-
-    final cachedString = _prefs!.getString(key);
-    if (cachedString == null) return null;
-
-    try {
-      final cacheData = jsonDecode(cachedString) as Map<String, dynamic>;
-      final timestamp = DateTime.fromMillisecondsSinceEpoch(
-        cacheData['timestamp'] as int,
-      );
-      final ttlMs = cacheData['ttl'] as int?;
-
-      // TTL 체크
-      if (ttlMs != null) {
-        final expiry = timestamp.add(Duration(milliseconds: ttlMs));
-        if (DateTime.now().isAfter(expiry)) {
-          await _prefs!.remove(key);
-          debugPrint('⏰ CacheService: 영속 캐시 만료 - $key');
-          return null;
-        }
-      }
-
-      debugPrint('✅ CacheService: 영속 캐시 히트 - $key');
-      return cacheData['data'] as Map<String, dynamic>;
-    } catch (e) {
-      debugPrint('❌ CacheService: 영속 캐시 파싱 오류 - $key: $e');
-      await _prefs!.remove(key);
-      return null;
-    }
-  }
-
-  /// 영속 캐시에서 객체 조회 (JSON 역직렬화)
-  Future<T?> getPersistentCacheObject<T>(
-    String key, {
-    required T Function(Map<String, dynamic>) fromJson,
-  }) async {
-    final data = await getPersistentCache(key);
-    if (data == null) return null;
-
-    try {
-      return fromJson(data);
-    } catch (e) {
-      debugPrint('❌ CacheService: 객체 역직렬화 오류 - $key: $e');
-      await clearCache(key);
-      return null;
-    }
-  }
-
-  /// 특정 키 캐시 삭제
-  Future<void> clearCache(String key) async {
+  /// 캐시 무효화
+  void invalidateCache(String key) {
     _memoryCache.remove(key);
-    await initialize();
-    await _prefs!.remove(key);
-    debugPrint('🗑️ CacheService: 캐시 삭제 - $key');
   }
 
-  /// 모든 캐시 삭제
-  Future<void> clearAllCache() async {
-    _memoryCache.clear();
-    await initialize();
-    await _prefs!.clear();
-    debugPrint('🗑️ CacheService: 모든 캐시 삭제');
-  }
-
-  /// 메모리 캐시에서 만료된 항목 정리
-  void cleanupExpiredMemoryCache() {
-    final expiredKeys = <String>[];
-
-    for (final entry in _memoryCache.entries) {
-      if (entry.value.isExpired) {
-        expiredKeys.add(entry.key);
-      }
-    }
+  /// 만료된 메모리 캐시 정리
+  void cleanupExpiredCache() {
+    final expiredKeys = _memoryCache.entries
+        .where((entry) => entry.value.isExpired)
+        .map((entry) => entry.key)
+        .toList();
 
     for (final key in expiredKeys) {
       _memoryCache.remove(key);
-    }
-
-    if (expiredKeys.isNotEmpty) {
-      debugPrint('🧹 CacheService: 만료된 메모리 캐시 정리 - ${expiredKeys.length}개');
     }
   }
 }

@@ -26,7 +26,7 @@ class PetRegistrationLogic {
     String? petId, // 편집 모드용 petId
   }) async {
     // 폼 검증 전에 텍스트 컨트롤러와 state 동기화
-    debugPrint(
+    LoggerService.debug(
       '🔄 Synchronizing text controllers with state before validation',
     );
     controller.updatePetName(controller.petNameController.text);
@@ -39,23 +39,23 @@ class PetRegistrationLogic {
 
     // 폼 데이터 상태 디버깅
     final formData = controller.formData;
-    debugPrint('🔍 Form validation check:');
-    debugPrint(
+    LoggerService.debug('🔍 Form validation check:');
+    LoggerService.debug(
       '  - petName: "${formData.petName}" (empty: ${formData.petName.isEmpty})',
     );
-    debugPrint('  - birthDate: ${formData.birthDate}');
-    debugPrint('  - weight: ${formData.weight}');
-    debugPrint(
+    LoggerService.debug('  - birthDate: ${formData.birthDate}');
+    LoggerService.debug('  - weight: ${formData.weight}');
+    LoggerService.debug(
       '  - breed: "${formData.breed}" (empty: ${formData.breed.isEmpty})',
     );
-    debugPrint(
+    LoggerService.debug(
       '  - gender: "${formData.gender}" (empty: ${formData.gender.isEmpty})',
     );
-    debugPrint('  - petType: "${formData.petType}"');
+    LoggerService.debug('  - petType: "${formData.petType}"');
 
     // 폼 기본 검증
     if (!formKey.currentState!.validate()) {
-      debugPrint('❌ Form validation failed - basic form validation');
+      LoggerService.debug('❌ Form validation failed - basic form validation');
 
       // 구체적인 에러 메시지 생성
       final errors = <String>[];
@@ -75,18 +75,18 @@ class PetRegistrationLogic {
     // 품종 검증
     final breedValidation = controller.validateBreed();
     if (breedValidation != null) {
-      debugPrint('❌ Breed validation failed: $breedValidation');
+      LoggerService.debug('❌ Breed validation failed: $breedValidation');
       throw PetRegistrationException(breedValidation);
     }
 
     // 성별 검증
     final genderValidation = controller.validateGender();
     if (genderValidation != null) {
-      debugPrint('❌ Gender validation failed: $genderValidation');
+      LoggerService.debug('❌ Gender validation failed: $genderValidation');
       throw PetRegistrationException(genderValidation);
     }
 
-    debugPrint(
+    LoggerService.debug(
       '✅ All validations passed, proceeding with ${petId != null ? "update" : "registration"}',
     );
 
@@ -149,10 +149,10 @@ class PetRegistrationLogic {
     String? currentImagePath,
   }) async {
     try {
-      debugPrint(
+      LoggerService.debug(
         '🎯 PetRegistrationLogic: selectPetImage called with currentImagePath: $currentImagePath',
       );
-      debugPrint(
+      LoggerService.debug(
         '🎯 PetRegistrationLogic: context.mounted: ${context.mounted}',
       );
 
@@ -162,26 +162,26 @@ class PetRegistrationLogic {
         currentImagePath: currentImagePath,
       );
 
-      debugPrint('🎯 PetRegistrationLogic: ImageService returned: $result');
+      LoggerService.debug('🎯 PetRegistrationLogic: ImageService returned: $result');
 
       if (result == null) {
-        debugPrint('🎯 PetRegistrationLogic: Result is null, returning null');
+        LoggerService.debug('🎯 PetRegistrationLogic: Result is null, returning null');
         return null;
       }
       if (result == 'REMOVE') {
-        debugPrint(
+        LoggerService.debug(
           '🎯 PetRegistrationLogic: Result is REMOVE, returning REMOVE',
         );
         return 'REMOVE';
       }
 
-      debugPrint(
+      LoggerService.debug(
         '🎯 PetRegistrationLogic: Result is valid image path, returning: $result',
       );
       return result;
     } catch (e, stackTrace) {
-      debugPrint('🎯 PetRegistrationLogic: Exception in selectPetImage: $e');
-      debugPrint('🎯 PetRegistrationLogic: Stack trace: $stackTrace');
+      LoggerService.debug('🎯 PetRegistrationLogic: Exception in selectPetImage: $e');
+      LoggerService.debug('🎯 PetRegistrationLogic: Stack trace: $stackTrace');
       return null;
     }
   }

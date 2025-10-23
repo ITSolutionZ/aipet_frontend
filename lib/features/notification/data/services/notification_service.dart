@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -40,7 +41,7 @@ class NotificationService {
     );
 
     if (kDebugMode) {
-      debugPrint('알림 서비스 초기화 완료');
+      LoggerService.debug('알림 서비스 초기화 완료');
     }
   }
 
@@ -91,7 +92,7 @@ class NotificationService {
     _notificationController.add(notification);
 
     if (kDebugMode) {
-      debugPrint('[$_tag] ✅ 알림 생성 완료: ${notification.title}');
+      LoggerService.debug('[$_tag] ✅ 알림 생성 완료: ${notification.title}');
     }
   }
 
@@ -127,7 +128,7 @@ class NotificationService {
       );
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('알림 목록 가져오기 실패: $e');
+        LoggerService.debug('알림 목록 가져오기 실패: $e');
       }
       return [];
     }
@@ -174,7 +175,7 @@ class NotificationService {
       return NotificationSettings.fromJson(settingsData);
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('알림 설정 가져오기 실패: $e');
+        LoggerService.debug('알림 설정 가져오기 실패: $e');
       }
       return const NotificationSettings();
     }
@@ -186,7 +187,7 @@ class NotificationService {
       await NotificationLocalStorageService.saveSettings(settings.toJson());
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('알림 설정 저장 실패: $e');
+        LoggerService.debug('알림 설정 저장 실패: $e');
       }
     }
   }

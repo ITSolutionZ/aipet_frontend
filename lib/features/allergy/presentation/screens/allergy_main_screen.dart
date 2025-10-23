@@ -157,12 +157,10 @@ class _AllergyMainScreenState extends ConsumerState<AllergyMainScreen> {
       );
     } else {
       // 분석 실패: 에러 메시지 표시
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(result.message),
-          backgroundColor: Colors.red,
-          duration: const Duration(seconds: 3),
-        ),
+      SnackBarService.showError(
+        context,
+        result.message,
+        duration: const Duration(seconds: 3),
       );
     }
   }

@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:aipet_frontend/features/walk/domain/entities/walk_location_entity.dart';
+import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
 
 /// 산책 기록 엔티티
 class WalkRecordEntity {
@@ -99,8 +100,9 @@ class WalkRecordEntity {
 
   /// UI에서 사용할 날짜 문자열
   String get dateString {
+    // ✅ DateTimeUtils 사용 (YYYY-MM-DD 형식)
     final date = startTime;
-    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+    return DateTimeUtils.formatDateKey(date);
   }
 
   /// 펫 이미지 경로 (기본값)
@@ -112,9 +114,8 @@ class WalkRecordEntity {
 
   /// 시간 문자열 (HH:MM 형식)
   String get timeString {
-    final hour = startTime.hour.toString().padLeft(2, '0');
-    final minute = startTime.minute.toString().padLeft(2, '0');
-    return '$hour:$minute';
+    // ✅ DateTimeUtils 사용
+    return DateTimeUtils.formatTime(startTime);
   }
 
   /// 전체 날짜시간 문자열
@@ -124,16 +125,13 @@ class WalkRecordEntity {
 
   /// 포맷된 거리 문자열
   String get formattedDistance {
-    final dist = calculatedDistance;
-    if (dist < 1000) {
-      return '${dist.toStringAsFixed(0)}m';
-    } else {
-      return '${(dist / 1000).toStringAsFixed(2)}km';
-    }
+    // ✅ DateTimeUtils 사용
+    return DateTimeUtils.formatDistance(calculatedDistance);
   }
 
   /// 포맷된 시간 문자열
   String get formattedDuration {
+    // ✅ DateTimeUtils 사용 (일본어 형식)
     final duration = calculatedDuration;
     final hours = duration.inHours;
     final minutes = duration.inMinutes % 60;

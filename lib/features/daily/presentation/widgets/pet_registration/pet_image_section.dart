@@ -21,7 +21,7 @@ class PetImageSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final hasImage = petImagePath != null && petImagePath!.isNotEmpty;
 
-    debugPrint(
+    LoggerService.debug(
       '🖼️ PetImageSection build - petImagePath: $petImagePath, hasImage: $hasImage',
     );
 
@@ -130,24 +130,24 @@ class PetImageSection extends StatelessWidget {
   }
 
   ImageProvider<Object> _getImageProvider(String path) {
-    debugPrint('🖼️ PetImageSection - path: $path');
+    LoggerService.debug('🖼️ PetImageSection - path: $path');
     
     // 상대 경로를 절대 경로로 변환
     final storageService = ImageStorageService();
     final absolutePath = storageService.getAbsolutePath(path) ?? path;
-    debugPrint('🖼️ PetImageSection - absolutePath: $absolutePath');
+    LoggerService.debug('🖼️ PetImageSection - absolutePath: $absolutePath');
     
     final imageType = ImageService.getImageType(absolutePath);
-    debugPrint('🖼️ PetImageSection - imageType: $imageType');
+    LoggerService.debug('🖼️ PetImageSection - imageType: $imageType');
     
     switch (imageType) {
       case ImageType.file:
         final file = File(absolutePath);
         final fileExists = file.existsSync();
-        debugPrint('🖼️ PetImageSection - File exists: $fileExists');
+        LoggerService.debug('🖼️ PetImageSection - File exists: $fileExists');
         
         if (!fileExists) {
-          debugPrint('❌ PetImageSection - File does not exist: $absolutePath');
+          LoggerService.debug('❌ PetImageSection - File does not exist: $absolutePath');
           return const AssetImage('assets/icons/logos/aipet_logo.png');
         }
         return FileImage(file);
