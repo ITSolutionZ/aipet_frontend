@@ -1,9 +1,10 @@
 import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../../../shared/core/api/api_client.dart';
 import '../../../../shared/core/data/result_types.dart';
 import '../../../../shared/core/domain/common_errors.dart';
-import '../../../../shared/core/domain/result.dart';
 import '../../../../shared/core/services/secure_storage_service.dart';
 import '../models/auth_models.dart';
 import 'api_auth_service.dart';
