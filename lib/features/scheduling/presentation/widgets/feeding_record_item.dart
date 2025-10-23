@@ -1,6 +1,7 @@
 import 'package:aipet_frontend/shared/design/design.dart';
 import 'package:flutter/material.dart';
 
+import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
 class FeedingRecordItem extends StatelessWidget {
   final dynamic record;
 
@@ -70,6 +71,6 @@ class FeedingRecordItem extends StatelessWidget {
   }
 
   String _formatTime(DateTime time) {
-    return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
+    return DateTimeUtils.formatTime(time);
   }
 }

@@ -17,11 +17,11 @@ class AiSuggestedQuestions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // 디버그: 질문 목록 확인
-    debugPrint(
+    LoggerService.debug(
       'AiSuggestedQuestions: Building with ${questions.length} questions',
     );
     for (int i = 0; i < questions.length; i++) {
-      debugPrint(
+      LoggerService.debug(
         'Question $i: "${questions[i].question}" (icon: ${questions[i].icon})',
       );
     }
@@ -45,7 +45,7 @@ class AiSuggestedQuestions extends StatelessWidget {
             children: questions.map((question) {
               return GestureDetector(
                 onTap: () {
-                  debugPrint('Question tapped: "${question.question}"');
+                  LoggerService.debug('Question tapped: "${question.question}"');
                   onQuestionTap(question.question);
                 },
                 child: Container(

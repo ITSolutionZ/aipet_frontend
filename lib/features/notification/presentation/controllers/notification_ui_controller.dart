@@ -1,5 +1,6 @@
 import 'package:aipet_frontend/app/controllers/base_controller.dart';
 import 'package:aipet_frontend/features/notification/data/providers/notification_controller_providers.dart';
+import 'package:aipet_frontend/shared/core/services/snackbar_service.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -148,40 +149,37 @@ class NotificationUIController extends BaseController {
   }
 
   /// 성공 메시지 표시
+  /// ✅ Shared SnackBarService 사용
   void showSuccessSnackBar(BuildContext context, String message) {
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: Colors.green,
-          duration: const Duration(seconds: 2),
-        ),
+      SnackBarService.showSuccess(
+        context,
+        message,
+        duration: const Duration(seconds: 2),
       );
     }
   }
 
   /// 에러 메시지 표시
+  /// ✅ Shared SnackBarService 사용
   void showErrorSnackBar(BuildContext context, String message) {
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: Colors.red,
-          duration: const Duration(seconds: 3),
-        ),
+      SnackBarService.showError(
+        context,
+        message,
+        duration: const Duration(seconds: 3),
       );
     }
   }
 
   /// 경고 메시지 표시
+  /// ✅ Shared SnackBarService 사용
   void showWarningSnackBar(BuildContext context, String message) {
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: Colors.orange,
-          duration: const Duration(seconds: 2),
-        ),
+      SnackBarService.showWarning(
+        context,
+        message,
+        duration: const Duration(seconds: 2),
       );
     }
   }

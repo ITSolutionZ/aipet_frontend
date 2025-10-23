@@ -1,7 +1,7 @@
-import 'package:aipet_frontend/features/walk/domain/services/walk_error_handler.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
 
 /// 위치 서비스 에러 경계 위젯
 class LocationErrorBoundary extends ConsumerWidget {
@@ -28,9 +28,10 @@ class LocationErrorBoundary extends ConsumerWidget {
     VoidCallback? onRetry,
     VoidCallback? onSettings,
   }) async {
-    final errorMessage = WalkErrorHandler.getLocationErrorMessage(error);
-    final userAction = WalkErrorHandler.getUserActionSuggestion(error);
-    final severity = WalkErrorHandler.getErrorSeverity(error);
+    // ✅ Shared 모듈 사용: 에러 메시지 생성
+    final errorMessage = _getLocationErrorMessage(error);
+    final userAction = _getUserActionSuggestion(error);
+    final severity = _getErrorSeverity(error);
 
     await showDialog<void>(
       context: context,
@@ -123,8 +124,9 @@ class LocationErrorBoundary extends ConsumerWidget {
     dynamic error, {
     VoidCallback? onRetry,
   }) {
-    final errorMessage = WalkErrorHandler.getLocationErrorMessage(error);
-    final severity = WalkErrorHandler.getErrorSeverity(error);
+    // ✅ Shared 모듈 사용
+    final errorMessage = _getLocationErrorMessage(error);
+    final severity = _getErrorSeverity(error);
 
     if (severity == WalkErrorSeverity.critical) {
       // 치명적 에러는 다이얼로그로 표시
@@ -167,9 +169,10 @@ class LocationErrorBoundary extends ConsumerWidget {
     VoidCallback? onRetry,
     VoidCallback? onSettings,
   }) {
-    final errorMessage = WalkErrorHandler.getLocationErrorMessage(error);
-    final userAction = WalkErrorHandler.getUserActionSuggestion(error);
-    final severity = WalkErrorHandler.getErrorSeverity(error);
+    // ✅ Shared 모듈 사용
+    final errorMessage = _getLocationErrorMessage(error);
+    final userAction = _getUserActionSuggestion(error);
+    final severity = _getErrorSeverity(error);
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -286,4 +289,75 @@ class LocationErrorBoundary extends ConsumerWidget {
     return errorString.contains('permission') ||
         errorString.contains('location service');
   }
+
+  // ===================================================================
+  // ✅ Walk feature 특화 에러 메시지 헬퍼 (Shared ErrorHandlingService 기반)
+  // ===================================================================
+
+  /// 위치 관련 에러 메시지 생성
+  static String _getLocationErrorMessage(dynamic error) {
+    if (error is LocationServiceDisabledException) {
+      return '位置サービスが無効になっています。設定で有効にしてください。';
+    } else if (error is PermissionDeniedException) {
+      return '位置情報の権限が拒否されました。設定で権限を許可してください。';
+    } else if (error.toString().contains('Location permission denied')) {
+      return '位置情報の権限が必要です。設定で権限を許可してください。';
+    } else if (error.toString().contains(
+      'Location permission permanently denied',
+    )) {
+      return '位置情報の権限が永続的に拒否されています。設定アプリで権限を許可してください。';
+    } else if (error.toString().contains('Location service disabled')) {
+      return '位置サービスが無効になっています。設定で有効にしてください。';
+    } else {
+      // 기본 에러 메시지
+      return '位置情報の取得に失敗しました: ${error.toString()}';
+    }
+  }
+
+  /// 사용자 액션 제안 메시지 생성
+  static String _getUserActionSuggestion(dynamic error) {
+    final errorString = error.toString().toLowerCase();
+
+    if (errorString.contains('permission')) {
+      return '設定アプリで位置情報の権限を確認してください。';
+    } else if (errorString.contains('location service')) {
+      return '設定で位置サービスを有効にしてください。';
+    } else if (errorString.contains('network')) {
+      return 'Wi-Fiまたはモバイル通信の接続を確認してください。';
+    } else if (errorString.contains('battery')) {
+      return 'デバイスを充電することをお勧めします。';
+    } else if (errorString.contains('storage')) {
+      return 'ストレージ容量を確保してください。';
+    } else {
+      return 'アプリを再起動するか、しばらく時間をおいてから再試行してください。';
+    }
+  }
+
+  /// 에러 심각도 판별
+  static WalkErrorSeverity _getErrorSeverity(dynamic error) {
+    final errorString = error.toString().toLowerCase();
+
+    if (errorString.contains('permanently denied') ||
+        errorString.contains('location service disabled')) {
+      return WalkErrorSeverity.critical;
+    } else if (errorString.contains('permission denied') ||
+        errorString.contains('network') ||
+        errorString.contains('api_key')) {
+      return WalkErrorSeverity.high;
+    } else if (errorString.contains('timeout') ||
+        errorString.contains('storage') ||
+        errorString.contains('battery')) {
+      return WalkErrorSeverity.medium;
+    } else {
+      return WalkErrorSeverity.low;
+    }
+  }
+}
+
+/// 에러 심각도 레벨 (Walk feature 전용)
+enum WalkErrorSeverity {
+  low, // 낮음: 일반적인 에러, 재시도 가능
+  medium, // 중간: 사용자 개입 필요할 수 있음
+  high, // 높음: 기능 제한됨, 사용자 액션 필요
+  critical, // 치명적: 핵심 기능 불가, 즉시 해결 필요
 }

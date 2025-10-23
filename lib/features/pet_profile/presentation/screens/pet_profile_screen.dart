@@ -143,17 +143,17 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
   }
 
   Widget _buildBody(BuildContext context, PetProfileUnifiedState state) {
-    debugPrint(
+    LoggerService.debug(
       '🔍 PetProfileScreen _buildBody: isLoading=${state.isLoading}, errorMessage=${state.errorMessage}, selectedPet=${state.selectedPet?.name}',
     );
 
     if (state.isLoading) {
-      debugPrint('🔍 Showing loading widget');
+      LoggerService.debug('🔍 Showing loading widget');
       return const _LoadingWidget();
     }
 
     if (state.errorMessage != null) {
-      debugPrint('🔍 Showing error widget: ${state.errorMessage}');
+      LoggerService.debug('🔍 Showing error widget: ${state.errorMessage}');
       return _ErrorWidget(
         error: state.errorMessage!,
         onRetry: () => _loadPetProfile(),
@@ -161,11 +161,11 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
     }
 
     if (state.selectedPet == null) {
-      debugPrint('🔍 Showing pet not found widget');
+      LoggerService.debug('🔍 Showing pet not found widget');
       return const _PetNotFoundWidget();
     }
 
-    debugPrint(
+    LoggerService.debug(
       '🔍 Showing pet profile content for: ${state.selectedPet!.name}',
     );
 
@@ -268,7 +268,7 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
       context: context,
       builder: (context) => AlertDialog(
         title: const Text(PetProfileConstants.deleteConfirmDialogTitle),
-        content: const Text(PetProfileConstants.deleteConfirmMessage),
+        content: const Text('このペットを削除してもよろしいですか？'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -297,21 +297,12 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
           .deletePetProfile();
 
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(PetProfileConstants.deleteSuccessMessage),
-          ),
-        );
+        SnackBarService.showSuccess(context, AppTexts.deleted);
         context.go('/home');
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(PetProfileConstants.deleteErrorMessage),
-            backgroundColor: AppColors.pointRed,
-          ),
-        );
+        SnackBarService.showError(context, 'ペットの削除に失敗しました');
       }
     }
   }
@@ -330,7 +321,7 @@ class _LoadingWidget extends StatelessWidget {
           CircularProgressIndicator(color: AppColors.pointBrown),
           SizedBox(height: AppSpacing.md),
           Text(
-            PetProfileConstants.loadingMessage,
+            AppTexts.loading,
             style: TextStyle(color: AppColors.textSecondary),
           ),
         ],
@@ -355,7 +346,7 @@ class _ErrorWidget extends StatelessWidget {
           const Icon(Icons.error_outline, size: 64, color: AppColors.pointRed),
           const SizedBox(height: AppSpacing.lg),
           Text(
-            PetProfileConstants.errorMessage,
+            'エラーが発生しました',
             style: AppFonts.headlineSmall.copyWith(
               color: AppColors.pointDark,
               fontWeight: FontWeight.w600,

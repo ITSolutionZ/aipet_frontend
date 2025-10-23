@@ -29,14 +29,14 @@ class ApiAuthService extends BaseRemoteDataSource<AuthUserModel> {
       );
 
       if (response.data == null) {
-        return Failure(UnknownError(details: 'Empty response data'));
+        return ResultState.failure(UnknownError(details: 'Empty response data'));
       }
 
       final tokenData = response.data!['data'] ?? response.data!;
       final token = AuthTokenModel.fromJson(tokenData);
       return Success(token);
     } catch (e) {
-      return Failure(ApiErrorHandler.handleError(e));
+      return ResultState.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -56,14 +56,14 @@ class ApiAuthService extends BaseRemoteDataSource<AuthUserModel> {
       );
 
       if (response.data == null) {
-        return Failure(UnknownError(details: 'Empty response data'));
+        return ResultState.failure(UnknownError(details: 'Empty response data'));
       }
 
       final tokenData = response.data!['data'] ?? response.data!;
       final token = AuthTokenModel.fromJson(tokenData);
       return Success(token);
     } catch (e) {
-      return Failure(ApiErrorHandler.handleError(e));
+      return ResultState.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -75,14 +75,14 @@ class ApiAuthService extends BaseRemoteDataSource<AuthUserModel> {
       );
 
       if (response.data == null) {
-        return Failure(UnknownError(details: 'Empty response data'));
+        return ResultState.failure(UnknownError(details: 'Empty response data'));
       }
 
       final tokenData = response.data!['data'] ?? response.data!;
       final token = AuthTokenModel.fromJson(tokenData);
       return Success(token);
     } catch (e) {
-      return Failure(ApiErrorHandler.handleError(e));
+      return ResultState.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -91,7 +91,7 @@ class ApiAuthService extends BaseRemoteDataSource<AuthUserModel> {
       await apiClient.post(ApiEndpoints.logout);
       return const Success(null);
     } catch (e) {
-      return Failure(ApiErrorHandler.handleError(e));
+      return ResultState.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -100,14 +100,14 @@ class ApiAuthService extends BaseRemoteDataSource<AuthUserModel> {
       final response = await apiClient.get<Map<String, dynamic>>('/auth/me');
 
       if (response.data == null) {
-        return Failure(UnknownError(details: 'Empty response data'));
+        return ResultState.failure(UnknownError(details: 'Empty response data'));
       }
 
       final userData = response.data!['data'] ?? response.data!;
       final user = AuthUserModel.fromJson(userData);
       return Success(user);
     } catch (e) {
-      return Failure(ApiErrorHandler.handleError(e));
+      return ResultState.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -116,7 +116,7 @@ class ApiAuthService extends BaseRemoteDataSource<AuthUserModel> {
       await apiClient.post('/auth/password-reset', data: {'email': email});
       return const Success(null);
     } catch (e) {
-      return Failure(ApiErrorHandler.handleError(e));
+      return ResultState.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -125,7 +125,7 @@ class ApiAuthService extends BaseRemoteDataSource<AuthUserModel> {
       await apiClient.post('/auth/email-verification');
       return const Success(null);
     } catch (e) {
-      return Failure(ApiErrorHandler.handleError(e));
+      return ResultState.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -143,14 +143,14 @@ class ApiAuthService extends BaseRemoteDataSource<AuthUserModel> {
       );
 
       if (response.data == null) {
-        return Failure(UnknownError(details: 'Empty response data'));
+        return ResultState.failure(UnknownError(details: 'Empty response data'));
       }
 
       final userData = response.data!['data'] ?? response.data!;
       final user = AuthUserModel.fromJson(userData);
       return Success(user);
     } catch (e) {
-      return Failure(ApiErrorHandler.handleError(e));
+      return ResultState.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -159,7 +159,7 @@ class ApiAuthService extends BaseRemoteDataSource<AuthUserModel> {
       await apiClient.delete('/auth/account');
       return const Success(null);
     } catch (e) {
-      return Failure(ApiErrorHandler.handleError(e));
+      return ResultState.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -179,14 +179,14 @@ class ApiAuthService extends BaseRemoteDataSource<AuthUserModel> {
       );
 
       if (response.data == null) {
-        return Failure(UnknownError(details: 'Empty response data'));
+        return ResultState.failure(UnknownError(details: 'Empty response data'));
       }
 
       final tokenData = response.data!['data'] ?? response.data!;
       final token = AuthTokenModel.fromJson(tokenData);
       return Success(token);
     } catch (e) {
-      return Failure(ApiErrorHandler.handleError(e));
+      return ResultState.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -200,14 +200,14 @@ class ApiAuthService extends BaseRemoteDataSource<AuthUserModel> {
       );
 
       if (response.data == null) {
-        return Failure(UnknownError(details: 'Empty response data'));
+        return ResultState.failure(UnknownError(details: 'Empty response data'));
       }
 
       final tokenData = response.data!['data'] ?? response.data!;
       final token = AuthTokenModel.fromJson(tokenData);
       return Success(token);
     } catch (e) {
-      return Failure(ApiErrorHandler.handleError(e));
+      return ResultState.failure(ApiErrorHandler.handleError(e));
     }
   }
 }

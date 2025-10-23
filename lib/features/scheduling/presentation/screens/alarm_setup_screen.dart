@@ -244,7 +244,7 @@ class _AlarmSetupScreenState extends ConsumerState<AlarmSetupScreen> {
           Expanded(
             child: Center(
               child: Text(
-                value.toString().padLeft(2, '0'),
+                DateTimeUtils.formatTwoDigits(value),
                 style: const TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.w600,
@@ -653,12 +653,8 @@ class _AlarmSetupScreenState extends ConsumerState<AlarmSetupScreen> {
 
   Future<void> _saveAlarm() async {
     if (_selectedPet == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('ペットを選択してください'),
-          backgroundColor: AppColors.pointRed,
-        ),
-      );
+      // ✅ Shared SnackBarService 사용
+      SnackBarService.showWarning(context, 'ペットを選択してください');
       return;
     }
 
@@ -703,22 +699,14 @@ class _AlarmSetupScreenState extends ConsumerState<AlarmSetupScreen> {
       await CalendarEventService.instance.saveCalendarEvent(event);
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('アラームが保存されました'),
-            backgroundColor: AppColors.pointGreen,
-          ),
-        );
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showSuccess(context, 'アラームが保存されました');
         context.pop();
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('アラーム保存に失敗しました: $e'),
-            backgroundColor: AppColors.pointRed,
-          ),
-        );
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showError(context, 'アラーム保存に失敗しました: $e');
       }
     }
   }

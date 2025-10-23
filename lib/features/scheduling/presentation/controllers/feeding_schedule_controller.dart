@@ -194,7 +194,8 @@ class FeedingScheduleController extends BaseController {
 
   /// 시간 포맷팅
   String formatTime(int hour, int minute) {
-    return '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
+    final dateTime = DateTime(2000, 1, 1, hour, minute);
+    return DateTimeUtils.formatTime(dateTime);
   }
 
   /// 급여량 포맷팅

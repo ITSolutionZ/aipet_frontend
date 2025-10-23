@@ -181,15 +181,13 @@ class DailyHealthInputScreen extends ConsumerWidget {
     }
   }
 
+  /// ✅ Shared SnackBarService 사용
   void _showSuccessMessage(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: AppColors.pointGreen),
-    );
+    SnackBarService.showSuccess(context, message);
   }
 
+  /// ✅ Shared SnackBarService 사용
   void _showErrorMessage(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: AppColors.pointRed),
-    );
+    SnackBarService.showError(context, message);
   }
 }

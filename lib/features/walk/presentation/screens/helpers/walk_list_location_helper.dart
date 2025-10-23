@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/features/walk/presentation/widgets/map_widget.dart';
+import 'package:aipet_frontend/shared/core/services/snackbar_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,7 +18,7 @@ class WalkListLocationHelper {
       final mapController = ref.read(globalMapControllerProvider);
 
       if (mapController == null) {
-        debugPrint('❌ 지도 컨트롤러가 아직 초기화되지 않았습니다');
+        LoggerService.debug('❌ 지도 컨트롤러가 아직 초기화되지 않았습니다');
         if (context.mounted) {
           _showLocationErrorSnackBar(context, message: '地図が読み込まれていません');
         }
@@ -37,7 +38,7 @@ class WalkListLocationHelper {
             },
           );
 
-      debugPrint('📍 현재 위치: ${position.latitude}, ${position.longitude}');
+      LoggerService.debug('📍 현재 위치: ${position.latitude}, ${position.longitude}');
 
       // 지도 카메라를 현재 위치로 이동
       await mapController.animateCamera(
@@ -53,7 +54,7 @@ class WalkListLocationHelper {
         _showLocationSuccessSnackBar(context);
       }
     } catch (e) {
-      debugPrint('❌ 현재 위치 이동 에러: $e');
+      LoggerService.debug('❌ 현재 위치 이동 에러: $e');
       if (context.mounted) {
         _showLocationErrorSnackBar(context, message: '現在地の取得に失敗しました');
       }
@@ -62,12 +63,10 @@ class WalkListLocationHelper {
 
   /// 위치 성공 스낵바
   static void _showLocationSuccessSnackBar(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('現在地に移動しました'),
-        backgroundColor: AppColors.pointGreen,
-        duration: Duration(seconds: 1),
-      ),
+    SnackBarService.showSuccess(
+      context,
+      '現在地に移動しました',
+      duration: const Duration(seconds: 1),
     );
   }
 
@@ -76,8 +75,6 @@ class WalkListLocationHelper {
     BuildContext context, {
     required String message,
   }) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: AppColors.pointPink),
-    );
+    SnackBarService.showError(context, message);
   }
 }

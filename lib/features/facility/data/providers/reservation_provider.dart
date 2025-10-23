@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
 import 'package:aipet_frontend/shared/core/services/secure_storage_service.dart';
 import 'package:flutter/foundation.dart';
@@ -151,7 +152,7 @@ class ReservationsNotifier extends _$ReservationsNotifier {
       return [];
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('예약 정보 로드 실패: $e');
+        LoggerService.debug('예약 정보 로드 실패: $e');
       }
       return [];
     }
@@ -223,7 +224,7 @@ class ReservationsNotifier extends _$ReservationsNotifier {
       await SecureStorageService.setString(storageKey, reservationsJsonString);
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('예약 정보 저장 실패: $e');
+        LoggerService.debug('예약 정보 저장 실패: $e');
       }
     }
   }

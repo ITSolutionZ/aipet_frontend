@@ -33,9 +33,7 @@ class _ContactFormScreenState extends ConsumerState<ContactFormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const SoftGradientAppBar(
-        title: 'お問い合わせ',
-      ),
+      appBar: const SoftGradientAppBar(title: 'お問い合わせ'),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: Form(
@@ -327,16 +325,8 @@ class _ContactFormScreenState extends ConsumerState<ContactFormScreen> {
       await Future.delayed(const Duration(seconds: 2)); // シミュレーション
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text('お問い合わせを送信しました'),
-            backgroundColor: AppColors.pointGreen,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppSpacing.sm),
-            ),
-          ),
-        );
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showSuccess(context, 'お問い合わせを送信しました');
 
         // フォームをリセット
         _formKey.currentState!.reset();
@@ -350,16 +340,8 @@ class _ContactFormScreenState extends ConsumerState<ContactFormScreen> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text('送信に失敗しました。もう一度お試しください'),
-            backgroundColor: AppColors.pointPink,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppSpacing.sm),
-            ),
-          ),
-        );
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showError(context, '送信に失敗しました。もう一度お試しください');
       }
     } finally {
       if (mounted) {

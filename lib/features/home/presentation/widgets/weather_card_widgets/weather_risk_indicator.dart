@@ -30,19 +30,19 @@ class _WeatherRiskIndicatorState extends State<WeatherRiskIndicator> {
   /// OpenAI API를 통해 동적 어드바이스 생성
   Future<void> _generateAdvice() async {
     try {
-      debugPrint('🤖 Starting weather advice generation...');
+      LoggerService.debug('🤖 Starting weather advice generation...');
 
       final advice = await _adviceService
           .generateWalkingAdvice(widget.weather)
           .timeout(
             const Duration(seconds: 3),
             onTimeout: () {
-              debugPrint('⏰ Weather advice generation timed out (3s)');
+              LoggerService.debug('⏰ Weather advice generation timed out (3s)');
               throw Exception('Timeout');
             },
           );
 
-      debugPrint('✅ Weather advice generated: $advice');
+      LoggerService.debug('✅ Weather advice generated: $advice');
 
       if (mounted) {
         setState(() {
@@ -51,7 +51,7 @@ class _WeatherRiskIndicatorState extends State<WeatherRiskIndicator> {
         });
       }
     } catch (e) {
-      debugPrint('❌ Weather advice generation failed: $e');
+      LoggerService.debug('❌ Weather advice generation failed: $e');
 
       if (mounted) {
         setState(() {

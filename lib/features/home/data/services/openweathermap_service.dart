@@ -1,6 +1,5 @@
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 
 import '../../domain/domain.dart';
 
@@ -54,7 +53,7 @@ class OpenWeatherMapService {
         }
       } catch (e) {
         // UV데이터 실패時は기본값 사용
-        debugPrint('UV Index取得失敗: $e');
+        LoggerService.debug('UV Index取得失敗: $e');
         uvIndex = 0.0;
       }
 
@@ -67,7 +66,7 @@ class OpenWeatherMapService {
 
       return Result.success('天気情報を取得しました', weatherEntity);
     } on DioException catch (e) {
-      debugPrint('OpenWeatherMap API Error (Dio): ${e.message}');
+      LoggerService.debug('OpenWeatherMap API Error (Dio): ${e.message}');
 
       if (e.type == DioExceptionType.connectionTimeout ||
           e.type == DioExceptionType.receiveTimeout) {
@@ -97,7 +96,7 @@ class OpenWeatherMapService {
         );
       }
     } catch (e) {
-      debugPrint('OpenWeatherMap API Error: $e');
+      LoggerService.debug('OpenWeatherMap API Error: $e');
       return Result.failure(
         '予期しないエラーが発生しました',
         e is Exception ? e : Exception(e.toString()),

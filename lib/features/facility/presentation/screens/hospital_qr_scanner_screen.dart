@@ -1,6 +1,7 @@
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
 import 'package:go_router/go_router.dart';
 
 class HospitalQrScannerScreen extends ConsumerStatefulWidget {
@@ -159,11 +160,10 @@ class _HospitalQrScannerScreenState
             child: IconButton(
               onPressed: () {
                 // 플래시 토글 기능 (모의)
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('フラッシュ機能（開発中）'),
-                    duration: Duration(seconds: 1),
-                  ),
+                SnackBarService.showInfo(
+                  context,
+                  'フラッシュ機能（開発中）',
+                  duration: const Duration(seconds: 1),
                 );
               },
               icon: const Icon(Icons.flash_off, color: Colors.white, size: 30),
@@ -182,7 +182,7 @@ class _HospitalQrScannerScreenState
       'queueNumber':
           'A-${DateTime.now().millisecond.toString().padLeft(3, '0')}',
       'reservationTime':
-          '${DateTime.now().hour}:${DateTime.now().minute.toString().padLeft(2, '0')}',
+          DateTimeUtils.formatTime(DateTime.now()),
       'waitingCount': 3,
     };
 

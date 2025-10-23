@@ -1,11 +1,15 @@
 import 'dart:convert';
 
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-/// 예약 데이터 로컬 저장소 서비스
 class ReservationLocalStorageService {
   static const String _keyReservations = 'reservations';
+  // ✅ SharedPreferences 인스턴스 재사용
+  static final _cache = CacheService();
+  static Future<void> _init() async {
+    await _cache.initialize();
+  }
 
   /// 예약 상태 상수
   static const String pending = 'pending';
@@ -15,8 +19,8 @@ class ReservationLocalStorageService {
 
   /// 모든 예약 조회
   static Future<List<Map<String, dynamic>>> getReservations() async {
-    final prefs = await SharedPreferences.getInstance();
-    final jsonString = prefs.getString(_keyReservations);
+    await _init();
+    final jsonString = _cache.getString(_keyReservations);
 
     if (jsonString == null) {
       // 초기 데이터 설정
@@ -118,7 +122,7 @@ class ReservationLocalStorageService {
   static Future<void> _saveReservations(
     List<Map<String, dynamic>> reservations,
   ) async {
-    final prefs = await SharedPreferences.getInstance();
+    await _init();
 
     // DateTime을 ISO8601 문자열로 변환
     final serializedList = reservations.map((reservation) {
@@ -142,7 +146,7 @@ class ReservationLocalStorageService {
     }).toList();
 
     final jsonString = jsonEncode(serializedList);
-    await prefs.setString(_keyReservations, jsonString);
+    await _cache.setString(_keyReservations, jsonString);
   }
 
   /// 초기 예약 데이터 설정
@@ -185,8 +189,8 @@ class ReservationLocalStorageService {
 
   /// 모든 예약 데이터 삭제
   static Future<void> clearAllReservations() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_keyReservations);
+    await _init();
+    await _cache.removeKey(_keyReservations);
   }
 
   /// 상태 표시 이름 반환
@@ -209,15 +213,15 @@ class ReservationLocalStorageService {
   static Color getStatusColor(String status) {
     switch (status) {
       case pending:
-        return const Color(0xFFFF9500); // 오렌지
+        return AppColors.pointOrange; // 오렌지
       case confirmed:
-        return const Color(0xFF34C759); // 그린
+        return AppColors.pointGreen; // 그린
       case cancelled:
-        return const Color(0xFFFF3B30); // 레드
+        return AppColors.pointRed; // 레드
       case completed:
-        return const Color(0xFF007AFF); // 블루
+        return AppColors.pointBlue; // 블루
       default:
-        return const Color(0xFF8E8E93); // 그레이
+        return AppColors.pointGray; // 그레이
     }
   }
 

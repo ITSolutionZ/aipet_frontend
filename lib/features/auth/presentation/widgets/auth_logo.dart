@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
 class AuthLogo extends StatelessWidget {
   const AuthLogo({
@@ -31,8 +32,8 @@ class AuthLogo extends StatelessWidget {
           height: height,
           fit: BoxFit.contain,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('AuthLogo: Failed to load image: $imagePath');
-            debugPrint('AuthLogo: Error: $error');
+            LoggerService.debug('AuthLogo: Failed to load image: $imagePath');
+            LoggerService.debug('AuthLogo: Error: $error');
             return Container(
               width: width,
               height: height,

@@ -1,6 +1,7 @@
 import 'package:aipet_frontend/features/pet_health/data/services/pet_health_local_storage_service.dart';
 import 'package:aipet_frontend/shared/design/design.dart';
 import 'package:flutter/material.dart';
+import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -431,6 +432,6 @@ class _WeightRecordsCardState extends ConsumerState<WeightRecordsCard> {
   }
 
   String _formatDate(DateTime date) {
-    return '${date.year}/${date.month.toString().padLeft(2, '0')}/${date.day.toString().padLeft(2, '0')}';
+    return DateTimeUtils.formatDateSlash(date);
   }
 }

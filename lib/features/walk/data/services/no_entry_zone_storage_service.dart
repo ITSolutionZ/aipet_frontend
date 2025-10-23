@@ -1,18 +1,24 @@
 import 'dart:convert';
 
 import 'package:aipet_frontend/features/walk/domain/entities/no_entry_zone_entity.dart';
-import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
+import 'package:aipet_frontend/shared/services/cache_service.dart';
 
 /// 금지구역 로컬 저장소 서비스
 class NoEntryZoneStorageService {
   static const String _storageKey = 'no_entry_zones';
 
+  // ✅ SharedPreferences 인스턴스 재사용
+  static final _cache = CacheService();
+  static Future<void> _init() async {
+    await _cache.initialize();
+  }
+
   /// 모든 금지구역 로드
   static Future<List<NoEntryZone>> loadNoEntryZones() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final jsonString = prefs.getString(_storageKey);
+      await _init();
+      final jsonString = _cache.getString(_storageKey);
 
       if (jsonString == null || jsonString.isEmpty) {
         return [];
@@ -23,7 +29,7 @@ class NoEntryZoneStorageService {
           .map((item) => NoEntryZone.fromJson(item as Map<String, dynamic>))
           .toList();
     } catch (e) {
-      debugPrint('금지구역 로드 실패: $e');
+      LoggerService.debug('금지구역 로드 실패: $e');
       return [];
     }
   }
@@ -35,7 +41,7 @@ class NoEntryZoneStorageService {
       zones.add(zone);
       await _saveZones(zones);
     } catch (e) {
-      debugPrint('금지구역 추가 실패: $e');
+      LoggerService.debug('금지구역 추가 실패: $e');
     }
   }
 
@@ -46,28 +52,28 @@ class NoEntryZoneStorageService {
       zones.removeWhere((zone) => zone.id == zoneId);
       await _saveZones(zones);
     } catch (e) {
-      debugPrint('금지구역 삭제 실패: $e');
+      LoggerService.debug('금지구역 삭제 실패: $e');
     }
   }
 
   /// 모든 금지구역 삭제
   static Future<void> clearNoEntryZones() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.remove(_storageKey);
+      await _init();
+      await _cache.removeKey(_storageKey);
     } catch (e) {
-      debugPrint('금지구역 초기화 실패: $e');
+      LoggerService.debug('금지구역 초기화 실패: $e');
     }
   }
 
   /// 금지구역 저장
   static Future<void> _saveZones(List<NoEntryZone> zones) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final jsonList = zones.map((zone) => zone.toJson()).toList();
-      await prefs.setString(_storageKey, jsonEncode(jsonList));
+      await _cache.setString(_storageKey, jsonEncode(jsonList));
     } catch (e) {
-      debugPrint('금지구역 저장 실패: $e');
+      LoggerService.debug('금지구역 저장 실패: $e');
     }
   }
 

@@ -155,7 +155,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
       final currentValue = isMinute
           ? _selectedTime.minute
           : (_selectedTime.hour % 12 == 0 ? 12 : _selectedTime.hour % 12);
-      controller.text = currentValue.toString().padLeft(2, '0');
+      controller.text = DateTimeUtils.formatTwoDigits(currentValue);
       setState(() {
         if (isMinute) {
           _isEditingMinute = false;
@@ -163,12 +163,8 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
           _isEditingHour = false;
         }
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('$min から $max の間で入力してください'),
-          backgroundColor: AppColors.pointRed,
-        ),
-      );
+      // ✅ Shared SnackBarService 사용
+      SnackBarService.showWarning(context, '$min から $max の間で入力してください');
     }
   }
 
@@ -823,22 +819,14 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
 
   Future<void> _saveEvent() async {
     if (_selectedPet == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('ペットを選択してください'),
-          backgroundColor: AppColors.pointRed,
-        ),
-      );
+      // ✅ Shared SnackBarService 사용
+      SnackBarService.showWarning(context, 'ペットを選択してください');
       return;
     }
 
     if (_eventName.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('イベント名を入力してください'),
-          backgroundColor: AppColors.pointRed,
-        ),
-      );
+      // ✅ Shared SnackBarService 사용
+      SnackBarService.showWarning(context, 'イベント名を入力してください');
       return;
     }
 
@@ -886,23 +874,15 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
       await CalendarEventService.instance.saveCalendarEvent(event);
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('イベントが保存されました'),
-            backgroundColor: AppColors.pointGreen,
-          ),
-        );
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showSuccess(context, 'イベントが保存されました');
         // 캘린더 화면으로 돌아가면서 이벤트 새로고침을 위한 결과 전달
         context.pop(true);
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('イベントの保存に失敗しました: $e'),
-            backgroundColor: AppColors.pointRed,
-          ),
-        );
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showError(context, 'イベントの保存に失敗しました: $e');
       }
     }
   }
@@ -952,7 +932,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
           },
           onTap: () {
             // When tapping the TextField, ensure it's pre-filled with the current value
-            controller.text = value.toString().padLeft(2, '0');
+            controller.text = DateTimeUtils.formatTwoDigits(value);
             controller.selection = TextSelection(
               baseOffset: 0,
               extentOffset: controller.text.length,
@@ -967,11 +947,11 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
           setState(() {
             if (isMinute) {
               _isEditingMinute = true;
-              _minuteController.text = value.toString().padLeft(2, '0');
+              _minuteController.text = DateTimeUtils.formatTwoDigits(value);
               _minuteFocusNode.requestFocus(); // Request focus
             } else {
               _isEditingHour = true;
-              _hourController.text = value.toString().padLeft(2, '0');
+              _hourController.text = DateTimeUtils.formatTwoDigits(value);
               _hourFocusNode.requestFocus(); // Request focus
             }
           });
@@ -980,7 +960,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
           padding: const EdgeInsets.symmetric(vertical: 8),
           child: Center(
             child: Text(
-              value.toString().padLeft(2, '0'),
+              DateTimeUtils.formatTwoDigits(value),
               style: const TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w600,

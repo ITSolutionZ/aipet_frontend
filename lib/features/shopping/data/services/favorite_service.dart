@@ -1,19 +1,24 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
+import 'package:aipet_frontend/shared/services/cache_service.dart';
 
 import '../models/favorite_product_model.dart';
 
 /// お気に入り管理サービス
 class FavoriteService {
   static const String _key = 'favorite_products';
+  // ✅ SharedPreferences 인스턴스 재사용
+  static final _cache = CacheService();
+  static Future<void> _init() async {
+    await _cache.initialize();
+  }
 
   /// お気に入り商品を全て取得
   Future<List<FavoriteProduct>> getFavoriteProducts() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final String? jsonString = prefs.getString(_key);
+      await _init();
+      final String? jsonString = _cache.getString(_key);
 
       if (jsonString == null || jsonString.isEmpty) {
         return [];
@@ -27,10 +32,10 @@ class FavoriteService {
       // 追加日時の新しい順にソート
       products.sort((a, b) => b.addedAt.compareTo(a.addedAt));
 
-      debugPrint('✅ Loaded ${products.length} favorite products');
+      LoggerService.debug('✅ Loaded ${products.length} favorite products');
       return products;
     } catch (e) {
-      debugPrint('⚠️ Failed to load favorite products: $e');
+      LoggerService.debug('⚠️ Failed to load favorite products: $e');
       return [];
     }
   }
@@ -42,7 +47,9 @@ class FavoriteService {
 
       // 既に存在するかチェック
       if (products.any((p) => p.itemCode == product.itemCode)) {
-        debugPrint('⚠️ Product already in favorites: ${product.itemName}');
+        LoggerService.debug(
+          '⚠️ Product already in favorites: ${product.itemName}',
+        );
         return false;
       }
 
@@ -52,10 +59,10 @@ class FavoriteService {
       // 保存
       await _saveProducts(products);
 
-      debugPrint('✅ Added to favorites: ${product.itemName}');
+      LoggerService.debug('✅ Added to favorites: ${product.itemName}');
       return true;
     } catch (e) {
-      debugPrint('❌ Failed to add favorite product: $e');
+      LoggerService.debug('❌ Failed to add favorite product: $e');
       return false;
     }
   }
@@ -70,17 +77,17 @@ class FavoriteService {
       products.removeWhere((p) => p.itemCode == itemCode);
 
       if (products.length == initialLength) {
-        debugPrint('⚠️ Product not found in favorites: $itemCode');
+        LoggerService.debug('⚠️ Product not found in favorites: $itemCode');
         return false;
       }
 
       // 保存
       await _saveProducts(products);
 
-      debugPrint('✅ Removed from favorites: $itemCode');
+      LoggerService.debug('✅ Removed from favorites: $itemCode');
       return true;
     } catch (e) {
-      debugPrint('❌ Failed to remove favorite product: $e');
+      LoggerService.debug('❌ Failed to remove favorite product: $e');
       return false;
     }
   }
@@ -91,7 +98,7 @@ class FavoriteService {
       final products = await getFavoriteProducts();
       return products.any((p) => p.itemCode == itemCode);
     } catch (e) {
-      debugPrint('⚠️ Failed to check favorite status: $e');
+      LoggerService.debug('⚠️ Failed to check favorite status: $e');
       return false;
     }
   }
@@ -99,22 +106,22 @@ class FavoriteService {
   /// お気に入りをすべてクリア
   Future<bool> clearAllFavorites() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.remove(_key);
-      debugPrint('✅ Cleared all favorites');
+      await _init();
+      await _cache.removeKey(_key);
+      LoggerService.debug('✅ Cleared all favorites');
       return true;
     } catch (e) {
-      debugPrint('❌ Failed to clear favorites: $e');
+      LoggerService.debug('❌ Failed to clear favorites: $e');
       return false;
     }
   }
 
   /// 商品リストを保存
   Future<void> _saveProducts(List<FavoriteProduct> products) async {
-    final prefs = await SharedPreferences.getInstance();
+    await _init();
     final jsonList = products.map((p) => p.toJson()).toList();
     final jsonString = json.encode(jsonList);
-    await prefs.setString(_key, jsonString);
-    debugPrint('💾 Saved ${products.length} favorite products');
+    await _cache.setString(_key, jsonString);
+    LoggerService.debug('💾 Saved ${products.length} favorite products');
   }
 }

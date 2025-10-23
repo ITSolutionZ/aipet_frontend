@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/features/pet_profile/presentation/logic/pet_profile_logic.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -83,7 +84,7 @@ class PetProfileUnifiedController extends _$PetProfileUnifiedController {
   Future<void> loadPetProfile(String petId) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
 
-    debugPrint('🔍 Loading pet profile with ID: $petId');
+    LoggerService.debug('🔍 Loading pet profile with ID: $petId');
 
     try {
       final result = await _logic.loadPetProfile(petId);
@@ -91,7 +92,7 @@ class PetProfileUnifiedController extends _$PetProfileUnifiedController {
       if (result.isSuccess) {
         final pet = result.dataOrNull;
         if (pet != null) {
-          debugPrint('✅ Pet profile loaded successfully: ${pet.name}');
+          LoggerService.debug('✅ Pet profile loaded successfully: ${pet.name}');
           // 펫 선택 후 로딩 상태 해제
           state = state.copyWith(
             selectedPet: pet,
@@ -100,18 +101,18 @@ class PetProfileUnifiedController extends _$PetProfileUnifiedController {
             errorMessage: null,
           );
         } else {
-          debugPrint('❌ Pet not found with ID: $petId');
+          LoggerService.debug('❌ Pet not found with ID: $petId');
           state = state.copyWith(
             isLoading: false,
             errorMessage: 'ペットが見つかりません (ID: $petId)',
           );
         }
       } else {
-        debugPrint('❌ Failed to load pet profile: ${result.message}');
+        LoggerService.debug('❌ Failed to load pet profile: ${result.message}');
         state = state.copyWith(isLoading: false, errorMessage: result.message);
       }
     } catch (e) {
-      debugPrint('❌ Exception while loading pet profile: $e');
+      LoggerService.debug('❌ Exception while loading pet profile: $e');
       state = state.copyWith(
         isLoading: false,
         errorMessage: 'ペット情報の読み込み中にエラーが発生しました: ${e.toString()}',
@@ -268,8 +269,8 @@ class PetProfileUnifiedController extends _$PetProfileUnifiedController {
 
   /// 편집 폼 데이터 초기화
   Map<String, dynamic> _initializeEditFormData(PetProfileEntity pet) {
-    debugPrint('📋 Initializing edit form data for pet: ${pet.name}');
-    debugPrint('📋 additionalInfo: ${pet.additionalInfo}');
+    LoggerService.debug('📋 Initializing edit form data for pet: ${pet.name}');
+    LoggerService.debug('📋 additionalInfo: ${pet.additionalInfo}');
 
     return {
       'name': pet.name,
@@ -297,9 +298,9 @@ class PetProfileUnifiedController extends _$PetProfileUnifiedController {
     final pet = state.selectedPet!;
     final formData = state.editFormData;
 
-    debugPrint('🔄 Building updated pet from form data');
-    debugPrint('📋 Form data keys: ${formData.keys.toList()}');
-    debugPrint('📋 forbiddenIngredients: ${formData['forbiddenIngredients']}');
+    LoggerService.debug('🔄 Building updated pet from form data');
+    LoggerService.debug('📋 Form data keys: ${formData.keys.toList()}');
+    LoggerService.debug('📋 forbiddenIngredients: ${formData['forbiddenIngredients']}');
 
     // 기존 additionalInfo의 모든 필드를 보존
     final updatedAdditionalInfo = Map<String, dynamic>.from(
@@ -319,7 +320,7 @@ class PetProfileUnifiedController extends _$PetProfileUnifiedController {
         updatedAdditionalInfo['forbiddenIngredients'] = List<String>.from(
           forbiddenIngredients.whereType<String>(),
         );
-        debugPrint(
+        LoggerService.debug(
           '✅ forbiddenIngredients updated: ${updatedAdditionalInfo['forbiddenIngredients']}',
         );
       } else if (forbiddenIngredients == null ||
@@ -343,7 +344,7 @@ class PetProfileUnifiedController extends _$PetProfileUnifiedController {
       }
     }
 
-    debugPrint('✅ Updated additionalInfo: $updatedAdditionalInfo');
+    LoggerService.debug('✅ Updated additionalInfo: $updatedAdditionalInfo');
 
     return pet.copyWith(
       name: formData['name'] as String? ?? pet.name,

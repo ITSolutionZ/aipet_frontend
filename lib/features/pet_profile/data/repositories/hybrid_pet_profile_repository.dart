@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:aipet_frontend/shared/domain/entities/pet_profile_entity.dart';
@@ -286,7 +287,7 @@ class HybridPetProfileRepository implements PetProfileRepository {
   Future<void> _invalidateCache() async {
     try {
       final cacheService = CacheService();
-      await cacheService.clearCache('synced_pet_profiles');
+      await cacheService.removeKey('synced_pet_profiles');
     } catch (e) {
       // Ignore cache errors
     }
@@ -297,14 +298,13 @@ class HybridPetProfileRepository implements PetProfileRepository {
       final allPetsResult = await _localRepository.getAllPets();
       if (allPetsResult.isSuccess) {
         final cacheService = CacheService();
-        await cacheService.setPersistentCacheObject(
+        final cacheData = {
+          'pets': allPetsResult.dataOrNull!.map((pet) => pet.toJson()).toList(),
+          'last_sync': DateTime.now().toIso8601String(),
+        };
+        await cacheService.setString(
           'synced_pet_profiles',
-          allPetsResult.dataOrNull!,
-          ttl: const Duration(hours: 24),
-          toJson: (pets) => {
-            'pets': pets.map((pet) => pet.toJson()).toList(),
-            'last_sync': DateTime.now().toIso8601String(),
-          },
+          jsonEncode(cacheData),
         );
       }
     } catch (e) {

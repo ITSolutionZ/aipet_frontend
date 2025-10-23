@@ -1,5 +1,6 @@
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
+import 'package:aipet_frontend/shared/services/cache_service.dart';
 import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'helpers/helpers.dart';
 
@@ -7,6 +8,8 @@ import 'helpers/helpers.dart';
 ///
 /// 급여 기록을 SharedPreferences에 저장/관리합니다
 class PetFeedingLocalStorageService {
+  static final _cache = CacheService();
+
   // ========== 급여 기록 관련 메서드 (헬퍼 위임) ==========
 
   /// 급여 기록 가져오기 (헬퍼 위임)
@@ -105,15 +108,15 @@ class PetFeedingLocalStorageService {
   /// 모든 데이터 초기화
   static Future<void> clearAllData() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.remove('pet_feeding_records');
-      await prefs.remove('pet_recipes');
+      await _cache.initialize();
+      await _cache.removeKey('pet_feeding_records');
+      await _cache.removeKey('pet_recipes');
 
       if (kDebugMode) {
-        debugPrint('모든 급여 데이터 초기화 완료');
+        LoggerService.debug('모든 급여 데이터 초기화 완료');
       }
     } catch (e) {
-      debugPrint('데이터 초기화 실패: $e');
+      LoggerService.debug('데이터 초기화 실패: $e');
       rethrow;
     }
   }

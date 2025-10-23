@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
 import 'package:aipet_frontend/features/notification/domain/entities/notification_model.dart';
 import 'package:flutter/foundation.dart';
@@ -36,7 +37,7 @@ class NotificationResponseHelper {
       }
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('[$_tag] ❌ 알림 응답 처리 실패: $e');
+        LoggerService.debug('[$_tag] ❌ 알림 응답 처리 실패: $e');
       }
     }
   }

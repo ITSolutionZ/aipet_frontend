@@ -5,9 +5,15 @@ import 'package:aipet_frontend/features/settings/domain/entities/settings_entity
 import 'package:aipet_frontend/features/settings/domain/repositories/settings_repository.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+/// 설정 Repository 구현체
+/// Hybrid 패턴: 로컬 저장소 + CacheService를 사용하여 설정 관리
 class SettingsRepositoryImpl implements SettingsRepository {
+  static final _cache = CacheService();
+  static Future<void> _init() async {
+    await _cache.initialize();
+  }
+
   // LocalUserService 인스턴스 (사용자 프로필용)
   final LocalUserService _userService = LocalUserService();
 
@@ -46,6 +52,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
       final profile = await _userService.loadUserProfile();
 
       if (profile != null) {
+        LoggerService.debug('✅ SettingsRepository: 사용자 프로필 조회 성공');
         return Result.success('ユーザープロフィールを取得しました', profile);
       }
 
@@ -54,8 +61,10 @@ class SettingsRepositoryImpl implements SettingsRepository {
         userName: _defaultUserProfile['name'] as String,
         email: _defaultUserProfile['email'] as String,
       );
+      LoggerService.debug('✅ SettingsRepository: 기본 프로필 생성');
       return Result.success('デフォルトプロフィールを取得しました', defaultProfile);
     } catch (e) {
+      LoggerService.debug('❌ SettingsRepository: 프로필 조회 실패 - $e');
       return Result.failure('プロフィールの取得に失敗しました: ${e.toString()}');
     }
   }
@@ -66,8 +75,10 @@ class SettingsRepositoryImpl implements SettingsRepository {
   ) async {
     try {
       await _userService.saveUserProfile(profile);
+      LoggerService.debug('✅ SettingsRepository: 프로필 업데이트 완료');
       return Result.success('プロフィールが更新されました', profile);
     } catch (e) {
+      LoggerService.debug('❌ SettingsRepository: 프로필 업데이트 실패 - $e');
       return Result.failure('プロフィールの更新に失敗しました: ${e.toString()}');
     }
   }
@@ -81,8 +92,8 @@ class SettingsRepositoryImpl implements SettingsRepository {
       }
 
       // 로컬에서 비밀번호 변경 처리 (실제로는 암호화 필요)
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(_keyUserPassword, request.newPassword);
+      await _init();
+      await _cache.setString(_keyUserPassword, request.newPassword);
 
       return Result.success('パスワードが変更されました', null);
     } catch (e) {
@@ -93,17 +104,19 @@ class SettingsRepositoryImpl implements SettingsRepository {
   @override
   Future<Result<void>> deleteAccount() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
 
       // 사용자 관련 모든 데이터 삭제
-      await prefs.remove(_keyUserProfile);
-      await prefs.remove(_keyAppSettings);
-      await prefs.remove(_keyUserPassword);
-      await prefs.remove(_keyCacheSize);
-      await prefs.remove(_keyExportedData);
+      await _cache.removeKey(_keyUserProfile);
+      await _cache.removeKey(_keyAppSettings);
+      await _cache.removeKey(_keyUserPassword);
+      await _cache.removeKey(_keyCacheSize);
+      await _cache.removeKey(_keyExportedData);
 
+      LoggerService.debug('✅ SettingsRepository: 계정 삭제 완료');
       return Result.success('アカウントが削除されました', null);
     } catch (e) {
+      LoggerService.debug('❌ SettingsRepository: 계정 삭제 실패 - $e');
       return Result.failure('アカウントの削除に失敗しました: ${e.toString()}');
     }
   }
@@ -111,8 +124,8 @@ class SettingsRepositoryImpl implements SettingsRepository {
   @override
   Future<Result<AppSettingsEntity>> getAppSettings() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final settingsJson = prefs.getString(_keyAppSettings);
+      await _init();
+      final settingsJson = _cache.getString(_keyAppSettings);
 
       if (settingsJson != null) {
         final settingsMap = jsonDecode(settingsJson) as Map<String, dynamic>;
@@ -130,6 +143,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
             orElse: () => DataSyncFrequency.daily,
           ),
         );
+        LoggerService.debug('✅ SettingsRepository: 앱 설정 조회 성공');
         return Result.success('アプリ設定を取得しました', settings);
       }
 
@@ -144,8 +158,10 @@ class SettingsRepositoryImpl implements SettingsRepository {
         syncFrequency:
             _defaultAppSettings['syncFrequency'] as DataSyncFrequency,
       );
+      LoggerService.debug('✅ SettingsRepository: 기본 설정 사용');
       return Result.success('デフォルト設定を取得しました', defaultSettings);
     } catch (e) {
+      LoggerService.debug('❌ SettingsRepository: 앱 설정 조회 실패 - $e');
       return Result.failure('アプリ設定の取得に失敗しました: ${e.toString()}');
     }
   }
@@ -155,7 +171,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
     AppSettingsEntity settings,
   ) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final settingsMap = {
         'language': settings.language,
         'theme': settings.theme.name,
@@ -165,7 +181,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
         'syncFrequency': settings.syncFrequency.name,
       };
 
-      await prefs.setString(_keyAppSettings, jsonEncode(settingsMap));
+      await _cache.setString(_keyAppSettings, jsonEncode(settingsMap));
       return Result.success('アプリ設定が保存されました', settings);
     } catch (e) {
       return Result.failure('アプリ設定の保存に失敗しました: ${e.toString()}');
@@ -175,25 +191,27 @@ class SettingsRepositoryImpl implements SettingsRepository {
   @override
   Future<Result<DataExportResult>> exportAppData() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
 
       // 모든 설정 데이터 수집
       final exportData = {
-        'userProfile': prefs.getString(_keyUserProfile),
-        'appSettings': prefs.getString(_keyAppSettings),
+        'userProfile': _cache.getString(_keyUserProfile),
+        'appSettings': _cache.getString(_keyAppSettings),
         'exportedAt': DateTime.now().toIso8601String(),
       };
 
       // SharedPreferences에 임시 저장
-      await prefs.setString(_keyExportedData, jsonEncode(exportData));
+      await _cache.setString(_keyExportedData, jsonEncode(exportData));
 
       final exportResult = DataExportResult(
         success: true,
         filePath: 'local://exported_data.json',
         exportedAt: DateTime.now(),
       );
+      LoggerService.debug('✅ SettingsRepository: 앱 데이터 내보내기 완료');
       return Result.success('アプリデータがエクスポートされました', exportResult);
     } catch (e) {
+      LoggerService.debug('❌ SettingsRepository: 앱 데이터 내보내기 실패 - $e');
       return Result.failure('アプリデータのエクスポートに失敗しました: ${e.toString()}');
     }
   }
@@ -201,8 +219,8 @@ class SettingsRepositoryImpl implements SettingsRepository {
   @override
   Future<Result<void>> importAppData(String filePath) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final exportedDataJson = prefs.getString(_keyExportedData);
+      await _init();
+      final exportedDataJson = _cache.getString(_keyExportedData);
 
       if (exportedDataJson != null) {
         final exportedData =
@@ -210,17 +228,26 @@ class SettingsRepositoryImpl implements SettingsRepository {
 
         // 데이터 복원
         if (exportedData['userProfile'] != null) {
-          await prefs.setString(_keyUserProfile, exportedData['userProfile']);
+          await _cache.setString(
+            _keyUserProfile,
+            exportedData['userProfile'] as String,
+          );
         }
         if (exportedData['appSettings'] != null) {
-          await prefs.setString(_keyAppSettings, exportedData['appSettings']);
+          await _cache.setString(
+            _keyAppSettings,
+            exportedData['appSettings'] as String,
+          );
         }
 
+        LoggerService.debug('✅ SettingsRepository: 앱 데이터 가져오기 완료');
         return Result.success('アプリデータがインポートされました', null);
       }
 
+      LoggerService.debug('⚠️ SettingsRepository: 가져올 데이터 없음');
       return Result.failure('インポートするデータが見つかりません');
     } catch (e) {
+      LoggerService.debug('❌ SettingsRepository: 앱 데이터 가져오기 실패 - $e');
       return Result.failure('アプリデータのインポートに失敗しました: ${e.toString()}');
     }
   }
@@ -228,14 +255,16 @@ class SettingsRepositoryImpl implements SettingsRepository {
   @override
   Future<Result<void>> clearAppCache() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
 
       // 캐시 관련 데이터만 삭제 (사용자 데이터는 유지)
-      await prefs.remove(_keyCacheSize);
-      await prefs.remove(_keyExportedData);
+      await _cache.removeKey(_keyCacheSize);
+      await _cache.removeKey(_keyExportedData);
 
+      LoggerService.debug('✅ SettingsRepository: 캐시 클리어 완료');
       return Result.success('キャッシュがクリアされました', null);
     } catch (e) {
+      LoggerService.debug('❌ SettingsRepository: 캐시 클리어 실패 - $e');
       return Result.failure('キャッシュのクリアに失敗しました: ${e.toString()}');
     }
   }
@@ -243,19 +272,27 @@ class SettingsRepositoryImpl implements SettingsRepository {
   @override
   Future<Result<int>> getCacheSize() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final cachedSize = prefs.getInt(_keyCacheSize);
+      await _init();
+      final cachedSizeStr = _cache.getString(_keyCacheSize);
 
-      if (cachedSize != null) {
+      if (cachedSizeStr != null) {
+        final cachedSize = int.tryParse(cachedSizeStr) ?? 0;
+        LoggerService.debug(
+          '✅ SettingsRepository: 캐시 크기 조회 - ${cachedSize}bytes',
+        );
         return Result.success('キャッシュサイズを取得しました', cachedSize);
       }
 
       // 기본 캐시 크기 계산 (실제로는 파일 시스템에서 계산)
       const defaultSize = 1024 * 1024 * 5; // 5MB
-      await prefs.setInt(_keyCacheSize, defaultSize);
+      await _cache.setString(_keyCacheSize, defaultSize.toString());
 
+      LoggerService.debug(
+        '✅ SettingsRepository: 기본 캐시 크기 설정 - ${defaultSize}bytes',
+      );
       return Result.success('デフォルトキャッシュサイズを取得しました', defaultSize);
     } catch (e) {
+      LoggerService.debug('❌ SettingsRepository: 캐시 크기 조회 실패 - $e');
       return Result.failure('キャッシュサイズの取得に失敗しました: ${e.toString()}');
     }
   }
@@ -267,7 +304,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
     String? detailAddress,
   }) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final locationMap = {
         'postalCode': postalCode,
         'address': address,
@@ -275,9 +312,11 @@ class SettingsRepositoryImpl implements SettingsRepository {
         'savedAt': DateTime.now().toIso8601String(),
       };
 
-      await prefs.setString(_keyUserLocation, jsonEncode(locationMap));
+      await _cache.setString(_keyUserLocation, jsonEncode(locationMap));
+      LoggerService.debug('✅ SettingsRepository: 사용자 위치 저장 완료');
       return Result.success('位置情報を保存しました');
     } catch (e) {
+      LoggerService.debug('❌ SettingsRepository: 사용자 위치 저장 실패 - $e');
       return Result.failure('位置情報の保存に失敗しました: ${e.toString()}');
     }
   }
@@ -285,16 +324,19 @@ class SettingsRepositoryImpl implements SettingsRepository {
   @override
   Future<Result<Map<String, dynamic>>> getUserLocation() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final locationJson = prefs.getString(_keyUserLocation);
+      await _init();
+      final locationJson = _cache.getString(_keyUserLocation);
 
       if (locationJson != null) {
         final locationMap = jsonDecode(locationJson) as Map<String, dynamic>;
+        LoggerService.debug('✅ SettingsRepository: 사용자 위치 조회 성공');
         return Result.success('位置情報を取得しました', locationMap);
       }
 
+      LoggerService.debug('⚠️ SettingsRepository: 저장된 위치 정보 없음');
       return Result.failure('保存された位置情報がありません');
     } catch (e) {
+      LoggerService.debug('❌ SettingsRepository: 사용자 위치 조회 실패 - $e');
       return Result.failure('位置情報の取得に失敗しました: ${e.toString()}');
     }
   }

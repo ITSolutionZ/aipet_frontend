@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -108,8 +109,8 @@ class AllergyAnalysisController extends _$AllergyAnalysisController {
       );
     } catch (error, stackTrace) {
       if (kDebugMode) {
-        debugPrint('アレルギー分析エラー: $error');
-        debugPrint('StackTrace: $stackTrace');
+        LoggerService.debug('アレルギー分析エラー: $error');
+        LoggerService.debug('StackTrace: $stackTrace');
       }
       state = state.copyWith(
         isLoading: false,
@@ -145,7 +146,7 @@ class AllergyAnalysisController extends _$AllergyAnalysisController {
       );
     } catch (error) {
       if (kDebugMode) {
-        debugPrint('제품 추천 에러: $error');
+        LoggerService.debug('제품 추천 에러: $error');
       }
       state = state.copyWith(
         isLoading: false,
@@ -183,7 +184,7 @@ class AllergyAnalysisController extends _$AllergyAnalysisController {
       }
     } catch (error) {
       if (kDebugMode) {
-        debugPrint('제품 안전성 재평가 에러: $error');
+        LoggerService.debug('제품 안전성 재평가 에러: $error');
       }
       state = state.copyWith(
         isLoading: false,
@@ -208,7 +209,7 @@ class AllergyAnalysisController extends _$AllergyAnalysisController {
       );
     } catch (error) {
       if (kDebugMode) {
-        debugPrint('제품 비교 분석 에러: $error');
+        LoggerService.debug('제품 비교 분석 에러: $error');
       }
       state = state.copyWith(error: '제품 비교 분석 중 오류가 발생했습니다.');
       return null;

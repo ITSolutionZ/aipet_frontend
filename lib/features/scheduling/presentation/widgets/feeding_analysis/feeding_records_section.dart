@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+// ✅ Removed SharedPreferences
 
 /// 급여 기록 섹션
 class FeedingRecordsSection extends StatelessWidget {
@@ -119,7 +119,7 @@ class FeedingRecordsSection extends StatelessWidget {
                       ),
                     ),
                     subtitle: Text(
-                      '${selectedDate.year}/${selectedDate.month.toString().padLeft(2, '0')}/${selectedDate.day.toString().padLeft(2, '0')}',
+                      DateTimeUtils.formatDateSlash(selectedDate),
                       style: AppFonts.bodyMedium,
                     ),
                     trailing: IconButton(
@@ -182,21 +182,25 @@ class FeedingRecordsSection extends StatelessWidget {
               onPressed: () async {
                 if (amountController.text.isNotEmpty) {
                   // 로컬 데이터로 저장
-                  final prefs = await SharedPreferences.getInstance();
+                  final cache = CacheService();
+                  await cache.initialize();
 
                   final feedingRecord = {
                     'id': DateTime.now().millisecondsSinceEpoch.toString(),
                     'amount': '${amountController.text}g',
-                    'date':
-                        '${selectedDate.year}/${selectedDate.month.toString().padLeft(2, '0')}/${selectedDate.day.toString().padLeft(2, '0')}',
+                    'date': DateTimeUtils.formatDateSlash(selectedDate),
                     'note': noteController.text,
                     'timestamp': selectedDate.toIso8601String(),
                     'change': '+0g', // 변화량은 별도 계산 로직 필요
                   };
 
-                  final records = prefs.getStringList('feeding_records') ?? [];
+                  final records =
+                      cache.getPersistentCacheList('feeding_records') ?? [];
                   records.add(jsonEncode(feedingRecord));
-                  await prefs.setStringList('feeding_records', records);
+                  await cache.setPersistentCacheList(
+                    'feeding_records',
+                    records,
+                  );
 
                   SnackBarService.showSuccess(context, '食事記録が追加されました。');
                   amountController.dispose();

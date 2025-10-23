@@ -28,38 +28,35 @@ class WalkCalendarDialogHelper {
   }
 
   /// 삭제 성공 스낵바
+  /// ✅ Shared SnackBarService 사용
   static void showDeleteSuccessSnackBar(
     BuildContext context,
     int deletedCount,
   ) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('古い散歩記録を$deletedCount件削除しました'),
-        backgroundColor: AppColors.pointGreen,
-        duration: const Duration(seconds: 3),
-      ),
+    SnackBarService.showSuccess(
+      context,
+      '古い散歩記録を$deletedCount件削除しました',
+      duration: const Duration(seconds: 3),
     );
   }
 
   /// 삭제할 기록 없음 스낵바
+  /// ✅ Shared SnackBarService 사용
   static void showNoRecordsToDeleteSnackBar(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('削除する古い記録はありません'),
-        backgroundColor: AppColors.pointBlue,
-        duration: Duration(seconds: 2),
-      ),
+    SnackBarService.showInfo(
+      context,
+      '削除する古い記録はありません',
+      duration: const Duration(seconds: 2),
     );
   }
 
   /// 삭제 에러 스낵바
+  /// ✅ Shared SnackBarService 사용
   static void showDeleteErrorSnackBar(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('削除中にエラーが発生しました'),
-        backgroundColor: AppColors.pointPink,
-        duration: Duration(seconds: 3),
-      ),
+    SnackBarService.showError(
+      context,
+      '削除中にエラーが発生しました',
+      duration: const Duration(seconds: 3),
     );
   }
 }

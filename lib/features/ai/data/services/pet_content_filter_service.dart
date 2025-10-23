@@ -1,12 +1,12 @@
 import 'package:aipet_frontend/app/config/app_config.dart';
-import 'package:dio/dio.dart';
+import 'package:aipet_frontend/shared/core/services/ai_http_client_service.dart';
 
 import '../../domain/domain.dart';
-import 'ai_dio_service.dart';
 
 /// 펫 관련 콘텐츠 필터링 서비스
 class PetContentFilterService {
-  final AiDioService _dioService;
+  // ✅ Shared AiHttpClientService 사용
+  final AiHttpClientService _httpClient;
 
   // 펫 관련 키워드 목록
   List<String> get _petKeywords => AiKeywords.petRelated;
@@ -14,11 +14,8 @@ class PetContentFilterService {
   // 제외할 키워드
   List<String> get _excludeKeywords => AiKeywords.excluded;
 
-  PetContentFilterService({AiDioService? dioService})
-    : _dioService = dioService ?? AiDioService.instance;
-
-  /// Dio 인스턴스 가져오기
-  Dio get _dio => _dioService.createOpenAIDio();
+  PetContentFilterService({AiHttpClientService? httpClient})
+    : _httpClient = httpClient ?? AiHttpClientService();
 
   /// 메시지가 펫 관련 질문인지 검증
   Future<PetContentValidationResult> validatePetContent(String message) async {
@@ -96,35 +93,35 @@ class PetContentFilterService {
 
   /// AI 기반 검증 (GPT-3.5-turbo 사용)
   Future<PetContentValidationResult> _validateByAI(String message) async {
-    final apiKey = AppConfig.current.openaiApiKey;
-
-    final response = await _dio
-        .post(
-          '/chat/completions',
-          options: Options(headers: {'Authorization': 'Bearer $apiKey'}),
-          data: {
-            'model': AiApiConstants.openaiModel,
-            'messages': [
-              {
-                'role': 'system',
-                'content':
-                    '''あなたはユーザーのメッセージが**反\u200bりょう動物（ペット）**に関する内容かを判定する分類器です（日本語対応）。
+    // ✅ Shared AiHttpClientService 사용
+    final response = await _httpClient.callOpenAI<Map<String, dynamic>>(
+      '/chat/completions',
+      data: {
+        'model': AiApiConstants.openaiModel,
+        'messages': [
+          {
+            'role': 'system',
+            'content':
+                '''あなたはユーザーのメッセージが**反\u200bりょう動物（ペット）**に関する内容かを判定する分類器です（日本語対応）。
 判定基準:
 - ペットの健康・行動・しつけ/訓練・ケア・フード/トイレ/用品・病院/獣医・予防接種・グルーミング等なら "YES"
 - 政治・経済・芸能・ゲーム・料理などペットと無関係なら "NO"
 - 文脈上ペットの可能性があるが不明確なら "MAYBE"
 
 出力は **YES / NO / MAYBE** のいずれか**1語のみ**。余計な説明を出力しないこと。''',
-              },
-              {'role': 'user', 'content': message},
-            ],
-            'max_tokens': AiApiConstants.contentFilterMaxTokens,
-            'temperature': AiApiConstants.contentFilterTemperature,
           },
-        )
-        .timeout(AiApiConstants.contentFilterTimeout);
+          {'role': 'user', 'content': message},
+        ],
+        'max_tokens': AiApiConstants.contentFilterMaxTokens,
+        'temperature': AiApiConstants.contentFilterTemperature,
+      },
+    );
 
-    final aiResponse = response.data['choices'][0]['message']['content']
+    if (!response.isSuccess || response.data == null) {
+      throw Exception('AIによる検証に失敗しました');
+    }
+
+    final aiResponse = response.data!['choices'][0]['message']['content']
         .toString()
         .trim()
         .toUpperCase();

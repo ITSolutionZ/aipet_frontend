@@ -1,5 +1,5 @@
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:aipet_frontend/shared/services/cache_service.dart';
-import 'package:flutter/material.dart';
 
 /// 홈 화면 전용 캐시 관리자
 ///
@@ -15,19 +15,19 @@ class HomeCacheManager {
   ///
   /// 사용자가 Pull-to-Refresh를 수행하거나 특정 데이터 변경 시 호출
   Future<void> refreshHomeDashboard() async {
-    debugPrint('🔄 HomeCacheManager: 홈 대시보드 캐시 새로고침');
+    LoggerService.debug('🔄 HomeCacheManager: 홈 대시보드 캐시 새로고침');
 
     // 홈 관련 모든 캐시 삭제
     await Future.wait([
-      _cacheService.clearCache(CacheKeys.homeDashboard),
-      _cacheService.clearCache(CacheKeys.weather),
-      _cacheService.clearCache(CacheKeys.petProfiles),
-      _cacheService.clearCache(CacheKeys.walkSummary),
-      _cacheService.clearCache(CacheKeys.healthSummary),
-      _cacheService.clearCache(CacheKeys.appointments),
+      _cacheService.removeKey(CacheKeys.homeDashboard),
+      _cacheService.removeKey(CacheKeys.weather),
+      _cacheService.removeKey(CacheKeys.petProfiles),
+      _cacheService.removeKey(CacheKeys.walkSummary),
+      _cacheService.removeKey(CacheKeys.healthSummary),
+      _cacheService.removeKey(CacheKeys.appointments),
     ]);
 
-    debugPrint('✅ HomeCacheManager: 홈 대시보드 캐시 새로고침 완료');
+    LoggerService.debug('✅ HomeCacheManager: 홈 대시보드 캐시 새로고침 완료');
   }
 
   /// 특정 데이터 캐시 무효화
@@ -60,39 +60,36 @@ class HomeCacheManager {
         break;
     }
 
-    await _cacheService.clearCache(cacheKey);
-    debugPrint('🗑️ HomeCacheManager: $description 캐시 무효화');
+    await _cacheService.removeKey(cacheKey);
+    LoggerService.debug('🗑️ HomeCacheManager: $description 캐시 무효화');
 
     // 홈 대시보드 캐시도 함께 무효화 (종속성 때문)
-    await _cacheService.clearCache(CacheKeys.homeDashboard);
-    debugPrint('🗑️ HomeCacheManager: 홈 대시보드 캐시도 무효화');
+    await _cacheService.removeKey(CacheKeys.homeDashboard);
+    LoggerService.debug('🗑️ HomeCacheManager: 홈 대시보드 캐시도 무효화');
   }
 
   /// 백그라운드 캐시 정리
   ///
   /// 앱이 백그라운드에서 포그라운드로 돌아왔을 때 호출
   Future<void> cleanupExpiredCache() async {
-    _cacheService.cleanupExpiredMemoryCache();
-    debugPrint('🧹 HomeCacheManager: 만료된 캐시 정리 완료');
+    _cacheService.cleanupExpiredCache();
+    LoggerService.debug('🧹 HomeCacheManager: 만료된 캐시 정리 완료');
   }
 
   /// 캐시 상태 확인 (디버그용)
   Map<String, bool> getCacheStatus() {
     return {
       'homeDashboard':
-          _cacheService.getMemoryCache<dynamic>(CacheKeys.homeDashboard) !=
-          null,
-      'weather':
-          _cacheService.getMemoryCache<dynamic>(CacheKeys.weather) != null,
+          _cacheService.getCache<dynamic>(CacheKeys.homeDashboard) != null,
+      'weather': _cacheService.getCache<dynamic>(CacheKeys.weather) != null,
       'petProfiles':
-          _cacheService.getMemoryCache<dynamic>(CacheKeys.petProfiles) != null,
+          _cacheService.getCache<dynamic>(CacheKeys.petProfiles) != null,
       'walkSummary':
-          _cacheService.getMemoryCache<dynamic>(CacheKeys.walkSummary) != null,
+          _cacheService.getCache<dynamic>(CacheKeys.walkSummary) != null,
       'healthSummary':
-          _cacheService.getMemoryCache<dynamic>(CacheKeys.healthSummary) !=
-          null,
+          _cacheService.getCache<dynamic>(CacheKeys.healthSummary) != null,
       'appointments':
-          _cacheService.getMemoryCache<dynamic>(CacheKeys.appointments) != null,
+          _cacheService.getCache<dynamic>(CacheKeys.appointments) != null,
     };
   }
 }

@@ -57,12 +57,7 @@ class LiveWalkDialogHelper {
             onPressed: () {
               Navigator.of(context).pop();
               onConfirm();
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('散歩が保存されました'),
-                  backgroundColor: AppColors.pointGreen,
-                ),
-              );
+              SnackBarService.showSuccess(context, '散歩が保存されました');
               context.pop();
             },
             style: ElevatedButton.styleFrom(

@@ -80,7 +80,7 @@ class AiFavoriteManager {
         }
 
         if (kDebugMode) {
-          debugPrint(
+          LoggerService.debug(
             '[$_tag] Removed $removeCount old favorites (limit: $maxFavorites)',
           );
         }
@@ -95,7 +95,7 @@ class AiFavoriteManager {
       );
 
       if (kDebugMode) {
-        debugPrint(
+        LoggerService.debug(
           '[$_tag] ⭐ Added to favorites: ${message.id} (total: ${updatedIds.length})',
         );
       }
@@ -103,7 +103,7 @@ class AiFavoriteManager {
       return Result.success(result.message, result);
     } catch (error, stackTrace) {
       if (kDebugMode) {
-        debugPrint('[$_tag] Error adding to favorites: $error\n$stackTrace');
+        LoggerService.debug('[$_tag] Error adding to favorites: $error\n$stackTrace');
       }
       return Result.failure('즐겨찾기 추가 중 오류 발생: $error');
     }
@@ -148,7 +148,7 @@ class AiFavoriteManager {
       );
 
       if (kDebugMode) {
-        debugPrint(
+        LoggerService.debug(
           '[$_tag] 💔 Removed from favorites: $messageId (remaining: ${updatedIds.length})',
         );
       }
@@ -156,7 +156,7 @@ class AiFavoriteManager {
       return Result.success(result.message, result);
     } catch (error, stackTrace) {
       if (kDebugMode) {
-        debugPrint(
+        LoggerService.debug(
           '[$_tag] Error removing from favorites: $error\n$stackTrace',
         );
       }
@@ -178,7 +178,7 @@ class AiFavoriteManager {
       );
 
       if (kDebugMode) {
-        debugPrint('[$_tag] 🗑️ All favorites cleared');
+        LoggerService.debug('[$_tag] 🗑️ All favorites cleared');
       }
 
       return Result.success(result.message, result);
@@ -228,7 +228,7 @@ class AiFavoriteManager {
       filteredList.sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
       if (kDebugMode) {
-        debugPrint(
+        LoggerService.debug(
           '[$_tag] 🔍 Favorites filtered: ${favoriteQAs.length} → ${filteredList.length}',
         );
       }
@@ -236,7 +236,7 @@ class AiFavoriteManager {
       return Result.success('Favorites filtered successfully', filteredList);
     } catch (error, stackTrace) {
       if (kDebugMode) {
-        debugPrint('[$_tag] Error searching favorites: $error\n$stackTrace');
+        LoggerService.debug('[$_tag] Error searching favorites: $error\n$stackTrace');
       }
       return Result.failure('즐겨찾기 검색 중 오류 발생: $error');
     }
@@ -290,7 +290,7 @@ class AiFavoriteManager {
       );
     } catch (error) {
       if (kDebugMode) {
-        debugPrint('[$_tag] Error generating statistics: $error');
+        LoggerService.debug('[$_tag] Error generating statistics: $error');
       }
       return FavoriteStatistics.empty();
     }
@@ -345,16 +345,16 @@ class AiFavoriteManager {
       );
 
       if (issues.isNotEmpty && kDebugMode) {
-        debugPrint('[$_tag] ⚠️ Favorite validation issues: ${issues.length}');
+        LoggerService.debug('[$_tag] ⚠️ Favorite validation issues: ${issues.length}');
         for (final issue in issues) {
-          debugPrint('[$_tag]   - $issue');
+          LoggerService.debug('[$_tag]   - $issue');
         }
       }
 
       return Result.success('Favorite validation completed', validationResult);
     } catch (error, stackTrace) {
       if (kDebugMode) {
-        debugPrint('[$_tag] Error validating favorites: $error\n$stackTrace');
+        LoggerService.debug('[$_tag] Error validating favorites: $error\n$stackTrace');
       }
       return Result.failure('즐겨찾기 검증 중 오류 발생: $error');
     }

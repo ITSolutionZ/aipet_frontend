@@ -37,7 +37,7 @@ class UltraFastCacheService {
     await initialize();
 
     // 1단계: 메모리 캐시 확인 (0ms)
-    final memoryCached = _baseCache.getMemoryCache<HomeDashboardEntity>(
+    final memoryCached = _baseCache.getCache<HomeDashboardEntity>(
       CacheKeys.homeDashboard,
     );
     if (memoryCached != null) {
@@ -76,7 +76,7 @@ class UltraFastCacheService {
     _lastUpdateTime = DateTime.now();
 
     // 메모리 캐시에 저장
-    _baseCache.setMemoryCache(
+    await _baseCache.setCache(
       CacheKeys.homeDashboard,
       dashboard,
       ttl: const Duration(minutes: 15),

@@ -1,9 +1,11 @@
 import 'dart:async';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../../../shared/core/data/result_types.dart';
 import '../../../../shared/core/domain/common_errors.dart';
+import '../../../../shared/core/services/logger_service.dart';
 import '../../../../shared/core/services/secure_storage_service.dart';
 import '../models/auth_models.dart';
 import 'token_manager_service.dart';
@@ -99,7 +101,7 @@ class OfflineAuthStateManager {
       await _syncOfflineChanges();
       await _refreshTokenIfNeeded();
     } catch (e) {
-      debugPrint('⚠️ Error handling network reconnection: $e');
+      LoggerService.debug('⚠️ Error handling network reconnection: $e');
     }
   }
 
@@ -113,7 +115,7 @@ class OfflineAuthStateManager {
         await _clearPendingChanges();
       }
     } catch (e) {
-      debugPrint('⚠️ Error syncing offline changes: $e');
+      LoggerService.debug('⚠️ Error syncing offline changes: $e');
     }
   }
 
@@ -126,7 +128,7 @@ class OfflineAuthStateManager {
         return List<Map<String, dynamic>>.from(changesJson['changes']);
       }
     } catch (e) {
-      debugPrint('⚠️ Error getting pending offline changes: $e');
+      LoggerService.debug('⚠️ Error getting pending offline changes: $e');
     }
     return [];
   }
@@ -137,7 +139,7 @@ class OfflineAuthStateManager {
     try {
       await SecureStorageService.remove('pending_auth_changes');
     } catch (e) {
-      debugPrint('⚠️ Error clearing pending changes: $e');
+      LoggerService.debug('⚠️ Error clearing pending changes: $e');
     }
   }
 
@@ -147,7 +149,7 @@ class OfflineAuthStateManager {
         await _tokenManager.refreshToken();
       }
     } catch (e) {
-      debugPrint('⚠️ Error refreshing token: $e');
+      LoggerService.debug('⚠️ Error refreshing token: $e');
     }
   }
 
@@ -161,7 +163,9 @@ class OfflineAuthStateManager {
       final user = AuthUserModel.fromJson(userJson);
       return Success(user);
     } catch (e) {
-      return Failure(CacheError('캐시된 사용자 정보 로드 실패', details: e.toString()));
+      return ResultState.failure(
+        CacheError('캐시된 사용자 정보 로드 실패', details: e.toString()),
+      );
     }
   }
 
@@ -171,7 +175,9 @@ class OfflineAuthStateManager {
       return const Success(null);
     } catch (e) {
       // AppErrorHandler가 정의되어 있지 않아, 단순히 e.toString()으로 에러 디테일 출력
-      return Failure(CacheError('사용자 정보 캐시 실패', details: e.toString()));
+      return ResultState.failure(
+        CacheError('사용자 정보 캐시 실패', details: e.toString()),
+      );
     }
   }
 
@@ -180,7 +186,9 @@ class OfflineAuthStateManager {
       await SecureStorageService.remove('cached_user');
       return const Success(null);
     } catch (e) {
-      return Failure(CacheError('캐시된 사용자 정보 삭제 실패', details: e.toString()));
+      return ResultState.failure(
+        CacheError('캐시된 사용자 정보 삭제 실패', details: e.toString()),
+      );
     }
   }
 
@@ -225,7 +233,7 @@ class OfflineAuthStateManager {
         DateTime.now().millisecondsSinceEpoch,
       );
     } catch (e) {
-      debugPrint('⚠️ Error updating offline validation: $e');
+      LoggerService.debug('⚠️ Error updating offline validation: $e');
     }
   }
 
@@ -242,7 +250,7 @@ class OfflineAuthStateManager {
         'changes': existingChanges,
       });
     } catch (e) {
-      debugPrint('⚠️ Error adding pending change: $e');
+      LoggerService.debug('⚠️ Error adding pending change: $e');
     }
   }
 

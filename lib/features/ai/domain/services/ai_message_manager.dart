@@ -48,7 +48,7 @@ class AiMessageManager {
 
       if (optimizedResult.isSuccess) {
         if (kDebugMode) {
-          debugPrint(
+          LoggerService.debug(
             '[$_tag] Messages added and optimized: ${optimizedResult.dataOrNull!.length} total',
           );
         }
@@ -57,7 +57,7 @@ class AiMessageManager {
 
       // 최적화 실패 시 원본 반환
       if (kDebugMode) {
-        debugPrint(
+        LoggerService.debug(
           '[$_tag] Optimization failed, returning unoptimized messages',
         );
       }
@@ -67,7 +67,7 @@ class AiMessageManager {
       );
     } catch (error, stackTrace) {
       if (kDebugMode) {
-        debugPrint('[$_tag] Error adding messages: $error\n$stackTrace');
+        LoggerService.debug('[$_tag] Error adding messages: $error\n$stackTrace');
       }
       return Result.failure('메시지 추가 중 오류 발생: $error');
     }
@@ -159,7 +159,7 @@ class AiMessageManager {
 
       if (optimizedResult.isSuccess) {
         if (kDebugMode) {
-          debugPrint(
+          LoggerService.debug(
             '[$_tag] Messages cleaned up: ${messages.length} → ${optimizedResult.dataOrNull!.length}',
           );
         }
@@ -173,7 +173,7 @@ class AiMessageManager {
       );
     } catch (error, stackTrace) {
       if (kDebugMode) {
-        debugPrint('[$_tag] Error cleaning up messages: $error\n$stackTrace');
+        LoggerService.debug('[$_tag] Error cleaning up messages: $error\n$stackTrace');
       }
       return Result.failure('메시지 정리 중 오류 발생: $error');
     }
@@ -240,7 +240,7 @@ class AiMessageManager {
       );
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('[$_tag] Error generating statistics: $e');
+        LoggerService.debug('[$_tag] Error generating statistics: $e');
       }
       return MessageStatistics.empty();
     }
@@ -270,13 +270,13 @@ class AiMessageManager {
       );
 
       if (kDebugMode && (isMemoryHigh || shouldCleanup)) {
-        debugPrint('[$_tag] 🚨 Memory status: ${status.recommendation}');
+        LoggerService.debug('[$_tag] 🚨 Memory status: ${status.recommendation}');
       }
 
       return status;
     } catch (error) {
       if (kDebugMode) {
-        debugPrint('[$_tag] Error checking memory status: $error');
+        LoggerService.debug('[$_tag] Error checking memory status: $error');
       }
       return MemoryStatus.safe();
     }

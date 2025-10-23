@@ -29,7 +29,7 @@ class AllergyPostCard extends StatelessWidget {
         child: InkWell(
           onTap: () {
             // 게시글 상세 화면으로 이동 (구현 예정)
-            debugPrint('게시글 상세 화면 이동: ${post.title}');
+            LoggerService.debug('게시글 상세 화면 이동: ${post.title}');
           },
           borderRadius: BorderRadius.circular(AppRadius.medium),
           child: Padding(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'pet_registration_form_data.dart';
+import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
 
 /// TextEditingController 동기화 헬퍼
 ///
@@ -43,7 +44,7 @@ class PetControllerSyncHelper {
 
   /// DateTime을 YYYY-MM-DD 형식으로 포맷
   static String _formatDate(DateTime date) {
-    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+    return DateTimeUtils.formatDateKey(date);
   }
 
   /// TextEditingController에서 날짜 문자열 생성

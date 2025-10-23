@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
 import 'package:aipet_frontend/app/services/secure_storage.dart';
 import 'package:flutter/foundation.dart';
@@ -157,7 +158,7 @@ class AuthController extends Notifier<TokenExchangeState> {
       final currentToken = await getStoredToken();
       if (currentToken == null) {
         if (kDebugMode) {
-          debugPrint('갱신할 토큰이 없습니다');
+          LoggerService.debug('갱신할 토큰이 없습니다');
         }
         return false;
       }
@@ -171,26 +172,26 @@ class AuthController extends Notifier<TokenExchangeState> {
       final fiveMinutesFromNow = DateTime.now().add(const Duration(minutes: 5));
       if (tokenExpiry.isAfter(fiveMinutesFromNow)) {
         if (kDebugMode) {
-          debugPrint('토큰 갱신이 필요하지 않습니다 (만료: ${tokenExpiry.toIso8601String()})');
+          LoggerService.debug('토큰 갱신이 필요하지 않습니다 (만료: ${tokenExpiry.toIso8601String()})');
         }
         return true; // 갱신이 필요하지 않으면 성공으로 간주
       }
 
       // Firebase ID 토큰으로 새 서버 토큰 교환
       if (kDebugMode) {
-        debugPrint('토큰 자동 갱신 시작 (만료 예정: ${tokenExpiry.toIso8601String()})');
+        LoggerService.debug('토큰 자동 갱신 시작 (만료 예정: ${tokenExpiry.toIso8601String()})');
       }
 
       await exchangeServerToken();
 
       if (kDebugMode) {
-        debugPrint('토큰 자동 갱신 성공');
+        LoggerService.debug('토큰 자동 갱신 성공');
       }
 
       return true;
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('토큰 자동 갱신 실패: $e');
+        LoggerService.debug('토큰 자동 갱신 실패: $e');
       }
       return false;
     }
@@ -214,7 +215,7 @@ class AuthController extends Notifier<TokenExchangeState> {
         await autoRefreshToken();
       } catch (e) {
         if (kDebugMode) {
-          debugPrint('주기적 토큰 갱신 에러: $e');
+          LoggerService.debug('주기적 토큰 갱신 에러: $e');
         }
       }
     });

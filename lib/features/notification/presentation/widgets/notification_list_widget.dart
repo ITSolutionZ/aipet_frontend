@@ -50,12 +50,12 @@ class _NotificationListWidgetState
   }
 
   Widget _buildNotificationList(List<NotificationModel> notifications) {
-    debugPrint('📱 NotificationListWidget - 받은 알림 개수: ${notifications.length}');
+    LoggerService.debug('📱 NotificationListWidget - 받은 알림 개수: ${notifications.length}');
 
     // 필터링 적용
     final filteredNotifications = _applyFilters(notifications);
 
-    debugPrint(
+    LoggerService.debug(
       '📱 필터링 후 알림 개수: ${filteredNotifications.length}, 필터: ${widget.filterType}',
     );
 
@@ -96,20 +96,20 @@ class _NotificationListWidgetState
     return notifications.where((notification) {
       if (widget.filterStatus != null &&
           notification.status != widget.filterStatus) {
-        debugPrint('  ❌ 필터링: ${notification.title} - status 불일치');
+        LoggerService.debug('  ❌ 필터링: ${notification.title} - status 불일치');
         return false;
       }
       if (widget.filterType != null && notification.type != widget.filterType) {
-        debugPrint('  ❌ 필터링: ${notification.title} - type 불일치');
+        LoggerService.debug('  ❌ 필터링: ${notification.title} - type 불일치');
         return false;
       }
       if (notification.isExpired) {
-        debugPrint(
+        LoggerService.debug(
           '  ❌ 필터링: ${notification.title} - 만료됨 (expiresAt: ${notification.expiresAt})',
         );
         return false;
       }
-      debugPrint('  ✅ 통과: ${notification.title}');
+      LoggerService.debug('  ✅ 통과: ${notification.title}');
       return true;
     }).toList();
   }

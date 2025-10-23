@@ -31,7 +31,7 @@ class FirebaseTokenService {
     } catch (e) {
       // Firebase 초기화 실패 시 false 반환
       if (kDebugMode) {
-        debugPrint('Firebase 초기화 상태 확인 실패: $e');
+        LoggerService.debug('Firebase 초기화 상태 확인 실패: $e');
       }
       return false;
     }
@@ -41,7 +41,7 @@ class FirebaseTokenService {
   static Future<String?> getCurrentIdToken({bool forceRefresh = false}) async {
     if (!_isFirebaseInitialized) {
       if (kDebugMode) {
-        debugPrint('Firebase가 초기화되지 않음 - 캐시된 토큰 시도');
+        LoggerService.debug('Firebase가 초기화되지 않음 - 캐시된 토큰 시도');
       }
       return _getCachedIdToken();
     }
@@ -50,7 +50,7 @@ class FirebaseTokenService {
       final user = _firebaseAuth.currentUser;
       if (user == null) {
         if (kDebugMode) {
-          debugPrint('Firebase 사용자가 로그인되어 있지 않습니다');
+          LoggerService.debug('Firebase 사용자가 로그인되어 있지 않습니다');
         }
         return null;
       }
@@ -65,7 +65,7 @@ class FirebaseTokenService {
         await _cacheIdToken(idToken);
 
         if (kDebugMode) {
-          debugPrint(
+          LoggerService.debug(
             'Firebase ID Token 가져오기 성공${shouldForceRefresh ? ' (갱신됨)' : ''}',
           );
         }
@@ -76,7 +76,7 @@ class FirebaseTokenService {
       }
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('Firebase ID Token 가져오기 실패: $e');
+        LoggerService.debug('Firebase ID Token 가져오기 실패: $e');
       }
 
       // Firebase 토큰 가져오기 실패 시 캐시된 토큰 시도
@@ -93,7 +93,7 @@ class FirebaseTokenService {
   static Future<bool> isIdTokenValid() async {
     if (!_isFirebaseInitialized) {
       if (kDebugMode) {
-        debugPrint('Firebase가 초기화되지 않음 - ID 토큰 유효성 검사 건너뜀');
+        LoggerService.debug('Firebase가 초기화되지 않음 - ID 토큰 유효성 검사 건너뜀');
       }
       return false;
     }
@@ -112,7 +112,7 @@ class FirebaseTokenService {
       );
       if (!structureValidation.isSuccess) {
         if (kDebugMode) {
-          debugPrint(
+          LoggerService.debug(
             '🔐 JWT 구조 검증 실패: ${structureValidation.error?.toString() ?? 'Unknown error'}',
           );
         }
@@ -125,7 +125,7 @@ class FirebaseTokenService {
       );
       if (securityLevel.level == SecurityLevel.critical) {
         if (kDebugMode) {
-          debugPrint('🚨 심각한 JWT 보안 문제 발견: ${securityLevel.recommendation}');
+          LoggerService.debug('🚨 심각한 JWT 보안 문제 발견: ${securityLevel.recommendation}');
         }
         return false;
       }
@@ -141,16 +141,16 @@ class FirebaseTokenService {
       final isTimeValid = expirationTime.isAfter(fiveMinutesFromNow);
 
       if (kDebugMode && securityLevel.level != SecurityLevel.high) {
-        debugPrint(
+        LoggerService.debug(
           '⚠️ JWT 보안 등급: ${securityLevel.level.displayName} (점수: ${securityLevel.score}/${securityLevel.maxScore})',
         );
-        debugPrint('💡 권장사항: ${securityLevel.recommendation}');
+        LoggerService.debug('💡 권장사항: ${securityLevel.recommendation}');
       }
 
       return isTimeValid;
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('ID Token 유효성 확인 실패: $e');
+        LoggerService.debug('ID Token 유효성 확인 실패: $e');
       }
       return false;
     }
@@ -170,7 +170,7 @@ class FirebaseTokenService {
       return expirationTime.isBefore(fiveMinutesFromNow);
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('토큰 만료 확인 실패: $e');
+        LoggerService.debug('토큰 만료 확인 실패: $e');
       }
       return true; // 확인 실패 시 안전하게 갱신
     }
@@ -197,7 +197,7 @@ class FirebaseTokenService {
       }
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('ID Token 캐시 저장 실패: $e');
+        LoggerService.debug('ID Token 캐시 저장 실패: $e');
       }
     }
   }
@@ -222,13 +222,13 @@ class FirebaseTokenService {
       // 만료되지 않은 캐시된 토큰만 반환
       if (expirationTime.isAfter(now)) {
         if (kDebugMode) {
-          debugPrint('캐시된 Firebase ID Token 사용');
+          LoggerService.debug('캐시된 Firebase ID Token 사용');
         }
         return cachedToken;
       }
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('캐시된 ID Token 가져오기 실패: $e');
+        LoggerService.debug('캐시된 ID Token 가져오기 실패: $e');
       }
     }
 
@@ -244,11 +244,11 @@ class FirebaseTokenService {
       ]);
 
       if (kDebugMode) {
-        debugPrint('Firebase ID Token 캐시 삭제 완료');
+        LoggerService.debug('Firebase ID Token 캐시 삭제 완료');
       }
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('Firebase ID Token 캐시 삭제 실패: $e');
+        LoggerService.debug('Firebase ID Token 캐시 삭제 실패: $e');
       }
     }
   }
@@ -257,7 +257,7 @@ class FirebaseTokenService {
   static void setupAuthStateListener() {
     if (!_isFirebaseInitialized) {
       if (kDebugMode) {
-        debugPrint('Firebase가 초기화되지 않아 Auth State Listener 설정을 건너뜀');
+        LoggerService.debug('Firebase가 초기화되지 않아 Auth State Listener 설정을 건너뜀');
       }
       return;
     }
@@ -268,7 +268,7 @@ class FirebaseTokenService {
           // 로그아웃 시 캐시된 토큰 삭제
           await clearCachedIdToken();
           if (kDebugMode) {
-            debugPrint('Firebase 사용자 로그아웃 - 캐시 삭제됨');
+            LoggerService.debug('Firebase 사용자 로그아웃 - 캐시 삭제됨');
           }
         } else {
           // 로그인 시 새 토큰 캐시
@@ -277,19 +277,19 @@ class FirebaseTokenService {
             if (idToken != null) {
               await _cacheIdToken(idToken);
               if (kDebugMode) {
-                debugPrint('Firebase 사용자 로그인 - 새 토큰 캐시됨');
+                LoggerService.debug('Firebase 사용자 로그인 - 새 토큰 캐시됨');
               }
             }
           } catch (e) {
             if (kDebugMode) {
-              debugPrint('로그인 후 토큰 캐시 실패: $e');
+              LoggerService.debug('로그인 후 토큰 캐시 실패: $e');
             }
           }
         }
       });
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('Auth State Listener 설정 실패: $e');
+        LoggerService.debug('Auth State Listener 설정 실패: $e');
       }
     }
   }
@@ -298,7 +298,7 @@ class FirebaseTokenService {
   static Future<Map<String, dynamic>?> getIdTokenClaims() async {
     if (!_isFirebaseInitialized) {
       if (kDebugMode) {
-        debugPrint('Firebase가 초기화되지 않음 - ID 토큰 클레임 가져오기 건너뜀');
+        LoggerService.debug('Firebase가 초기화되지 않음 - ID 토큰 클레임 가져오기 건너뜀');
       }
       return null;
     }
@@ -311,7 +311,7 @@ class FirebaseTokenService {
       return tokenResult.claims;
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('ID Token 클레임 가져오기 실패: $e');
+        LoggerService.debug('ID Token 클레임 가져오기 실패: $e');
       }
       return null;
     }
@@ -321,7 +321,7 @@ class FirebaseTokenService {
   static Future<bool> isEmailVerified() async {
     if (!_isFirebaseInitialized) {
       if (kDebugMode) {
-        debugPrint('Firebase가 초기화되지 않음 - 이메일 인증 상태 확인 건너뜀');
+        LoggerService.debug('Firebase가 초기화되지 않음 - 이메일 인증 상태 확인 건너뜀');
       }
       return false;
     }
@@ -337,7 +337,7 @@ class FirebaseTokenService {
       return updatedUser?.emailVerified ?? false;
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('이메일 인증 상태 확인 실패: $e');
+        LoggerService.debug('이메일 인증 상태 확인 실패: $e');
       }
       return false;
     }
@@ -347,7 +347,7 @@ class FirebaseTokenService {
   static Future<bool> resendEmailVerification() async {
     if (!_isFirebaseInitialized) {
       if (kDebugMode) {
-        debugPrint('Firebase가 초기화되지 않음 - 이메일 인증 메일 재발송 건너뜀');
+        LoggerService.debug('Firebase가 초기화되지 않음 - 이메일 인증 메일 재발송 건너뜀');
       }
       return false;
     }
@@ -359,13 +359,13 @@ class FirebaseTokenService {
       await user.sendEmailVerification();
 
       if (kDebugMode) {
-        debugPrint('이메일 인증 메일 발송 완료');
+        LoggerService.debug('이메일 인증 메일 발송 완료');
       }
 
       return true;
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('이메일 인증 메일 발송 실패: $e');
+        LoggerService.debug('이메일 인증 메일 발송 실패: $e');
       }
       return false;
     }

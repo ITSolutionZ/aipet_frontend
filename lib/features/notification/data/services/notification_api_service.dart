@@ -65,7 +65,7 @@ class NotificationApiService {
       );
 
       if (kDebugMode) {
-        debugPrint(
+        LoggerService.debug(
           '[$_tag] ✅ 로컬에서 알림 조회 성공: ${paginatedNotifications.length}개',
         );
       }
@@ -74,7 +74,7 @@ class NotificationApiService {
     } catch (error) {
       final errorMessage = '알림 조회 중 오류 발생: $error';
       if (kDebugMode) {
-        debugPrint('[$_tag] ❌ $errorMessage');
+        LoggerService.debug('[$_tag] ❌ $errorMessage');
       }
       return Result.failure(errorMessage);
     }
@@ -115,13 +115,13 @@ class NotificationApiService {
       );
 
       if (kDebugMode) {
-        debugPrint('[$_tag] ✅ 알림 읽음 상태 업데이트 성공: $notificationId');
+        LoggerService.debug('[$_tag] ✅ 알림 읽음 상태 업데이트 성공: $notificationId');
       }
       return Result.success('通知の既読状態を更新しました', true);
     } catch (error) {
       final errorMessage = '읽음 상태 업데이트 중 오류 발생: $error';
       if (kDebugMode) {
-        debugPrint('[$_tag] ❌ $errorMessage');
+        LoggerService.debug('[$_tag] ❌ $errorMessage');
       }
       return Result.failure(errorMessage);
     }
@@ -136,13 +136,13 @@ class NotificationApiService {
       await NotificationLocalStorageService.deleteNotification(notificationId);
 
       if (kDebugMode) {
-        debugPrint('[$_tag] ✅ 알림 삭제 성공: $notificationId');
+        LoggerService.debug('[$_tag] ✅ 알림 삭제 성공: $notificationId');
       }
       return Result.success('通知を削除しました', true);
     } catch (error) {
       final errorMessage = '알림 삭제 중 오류 발생: $error';
       if (kDebugMode) {
-        debugPrint('[$_tag] ❌ $errorMessage');
+        LoggerService.debug('[$_tag] ❌ $errorMessage');
       }
       return Result.failure(errorMessage);
     }
@@ -159,13 +159,13 @@ class NotificationApiService {
       final settings = await NotificationLocalStorageService.getSettings();
 
       if (kDebugMode) {
-        debugPrint('[$_tag] ✅ 알림 설정 조회 성공');
+        LoggerService.debug('[$_tag] ✅ 알림 설정 조회 성공');
       }
       return Result.success('通知設定を取得しました', settings);
     } catch (error) {
       final errorMessage = '알림 설정 조회 중 오류 발생: $error';
       if (kDebugMode) {
-        debugPrint('[$_tag] ❌ $errorMessage');
+        LoggerService.debug('[$_tag] ❌ $errorMessage');
       }
       return Result.failure(errorMessage);
     }
@@ -184,13 +184,13 @@ class NotificationApiService {
       await NotificationLocalStorageService.saveSettings(settings);
 
       if (kDebugMode) {
-        debugPrint('[$_tag] ✅ 알림 설정 업데이트 성공');
+        LoggerService.debug('[$_tag] ✅ 알림 설정 업데이트 성공');
       }
       return Result.success('通知設定を更新しました', true);
     } catch (error) {
       final errorMessage = '알림 설정 업데이트 중 오류 발생: $error';
       if (kDebugMode) {
-        debugPrint('[$_tag] ❌ $errorMessage');
+        LoggerService.debug('[$_tag] ❌ $errorMessage');
       }
       return Result.failure(errorMessage);
     }
@@ -219,13 +219,13 @@ class NotificationApiService {
       };
 
       if (kDebugMode) {
-        debugPrint('[$_tag] ✅ 알림 통계 조회 성공');
+        LoggerService.debug('[$_tag] ✅ 알림 통계 조회 성공');
       }
       return Result.success('通知統計を取得しました', summary);
     } catch (error) {
       final errorMessage = '알림 통계 조회 중 오류 발생: $error';
       if (kDebugMode) {
-        debugPrint('[$_tag] ❌ $errorMessage');
+        LoggerService.debug('[$_tag] ❌ $errorMessage');
       }
       return Result.failure(errorMessage);
     }

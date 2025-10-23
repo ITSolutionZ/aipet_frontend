@@ -19,11 +19,11 @@ class PetNutritionTab extends ConsumerWidget {
             ?.cast<String>() ??
         [];
 
-    debugPrint('🍽️ PetNutritionTab - 保存された食事情報:');
-    debugPrint('   - food: $food');
-    debugPrint('   - supplement: $supplement');
-    debugPrint('   - treat: $treat');
-    debugPrint('   - forbiddenIngredients: $forbiddenIngredients');
+    LoggerService.debug('🍽️ PetNutritionTab - 保存された食事情報:');
+    LoggerService.debug('   - food: $food');
+    LoggerService.debug('   - supplement: $supplement');
+    LoggerService.debug('   - treat: $treat');
+    LoggerService.debug('   - forbiddenIngredients: $forbiddenIngredients');
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.lg),

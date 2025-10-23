@@ -1,27 +1,34 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
 /// 시설 로컬 저장소 서비스
+import 'package:aipet_frontend/shared/services/cache_service.dart';
+
 ///
 /// 시설 정보와 즐겨찾기를 SharedPreferences에 저장/관리합니다
 class FacilityLocalStorageService {
   static const String _keyFacilities = 'facilities';
   static const String _keyFavorites = 'favorite_facilities';
+  // ✅ SharedPreferences 인스턴스 재사용
+  static final _cache = CacheService();
+  static Future<void> _init() async {
+    await _cache.initialize();
+  }
+
   static const String _keyHistory = 'facility_history';
 
   /// 시설 가져오기
   static Future<List<Map<String, dynamic>>> getFacilities() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final facilitiesJson = prefs.getStringList(_keyFacilities) ?? [];
+      await _init();
+      final facilitiesJson = _cache.getStringList(_keyFacilities) ?? [];
 
       return facilitiesJson
           .map((json) => jsonDecode(json) as Map<String, dynamic>)
           .toList();
     } catch (e) {
-      debugPrint('시설 로드 실패: $e');
+      LoggerService.debug('시설 로드 실패: $e');
       return [];
     }
   }
@@ -29,8 +36,8 @@ class FacilityLocalStorageService {
   /// 시설 추가
   static Future<void> addFacility(Map<String, dynamic> facility) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final facilities = prefs.getStringList(_keyFacilities) ?? [];
+      await _init();
+      final facilities = _cache.getStringList(_keyFacilities) ?? [];
 
       if (facility['id'] == null || (facility['id'] as String).isEmpty) {
         facility['id'] = 'facility-${DateTime.now().millisecondsSinceEpoch}';
@@ -41,11 +48,11 @@ class FacilityLocalStorageService {
       }
 
       facilities.add(jsonEncode(facility));
-      await prefs.setStringList(_keyFacilities, facilities);
+      await _cache.setStringList(_keyFacilities, facilities);
 
-      debugPrint('시설 추가 성공: ${facility['id']}');
+      LoggerService.debug('시설 추가 성공: ${facility['id']}');
     } catch (e) {
-      debugPrint('시설 추가 실패: $e');
+      LoggerService.debug('시설 추가 실패: $e');
     }
   }
 
@@ -54,8 +61,8 @@ class FacilityLocalStorageService {
     List<Map<String, dynamic>> facilitiesList,
   ) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final existingFacilities = prefs.getStringList(_keyFacilities) ?? [];
+      await _init();
+      final existingFacilities = _cache.getStringList(_keyFacilities) ?? [];
 
       // 기존 시설 ID 맵 생성
       final existingIds = <String>{};
@@ -74,19 +81,19 @@ class FacilityLocalStorageService {
         }
       }
 
-      await prefs.setStringList(_keyFacilities, existingFacilities);
+      await _cache.setStringList(_keyFacilities, existingFacilities);
 
-      debugPrint('시설 일괄 추가 성공: ${facilitiesList.length}개');
+      LoggerService.debug('시설 일괄 추가 성공: ${facilitiesList.length}개');
     } catch (e) {
-      debugPrint('시설 일괄 추가 실패: $e');
+      LoggerService.debug('시설 일괄 추가 실패: $e');
     }
   }
 
   /// 시설 업데이트
   static Future<void> updateFacility(Map<String, dynamic> facility) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final facilities = prefs.getStringList(_keyFacilities) ?? [];
+      await _init();
+      final facilities = _cache.getStringList(_keyFacilities) ?? [];
 
       final index = facilities.indexWhere((f) {
         final facilityData = jsonDecode(f) as Map<String, dynamic>;
@@ -96,39 +103,39 @@ class FacilityLocalStorageService {
       if (index != -1) {
         facility['updatedAt'] = DateTime.now().toIso8601String();
         facilities[index] = jsonEncode(facility);
-        await prefs.setStringList(_keyFacilities, facilities);
-        debugPrint('시설 업데이트 성공: ${facility['id']}');
+        await _cache.setStringList(_keyFacilities, facilities);
+        LoggerService.debug('시설 업데이트 성공: ${facility['id']}');
       }
     } catch (e) {
-      debugPrint('시설 업데이트 실패: $e');
+      LoggerService.debug('시설 업데이트 실패: $e');
     }
   }
 
   /// 시설 삭제
   static Future<void> deleteFacility(String facilityId) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final facilities = prefs.getStringList(_keyFacilities) ?? [];
+      await _init();
+      final facilities = _cache.getStringList(_keyFacilities) ?? [];
 
       facilities.removeWhere((f) {
         final facilityData = jsonDecode(f) as Map<String, dynamic>;
         return facilityData['id'] == facilityId;
       });
 
-      await prefs.setStringList(_keyFacilities, facilities);
-      debugPrint('시설 삭제 성공: $facilityId');
+      await _cache.setStringList(_keyFacilities, facilities);
+      LoggerService.debug('시설 삭제 성공: $facilityId');
     } catch (e) {
-      debugPrint('시설 삭제 실패: $e');
+      LoggerService.debug('시설 삭제 실패: $e');
     }
   }
 
   /// 즐겨찾기 가져오기
   static Future<List<String>> getFavorites() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      return prefs.getStringList(_keyFavorites) ?? [];
+      await _init();
+      return _cache.getStringList(_keyFavorites) ?? [];
     } catch (e) {
-      debugPrint('즐겨찾기 로드 실패: $e');
+      LoggerService.debug('즐겨찾기 로드 실패: $e');
       return [];
     }
   }
@@ -136,8 +143,8 @@ class FacilityLocalStorageService {
   /// 즐겨찾기 토글
   static Future<void> toggleFavorite(String facilityId) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final favorites = prefs.getStringList(_keyFavorites) ?? [];
+      await _init();
+      final favorites = _cache.getStringList(_keyFavorites) ?? [];
 
       if (favorites.contains(facilityId)) {
         favorites.remove(facilityId);
@@ -145,18 +152,18 @@ class FacilityLocalStorageService {
         favorites.add(facilityId);
       }
 
-      await prefs.setStringList(_keyFavorites, favorites);
-      debugPrint('즐겨찾기 토글 성공: $facilityId');
+      await _cache.setStringList(_keyFavorites, favorites);
+      LoggerService.debug('즐겨찾기 토글 성공: $facilityId');
     } catch (e) {
-      debugPrint('즐겨찾기 토글 실패: $e');
+      LoggerService.debug('즐겨찾기 토글 실패: $e');
     }
   }
 
   /// 방문 기록 추가
   static Future<void> addToHistory(String facilityId) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final history = prefs.getStringList(_keyHistory) ?? [];
+      await _init();
+      final history = _cache.getStringList(_keyHistory) ?? [];
 
       // 중복 제거
       history.remove(facilityId);
@@ -168,20 +175,20 @@ class FacilityLocalStorageService {
         history.removeRange(50, history.length);
       }
 
-      await prefs.setStringList(_keyHistory, history);
-      debugPrint('방문 기록 추가 성공: $facilityId');
+      await _cache.setStringList(_keyHistory, history);
+      LoggerService.debug('방문 기록 추가 성공: $facilityId');
     } catch (e) {
-      debugPrint('방문 기록 추가 실패: $e');
+      LoggerService.debug('방문 기록 추가 실패: $e');
     }
   }
 
   /// 방문 기록 가져오기
   static Future<List<String>> getHistory() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      return prefs.getStringList(_keyHistory) ?? [];
+      await _init();
+      return _cache.getStringList(_keyHistory) ?? [];
     } catch (e) {
-      debugPrint('방문 기록 로드 실패: $e');
+      LoggerService.debug('방문 기록 로드 실패: $e');
       return [];
     }
   }
@@ -189,11 +196,11 @@ class FacilityLocalStorageService {
   /// 모든 시설 데이터 삭제
   static Future<void> clearAllFacilities() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.remove(_keyFacilities);
-      debugPrint('모든 시설 삭제 성공');
+      await _init();
+      await _cache.removeKey(_keyFacilities);
+      LoggerService.debug('모든 시설 삭제 성공');
     } catch (e) {
-      debugPrint('모든 시설 삭제 실패: $e');
+      LoggerService.debug('모든 시설 삭제 실패: $e');
     }
   }
 }

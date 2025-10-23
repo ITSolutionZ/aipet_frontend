@@ -34,8 +34,8 @@ class OnboardingBackgroundImage extends StatelessWidget {
           fit: page.imageFit,
           alignment: page.imageAlignment,
           onError: (exception, stackTrace) {
-            debugPrint('❌ 이미지 로드 실패: ${page.imagePath}');
-            debugPrint('   에러: $exception');
+            LoggerService.debug('❌ 이미지 로드 실패: ${page.imagePath}');
+            LoggerService.debug('   에러: $exception');
           },
         ),
       ),
@@ -151,8 +151,8 @@ class OnboardingBackgroundImage extends StatelessWidget {
       fit: _getOptimalFit(),
       alignment: _getOptimalAlignment(),
       errorBuilder: (context, error, stackTrace) {
-        debugPrint('❌ 이미지 로드 실패: ${page.imagePath}');
-        debugPrint('   에러: $error');
+        LoggerService.debug('❌ 이미지 로드 실패: ${page.imagePath}');
+        LoggerService.debug('   에러: $error');
 
         // Fallback: 기본 배경색과 아이콘 표시
         return Container(

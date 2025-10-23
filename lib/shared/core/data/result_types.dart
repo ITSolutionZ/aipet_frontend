@@ -82,23 +82,25 @@ extension ResultStateExtensions<T> on ResultState<T> {
   ResultState<R> map<R>(R Function(T) transform) {
     return switch (this) {
       Success(data: final data) => Success(transform(data)),
-      Failure(error: final error) => Result.failure(error),
+      Failure(error: final error) => ResultState.failure(error),
     };
   }
 
   Future<ResultState<R>> mapAsync<R>(Future<R> Function(T) transform) async {
     return switch (this) {
       Success(data: final data) => Success(await transform(data)),
-      Failure(error: final error) => Result.failure(error),
+      Failure(error: final error) => ResultState.failure(error),
     };
   }
 
   ResultState<R> flatMap<R>(ResultState<R> Function(T) transform) {
     return switch (this) {
       Success(data: final data) => transform(data),
-      Failure(error: final error) => Result.failure(error),
+      Failure(error: final error) => ResultState.failure(error),
     };
   }
 }
 
-typedef Result<T> = ResultState<T>;
+// ✅ typedef 제거됨
+// Result<T>는 shared/core/domain/result.dart를 사용하세요.
+// ResultState<T>는 data layer의 특수한 경우에만 사용하세요.

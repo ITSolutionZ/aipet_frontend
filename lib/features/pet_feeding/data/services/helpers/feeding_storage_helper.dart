@@ -1,19 +1,24 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
+import 'package:aipet_frontend/shared/services/cache_service.dart';
 
 /// 급여 저장소 헬퍼
 class FeedingStorageHelper {
   static const String _keyFeedingRecords = 'pet_feeding_records';
+  // ✅ SharedPreferences 인스턴스 재사용
+  static final _cache = CacheService();
+  static Future<void> _init() async {
+    await _cache.initialize();
+  }
 
   /// 급여 기록 가져오기
   static Future<List<Map<String, dynamic>>> getFeedingRecords({
     String? petId,
   }) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final recordsJson = prefs.getStringList(_keyFeedingRecords) ?? [];
+      await _init();
+      final recordsJson = _cache.getStringList(_keyFeedingRecords) ?? [];
 
       if (recordsJson.isEmpty) {
         return await _initializeDefaultRecords();
@@ -29,7 +34,7 @@ class FeedingStorageHelper {
 
       return records;
     } catch (e) {
-      debugPrint('급여 기록 로드 실패: $e');
+      LoggerService.debug('급여 기록 로드 실패: $e');
       return [];
     }
   }
@@ -37,8 +42,8 @@ class FeedingStorageHelper {
   /// 급여 기록 추가
   static Future<void> addFeedingRecord(Map<String, dynamic> record) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final records = prefs.getStringList(_keyFeedingRecords) ?? [];
+      await _init();
+      final records = _cache.getStringList(_keyFeedingRecords) ?? [];
 
       // ID가 없으면 생성
       if (record['id'] == null || (record['id'] as String).isEmpty) {
@@ -51,11 +56,11 @@ class FeedingStorageHelper {
       }
 
       records.add(jsonEncode(record));
-      await prefs.setStringList(_keyFeedingRecords, records);
+      await _cache.setStringList(_keyFeedingRecords, records);
 
-      debugPrint('급여 기록 추가 성공: ${record['id']}');
+      LoggerService.debug('급여 기록 추가 성공: ${record['id']}');
     } catch (e) {
-      debugPrint('급여 기록 추가 실패: $e');
+      LoggerService.debug('급여 기록 추가 실패: $e');
       rethrow;
     }
   }
@@ -63,8 +68,8 @@ class FeedingStorageHelper {
   /// 급여 기록 업데이트
   static Future<void> updateFeedingRecord(Map<String, dynamic> record) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final records = prefs.getStringList(_keyFeedingRecords) ?? [];
+      await _init();
+      final records = _cache.getStringList(_keyFeedingRecords) ?? [];
 
       final index = records.indexWhere((r) {
         final recordData = jsonDecode(r) as Map<String, dynamic>;
@@ -74,11 +79,11 @@ class FeedingStorageHelper {
       if (index != -1) {
         record['updatedAt'] = DateTime.now().toIso8601String();
         records[index] = jsonEncode(record);
-        await prefs.setStringList(_keyFeedingRecords, records);
-        debugPrint('급여 기록 업데이트 성공: ${record['id']}');
+        await _cache.setStringList(_keyFeedingRecords, records);
+        LoggerService.debug('급여 기록 업데이트 성공: ${record['id']}');
       }
     } catch (e) {
-      debugPrint('급여 기록 업데이트 실패: $e');
+      LoggerService.debug('급여 기록 업데이트 실패: $e');
       rethrow;
     }
   }
@@ -86,18 +91,18 @@ class FeedingStorageHelper {
   /// 급여 기록 삭제
   static Future<void> deleteFeedingRecord(String recordId) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final records = prefs.getStringList(_keyFeedingRecords) ?? [];
+      await _init();
+      final records = _cache.getStringList(_keyFeedingRecords) ?? [];
 
       records.removeWhere((r) {
         final recordData = jsonDecode(r) as Map<String, dynamic>;
         return recordData['id'] == recordId;
       });
 
-      await prefs.setStringList(_keyFeedingRecords, records);
-      debugPrint('급여 기록 삭제 성공: $recordId');
+      await _cache.setStringList(_keyFeedingRecords, records);
+      LoggerService.debug('급여 기록 삭제 성공: $recordId');
     } catch (e) {
-      debugPrint('급여 기록 삭제 실패: $e');
+      LoggerService.debug('급여 기록 삭제 실패: $e');
       rethrow;
     }
   }
@@ -117,7 +122,7 @@ class FeedingStorageHelper {
             fedTime.day == date.day;
       }).toList();
     } catch (e) {
-      debugPrint('날짜별 급여 기록 로드 실패: $e');
+      LoggerService.debug('날짜별 급여 기록 로드 실패: $e');
       return [];
     }
   }
@@ -139,7 +144,7 @@ class FeedingStorageHelper {
         'completionRate': records.isNotEmpty ? completed / records.length : 0.0,
       };
     } catch (e) {
-      debugPrint('급여 기록 통계 실패: $e');
+      LoggerService.debug('급여 기록 통계 실패: $e');
       return {
         'total': 0,
         'completed': 0,
@@ -152,11 +157,11 @@ class FeedingStorageHelper {
 
   /// 초기 기본 급여 기록 생성
   static Future<List<Map<String, dynamic>>> _initializeDefaultRecords() async {
-    final prefs = await SharedPreferences.getInstance();
+    await _init();
     final defaultRecords = <Map<String, dynamic>>[];
 
     final recordsJson = defaultRecords.map((r) => jsonEncode(r)).toList();
-    await prefs.setStringList(_keyFeedingRecords, recordsJson);
+    await _cache.setStringList(_keyFeedingRecords, recordsJson);
 
     return defaultRecords;
   }

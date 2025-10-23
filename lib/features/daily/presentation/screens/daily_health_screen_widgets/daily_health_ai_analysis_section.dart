@@ -119,7 +119,7 @@ class DailyHealthAIAnalysisSection extends ConsumerWidget {
               .timeout(
                 const Duration(seconds: 30),
                 onTimeout: () {
-                  debugPrint('⏰ PDF generation timeout');
+                  LoggerService.debug('⏰ PDF generation timeout');
                   throw Exception('レポート生成がタイムアウトしました。もう一度お試しください。');
                 },
               );
@@ -134,7 +134,7 @@ class DailyHealthAIAnalysisSection extends ConsumerWidget {
               .timeout(
                 const Duration(seconds: 45),
                 onTimeout: () {
-                  debugPrint('⏰ PNG generation timeout');
+                  LoggerService.debug('⏰ PNG generation timeout');
                   throw Exception('PNG生成がタイムアウトしました。もう一度お試しください。');
                 },
               );
@@ -168,54 +168,23 @@ class DailyHealthAIAnalysisSection extends ConsumerWidget {
 
         // 성공 메시지
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                _getSuccessMessage(format),
-                style: AppFonts.bodySmall.copyWith(color: Colors.white),
-              ),
-              backgroundColor: AppColors.pointGreen,
-              duration: const Duration(seconds: 2),
-            ),
+          SnackBarService.showSuccess(
+            context,
+            _getSuccessMessage(format),
+            duration: const Duration(seconds: 2),
           );
         }
       }
     } catch (e, stackTrace) {
-      debugPrint('❌ PDF generation error: $e');
-      debugPrint('Stack trace: $stackTrace');
+      LoggerService.debug('❌ PDF generation error: $e');
+      LoggerService.debug('Stack trace: $stackTrace');
 
       // 에러 메시지 표시
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'レポート生成に失敗しました',
-              style: AppFonts.bodySmall.copyWith(color: Colors.white),
-            ),
-            backgroundColor: AppColors.error,
-            duration: const Duration(seconds: 3),
-            action: SnackBarAction(
-              label: '詳細',
-              textColor: Colors.white,
-              onPressed: () {
-                debugPrint('Error details: $e\n$stackTrace');
-                // 에러 상세 정보를 다이얼로그로 표시
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text('エラー詳細'),
-                    content: SingleChildScrollView(child: Text(e.toString())),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: const Text('閉じる'),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
+        SnackBarService.showError(
+          context,
+          'レポート生成に失敗しました',
+          duration: const Duration(seconds: 3),
         );
       }
     } finally {
@@ -224,7 +193,7 @@ class DailyHealthAIAnalysisSection extends ConsumerWidget {
         try {
           Navigator.of(context, rootNavigator: true).pop();
         } catch (e) {
-          debugPrint('⚠️ Failed to close dialog: $e');
+          LoggerService.debug('⚠️ Failed to close dialog: $e');
         }
       }
     }

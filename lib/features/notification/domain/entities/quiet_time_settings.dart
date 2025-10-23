@@ -1,3 +1,5 @@
+import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
+
 /// 조용한 시간 설정
 class QuietTimeSettings {
   /// 조용한 시간 활성화
@@ -48,7 +50,7 @@ class QuietTimeSettings {
     final now = DateTime.now();
     final currentDay = now.weekday % 7; // 0=일요일, 6=토요일
     final currentTime =
-        '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
+        DateTimeUtils.formatTime(now);
 
     // 요일 확인
     if (!days.contains(currentDay)) return false;

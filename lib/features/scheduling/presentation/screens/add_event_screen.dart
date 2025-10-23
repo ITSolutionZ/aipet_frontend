@@ -79,7 +79,7 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: Text(isEditing ? '일정 수정' : '새 일정', style: AppFonts.titleLarge),
+        title: Text(isEditing ? '予定を編集' : '新しい予定', style: AppFonts.titleLarge),
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
@@ -96,7 +96,7 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
                 borderRadius: BorderRadius.circular(AppRadius.medium),
               ),
             ),
-            child: Text('저장', style: AppFonts.titleMedium),
+            child: Text('保存', style: AppFonts.titleMedium),
           ),
           const SizedBox(width: AppSpacing.md),
         ],
@@ -272,13 +272,13 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
 
               // 시간 설정 (하루 종일이 아닐 때만)
               if (!_isAllDay) ...[
-                _buildSectionTitle('시간'),
+                _buildSectionTitle('時間'),
                 const SizedBox(height: 8),
                 Row(
                   children: [
                     Expanded(
                       child: _buildTimeSelector(
-                        '시작 시간',
+                        '開始時間',
                         _startTime,
                         Icons.play_arrow,
                         _selectStartTime,
@@ -287,7 +287,7 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
                     const SizedBox(width: 16),
                     Expanded(
                       child: _buildTimeSelector(
-                        '종료 시간',
+                        '終了時間',
                         _endTime,
                         Icons.stop,
                         _selectEndTime,
@@ -299,13 +299,13 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
               ],
 
               // 설명
-              _buildSectionTitle('설명'),
+              _buildSectionTitle('説明'),
               const SizedBox(height: 8),
               TextFormField(
                 controller: _descriptionController,
                 maxLines: 4,
                 decoration: InputDecoration(
-                  hintText: '일정 설명을 입력하세요 (선택사항)',
+                  hintText: '予定の説明を入力してください (オプション)',
                   prefixIcon: const Padding(
                     padding: EdgeInsets.only(bottom: 60),
                     child: Icon(Icons.description),
@@ -320,12 +320,12 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
               const SizedBox(height: 24),
 
               // 위치
-              _buildSectionTitle('위치'),
+              _buildSectionTitle('場所'),
               const SizedBox(height: 8),
               TextFormField(
                 controller: _locationController,
                 decoration: InputDecoration(
-                  hintText: '위치를 입력하세요 (선택사항)',
+                  hintText: '場所を入力してください (オプション)',
                   prefixIcon: const Icon(Icons.location_on),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -350,7 +350,7 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
                     ),
                   ),
                   child: Text(
-                    isEditing ? '일정 수정' : '일정 추가',
+                    isEditing ? '予定を編集' : '予定を追加',
                     style: AppFonts.titleMedium.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -409,7 +409,7 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
             Text(
               time != null
                   ? DateFormat('HH:mm', 'ja_JP').format(time)
-                  : '시간 선택',
+                  : '時間を選択',
               style: AppFonts.titleMedium.copyWith(fontWeight: FontWeight.bold),
             ),
           ],
@@ -460,9 +460,7 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
       // 종료 시간이 시작 시간보다 이후인지 확인
       if (_startTime != null && newEndTime.isBefore(_startTime!)) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('종료 시간은 시작 시간보다 늦어야 합니다')),
-          );
+          SnackBarService.showWarning(context, '終了時間は開始時間より遅い必要があります');
         }
         return;
       }
@@ -481,7 +479,7 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
     if (!_isAllDay && (_startTime == null || _endTime == null)) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('시작 시간과 종료 시간을 설정해주세요')));
+      ).showSnackBar(const SnackBar(content: Text('開始時間と終了時間を設定してください')));
       return;
     }
 

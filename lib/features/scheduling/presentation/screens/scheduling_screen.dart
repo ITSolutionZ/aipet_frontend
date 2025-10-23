@@ -170,9 +170,9 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
   /// 데이터베이스에서 이벤트 로드
   Future<void> _loadEventsFromDatabase() async {
     try {
-      debugPrint('📥 イベント読み込み開始...');
+      LoggerService.debug('📥 イベント読み込み開始...');
       final events = await CalendarEventService.instance.getCalendarEvents();
-      debugPrint('📥 読み込まれたイベント数: ${events.length}');
+      LoggerService.debug('📥 読み込まれたイベント数: ${events.length}');
 
       setState(() {
         _events.clear();
@@ -188,10 +188,10 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
             _events[eventDate] = [event];
           }
         }
-        debugPrint('📥 イベントキャッシュ更新完了: ${_events.length}日分');
+        LoggerService.debug('📥 イベントキャッシュ更新完了: ${_events.length}日分');
       });
     } catch (e) {
-      debugPrint('❌ イベント読み込み失敗: $e');
+      LoggerService.debug('❌ イベント読み込み失敗: $e');
     }
   }
 
@@ -359,22 +359,14 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
       });
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${event.title}の予定が追加されました'),
-            backgroundColor: AppColors.pointGreen,
-          ),
-        );
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showSuccess(context, '${event.title}の予定が追加されました');
       }
     } catch (e) {
-      debugPrint('이벤트 저장 실패: $e');
+      LoggerService.debug('이벤트 저장 실패: $e');
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('予定の保存に失敗しました: $e'),
-            backgroundColor: AppColors.pointRed,
-          ),
-        );
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showError(context, '予定の保存に失敗しました: $e');
       }
     }
   }
@@ -465,22 +457,14 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
       });
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${newEvent.title}の予定が修正されました'),
-            backgroundColor: AppColors.pointBlue,
-          ),
-        );
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showInfo(context, '${newEvent.title}の予定が修正されました');
       }
     } catch (e) {
-      debugPrint('이벤트 업데이트 실패: $e');
+      LoggerService.debug('이벤트 업데이트 실패: $e');
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('予定の修正に失敗しました: $e'),
-            backgroundColor: AppColors.pointRed,
-          ),
-        );
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showError(context, '予定の修正に失敗しました: $e');
       }
     }
   }
@@ -532,22 +516,14 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
       });
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${event.title}の予定が削除されました'),
-            backgroundColor: AppColors.pointRed,
-          ),
-        );
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showWarning(context, '${event.title}の予定が削除されました');
       }
     } catch (e) {
-      debugPrint('이벤트 삭제 실패: $e');
+      LoggerService.debug('이벤트 삭제 실패: $e');
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('일정 삭제에 실패했습니다: $e'),
-            backgroundColor: AppColors.pointRed,
-          ),
-        );
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showError(context, '일정 삭제에 실패했습니다: $e');
       }
     }
   }

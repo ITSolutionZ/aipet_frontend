@@ -47,7 +47,7 @@ class _HealthContentView extends ConsumerWidget {
     final screenData = ref.watch(dailyHealthScreenControllerProvider);
     final currentPetId = screenData.selectedPetId ?? petId;
 
-    debugPrint(
+    LoggerService.debug(
       '🔍 _HealthContentView - currentPetId: $currentPetId, screenData.selectedPetId: ${screenData.selectedPetId}',
     );
 

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:aipet_frontend/shared/services/local_database_service.dart';
-import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 
 /// 펫 정보 로컬 스토리지 서비스
@@ -11,7 +11,7 @@ class LocalPetService {
   /// 모든 펫 조회
   Future<List<Map<String, dynamic>>> getAllPets() async {
     try {
-      debugPrint('🐾 LocalPetService.getAllPets: 시작');
+      LoggerService.debug('🐾 LocalPetService.getAllPets: 시작');
       final db = await _dbService.database;
       final results = await db.query(
         'pets',
@@ -19,13 +19,13 @@ class LocalPetService {
         whereArgs: [1],
         orderBy: 'created_at DESC',
       );
-      debugPrint('🐾 LocalPetService.getAllPets: ${results.length}개 펫 조회 완료');
+      LoggerService.debug('🐾 LocalPetService.getAllPets: ${results.length}개 펫 조회 완료');
 
       // additionalInfo를 JSON 문자열에서 Map으로 파싱
       return results.map((pet) => _parsePetData(pet)).toList();
     } catch (error, stackTrace) {
-      debugPrint('❌ LocalPetService.getAllPets: 에러 발생 - $error');
-      debugPrint('📍 StackTrace: $stackTrace');
+      LoggerService.debug('❌ LocalPetService.getAllPets: 에러 발생 - $error');
+      LoggerService.debug('📍 StackTrace: $stackTrace');
       // 에러 발생 시 빈 리스트 반환
       return [];
     }
@@ -39,13 +39,13 @@ class LocalPetService {
     try {
       if (parsedData['additionalInfo'] is String) {
         final additionalInfoJson = parsedData['additionalInfo'] as String;
-        debugPrint('📖 Parsing additionalInfo from JSON: $additionalInfoJson');
+        LoggerService.debug('📖 Parsing additionalInfo from JSON: $additionalInfoJson');
         parsedData['additionalInfo'] = jsonDecode(additionalInfoJson);
-        debugPrint('✅ additionalInfo parsed: ${parsedData['additionalInfo']}');
+        LoggerService.debug('✅ additionalInfo parsed: ${parsedData['additionalInfo']}');
       }
     } catch (e) {
-      debugPrint('⚠️  additionalInfo 파싱 실패: $e');
-      debugPrint('⚠️  원본 데이터: ${parsedData['additionalInfo']}');
+      LoggerService.debug('⚠️  additionalInfo 파싱 실패: $e');
+      LoggerService.debug('⚠️  원본 데이터: ${parsedData['additionalInfo']}');
       // 파싱 실패 시 빈 Map 사용
       parsedData['additionalInfo'] = {};
     }
@@ -55,7 +55,7 @@ class LocalPetService {
   /// 특정 펫 조회
   Future<Map<String, dynamic>?> getPetById(String petId) async {
     try {
-      debugPrint('🐾 LocalPetService.getPetById: $petId 조회 시작');
+      LoggerService.debug('🐾 LocalPetService.getPetById: $petId 조회 시작');
       final db = await _dbService.database;
       final results = await db.query(
         'pets',
@@ -63,7 +63,7 @@ class LocalPetService {
         whereArgs: [petId],
       );
       var result = results.isNotEmpty ? results.first : null;
-      debugPrint(
+      LoggerService.debug(
         '🐾 LocalPetService.getPetById: ${result != null ? "펫 발견" : "펫 없음"}',
       );
       // additionalInfo 파싱
@@ -72,8 +72,8 @@ class LocalPetService {
       }
       return result;
     } catch (error, stackTrace) {
-      debugPrint('❌ LocalPetService.getPetById: 에러 발생 - $error');
-      debugPrint('📍 StackTrace: $stackTrace');
+      LoggerService.debug('❌ LocalPetService.getPetById: 에러 발생 - $error');
+      LoggerService.debug('📍 StackTrace: $stackTrace');
       // 에러 발생 시 null 반환
       return null;
     }
@@ -86,24 +86,24 @@ class LocalPetService {
     final now = DateTime.now().toIso8601String();
 
     // 디버그: 원본 petData 전체 확인
-    debugPrint('🔍 ===== LocalPetService.addPet 시작 =====');
-    debugPrint('🔍 petData 전체: $petData');
-    debugPrint('🔍 petData keys: ${petData.keys.toList()}');
+    LoggerService.debug('🔍 ===== LocalPetService.addPet 시작 =====');
+    LoggerService.debug('🔍 petData 전체: $petData');
+    LoggerService.debug('🔍 petData keys: ${petData.keys.toList()}');
 
     // additionalInfo에서 값 추출
     final additionalInfo =
         petData['additionalInfo'] as Map<String, dynamic>? ?? {};
 
-    debugPrint('🔍 additionalInfo: $additionalInfo');
-    debugPrint('🔍 additionalInfo type: ${additionalInfo.runtimeType}');
-    debugPrint('🔍 additionalInfo keys: ${additionalInfo.keys.toList()}');
-    debugPrint(
+    LoggerService.debug('🔍 additionalInfo: $additionalInfo');
+    LoggerService.debug('🔍 additionalInfo type: ${additionalInfo.runtimeType}');
+    LoggerService.debug('🔍 additionalInfo keys: ${additionalInfo.keys.toList()}');
+    LoggerService.debug(
       '🔍 registrationNumber from additionalInfo: ${additionalInfo['registrationNumber']}',
     );
-    debugPrint(
+    LoggerService.debug(
       '🔍 guardianName from additionalInfo: ${additionalInfo['guardianName']}',
     );
-    debugPrint(
+    LoggerService.debug(
       '🔍 institutionName from additionalInfo: ${additionalInfo['institutionName']}',
     );
 
@@ -134,12 +134,12 @@ class LocalPetService {
       ),
     };
 
-    debugPrint('💾 LocalPetService.addPet - 저장할 데이터:');
-    debugPrint(
+    LoggerService.debug('💾 LocalPetService.addPet - 저장할 데이터:');
+    LoggerService.debug(
       '   - registration_number: ${insertData['registration_number']}',
     );
-    debugPrint('   - guardian_name: ${insertData['guardian_name']}');
-    debugPrint('   - institution_name: ${insertData['institution_name']}');
+    LoggerService.debug('   - guardian_name: ${insertData['guardian_name']}');
+    LoggerService.debug('   - institution_name: ${insertData['institution_name']}');
 
     await db.insert(
       'pets',
@@ -149,10 +149,10 @@ class LocalPetService {
 
     // 저장 후 확인
     final saved = await getPetById(id);
-    debugPrint('✅ LocalPetService.addPet - 저장 후 조회:');
-    debugPrint('   - registration_number: ${saved?['registration_number']}');
-    debugPrint('   - guardian_name: ${saved?['guardian_name']}');
-    debugPrint('   - institution_name: ${saved?['institution_name']}');
+    LoggerService.debug('✅ LocalPetService.addPet - 저장 후 조회:');
+    LoggerService.debug('   - registration_number: ${saved?['registration_number']}');
+    LoggerService.debug('   - guardian_name: ${saved?['guardian_name']}');
+    LoggerService.debug('   - institution_name: ${saved?['institution_name']}');
 
     return id;
   }
@@ -160,9 +160,9 @@ class LocalPetService {
   /// 펫 정보 업데이트
   Future<bool> updatePet(String petId, Map<String, dynamic> petData) async {
     try {
-      debugPrint('🐾 LocalPetService.updatePet: $petId 업데이트 시작');
-      debugPrint('🔍 petData keys: ${petData.keys.toList()}');
-      debugPrint(
+      LoggerService.debug('🐾 LocalPetService.updatePet: $petId 업데이트 시작');
+      LoggerService.debug('🔍 petData keys: ${petData.keys.toList()}');
+      LoggerService.debug(
         '🔍 additionalInfo type: ${petData['additionalInfo']?.runtimeType}',
       );
 
@@ -198,13 +198,13 @@ class LocalPetService {
         ),
       };
 
-      debugPrint('💾 LocalPetService.updatePet - 저장할 데이터:');
-      debugPrint(
+      LoggerService.debug('💾 LocalPetService.updatePet - 저장할 데이터:');
+      LoggerService.debug(
         '   - registration_number: ${updateData['registration_number']}',
       );
-      debugPrint('   - guardian_name: ${updateData['guardian_name']}');
-      debugPrint('   - institution_name: ${updateData['institution_name']}');
-      debugPrint('   - additionalInfo (JSON): ${updateData['additionalInfo']}');
+      LoggerService.debug('   - guardian_name: ${updateData['guardian_name']}');
+      LoggerService.debug('   - institution_name: ${updateData['institution_name']}');
+      LoggerService.debug('   - additionalInfo (JSON): ${updateData['additionalInfo']}');
 
       final count = await db.update(
         'pets',
@@ -213,11 +213,11 @@ class LocalPetService {
         whereArgs: [petId],
       );
 
-      debugPrint('✅ LocalPetService.updatePet: $count개 행 업데이트됨');
+      LoggerService.debug('✅ LocalPetService.updatePet: $count개 행 업데이트됨');
       return count > 0;
     } catch (e, stackTrace) {
-      debugPrint('❌ LocalPetService.updatePet: 에러 발생 - $e');
-      debugPrint('📍 StackTrace: $stackTrace');
+      LoggerService.debug('❌ LocalPetService.updatePet: 에러 발생 - $e');
+      LoggerService.debug('📍 StackTrace: $stackTrace');
       rethrow;
     }
   }
@@ -240,7 +240,7 @@ class LocalPetService {
           final sanitizedList = List<String>.from(value.whereType<String>());
           if (sanitizedList.isNotEmpty) {
             result[key] = sanitizedList;
-            debugPrint('💾 [$key] List saved: ${sanitizedList.length} items');
+            LoggerService.debug('💾 [$key] List saved: ${sanitizedList.length} items');
           }
         }
         // String 타입 필드 처리
@@ -258,10 +258,10 @@ class LocalPetService {
         // null은 제외
         else if (value != null) {
           result[key] = value.toString();
-          debugPrint('⚠️  [$key] 알 수 없는 타입 변환됨: ${value.runtimeType}');
+          LoggerService.debug('⚠️  [$key] 알 수 없는 타입 변환됨: ${value.runtimeType}');
         }
       } catch (e) {
-        debugPrint('⚠️  [$key] 필드 정제 실패: $e');
+        LoggerService.debug('⚠️  [$key] 필드 정제 실패: $e');
       }
     });
 

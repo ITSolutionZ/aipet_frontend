@@ -1,6 +1,7 @@
-import 'package:aipet_frontend/shared/design/design.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../../shared/shared.dart';
 
 class CancelReservationModal extends ConsumerStatefulWidget {
   final String reservationId;
@@ -204,12 +205,8 @@ class _CancelReservationModalState
 
   void _confirmCancel() {
     if (_selectedReason.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('キャンセル理由を選択してください'),
-          backgroundColor: Colors.orange,
-        ),
-      );
+      // ✅ Shared SnackBarService 사용
+      SnackBarService.showWarning(context, 'キャンセル理由を選択してください');
       return;
     }
 
@@ -219,12 +216,11 @@ class _CancelReservationModalState
     // 3. 서버에 취소 요청 전송 (추후 API 연동 시 구현)
 
     // 성공 메시지 표시
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('${widget.facilityName}の予約がキャンセルされました'),
-        backgroundColor: AppColors.pointRed,
-        duration: const Duration(seconds: 2),
-      ),
+    // ✅ Shared SnackBarService 사용
+    SnackBarService.showWarning(
+      context,
+      '${widget.facilityName}の予約がキャンセルされました',
+      duration: const Duration(seconds: 2),
     );
 
     // 모달 닫기

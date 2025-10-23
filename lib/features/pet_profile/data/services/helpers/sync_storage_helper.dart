@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:aipet_frontend/shared/core/data/result_types.dart';
 import 'package:aipet_frontend/shared/core/domain/common_errors.dart';
 import 'package:aipet_frontend/shared/core/services/secure_storage_service.dart';
@@ -73,13 +75,12 @@ class SyncStorageHelper {
     CacheService cacheService,
   ) async {
     try {
-      final cachedData = await cacheService.getPersistentCache(
-        'synced_pet_profiles',
-      );
-      if (cachedData == null) {
+      final cachedDataString = cacheService.getString('synced_pet_profiles');
+      if (cachedDataString == null) {
         return const Success([]);
       }
 
+      final cachedData = jsonDecode(cachedDataString) as Map<String, dynamic>;
       final petsData = cachedData['pets'] as List<dynamic>;
       final pets = petsData
           .map(
@@ -90,7 +91,7 @@ class SyncStorageHelper {
 
       return Success(pets);
     } catch (e) {
-      return Result.failure(
+      return ResultState.failure(
         CacheError('캐시된 펫 데이터 로드 실패', details: e.toString()),
       );
     }
@@ -106,7 +107,7 @@ class SyncStorageHelper {
       }
       return const Success(null);
     } catch (e) {
-      return Result.failure(
+      return ResultState.failure(
         CacheError('마지막 동기화 시간 조회 실패', details: e.toString()),
       );
     }
@@ -146,7 +147,7 @@ class SyncStorageHelper {
           if (result.isSuccess) {
             return Success(result.dataOrNull!.toDomain());
           }
-          return Result.failure(result.errorOrNull!);
+          return ResultState.failure(result.errorOrNull!);
 
         case 'update':
           final petId = data['id'] as String;
@@ -157,7 +158,7 @@ class SyncStorageHelper {
           if (result.isSuccess) {
             return Success(result.dataOrNull!.toDomain());
           }
-          return Result.failure(result.errorOrNull!);
+          return ResultState.failure(result.errorOrNull!);
 
         case 'delete':
           final petId = data['id'] as String;
@@ -165,15 +166,17 @@ class SyncStorageHelper {
           if (result.isSuccess) {
             return const Success(null);
           }
-          return Result.failure(result.errorOrNull!);
+          return ResultState.failure(result.errorOrNull!);
 
         default:
-          return Result.failure(
+          return ResultState.failure(
             ValidationError(field: 'sync_type', reason: '알 수 없는 동기화 타입: $type'),
           );
       }
     } catch (e) {
-      return Result.failure(SyncError('동기화 변경사항 적용 실패', details: e.toString()));
+      return ResultState.failure(
+        SyncError('同期変更の適用に失敗しました', details: e.toString()),
+      );
     }
   }
 }

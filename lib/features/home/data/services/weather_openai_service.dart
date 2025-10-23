@@ -1,8 +1,8 @@
 import 'package:aipet_frontend/app/config/app_config.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/core/services/ai_http_client_service.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:aipet_frontend/shared/services/base_logging_service.dart';
-import 'package:flutter/foundation.dart';
 
 /// 날씨 어드바이스 전용 OpenAI API 서비스
 class WeatherOpenAIService extends BaseLoggingService {
@@ -21,7 +21,7 @@ class WeatherOpenAIService extends BaseLoggingService {
     }
 
     try {
-      debugPrint('🌤️ WeatherOpenAI: Generating weather advice...');
+      LoggerService.debug('🌤️ WeatherOpenAI: Generating weather advice...');
 
       final response = await _httpClient.callOpenAI<Map<String, dynamic>>(
         '/chat/completions',
@@ -42,7 +42,9 @@ class WeatherOpenAIService extends BaseLoggingService {
       );
 
       if (!response.isSuccess) {
-        debugPrint('❌ WeatherOpenAI: API call failed - ${response.message}');
+        LoggerService.debug(
+          '❌ WeatherOpenAI: API call failed - ${response.message}',
+        );
         return Result.failure(response.message);
       }
 
@@ -61,7 +63,7 @@ class WeatherOpenAIService extends BaseLoggingService {
               'Empty response content from OpenAI API',
             );
           }
-          debugPrint('✅ WeatherOpenAI: Success - $content');
+          LoggerService.debug('✅ WeatherOpenAI: Success - $content');
           return Result<String>.success(
             'Weather advice generated successfully',
             content,
@@ -71,7 +73,7 @@ class WeatherOpenAIService extends BaseLoggingService {
 
       return Result<String>.failure('No valid response from OpenAI API');
     } catch (e) {
-      debugPrint('❌ WeatherOpenAI: Exception - $e');
+      LoggerService.debug('❌ WeatherOpenAI: Exception - $e');
       return Result<String>.failure('OpenAI API call failed: $e');
     }
   }

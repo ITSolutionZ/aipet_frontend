@@ -1,3 +1,4 @@
+import 'package:aipet_frontend/shared/core/services/snackbar_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -196,28 +197,18 @@ class FacilityListController {
   }
 
   /// 성공 메시지 표시
+  /// ✅ Shared SnackBarService 사용
   void _showSuccessMessage(String message) {
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: Colors.green,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      SnackBarService.showSuccess(context, message);
     }
   }
 
   /// 에러 메시지 표시
+  /// ✅ Shared SnackBarService 사용
   void _showErrorMessage(String message) {
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: Colors.red,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      SnackBarService.showError(context, message);
     }
   }
 }

@@ -1,5 +1,5 @@
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:aipet_frontend/shared/services/local_database_service.dart';
-import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 
 /// 펫-사용자 관계 관리 서비스
@@ -64,7 +64,7 @@ class PetUserRelationService {
 
       return true;
     } catch (e) {
-      debugPrint('펫-사용자 관계 추가 실패: $e');
+      LoggerService.debug('펫-사용자 관계 추가 실패: $e');
       return false;
     }
   }
@@ -86,7 +86,7 @@ class PetUserRelationService {
 
       return true;
     } catch (e) {
-      debugPrint('펫-사용자 관계 제거 실패: $e');
+      LoggerService.debug('펫-사용자 관계 제거 실패: $e');
       return false;
     }
   }
@@ -113,7 +113,7 @@ class PetUserRelationService {
 
       return result;
     } catch (e) {
-      debugPrint('펫 관리자 조회 실패: $e');
+      LoggerService.debug('펫 관리자 조회 실패: $e');
       return [];
     }
   }
@@ -141,7 +141,7 @@ class PetUserRelationService {
 
       return result;
     } catch (e) {
-      debugPrint('사용자 펫 조회 실패: $e');
+      LoggerService.debug('사용자 펫 조회 실패: $e');
       return [];
     }
   }
@@ -171,7 +171,7 @@ class PetUserRelationService {
 
       return true;
     } catch (e) {
-      debugPrint('펫 권한 확인 실패: $e');
+      LoggerService.debug('펫 권한 확인 실패: $e');
       return false;
     }
   }
@@ -208,7 +208,7 @@ class PetUserRelationService {
 
       return result.isNotEmpty ? result.first : null;
     } catch (e) {
-      debugPrint('펫 소유자 조회 실패: $e');
+      LoggerService.debug('펫 소유자 조회 실패: $e');
       return null;
     }
   }
@@ -236,7 +236,7 @@ class PetUserRelationService {
 
       return true;
     } catch (e) {
-      debugPrint('사용자 역할 업데이트 실패: $e');
+      LoggerService.debug('사용자 역할 업데이트 실패: $e');
       return false;
     }
   }
@@ -256,7 +256,7 @@ class PetUserRelationService {
 
       return result.first['count'] as int;
     } catch (e) {
-      debugPrint('펫 관리자 수 조회 실패: $e');
+      LoggerService.debug('펫 관리자 수 조회 실패: $e');
       return 0;
     }
   }
@@ -276,7 +276,7 @@ class PetUserRelationService {
 
       return result.first['count'] as int;
     } catch (e) {
-      debugPrint('사용자 펫 수 조회 실패: $e');
+      LoggerService.debug('사용자 펫 수 조회 실패: $e');
       return 0;
     }
   }

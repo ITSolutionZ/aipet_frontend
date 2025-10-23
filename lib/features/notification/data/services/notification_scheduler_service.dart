@@ -1,7 +1,7 @@
 import 'dart:async';
 
+import 'package:aipet_frontend/shared/services/cache_service.dart';
 import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../domain/domain.dart';
 import 'helpers/notification_scheduler_executor_helper.dart';
@@ -16,6 +16,13 @@ class NotificationSchedulerService {
   Timer? _schedulerTimer;
   bool _isInitialized = false;
   bool _isEnabled = true;
+
+  // ✅ CacheService 사용
+  final _cache = CacheService();
+
+  Future<void> _init() async {
+    await _cache.initialize();
+  }
 
   // 스케줄 스트림
   final StreamController<List<NotificationSchedule>> _schedulesController =
@@ -32,8 +39,8 @@ class NotificationSchedulerService {
 
     try {
       // 설정 로드
-      final prefs = await SharedPreferences.getInstance();
-      _isEnabled = prefs.getBool(_schedulerEnabledKey) ?? true;
+      await _init();
+      _isEnabled = _cache.getBoolValue(_schedulerEnabledKey) ?? true;
 
       if (_isEnabled) {
         await _startScheduler();
@@ -197,8 +204,8 @@ class NotificationSchedulerService {
     _isEnabled = enabled;
 
     try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setBool(_schedulerEnabledKey, enabled);
+      await _init();
+      await _cache.setBoolValue(_schedulerEnabledKey, enabled);
 
       if (enabled) {
         await _startScheduler();

@@ -12,7 +12,6 @@ import 'package:aipet_frontend/features/home/presentation/screens/favorites_scre
 import 'package:aipet_frontend/features/notification/presentation/screens/notification_detail_screen.dart';
 import 'package:aipet_frontend/features/notification/presentation/screens/notification_list_screen.dart';
 // import 'package:aipet_frontend/features/pet_activities/presentation/screens/all_tricks_screen.dart';
-// import 'package:aipet_frontend/features/pet_activities/presentation/screens/learn_trick_screen.dart';
 // import 'package:aipet_frontend/features/pet_activities/presentation/screens/youtube_training_videos_screen.dart';
 import 'package:aipet_frontend/features/pet_health/presentation/screens/weight_tracking_screen.dart';
 import 'package:aipet_frontend/features/pet_profile/presentation/screens/pet_profile_screen.dart';
@@ -177,11 +176,6 @@ class StandaloneRoutes {
     // GoRoute(
     //   path: RouteConstants.allTricksRoute,
     //   name: 'all-tricks',
-    //   builder: (context, state) => const LearnTrickScreen(),
-    // ),
-    // GoRoute(
-    //   path: RouteConstants.allTricksDetailRoute,
-    //   name: 'all-tricks-detail',
     //   builder: (context, state) => const AllTricksScreen(),
     // ),
     // GoRoute(

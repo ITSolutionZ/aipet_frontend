@@ -233,24 +233,24 @@ class _PetSelectorBottomSheet extends StatelessWidget {
       );
     }
 
-    debugPrint('🖼️ PetSelectorWidget - imageUrl: $imageUrl');
+    LoggerService.debug('🖼️ PetSelectorWidget - imageUrl: $imageUrl');
 
     // 상대 경로를 절대 경로로 변환
     final storageService = ImageStorageService();
     final absolutePath = storageService.getAbsolutePath(imageUrl) ?? imageUrl;
-    debugPrint('🖼️ PetSelectorWidget - absolutePath: $absolutePath');
+    LoggerService.debug('🖼️ PetSelectorWidget - absolutePath: $absolutePath');
 
     final imageType = ImageService.getImageType(absolutePath);
-    debugPrint('🖼️ PetSelectorWidget - imageType: $imageType');
+    LoggerService.debug('🖼️ PetSelectorWidget - imageType: $imageType');
 
     switch (imageType) {
       case ImageType.file:
         final file = File(absolutePath);
         final fileExists = file.existsSync();
-        debugPrint('🖼️ PetSelectorWidget - File exists: $fileExists');
+        LoggerService.debug('🖼️ PetSelectorWidget - File exists: $fileExists');
 
         if (!fileExists) {
-          debugPrint(
+          LoggerService.debug(
             '❌ PetSelectorWidget - File does not exist: $absolutePath',
           );
           return Container(
@@ -263,7 +263,7 @@ class _PetSelectorBottomSheet extends StatelessWidget {
           file,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🖼️ PetSelectorWidget - File image error: $error');
+            LoggerService.debug('🖼️ PetSelectorWidget - File image error: $error');
             return Container(
               color: Colors.grey[300],
               child: Icon(Icons.pets, color: Colors.grey[600], size: 24),
@@ -275,7 +275,7 @@ class _PetSelectorBottomSheet extends StatelessWidget {
           absolutePath,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🖼️ PetSelectorWidget - Network image error: $error');
+            LoggerService.debug('🖼️ PetSelectorWidget - Network image error: $error');
             return Container(
               color: Colors.grey[300],
               child: Icon(Icons.pets, color: Colors.grey[600], size: 24),
@@ -287,7 +287,7 @@ class _PetSelectorBottomSheet extends StatelessWidget {
           absolutePath,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
-            debugPrint('🖼️ PetSelectorWidget - Asset image error: $error');
+            LoggerService.debug('🖼️ PetSelectorWidget - Asset image error: $error');
             return Container(
               color: Colors.grey[300],
               child: Icon(Icons.pets, color: Colors.grey[600], size: 24),

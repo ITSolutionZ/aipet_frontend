@@ -1,4 +1,5 @@
 import 'dart:ui' as ui;
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -86,7 +87,7 @@ class CustomMarkerBuilder {
 
       return BitmapDescriptor.bytes(pngBytes);
     } catch (e) {
-      debugPrint('⚠️ CustomMarker 생성 실패: $e');
+      LoggerService.debug('⚠️ CustomMarker 생성 실패: $e');
       // 폴백: 기본 마커
       return BitmapDescriptor.defaultMarker;
     }

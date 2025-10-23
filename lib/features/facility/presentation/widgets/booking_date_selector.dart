@@ -1,6 +1,7 @@
 import 'package:aipet_frontend/shared/design/tokens/tokens.dart';
 import 'package:aipet_frontend/shared/ui/components/cards/info_card.dart';
 import 'package:flutter/material.dart';
+import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
 
 /// 📅 예약 날짜 선택 위젯
 ///
@@ -54,7 +55,7 @@ class BookingDateSelector extends StatelessWidget {
                       borderRadius: BorderRadius.circular(AppSpacing.sm),
                     ),
                     child: Text(
-                      '${selectedDate!.year}/${selectedDate!.month.toString().padLeft(2, '0')}/${selectedDate!.day.toString().padLeft(2, '0')}',
+                      DateTimeUtils.formatDateSlash(selectedDate!),
                       style: AppFonts.bodySmall.copyWith(
                         color: AppColors.primary,
                         fontWeight: FontWeight.bold,

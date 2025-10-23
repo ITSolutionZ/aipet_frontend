@@ -218,11 +218,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
                       const SizedBox(height: AppSpacing.xs),
                       Row(
                         children: [
-                          const Icon(
-                            Icons.star,
-                            size: 14,
-                            color: Colors.amber,
-                          ),
+                          const Icon(Icons.star, size: 14, color: Colors.amber),
                           const SizedBox(width: 2),
                           Text(
                             product.formattedReviewAverage,
@@ -261,7 +257,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
         await launchUrl(uri, mode: LaunchMode.externalApplication);
       }
     } catch (e) {
-      debugPrint('Failed to open product page: $e');
+      LoggerService.debug('Failed to open product page: $e');
     }
   }
 
@@ -292,11 +288,11 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
           .removeFavorite(itemCode);
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('お気に入りから削除しました'),
-            duration: Duration(seconds: 2),
-          ),
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showWarning(
+          context,
+          'お気に入りから削除しました',
+          duration: const Duration(seconds: 2),
         );
       }
     }

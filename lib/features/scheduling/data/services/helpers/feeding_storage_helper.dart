@@ -1,18 +1,26 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
 /// 급여 기록 저장 헬퍼
+import 'package:aipet_frontend/shared/services/cache_service.dart';
+
 class FeedingStorageHelper {
   static const String _keyFeedingRecords = 'feeding_records';
+  // ✅ SharedPreferences 인스턴스 재사용
+  static final _cache = CacheService();
+  static Future<void> _init() async {
+    await _cache.initialize();
+  }
+
   static const String _keyFeedingSchedules = 'feeding_schedules';
 
   /// 급여 기록 가져오기
   static Future<List<Map<String, dynamic>>> getFeedingRecords() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final recordsJson = prefs.getStringList(_keyFeedingRecords) ?? [];
+      await _init();
+      final recordsJson =
+          _cache.getPersistentCacheList(_keyFeedingRecords) ?? [];
 
       if (recordsJson.isEmpty) {
         return await _initializeDefaultRecords();
@@ -22,7 +30,7 @@ class FeedingStorageHelper {
         return jsonDecode(json) as Map<String, dynamic>;
       }).toList();
     } catch (e) {
-      debugPrint('急給記録取得エラー: $e');
+      LoggerService.debug('急給記録取得エラー: $e');
       return [];
     }
   }
@@ -30,23 +38,24 @@ class FeedingStorageHelper {
   /// 급여 기록 추가
   static Future<void> addFeedingRecord(Map<String, dynamic> record) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final records = prefs.getStringList(_keyFeedingRecords) ?? [];
+      await _init();
+      final records = _cache.getPersistentCacheList(_keyFeedingRecords) ?? [];
 
       records.add(jsonEncode(record));
-      await prefs.setStringList(_keyFeedingRecords, records);
+      await _cache.setPersistentCacheList(_keyFeedingRecords, records);
 
-      debugPrint('急給記録追加成功: ${record['id']}');
+      LoggerService.debug('急給記録追加成功: ${record['id']}');
     } catch (e) {
-      debugPrint('急給記録追加エラー: $e');
+      LoggerService.debug('急給記録追加エラー: $e');
     }
   }
 
   /// 급여 스케줄 가져오기
   static Future<List<Map<String, dynamic>>> getFeedingSchedules() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final schedulesJson = prefs.getStringList(_keyFeedingSchedules) ?? [];
+      await _init();
+      final schedulesJson =
+          _cache.getPersistentCacheList(_keyFeedingSchedules) ?? [];
 
       if (schedulesJson.isEmpty) {
         return await _initializeDefaultSchedules();
@@ -56,7 +65,7 @@ class FeedingStorageHelper {
         return jsonDecode(json) as Map<String, dynamic>;
       }).toList();
     } catch (e) {
-      debugPrint('急給スケジュール取得エラー: $e');
+      LoggerService.debug('急給スケジュール取得エラー: $e');
       return [];
     }
   }
@@ -68,7 +77,7 @@ class FeedingStorageHelper {
     String amount,
   ) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final schedules = await getFeedingSchedules();
 
       final updatedSchedules = schedules.map((schedule) {
@@ -84,11 +93,11 @@ class FeedingStorageHelper {
       }).toList();
 
       final schedulesJson = updatedSchedules.map((s) => jsonEncode(s)).toList();
-      await prefs.setStringList(_keyFeedingSchedules, schedulesJson);
+      await _cache.setPersistentCacheList(_keyFeedingSchedules, schedulesJson);
 
-      debugPrint('急給スケジュール更新成功: $mealType');
+      LoggerService.debug('急給スケジュール更新成功: $mealType');
     } catch (e) {
-      debugPrint('急給スケジュール更新エラー: $e');
+      LoggerService.debug('急給スケジュール更新エラー: $e');
     }
   }
 
@@ -141,9 +150,9 @@ class FeedingStorageHelper {
       },
     ];
 
-    final prefs = await SharedPreferences.getInstance();
+    await _init();
     final recordsJson = defaultRecords.map((r) => jsonEncode(r)).toList();
-    await prefs.setStringList(_keyFeedingRecords, recordsJson);
+    await _cache.setPersistentCacheList(_keyFeedingRecords, recordsJson);
 
     return defaultRecords;
   }
@@ -172,9 +181,9 @@ class FeedingStorageHelper {
       },
     ];
 
-    final prefs = await SharedPreferences.getInstance();
+    await _init();
     final schedulesJson = defaultSchedules.map((s) => jsonEncode(s)).toList();
-    await prefs.setStringList(_keyFeedingSchedules, schedulesJson);
+    await _cache.setPersistentCacheList(_keyFeedingSchedules, schedulesJson);
 
     return defaultSchedules;
   }

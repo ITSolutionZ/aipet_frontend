@@ -347,12 +347,7 @@ class _WateringSettingsScreenState
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('給水器の再設定を開始しました'),
-                    backgroundColor: AppColors.pointBlue,
-                  ),
-                );
+                SnackBarService.showSuccess(context, '給水器の再設定を開始しました');
               },
               child: const Text('再設定'),
             ),
@@ -411,12 +406,7 @@ class _WateringSettingsScreenState
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('データをエクスポートしました'),
-                    backgroundColor: AppColors.pointGreen,
-                  ),
-                );
+                SnackBarService.showSuccess(context, 'データをエクスポートしました');
               },
               child: const Text('エクスポート'),
             ),

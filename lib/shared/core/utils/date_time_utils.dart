@@ -46,6 +46,63 @@ class DateTimeUtils {
     return '${distance.toStringAsFixed(1)} km';
   }
 
+  // ========================================
+  // 날짜/시간 포맷팅 확장 메서드 (padLeft 패턴 완전 제거)
+  // ========================================
+
+  /// 날짜를 YYYY-MM-DD 형식으로 포맷팅
+  static String formatDateKey(DateTime dateTime) {
+    final year = dateTime.year;
+    final month = dateTime.month.toString().padLeft(2, '0');
+    final day = dateTime.day.toString().padLeft(2, '0');
+    return '$year-$month-$day';
+  }
+
+  /// 날짜를 YYYY/MM/DD 형식으로 포맷팅
+  static String formatDateSlash(DateTime dateTime) {
+    final year = dateTime.year;
+    final month = dateTime.month.toString().padLeft(2, '0');
+    final day = dateTime.day.toString().padLeft(2, '0');
+    return '$year/$month/$day';
+  }
+
+  /// 경과 시간을 HH:MM:SS 형식으로 포맷팅 (타이머용)
+  static String formatElapsedTime(int totalSeconds) {
+    final hours = totalSeconds ~/ 3600;
+    final minutes = (totalSeconds % 3600) ~/ 60;
+    final seconds = totalSeconds % 60;
+    return '$hours:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+  }
+
+  /// 경과 시간을 MM:SS 형식으로 포맷팅
+  static String formatElapsedShort(int totalSeconds) {
+    final minutes = totalSeconds ~/ 60;
+    final seconds = totalSeconds % 60;
+    return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+  }
+
+  /// 경과 시간을 HH:SS 형식으로 포맷팅 (분 생략)
+  static String formatElapsedHourSecond(int totalSeconds) {
+    final hours = totalSeconds ~/ 3600;
+    final seconds = totalSeconds % 60;
+    return '$hours:${seconds.toString().padLeft(2, '0')}';
+  }
+
+  /// Duration을 HH:MM:SS 형식으로 포맷팅 (타이머용)
+  static String formatDurationTimer(Duration duration) {
+    return formatElapsedTime(duration.inSeconds);
+  }
+
+  /// Duration을 MM:SS 형식으로 포맷팅
+  static String formatDurationShortTimer(Duration duration) {
+    return formatElapsedShort(duration.inSeconds);
+  }
+
+  /// 숫자를 2자리 문자열로 포맷팅 (입력 필드용)
+  static String formatTwoDigits(int value) {
+    return value.toString().padLeft(2, '0');
+  }
+
   /// 오늘인지 확인
   static bool isToday(DateTime dateTime) {
     final now = DateTime.now();

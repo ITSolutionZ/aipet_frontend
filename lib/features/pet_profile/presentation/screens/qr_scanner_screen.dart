@@ -36,9 +36,7 @@ class _QRScannerScreenState extends ConsumerState<QRScannerScreen> {
         context.pop(code);
       } else {
         // 실패 시 에러 메시지 표시
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(result['error']), backgroundColor: Colors.red),
-        );
+        SnackBarService.showError(context, result['error']);
       }
     }
   }

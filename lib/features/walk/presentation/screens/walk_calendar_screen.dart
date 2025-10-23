@@ -280,7 +280,7 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
   /// 통계 및 산책 기록 빌드 (데이터 없으면 empty 위젯)
   Widget _buildStatisticsAndRecords(List<WalkRecordEntity> walkRecords) {
     final selectedDate = _selectedDay ?? DateTime.now();
-    debugPrint(
+    LoggerService.debug(
       '📅 캘린더: 선택 날짜=${selectedDate.year}-${selectedDate.month}-${selectedDate.day}, 전체 산책=${walkRecords.length}개',
     );
 
@@ -288,18 +288,18 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
       selectedDate,
       walkRecords,
     );
-    debugPrint('📅 캘린더: 선택 날짜의 산책 기록=${recordsForDay.length}개');
+    LoggerService.debug('📅 캘린더: 선택 날짜의 산책 기록=${recordsForDay.length}개');
 
     // 펫 필터 적용
     recordsForDay = WalkCalendarDataHelper.applyPetFilter(
       recordsForDay,
       _selectedPetFilter,
     );
-    debugPrint('📅 캘린더: 필터 후 산책 기록=${recordsForDay.length}개');
+    LoggerService.debug('📅 캘린더: 필터 후 산책 기록=${recordsForDay.length}개');
 
     // 데이터가 없으면 empty 위젯 표시
     if (recordsForDay.isEmpty) {
-      debugPrint('❌ 캘린더: 선택된 날짜에 산책 기록이 없습니다');
+      LoggerService.debug('❌ 캘린더: 선택된 날짜에 산책 기록이 없습니다');
       return WalkCalendarUiHelper.buildEmptyState(selectedDate);
     }
 
@@ -463,7 +463,7 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
           recentRecords,
         );
 
-        debugPrint('🗑️ WalkCalendar: $deletedCount件の古い記録を削除しました');
+        LoggerService.debug('🗑️ WalkCalendar: $deletedCount件の古い記録を削除しました');
 
         if (mounted) {
           WalkCalendarDialogHelper.showDeleteSuccessSnackBar(
@@ -472,15 +472,15 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
           );
         }
       } else {
-        debugPrint('ℹ️ WalkCalendar: 削除する古い記録はありません');
+        LoggerService.debug('ℹ️ WalkCalendar: 削除する古い記録はありません');
 
         if (mounted) {
           WalkCalendarDialogHelper.showNoRecordsToDeleteSnackBar(context);
         }
       }
     } catch (e, stackTrace) {
-      debugPrint('❌ WalkCalendar: 記録削除エラー - $e');
-      debugPrint('StackTrace: $stackTrace');
+      LoggerService.debug('❌ WalkCalendar: 記録削除エラー - $e');
+      LoggerService.debug('StackTrace: $stackTrace');
 
       if (mounted) {
         WalkCalendarDialogHelper.showDeleteErrorSnackBar(context);

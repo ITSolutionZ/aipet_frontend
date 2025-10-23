@@ -1,5 +1,7 @@
 import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
 import 'package:aipet_frontend/features/settings/data/providers/settings_providers.dart';
+import 'package:aipet_frontend/shared/core/services/snackbar_service.dart';
+import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
 import 'package:aipet_frontend/shared/design/design.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/domain/entities/user_profile_entity.dart';
@@ -890,7 +892,7 @@ class _FacilityBookingScreenState extends ConsumerState<FacilityBookingScreen> {
                       ),
                       child: Center(
                         child: Text(
-                          '${hour.toString().padLeft(2, '0')}:00',
+                          DateTimeUtils.formatTwoDigits(hour) + ':00',
                           style: AppFonts.bodySmall.copyWith(
                             fontWeight: FontWeight.w500,
                             color: AppColors.textPrimary,
@@ -1316,32 +1318,20 @@ class _FacilityBookingScreenState extends ConsumerState<FacilityBookingScreen> {
   Future<void> _handleBooking() async {
     if (_formKey.currentState!.validate()) {
       if (_selectedPetId == null || _selectedPet == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('ペットを選択してください'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showWarning(context, 'ペットを選択してください');
         return;
       }
 
       if (_selectedService == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('サービスを選択してください'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showWarning(context, 'サービスを選択してください');
         return;
       }
 
       if (_selectedDate == null || _selectedTimeSlot == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('予約日時を選択してください'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        // ✅ Shared SnackBarService 사용
+        SnackBarService.showWarning(context, '予約日時を選択してください');
         return;
       }
 
@@ -1404,12 +1394,8 @@ class _FacilityBookingScreenState extends ConsumerState<FacilityBookingScreen> {
       } catch (e) {
         // 에러 처리
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('予約保存中にエラーが発生しました: $e'),
-              backgroundColor: Colors.red,
-            ),
-          );
+          // ✅ Shared SnackBarService 사용
+          SnackBarService.showError(context, '予約保存中にエラーが発生しました: $e');
         }
       }
     }

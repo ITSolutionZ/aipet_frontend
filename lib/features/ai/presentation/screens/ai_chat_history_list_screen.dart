@@ -182,12 +182,10 @@ class _AiChatHistoryListScreenState
 
   void _openChatSession(Map<String, dynamic> item) {
     Navigator.of(context).pop();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('「${item['title']}」のチャットを開きます'),
-        backgroundColor: AppColors.pointBrown,
-        duration: const Duration(seconds: 2),
-      ),
+    SnackBarService.showInfo(
+      context,
+      '「${item['title']}」のチャットを開きます',
+      duration: const Duration(seconds: 2),
     );
   }
 }

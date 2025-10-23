@@ -137,25 +137,25 @@ class WalkListUiHelper {
   /// 이미지 타입에 따라 적절한 이미지 위젯 빌드 - 강화된 로컬 저장 지원
   static Widget _buildImageWidget(String imagePath, bool isSelected) {
     try {
-      debugPrint('🖼️ WalkListUIHelper - imagePath: $imagePath');
+      LoggerService.debug('🖼️ WalkListUIHelper - imagePath: $imagePath');
 
       // 상대 경로를 절대 경로로 변환
       final storageService = ImageStorageService();
       final absolutePath =
           storageService.getAbsolutePath(imagePath) ?? imagePath;
-      debugPrint('🖼️ WalkListUIHelper - absolutePath: $absolutePath');
+      LoggerService.debug('🖼️ WalkListUIHelper - absolutePath: $absolutePath');
 
       final imageType = ImageService.getImageType(absolutePath);
-      debugPrint('🖼️ WalkListUIHelper - imageType: $imageType');
+      LoggerService.debug('🖼️ WalkListUIHelper - imageType: $imageType');
 
       switch (imageType) {
         case ImageType.file:
           final file = File(absolutePath);
           final fileExists = file.existsSync();
-          debugPrint('🖼️ WalkListUIHelper - File exists: $fileExists');
+          LoggerService.debug('🖼️ WalkListUIHelper - File exists: $fileExists');
 
           if (!fileExists) {
-            debugPrint(
+            LoggerService.debug(
               '❌ WalkListUIHelper - File does not exist: $absolutePath',
             );
             return _buildDefaultIcon(isSelected);
@@ -165,7 +165,7 @@ class WalkListUiHelper {
             file,
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) {
-              debugPrint('🖼️ WalkListUIHelper - File image error: $error');
+              LoggerService.debug('🖼️ WalkListUIHelper - File image error: $error');
               return _buildDefaultIcon(isSelected);
             },
           );
@@ -174,7 +174,7 @@ class WalkListUiHelper {
             absolutePath,
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) {
-              debugPrint('🖼️ WalkListUIHelper - Network image error: $error');
+              LoggerService.debug('🖼️ WalkListUIHelper - Network image error: $error');
               return _buildDefaultIcon(isSelected);
             },
           );
@@ -183,13 +183,13 @@ class WalkListUiHelper {
             absolutePath,
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) {
-              debugPrint('🖼️ WalkListUIHelper - Asset image error: $error');
+              LoggerService.debug('🖼️ WalkListUIHelper - Asset image error: $error');
               return _buildDefaultIcon(isSelected);
             },
           );
       }
     } catch (e) {
-      debugPrint('❌ WalkListUIHelper - Image load error: $e');
+      LoggerService.debug('❌ WalkListUIHelper - Image load error: $e');
       return _buildDefaultIcon(isSelected);
     }
   }
@@ -231,7 +231,7 @@ class WalkListUiHelper {
           // 소요 시간
           _buildInfoItem(
             icon: Icons.timer,
-            value: '$hours:${seconds.toString().padLeft(2, '0')}',
+            value: DateTimeUtils.formatElapsedHourSecond(hours * 3600 + seconds),
           ),
 
           // 거리
