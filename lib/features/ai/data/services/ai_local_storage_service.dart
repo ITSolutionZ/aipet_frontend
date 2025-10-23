@@ -31,10 +31,9 @@ class AiLocalStorageService extends BaseLoggingService {
 
   AiLocalStorageService() : super('ai_local_storage');
 
-  /// SharedPreferences 인스턴스 가져오기
-  Future<SharedPreferences> get _prefs async {
+  /// CacheService 초기화
+  Future<void> _init() async {
     await _cache.initialize();
-    return _cache;
   }
 
   // ===== 채팅 히스토리 관리 =====
