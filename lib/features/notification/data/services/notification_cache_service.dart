@@ -8,11 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 /// 🗄️ 알림 캐시 서비스
 ///
-  // ✅ SharedPreferences 인스턴스 재사용
-  static SharedPreferences? _prefs;
-  static Future<void> _init() async {
-    _prefs ??= await SharedPreferences.getInstance();
-  }
 /// API에서 받은 알림 데이터를 로컬에 캐시하여 성능을 향상시킵니다.
 /// 네트워크가 불안정한 환경에서도 기본적인 알림 기능을 제공합니다.
 class NotificationCacheService {
@@ -22,11 +17,11 @@ class NotificationCacheService {
   static const String _notificationsCacheKey = 'cached_notifications';
   static const String _settingsCacheKey = 'cached_notification_settings';
   static const String _statsCacheKey = 'cached_notification_stats';
-  // Note: Last updated tracking removed for simplified frontend-centric approach
 
   // 캐시 만료 시간 (30분)
   static const Duration _cacheExpiration = Duration(minutes: 30);
 
+  // ✅ SharedPreferences 인스턴스 재사용
   static SharedPreferences? _prefs;
 
   /// SharedPreferences 인스턴스 가져오기
