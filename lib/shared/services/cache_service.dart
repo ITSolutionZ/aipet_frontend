@@ -1,7 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// 전역 캐시 서비스 (SharedPreferences 래퍼)
-/// 
+///
 /// 앱 전체에서 사용하는 로컬 저장소 관리
 /// - SharedPreferences의 싱글톤 래퍼
 /// - TTL 기반 캐시 관리
@@ -103,15 +103,25 @@ class CacheService {
     _memoryCache.clear();
   }
 
+  /// Double 값 저장
+  Future<void> setDoubleValue(String key, double value) async {
+    await initialize();
+    await _prefs!.setDouble(key, value);
+  }
+
+  /// Double 값 조회
+  double? getDoubleValue(String key) {
+    return _prefs?.getDouble(key);
+  }
+
   // ========== 호환성 메서드 (기존 코드 지원) ==========
 
-  /// List<String> 조회 (호환성)
-  Future<List<String>?> getPersistentCacheList(String key) async {
-    await initialize();
+  /// List<String> 조회 (호환성 - 동기)
+  List<String>? getPersistentCacheList(String key) {
     return _prefs?.getStringList(key);
   }
 
-  /// List<String> 저장 (호환성)
+  /// List<String> 저장 (호환성 - 비동기)
   Future<void> setPersistentCacheList(String key, List<String> value) async {
     await initialize();
     await _prefs!.setStringList(key, value);
