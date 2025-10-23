@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
@@ -201,7 +201,9 @@ class RakutenApiService {
           // アイテムのキーを詳細にログ出力
           if (items[0] is Map<String, dynamic>) {
             final firstItem = items[0] as Map<String, dynamic>;
-            LoggerService.debug('📝 First item keys: ${firstItem.keys.toList()}');
+            LoggerService.debug(
+              '📝 First item keys: ${firstItem.keys.toList()}',
+            );
 
             // 重要なフィールドの値を個別にチェック
             LoggerService.debug('📝 itemCode: ${firstItem['itemCode']}');
@@ -225,7 +227,9 @@ class RakutenApiService {
 
               final product = RakutenPetProduct.fromJson(item);
               products.add(product);
-              LoggerService.debug('✅ Successfully parsed item $i: ${product.itemName}');
+              LoggerService.debug(
+                '✅ Successfully parsed item $i: ${product.itemName}',
+              );
             } else {
               LoggerService.debug(
                 '⚠️ Item $i has invalid type: ${item.runtimeType}, value: $item',
@@ -257,7 +261,9 @@ class RakutenApiService {
         }
 
         if (products.isEmpty) {
-          LoggerService.debug('⚠️ No valid products parsed for keyword: $keyword');
+          LoggerService.debug(
+            '⚠️ No valid products parsed for keyword: $keyword',
+          );
           LoggerService.debug('⚠️ Returning empty list instead of mock data');
           return [];
         }
@@ -461,7 +467,9 @@ class RakutenApiService {
   }) async {
     try {
       if (_applicationId.isEmpty) {
-        LoggerService.debug('⚠️ Application ID is empty, returning default brands');
+        LoggerService.debug(
+          '⚠️ Application ID is empty, returning default brands',
+        );
         return _getDefaultBrands();
       }
 
@@ -478,7 +486,9 @@ class RakutenApiService {
         'formatVersion': '2',
       };
 
-      final uri = Uri.parse(_itemSearchUrl).replace(queryParameters: queryParams);
+      final uri = Uri.parse(
+        _itemSearchUrl,
+      ).replace(queryParameters: queryParams);
 
       LoggerService.debug('🔍 Brand Search URL: ${uri.toString()}');
 
@@ -490,7 +500,9 @@ class RakutenApiService {
         final data = json.decode(response.body);
         final items = data['Items'] as List<dynamic>? ?? [];
 
-        LoggerService.debug('📦 Found ${items.length} items for brand extraction');
+        LoggerService.debug(
+          '📦 Found ${items.length} items for brand extraction',
+        );
 
         if (items.isEmpty) {
           LoggerService.debug('⚠️ No items found, returning default brands');
@@ -530,7 +542,9 @@ class RakutenApiService {
             );
             processedShops.add(shopCode);
 
-            LoggerService.debug('✅ Brand added: $brandName (Logo: ${imageUrl.isNotEmpty ? "✓" : "✗"})');
+            LoggerService.debug(
+              '✅ Brand added: $brandName (Logo: ${imageUrl.isNotEmpty ? "✓" : "✗"})',
+            );
 
             // 최대 8개 브랜드만 수집
             if (brandMap.length >= 8) break;
@@ -568,7 +582,11 @@ class RakutenApiService {
   Map<String, String> _extractBrandInfo(String shopName) {
     // 既知のブランド名マッピング
     final brandMappings = {
-      'ロイヤルカナン': {'en': 'ROYAL CANIN', 'ja': 'ロイヤルカナン', 'desc': 'フランス発のプレミアムペットフードブランド'},
+      'ロイヤルカナン': {
+        'en': 'ROYAL CANIN',
+        'ja': 'ロイヤルカナン',
+        'desc': 'フランス発のプレミアムペットフードブランド',
+      },
       'ヒルズ': {'en': 'HILLS', 'ja': 'ヒルズ', 'desc': '獣医師推奨のサイエンス・ダイエット'},
       'HILLS': {'en': 'HILLS', 'ja': 'ヒルズ', 'desc': '獣医師推奨のサイエンス・ダイエット'},
       'オリジン': {'en': 'ORIJEN', 'ja': 'オリジン', 'desc': 'カナダ産の高品質ペットフード'},
@@ -683,7 +701,6 @@ class RakutenApiService {
       ),
     ];
   }
-
 
   /// 価格帯でペット商品を検索
   Future<List<RakutenPetProduct>> searchPetProductsByPrice({

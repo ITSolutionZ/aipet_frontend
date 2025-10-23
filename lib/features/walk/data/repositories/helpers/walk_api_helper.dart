@@ -1,7 +1,7 @@
 import 'package:aipet_frontend/features/walk/data/services/local_walk_storage_service.dart';
-import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:aipet_frontend/features/walk/data/services/walk_api_service.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
 /// Walk API 호출 헬퍼
 class WalkApiHelper {
@@ -14,14 +14,18 @@ class WalkApiHelper {
     if (!useApi) return null;
 
     try {
-      LoggerService.debug('🔄 HybridWalkRepository: API에서 산책 기록 조회 - ID: $recordId');
+      LoggerService.debug(
+        '🔄 HybridWalkRepository: API에서 산책 기록 조회 - ID: $recordId',
+      );
       final apiResult = await apiService.getWalkRecordById(recordId);
 
       if (apiResult.isSuccess && apiResult.data != null) {
         final record = apiResult.dataOrThrow;
         // API 성공 시 로컬 캐시 업데이트
         await LocalWalkStorageService.updateWalkRecord(record);
-        LoggerService.debug('✅ HybridWalkRepository: API 데이터 로드 완료 - ID: $recordId');
+        LoggerService.debug(
+          '✅ HybridWalkRepository: API 데이터 로드 완료 - ID: $recordId',
+        );
         return record;
       }
     } catch (e) {
@@ -48,7 +52,9 @@ class WalkApiHelper {
         final records = apiResult.dataOrThrow;
         // API 성공 시 로컬 캐시 동기화
         await LocalWalkStorageService.saveWalkRecords(records);
-        LoggerService.debug('✅ HybridWalkRepository: API 데이터 ${records.length}개 로드 완료');
+        LoggerService.debug(
+          '✅ HybridWalkRepository: API 데이터 ${records.length}개 로드 완료',
+        );
         return records;
       }
     } catch (e) {
@@ -67,12 +73,16 @@ class WalkApiHelper {
     if (!useApi) return null;
 
     try {
-      LoggerService.debug('🔄 HybridWalkRepository: API에서 펫 산책 기록 조회 - Pet ID: $petId');
+      LoggerService.debug(
+        '🔄 HybridWalkRepository: API에서 펫 산책 기록 조회 - Pet ID: $petId',
+      );
       final apiResult = await apiService.getWalkRecordsByPetId(petId);
 
       if (apiResult.isSuccess && apiResult.data != null) {
         final records = apiResult.dataOrThrow;
-        LoggerService.debug('✅ HybridWalkRepository: API 펫 데이터 ${records.length}개 로드');
+        LoggerService.debug(
+          '✅ HybridWalkRepository: API 펫 데이터 ${records.length}개 로드',
+        );
         return records;
       }
     } catch (e) {

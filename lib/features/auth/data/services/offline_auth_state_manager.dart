@@ -163,7 +163,9 @@ class OfflineAuthStateManager {
       final user = AuthUserModel.fromJson(userJson);
       return Success(user);
     } catch (e) {
-      return ResultState.failure(CacheError('캐시된 사용자 정보 로드 실패', details: e.toString()));
+      return ResultState.failure(
+        CacheError('캐시된 사용자 정보 로드 실패', details: e.toString()),
+      );
     }
   }
 
@@ -173,7 +175,9 @@ class OfflineAuthStateManager {
       return const Success(null);
     } catch (e) {
       // AppErrorHandler가 정의되어 있지 않아, 단순히 e.toString()으로 에러 디테일 출력
-      return ResultState.failure(CacheError('사용자 정보 캐시 실패', details: e.toString()));
+      return ResultState.failure(
+        CacheError('사용자 정보 캐시 실패', details: e.toString()),
+      );
     }
   }
 
@@ -182,7 +186,9 @@ class OfflineAuthStateManager {
       await SecureStorageService.remove('cached_user');
       return const Success(null);
     } catch (e) {
-      return ResultState.failure(CacheError('캐시된 사용자 정보 삭제 실패', details: e.toString()));
+      return ResultState.failure(
+        CacheError('캐시된 사용자 정보 삭제 실패', details: e.toString()),
+      );
     }
   }
 

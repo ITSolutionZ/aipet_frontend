@@ -58,7 +58,9 @@ class HomeDashboardNotifier extends _$HomeDashboardNotifier {
         LoggerService.debug('✅ HomeDashboardNotifier: 대시보드 데이터 로드 성공');
         return result.dataOrNull!;
       } else {
-        LoggerService.debug('❌ HomeDashboardNotifier: UseCase 실패 - ${result.error}');
+        LoggerService.debug(
+          '❌ HomeDashboardNotifier: UseCase 실패 - ${result.error}',
+        );
         throw Exception(
           '대시보드 데이터 로드 실패: ${result.error?.toString() ?? 'Unknown error'}',
         );

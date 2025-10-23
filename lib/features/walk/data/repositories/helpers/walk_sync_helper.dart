@@ -1,6 +1,6 @@
 import 'package:aipet_frontend/features/walk/data/services/walk_api_service.dart';
-import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:aipet_frontend/shared/services/sync_queue_service.dart';
 
 /// Walk 동기화 헬퍼
@@ -10,7 +10,9 @@ class WalkSyncHelper {
     try {
       final syncQueue = SyncQueueService.instance;
       await syncQueue.addToQueue(operation);
-      LoggerService.debug('📥 동기화 큐에 추가: ${operation.type.name} - ${operation.id}');
+      LoggerService.debug(
+        '📥 동기화 큐에 추가: ${operation.type.name} - ${operation.id}',
+      );
     } catch (e) {
       LoggerService.debug('❌ 동기화 큐 추가 실패: $e');
     }
