@@ -32,7 +32,7 @@ class WalkListDialogHelper {
             Text('${currentWalk.petName}との散歩を終了しますか？'),
             const SizedBox(height: 16),
             Text(
-              '経過時間: $hours:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}',
+              '経過時間: ' + DateTimeUtils.formatElapsedTime(hours * 3600 + minutes * 60 + seconds),
               style: AppTextStyles.bodySmall.copyWith(
                 color: AppColors.textSecondary,
               ),

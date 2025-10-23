@@ -233,7 +233,7 @@ class WalkListUiHelper {
           // 소요 시간
           _buildInfoItem(
             icon: Icons.timer,
-            value: '$hours:${seconds.toString().padLeft(2, '0')}',
+            value: DateTimeUtils.formatElapsedHourSecond(hours * 3600 + seconds),
           ),
 
           // 거리

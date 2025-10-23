@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_location_entity.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 import 'package:aipet_frontend/features/walk/domain/services/walk_tracking_optimizer.dart';
@@ -86,9 +87,9 @@ class LiveWalkState {
     final seconds = elapsedTime.inSeconds % 60;
 
     if (hours > 0) {
-      return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+      return DateTimeUtils.formatElapsedTime(hours * 3600 + minutes * 60 + seconds);
     } else {
-      return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+      return DateTimeUtils.formatElapsedShort(minutes * 60 + seconds);
     }
   }
 
@@ -107,9 +108,9 @@ class LiveWalkState {
     final seconds = duration.inSeconds % 60;
 
     if (hours > 0) {
-      return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+      return DateTimeUtils.formatElapsedTime(hours * 3600 + minutes * 60 + seconds);
     } else {
-      return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+      return DateTimeUtils.formatElapsedShort(minutes * 60 + seconds);
     }
   }
 }
