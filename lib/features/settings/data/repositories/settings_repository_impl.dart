@@ -51,7 +51,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
       final profile = await _userService.loadUserProfile();
 
       if (profile != null) {
-        return Result.success('ユーザープロフィールを取得しました', profile);
+        return ResultState.success('ユーザープロフィールを取得しました', profile);
       }
 
       // 기본 프로필 생성
@@ -59,9 +59,9 @@ class SettingsRepositoryImpl implements SettingsRepository {
         userName: _defaultUserProfile['name'] as String,
         email: _defaultUserProfile['email'] as String,
       );
-      return Result.success('デフォルトプロフィールを取得しました', defaultProfile);
+      return ResultState.success('デフォルトプロフィールを取得しました', defaultProfile);
     } catch (e) {
-      return Result.failure('プロフィールの取得に失敗しました: ${e.toString()}');
+      return ResultState.failure('プロフィールの取得に失敗しました: ${e.toString()}');
     }
   }
 
@@ -71,9 +71,9 @@ class SettingsRepositoryImpl implements SettingsRepository {
   ) async {
     try {
       await _userService.saveUserProfile(profile);
-      return Result.success('プロフィールが更新されました', profile);
+      return ResultState.success('プロフィールが更新されました', profile);
     } catch (e) {
-      return Result.failure('プロフィールの更新に失敗しました: ${e.toString()}');
+      return ResultState.failure('プロフィールの更新に失敗しました: ${e.toString()}');
     }
   }
 
@@ -82,16 +82,16 @@ class SettingsRepositoryImpl implements SettingsRepository {
     try {
       // 비밀번호 유효성 검사
       if (!request.isValid) {
-        return Result.failure('無効なパスワード変更リクエストです');
+        return ResultState.failure('無効なパスワード変更リクエストです');
       }
 
       // 로컬에서 비밀번호 변경 처리 (실제로는 암호화 필요)
       await _init();
       await prefs.setString(_keyUserPassword, request.newPassword);
 
-      return Result.success('パスワードが変更されました', null);
+      return ResultState.success('パスワードが変更されました', null);
     } catch (e) {
-      return Result.failure('パスワードの変更に失敗しました: ${e.toString()}');
+      return ResultState.failure('パスワードの変更に失敗しました: ${e.toString()}');
     }
   }
 
@@ -107,9 +107,9 @@ class SettingsRepositoryImpl implements SettingsRepository {
       await prefs.remove(_keyCacheSize);
       await prefs.remove(_keyExportedData);
 
-      return Result.success('アカウントが削除されました', null);
+      return ResultState.success('アカウントが削除されました', null);
     } catch (e) {
-      return Result.failure('アカウントの削除に失敗しました: ${e.toString()}');
+      return ResultState.failure('アカウントの削除に失敗しました: ${e.toString()}');
     }
   }
 
@@ -135,7 +135,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
             orElse: () => DataSyncFrequency.daily,
           ),
         );
-        return Result.success('アプリ設定を取得しました', settings);
+        return ResultState.success('アプリ設定を取得しました', settings);
       }
 
       // 기본 설정 Entity 생성
@@ -149,9 +149,9 @@ class SettingsRepositoryImpl implements SettingsRepository {
         syncFrequency:
             _defaultAppSettings['syncFrequency'] as DataSyncFrequency,
       );
-      return Result.success('デフォルト設定を取得しました', defaultSettings);
+      return ResultState.success('デフォルト設定を取得しました', defaultSettings);
     } catch (e) {
-      return Result.failure('アプリ設定の取得に失敗しました: ${e.toString()}');
+      return ResultState.failure('アプリ設定の取得に失敗しました: ${e.toString()}');
     }
   }
 
@@ -171,9 +171,9 @@ class SettingsRepositoryImpl implements SettingsRepository {
       };
 
       await prefs.setString(_keyAppSettings, jsonEncode(settingsMap));
-      return Result.success('アプリ設定が保存されました', settings);
+      return ResultState.success('アプリ設定が保存されました', settings);
     } catch (e) {
-      return Result.failure('アプリ設定の保存に失敗しました: ${e.toString()}');
+      return ResultState.failure('アプリ設定の保存に失敗しました: ${e.toString()}');
     }
   }
 
@@ -197,9 +197,9 @@ class SettingsRepositoryImpl implements SettingsRepository {
         filePath: 'local://exported_data.json',
         exportedAt: DateTime.now(),
       );
-      return Result.success('アプリデータがエクスポートされました', exportResult);
+      return ResultState.success('アプリデータがエクスポートされました', exportResult);
     } catch (e) {
-      return Result.failure('アプリデータのエクスポートに失敗しました: ${e.toString()}');
+      return ResultState.failure('アプリデータのエクスポートに失敗しました: ${e.toString()}');
     }
   }
 
@@ -221,12 +221,12 @@ class SettingsRepositoryImpl implements SettingsRepository {
           await prefs.setString(_keyAppSettings, exportedData['appSettings']);
         }
 
-        return Result.success('アプリデータがインポートされました', null);
+        return ResultState.success('アプリデータがインポートされました', null);
       }
 
-      return Result.failure('インポートするデータが見つかりません');
+      return ResultState.failure('インポートするデータが見つかりません');
     } catch (e) {
-      return Result.failure('アプリデータのインポートに失敗しました: ${e.toString()}');
+      return ResultState.failure('アプリデータのインポートに失敗しました: ${e.toString()}');
     }
   }
 
@@ -239,9 +239,9 @@ class SettingsRepositoryImpl implements SettingsRepository {
       await prefs.remove(_keyCacheSize);
       await prefs.remove(_keyExportedData);
 
-      return Result.success('キャッシュがクリアされました', null);
+      return ResultState.success('キャッシュがクリアされました', null);
     } catch (e) {
-      return Result.failure('キャッシュのクリアに失敗しました: ${e.toString()}');
+      return ResultState.failure('キャッシュのクリアに失敗しました: ${e.toString()}');
     }
   }
 
@@ -252,16 +252,16 @@ class SettingsRepositoryImpl implements SettingsRepository {
       final cachedSize = prefs.getInt(_keyCacheSize);
 
       if (cachedSize != null) {
-        return Result.success('キャッシュサイズを取得しました', cachedSize);
+        return ResultState.success('キャッシュサイズを取得しました', cachedSize);
       }
 
       // 기본 캐시 크기 계산 (실제로는 파일 시스템에서 계산)
       const defaultSize = 1024 * 1024 * 5; // 5MB
       await prefs.setInt(_keyCacheSize, defaultSize);
 
-      return Result.success('デフォルトキャッシュサイズを取得しました', defaultSize);
+      return ResultState.success('デフォルトキャッシュサイズを取得しました', defaultSize);
     } catch (e) {
-      return Result.failure('キャッシュサイズの取得に失敗しました: ${e.toString()}');
+      return ResultState.failure('キャッシュサイズの取得に失敗しました: ${e.toString()}');
     }
   }
 
@@ -281,9 +281,9 @@ class SettingsRepositoryImpl implements SettingsRepository {
       };
 
       await prefs.setString(_keyUserLocation, jsonEncode(locationMap));
-      return Result.success('位置情報を保存しました');
+      return ResultState.success('位置情報を保存しました');
     } catch (e) {
-      return Result.failure('位置情報の保存に失敗しました: ${e.toString()}');
+      return ResultState.failure('位置情報の保存に失敗しました: ${e.toString()}');
     }
   }
 
@@ -295,12 +295,12 @@ class SettingsRepositoryImpl implements SettingsRepository {
 
       if (locationJson != null) {
         final locationMap = jsonDecode(locationJson) as Map<String, dynamic>;
-        return Result.success('位置情報を取得しました', locationMap);
+        return ResultState.success('位置情報を取得しました', locationMap);
       }
 
-      return Result.failure('保存された位置情報がありません');
+      return ResultState.failure('保存された位置情報がありません');
     } catch (e) {
-      return Result.failure('位置情報の取得に失敗しました: ${e.toString()}');
+      return ResultState.failure('位置情報の取得に失敗しました: ${e.toString()}');
     }
   }
 }
