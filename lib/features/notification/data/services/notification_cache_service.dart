@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 
-import '../../domain/domain.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../domain/domain.dart';
 
 /// 🗄️ 알림 캐시 서비스
 ///

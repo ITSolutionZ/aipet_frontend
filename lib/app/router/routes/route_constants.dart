@@ -38,6 +38,7 @@ class RouteConstants {
   static const String vaccinesRoute = '/home/vaccines';
   static const String tricksRoute = '/home/tricks';
   static const String allTricksRoute = '/all-tricks';
+  static const String allTricksDetailRoute = '/all-tricks-detail';
   static const String trainingVideosRoute = '/training-videos';
   static const String qrCodeRoute = '/home/qr';
   static const String allergyRoute = '/home/allergy';

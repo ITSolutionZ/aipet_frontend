@@ -1,7 +1,8 @@
-import '../../../domain/domain.dart';
-import '../../extensions/notification_type_ui_extension.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+
+import '../../../domain/domain.dart';
+import '../../extensions/notification_type_ui_extension.dart';
 
 /// 알림 필터 칩 위젯
 class NotificationFilterChipsComponent extends StatelessWidget {

@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-
 import 'package:aipet_frontend/shared/shared.dart';
+import 'package:flutter/material.dart';
 
 import '../../../domain/domain.dart';
 import 'allergy_product_card.dart';

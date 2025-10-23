@@ -1,7 +1,7 @@
-import '../entities/entities.dart';
-import '../repositories/notification_repository.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 
+import '../entities/entities.dart';
+import '../repositories/notification_repository.dart';
 
 /// 알림 읽음 처리 UseCase
 class MarkNotificationAsReadUseCase {
