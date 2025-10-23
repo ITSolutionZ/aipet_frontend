@@ -174,7 +174,7 @@ class SyncStorageHelper {
           );
       }
     } catch (e) {
-      return Result.failure(SyncError('동기화 변경사항 적용 실패', details: e.toString()));
+      return Result.failure(SyncError.toString()));
     }
   }
 }

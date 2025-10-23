@@ -62,7 +62,7 @@ class PetImageUploadService {
         uploadResult.errorOrNull ?? UnknownError(details: 'Upload failed'),
       );
     } catch (e) {
-      return Result.failure(UnknownError(details: e.toString()));
+      return Result.failure(UnknownError.toString()));
     }
   }
 
@@ -97,7 +97,7 @@ class PetImageUploadService {
 
       return Success(uploadedUrls);
     } catch (e) {
-      return Result.failure(UnknownError(details: e.toString()));
+      return Result.failure(UnknownError.toString()));
     }
   }
 
@@ -133,7 +133,7 @@ class PetImageUploadService {
 
       return Success(processedFile);
     } catch (e) {
-      return Result.failure(UnknownError(details: e.toString()));
+      return Result.failure(UnknownError.toString()));
     }
   }
 
@@ -259,7 +259,7 @@ class PetImageUploadService {
 
       return Success(metadata);
     } catch (e) {
-      return Result.failure(UnknownError(details: e.toString()));
+      return Result.failure(UnknownError.toString()));
     }
   }
 
@@ -296,7 +296,7 @@ class PetImageUploadService {
 
       return const Success(true);
     } catch (e) {
-      return Result.failure(UnknownError(details: e.toString()));
+      return Result.failure(UnknownError.toString()));
     }
   }
 }

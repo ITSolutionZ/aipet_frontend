@@ -56,7 +56,7 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
       );
 
       if (response.data == null) {
-        return Result.failure(UnknownError(details: 'Empty response data'));
+        return Result.failure(UnknownError.toString());
       }
 
       final petData = response.data!['data'] ?? response.data!;
@@ -78,7 +78,7 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
       );
 
       if (response.data == null) {
-        return Result.failure(UnknownError(details: 'Empty response data'));
+        return Result.failure(UnknownError.toString());
       }
 
       final petData = response.data!['data'] ?? response.data!;
@@ -152,7 +152,7 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
       );
 
       if (response.data == null) {
-        return Result.failure(UnknownError(details: 'Empty response data'));
+        return Result.failure(UnknownError.toString());
       }
 
       final settingsData = response.data!['data'] ?? response.data!;
@@ -199,7 +199,7 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
       );
 
       if (response.data == null) {
-        return Result.failure(UnknownError(details: 'Empty response data'));
+        return Result.failure(UnknownError.toString());
       }
 
       final managersData = response.data!['data'] ?? response.data!;
@@ -217,7 +217,7 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
       );
 
       if (response.data == null) {
-        return Result.failure(UnknownError(details: 'Empty response data'));
+        return Result.failure(UnknownError.toString());
       }
 
       final statusData = response.data!['data'] ?? response.data!;

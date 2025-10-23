@@ -65,7 +65,7 @@ class PetSyncService {
     SyncDirection direction,
   ) async {
     if (_currentStatus == SyncStatus.syncing) {
-      return Result.failure(SyncError('동기화가 이미 진행 중입니다.'));
+      return Result.failure(SyncError.toString());
     }
 
     _updateSyncStatus(SyncStatus.syncing);
@@ -81,7 +81,7 @@ class PetSyncService {
       }
     } catch (e) {
       _updateSyncStatus(SyncStatus.failed);
-      return Result.failure(SyncError('동기화 실패', details: e.toString()));
+      return Result.failure(SyncError.toString()));
     }
   }
 
@@ -168,7 +168,7 @@ class PetSyncService {
       return Success(allSyncedPets);
     } catch (e) {
       _updateSyncStatus(SyncStatus.failed);
-      return Result.failure(SyncError('양방향 동기화 실패', details: e.toString()));
+      return Result.failure(SyncError.toString()));
     }
   }
 
