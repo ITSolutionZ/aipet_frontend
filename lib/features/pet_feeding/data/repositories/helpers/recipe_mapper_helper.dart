@@ -8,6 +8,11 @@ class RecipeMapperHelper {
   /// 레시피 엔티티를 JSON으로 변환
   static Map<String, dynamic> entityToJson(RecipeEntity recipe) {
     return recipe.toJson();
+  // ✅ SharedPreferences 인스턴스 재사용
+  static SharedPreferences? _prefs;
+  static Future<void> _init() async {
+    _prefs ??= await SharedPreferences.getInstance();
+  }
   }
 
   /// JSON을 레시피 엔티티로 변환
@@ -33,7 +38,7 @@ class RecipeMapperHelper {
   static Future<void> saveRecipesToPreferences(
     List<Map<String, dynamic>> recipes,
   ) async {
-    final prefs = await SharedPreferences.getInstance();
+    await _init();
     final recipesJson = recipes.map((r) => jsonEncode(r)).toList();
     await prefs.setStringList('pet_recipes', recipesJson);
   }

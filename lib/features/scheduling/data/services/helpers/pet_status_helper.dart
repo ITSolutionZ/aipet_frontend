@@ -8,12 +8,17 @@ class PetStatusHelper {
   static const String _keyPetStatuses = 'pet_statuses';
 
   /// 펫 상태 저장
+  // ✅ SharedPreferences 인스턴스 재사용
+  static SharedPreferences? _prefs;
+  static Future<void> _init() async {
+    _prefs ??= await SharedPreferences.getInstance();
+  }
   static Future<void> updatePetStatus(
     String petId,
     Map<String, String> statusValues,
   ) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final statusKey = '${_keyPetStatuses}_$petId';
 
       final statusData = {
@@ -31,7 +36,7 @@ class PetStatusHelper {
   /// 펫 상태 가져오기
   static Future<Map<String, dynamic>> getPetStatus(String petId) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final statusKey = '${_keyPetStatuses}_$petId';
       final statusJson = prefs.getString(statusKey);
 

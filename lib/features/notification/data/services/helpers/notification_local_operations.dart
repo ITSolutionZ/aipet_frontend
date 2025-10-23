@@ -8,6 +8,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// 알림 로컬 작업 헬퍼
 class NotificationLocalOperations {
   static const String _tag = 'NotificationLocalOperations';
+  // ✅ SharedPreferences 인스턴스 재사용
+  static SharedPreferences? _prefs;
+  static Future<void> _init() async {
+    _prefs ??= await SharedPreferences.getInstance();
+  }
   static const String _notificationsKey = 'notifications';
 
   /// 알림 저장 (로그만 기록)
@@ -26,7 +31,7 @@ class NotificationLocalOperations {
   /// 알림 읽음 처리
   static Future<void> markAsRead(String notificationId) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final notificationsJson = prefs.getStringList(_notificationsKey) ?? [];
 
       final updatedNotifications = notificationsJson.map((json) {
@@ -55,7 +60,7 @@ class NotificationLocalOperations {
     FlutterLocalNotificationsPlugin localNotifications,
   ) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final notificationsJson = prefs.getStringList(_notificationsKey) ?? [];
 
       final updatedNotifications = notificationsJson.map((json) {
@@ -93,7 +98,7 @@ class NotificationLocalOperations {
     FlutterLocalNotificationsPlugin localNotifications,
   ) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       await prefs.remove(_notificationsKey);
       await localNotifications.cancelAll();
     } catch (e) {
@@ -106,7 +111,7 @@ class NotificationLocalOperations {
   /// 읽지 않은 알림 개수 가져오기
   static Future<int> getUnreadCount() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final notificationsJson = prefs.getStringList(_notificationsKey) ?? [];
 
       int unreadCount = 0;

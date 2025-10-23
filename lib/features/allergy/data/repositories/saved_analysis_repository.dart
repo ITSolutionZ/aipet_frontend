@@ -8,12 +8,17 @@ import '../../domain/domain.dart';
 
 /// 저장된 알레르기 분석 결과 Repository
 class SavedAnalysisRepository {
+  // ✅ SharedPreferences 인스턴스 재사용
+  static SharedPreferences? _prefs;
+  static Future<void> _init() async {
+    _prefs ??= await SharedPreferences.getInstance();
+  }
   static const String _key = 'saved_allergy_analyses';
 
   /// 모든 분석 결과 로드 (Result 패턴)
   Future<Result<List<SavedAnalysisEntity>>> loadAll() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final jsonString = prefs.getString(_key);
 
       if (jsonString == null || jsonString.isEmpty) {
@@ -38,7 +43,7 @@ class SavedAnalysisRepository {
   /// 분석 결과 저장
   Future<Result<void>> save(SavedAnalysisEntity analysis) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final loadResult = await loadAll();
       final analyses = loadResult.dataOr([]);
 
@@ -64,7 +69,7 @@ class SavedAnalysisRepository {
   /// 분석 결과 삭제
   Future<Result<void>> delete(String id) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final loadResult = await loadAll();
       final analyses = loadResult.dataOr([]);
 
@@ -90,7 +95,7 @@ class SavedAnalysisRepository {
   /// 모든 분석 결과 삭제
   Future<Result<void>> deleteAll() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       await prefs.remove(_key);
       return Result.success('すべての分析結果を削除しました');
     } catch (e) {

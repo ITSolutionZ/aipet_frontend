@@ -8,10 +8,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 class NoEntryZoneStorageService {
   static const String _storageKey = 'no_entry_zones';
 
+  // ✅ SharedPreferences 인스턴스 재사용
+  static SharedPreferences? _prefs;
+  static Future<void> _init() async {
+    _prefs ??= await SharedPreferences.getInstance();
+  }
   /// 모든 금지구역 로드
   static Future<List<NoEntryZone>> loadNoEntryZones() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final jsonString = prefs.getString(_storageKey);
 
       if (jsonString == null || jsonString.isEmpty) {
@@ -53,7 +58,7 @@ class NoEntryZoneStorageService {
   /// 모든 금지구역 삭제
   static Future<void> clearNoEntryZones() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       await prefs.remove(_storageKey);
     } catch (e) {
       LoggerService.debug('금지구역 초기화 실패: $e');
@@ -63,7 +68,7 @@ class NoEntryZoneStorageService {
   /// 금지구역 저장
   static Future<void> _saveZones(List<NoEntryZone> zones) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final jsonList = zones.map((zone) => zone.toJson()).toList();
       await prefs.setString(_storageKey, jsonEncode(jsonList));
     } catch (e) {

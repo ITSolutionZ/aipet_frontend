@@ -8,6 +8,11 @@ import 'helpers/notification_scheduler_executor_helper.dart';
 import 'helpers/notification_scheduler_storage_helper.dart';
 import 'notification_service.dart' as local;
 
+  // ✅ SharedPreferences 인스턴스 재사용
+  static SharedPreferences? _prefs;
+  static Future<void> _init() async {
+    _prefs ??= await SharedPreferences.getInstance();
+  }
 /// 알림 스케줄링 서비스
 class NotificationSchedulerService {
   static const String _schedulerEnabledKey = 'scheduler_enabled';
@@ -32,7 +37,7 @@ class NotificationSchedulerService {
 
     try {
       // 설정 로드
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       _isEnabled = prefs.getBool(_schedulerEnabledKey) ?? true;
 
       if (_isEnabled) {
@@ -197,7 +202,7 @@ class NotificationSchedulerService {
     _isEnabled = enabled;
 
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       await prefs.setBool(_schedulerEnabledKey, enabled);
 
       if (enabled) {

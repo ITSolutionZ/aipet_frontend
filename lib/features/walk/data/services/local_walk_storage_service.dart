@@ -8,13 +8,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 class LocalWalkStorageService {
   static const String _walkRecordsKey = 'walk_records';
   static const String _currentWalkKey = 'current_walk';
+  // ✅ SharedPreferences 인스턴스 재사용
+  static SharedPreferences? _prefs;
+  static Future<void> _init() async {
+    _prefs ??= await SharedPreferences.getInstance();
+  }
 
   /// 모든 산책 기록 저장
   static Future<bool> saveWalkRecords(
     List<WalkRecordEntity> walkRecords,
   ) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final jsonList = walkRecords.map((record) => record.toJson()).toList();
       final jsonString = jsonEncode(jsonList);
 
@@ -30,7 +35,7 @@ class LocalWalkStorageService {
   /// 모든 산책 기록 불러오기
   static Future<List<WalkRecordEntity>> loadWalkRecords() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final jsonString = prefs.getString(_walkRecordsKey);
 
       if (jsonString == null || jsonString.isEmpty) {
@@ -122,7 +127,7 @@ class LocalWalkStorageService {
   /// 현재 진행 중인 산책 저장
   static Future<bool> saveCurrentWalk(WalkRecordEntity? walkRecord) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
 
       if (walkRecord == null) {
         final result = await prefs.remove(_currentWalkKey);
@@ -143,7 +148,7 @@ class LocalWalkStorageService {
   /// 현재 진행 중인 산책 불러오기
   static Future<WalkRecordEntity?> loadCurrentWalk() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final jsonString = prefs.getString(_currentWalkKey);
 
       if (jsonString == null || jsonString.isEmpty) {
@@ -165,7 +170,7 @@ class LocalWalkStorageService {
   /// 모든 로컬 데이터 삭제 (테스트용)
   static Future<bool> clearAllData() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final result1 = await prefs.remove(_walkRecordsKey);
       final result2 = await prefs.remove(_currentWalkKey);
 

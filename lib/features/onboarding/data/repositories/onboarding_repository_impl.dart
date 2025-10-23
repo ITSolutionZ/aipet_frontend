@@ -8,6 +8,11 @@ import '../../domain/domain.dart';
 ///
 /// OnboardingRepository 인터페이스의 구체적인 구현을 제공합니다.
 /// SharedPreferences를 사용하여 온보딩 상태를 영구 저장합니다.
+  // ✅ SharedPreferences 인스턴스 재사용
+  static SharedPreferences? _prefs;
+  static Future<void> _init() async {
+    _prefs ??= await SharedPreferences.getInstance();
+  }
 class OnboardingRepositoryImpl implements OnboardingRepository {
   // SharedPreferences 키 상수
   static const String _keyOnboardingCompleted = 'onboarding_completed';
@@ -31,7 +36,7 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
   Future<Result<void>> saveOnboardingState(OnboardingState state) async {
     try {
       _currentState = state;
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       await prefs.setInt(_keyOnboardingCurrentPage, state.currentPage);
       await prefs.setBool(_keyOnboardingCompleted, state.isCompleted);
       return Result.success('온보딩 상태 저장 성공', null);
@@ -46,7 +51,7 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
   @override
   Future<Result<OnboardingState>> loadOnboardingState() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final currentPage = prefs.getInt(_keyOnboardingCurrentPage) ?? 0;
       final isCompleted = prefs.getBool(_keyOnboardingCompleted) ?? false;
 
@@ -67,7 +72,7 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
     try {
       _currentState = const OnboardingState(isCompleted: true);
 
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       await prefs.setBool(_keyOnboardingCompleted, true);
       await prefs.setInt(_keyOnboardingCurrentPage, 0); // 완료시 페이지 리셋
       return Result.success('온보딩 완료 성공', null);
@@ -80,7 +85,7 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
   @override
   Future<Result<bool>> isOnboardingCompleted() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final isCompleted = prefs.getBool(_keyOnboardingCompleted) ?? false;
       return Result.success('온보딩 완료 상태 확인 성공', isCompleted);
     } catch (e) {
@@ -94,7 +99,7 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
     try {
       _currentState = const OnboardingState();
 
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       await prefs.setBool(_keyOnboardingCompleted, false);
       await prefs.setInt(_keyOnboardingCurrentPage, 0);
       return Result.success('온보딩 재시작 성공', null);
@@ -119,7 +124,7 @@ class OnboardingRepositoryImpl implements OnboardingRepository {
   @override
   Future<Result<int>> loadOnboardingProgress() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final progress = prefs.getInt(_keyOnboardingCurrentPage) ?? 0;
       return Result.success('온보딩 진행률 로드 성공', progress);
     } catch (e) {

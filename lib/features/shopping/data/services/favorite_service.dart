@@ -8,11 +8,16 @@ import '../models/favorite_product_model.dart';
 /// お気に入り管理サービス
 class FavoriteService {
   static const String _key = 'favorite_products';
+  // ✅ SharedPreferences 인스턴스 재사용
+  static SharedPreferences? _prefs;
+  static Future<void> _init() async {
+    _prefs ??= await SharedPreferences.getInstance();
+  }
 
   /// お気に入り商品を全て取得
   Future<List<FavoriteProduct>> getFavoriteProducts() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final String? jsonString = prefs.getString(_key);
 
       if (jsonString == null || jsonString.isEmpty) {
@@ -99,7 +104,7 @@ class FavoriteService {
   /// お気に入りをすべてクリア
   Future<bool> clearAllFavorites() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       await prefs.remove(_key);
       LoggerService.debug('✅ Cleared all favorites');
       return true;
@@ -111,7 +116,7 @@ class FavoriteService {
 
   /// 商品リストを保存
   Future<void> _saveProducts(List<FavoriteProduct> products) async {
-    final prefs = await SharedPreferences.getInstance();
+    await _init();
     final jsonList = products.map((p) => p.toJson()).toList();
     final jsonString = json.encode(jsonList);
     await prefs.setString(_key, jsonString);
