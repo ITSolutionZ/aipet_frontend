@@ -30,7 +30,7 @@ class ApiAuthService extends BaseRemoteDataSource<AuthUserModel> {
       );
 
       if (response.data == null) {
-        return Result.failure(UnknownError(.toString().toString()details: 'Empty response data'));
+        return Result.failure(UnknownError(details: 'Empty response data'));
       }
 
       final tokenData = response.data!['data'] ?? response.data!;
@@ -57,7 +57,7 @@ class ApiAuthService extends BaseRemoteDataSource<AuthUserModel> {
       );
 
       if (response.data == null) {
-        return Result.failure(UnknownError(.toString().toString()details: 'Empty response data'));
+        return Result.failure(UnknownError(details: 'Empty response data'));
       }
 
       final tokenData = response.data!['data'] ?? response.data!;
@@ -76,7 +76,7 @@ class ApiAuthService extends BaseRemoteDataSource<AuthUserModel> {
       );
 
       if (response.data == null) {
-        return Result.failure(UnknownError(.toString().toString()details: 'Empty response data'));
+        return Result.failure(UnknownError(details: 'Empty response data'));
       }
 
       final tokenData = response.data!['data'] ?? response.data!;
@@ -101,7 +101,7 @@ class ApiAuthService extends BaseRemoteDataSource<AuthUserModel> {
       final response = await apiClient.get<Map<String, dynamic>>('/auth/me');
 
       if (response.data == null) {
-        return Result.failure(UnknownError(.toString().toString()details: 'Empty response data'));
+        return Result.failure(UnknownError(details: 'Empty response data'));
       }
 
       final userData = response.data!['data'] ?? response.data!;
@@ -144,7 +144,7 @@ class ApiAuthService extends BaseRemoteDataSource<AuthUserModel> {
       );
 
       if (response.data == null) {
-        return Result.failure(UnknownError(.toString().toString()details: 'Empty response data'));
+        return Result.failure(UnknownError(details: 'Empty response data'));
       }
 
       final userData = response.data!['data'] ?? response.data!;
@@ -180,7 +180,7 @@ class ApiAuthService extends BaseRemoteDataSource<AuthUserModel> {
       );
 
       if (response.data == null) {
-        return Result.failure(UnknownError(.toString().toString()details: 'Empty response data'));
+        return Result.failure(UnknownError(details: 'Empty response data'));
       }
 
       final tokenData = response.data!['data'] ?? response.data!;
@@ -201,7 +201,7 @@ class ApiAuthService extends BaseRemoteDataSource<AuthUserModel> {
       );
 
       if (response.data == null) {
-        return Result.failure(UnknownError(.toString().toString()details: 'Empty response data'));
+        return Result.failure(UnknownError(details: 'Empty response data'));
       }
 
       final tokenData = response.data!['data'] ?? response.data!;
