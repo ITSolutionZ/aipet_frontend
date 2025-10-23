@@ -33,11 +33,6 @@ class AiLocalStorageService extends BaseLoggingService {
 
   AiLocalStorageService() : super('ai_local_storage');
 
-  /// CacheService 초기화
-  Future<void> _init() async {
-    await _cache.initialize();
-  }
-
   // ===== 채팅 히스토리 관리 =====
 
   /// 채팅 히스토리 저장
@@ -54,11 +49,11 @@ class AiLocalStorageService extends BaseLoggingService {
   /// - 로깅을 통한 에러 추적
   Future<void> saveChatHistory(List<AiMessageEntity> messages) async {
     try {
-      final cache = await cache.initialize();
+      await _cache.initialize();
       final messagesJson = messages.map((msg) => _messageToJson(msg)).toList();
       final jsonString = jsonEncode(messagesJson);
 
-      await cache.setString(_chatHistoryKey, jsonString);
+      await _cache.setString(_chatHistoryKey, jsonString);
       logInfo('채팅 히스토리 저장 완료: ${messages.length}개 메시지');
     } catch (e) {
       logError('채팅 히스토리 저장 실패', e);
@@ -143,7 +138,7 @@ class AiLocalStorageService extends BaseLoggingService {
   Future<List<AiFavoriteEntity>> loadFavoriteMessages() async {
     try {
       await _cache.initialize();
-      final jsonString = prefs.getString(_favoriteMessagesKey);
+      final jsonString = _cache.getString(_favoriteMessagesKey);
 
       if (jsonString == null || jsonString.isEmpty) {
         return [];
@@ -210,7 +205,7 @@ class AiLocalStorageService extends BaseLoggingService {
   Future<List<AiChatSessionEntity>> loadChatSessions() async {
     try {
       await _cache.initialize();
-      final jsonString = prefs.getString(_chatSessionsKey);
+      final jsonString = _cache.getString(_chatSessionsKey);
 
       if (jsonString == null || jsonString.isEmpty) {
         return [];
@@ -274,7 +269,7 @@ class AiLocalStorageService extends BaseLoggingService {
   Future<List<AiChatSummaryEntity>> loadChatSummaries() async {
     try {
       await _cache.initialize();
-      final jsonString = prefs.getString(_chatSummariesKey);
+      final jsonString = _cache.getString(_chatSummariesKey);
 
       if (jsonString == null || jsonString.isEmpty) {
         return [];
@@ -338,7 +333,7 @@ class AiLocalStorageService extends BaseLoggingService {
   Future<List<AiFavoriteQaEntity>> loadFavoriteQAs() async {
     try {
       await _cache.initialize();
-      final jsonString = prefs.getString(_favoriteQAsKey);
+      final jsonString = _cache.getString(_favoriteQAsKey);
 
       if (jsonString == null || jsonString.isEmpty) {
         return [];
@@ -540,7 +535,7 @@ class AiLocalStorageService extends BaseLoggingService {
   Future<List<AiSuggestedQuestionEntity>> loadSuggestedQuestions() async {
     try {
       await _cache.initialize();
-      final jsonString = prefs.getString(_suggestedQuestionsKey);
+      final jsonString = _cache.getString(_suggestedQuestionsKey);
 
       if (jsonString == null || jsonString.isEmpty) {
         // 기본 추천 질문 반환
