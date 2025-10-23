@@ -25,9 +25,11 @@ class NotificationCacheService {
 
   // ✅ SharedPreferences 인스턴스 재사용
   static final _cache = CacheService();
-
-  /// SharedPreferences 인스턴스 가져오기
-  static Future<SharedPreferences> get _preferences async {
+  
+  // ✅ CacheService 초기화
+  static Future<void> _init() async {
+    await _cache.initialize();
+  }
     return await _cache.initialize();
   }
 

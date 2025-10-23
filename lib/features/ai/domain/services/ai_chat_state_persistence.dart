@@ -7,16 +7,17 @@ import 'package:aipet_frontend/shared/services/cache_service.dart';
 
 import '../entities/ai_category_entity.dart';
 import '../entities/ai_message_entity.dart';
-  // ✅ SharedPreferences 인스턴스 재사용
+
+/// 🎯 AI 채팅 상태 영속화 관리자
+///
+/// 채팅 상태의 저장과 복원을 전담하는 서비스
+class AiChatStatePersistence {
   // ✅ CacheService 사용
   static final _cache = CacheService();
   static Future<void> _init() async {
     await _cache.initialize();
   }
-/// 🎯 AI 채팅 상태 영속화 관리자
-///
-/// 채팅 상태의 저장과 복원을 전담하는 서비스
-class AiChatStatePersistence {
+
   static const String _keyPrefix = 'ai_chat_state_';
   static const String _keySelectedPet = 'selected_pet_id';
   static const String _keySelectedCategory = 'selected_category_id';
