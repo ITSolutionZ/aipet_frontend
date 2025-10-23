@@ -5,7 +5,6 @@ import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../data/data.dart';
 import '../controllers/auth_controller.dart';
@@ -41,8 +40,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   Future<void> _checkAppLock() async {
     // ✅ SecureStorageService 사용으로 Clean Architecture 준수
-    final pinEnabled = await SecureStorageService.getBool('pin_enabled') ?? false;
-    final biometricEnabled = await SecureStorageService.getBool('biometric_enabled') ?? false;
+    final pinEnabled =
+        await SecureStorageService.getBool('pin_enabled') ?? false;
+    final biometricEnabled =
+        await SecureStorageService.getBool('biometric_enabled') ?? false;
 
     if ((pinEnabled || biometricEnabled) && mounted) {
       unawaited(

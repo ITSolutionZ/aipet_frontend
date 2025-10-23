@@ -3,7 +3,6 @@ import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class BiometricSecurityScreen extends ConsumerStatefulWidget {
   const BiometricSecurityScreen({super.key});
@@ -44,9 +43,11 @@ class _BiometricSecurityScreenState
 
   Future<void> _loadSettings() async {
     // ✅ SecureStorageService 사용
-    final pinEnabled = await SecureStorageService.getBool('pin_enabled') ?? false;
-    final biometricEnabled = await SecureStorageService.getBool('biometric_enabled') ?? false;
-    
+    final pinEnabled =
+        await SecureStorageService.getBool('pin_enabled') ?? false;
+    final biometricEnabled =
+        await SecureStorageService.getBool('biometric_enabled') ?? false;
+
     setState(() {
       _isPinEnabled = pinEnabled;
       _isBiometricEnabled = biometricEnabled;
@@ -55,16 +56,12 @@ class _BiometricSecurityScreenState
 
   Future<void> _savePIN() async {
     if (_pinController.text != _confirmPinController.text) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('PIN이 일치하지 않습니다')));
+      SnackBarService.showError(context, 'PINが一致しません');
       return;
     }
 
     if (_pinController.text.length < 4) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('PIN은 최소 4자리 이상이어야 합니다')));
+      SnackBarService.showError(context, 'PINは最低4桁以上である必要があります');
       return;
     }
 
@@ -92,35 +89,29 @@ class _BiometricSecurityScreenState
         setState(() {
           _isBiometricEnabled = true;
         });
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('生体認証が活性化されました')));
+        SnackBarService.showSuccess(context, '生体認証が活性化されました');
       }
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('生体認証 実败')));
+        SnackBarService.showError(context, '生体認証に失敗しました');
       }
     }
   }
 
   Future<void> _disableBiometric() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('biometric_enabled', false);
+    // ✅ SecureStorageService 사용
+    await SecureStorageService.setBool('biometric_enabled', false);
     if (mounted) {
       setState(() {
         _isBiometricEnabled = false;
       });
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('生体認証が無効化されました')));
+      SnackBarService.showSuccess(context, '生体認証が無効化されました');
     }
   }
 
   Future<void> _disablePin() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('pin_enabled', false);
+    // ✅ SecureStorageService 사용
+    await SecureStorageService.setBool('pin_enabled', false);
     if (mounted) {
       setState(() {
         _isPinEnabled = false;
