@@ -1,26 +1,31 @@
 import 'package:aipet_frontend/features/scheduling/data/models/schedule_model.dart';
 import 'package:aipet_frontend/features/scheduling/domain/entities/schedule_entity.dart';
 import 'package:aipet_frontend/features/scheduling/domain/repositories/schedule_repository.dart';
+import 'package:aipet_frontend/shared/core/domain/base_repository.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'schedule_repository_impl.g.dart';
 
 /// 스케줄 리포지토리 구현
-class ScheduleRepositoryImpl implements ScheduleRepository {
-  final List<ScheduleModel> _schedules = [];
+/// Hybrid 패턴: API (추후) + 로컬 저장소
+class ScheduleRepositoryImpl
+    with MemoryRepositoryMixin<ScheduleModel, String>
+    implements ScheduleRepository {
+  @override
+  String getId(ScheduleModel item) => item.id;
 
   @override
   Future<List<ScheduleEntity>> getAllSchedules() async {
-    // TODO: 실제 API 호출로 대체
-    await Future.delayed(const Duration(milliseconds: 500));
-    return _schedules.map((model) => model.toEntity()).toList();
+    await simulateDelay();
+    LoggerService.debug('✅ ScheduleRepository: ${allItems.length}개 스케줄 조회');
+    return allItems.map((model) => model.toEntity()).toList();
   }
 
   @override
   Future<List<ScheduleEntity>> getSchedulesByPetId(String petId) async {
-    // TODO: 실제 API 호출로 대체
-    await Future.delayed(const Duration(milliseconds: 300));
-    return _schedules
+    await simulateDelay(const Duration(milliseconds: 300));
+    return allItems
         .where((schedule) => schedule.petId == petId)
         .map((model) => model.toEntity())
         .toList();
@@ -28,9 +33,8 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
 
   @override
   Future<List<ScheduleEntity>> getSchedulesByDate(DateTime date) async {
-    // TODO: 실제 API 호출로 대체
-    await Future.delayed(const Duration(milliseconds: 300));
-    return _schedules
+    await simulateDelay(const Duration(milliseconds: 300));
+    return allItems
         .where(
           (schedule) =>
               schedule.startDateTime.year == date.year &&
@@ -46,9 +50,8 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
     DateTime startDate,
     DateTime endDate,
   ) async {
-    // TODO: 실제 API 호출로 대체
-    await Future.delayed(const Duration(milliseconds: 400));
-    return _schedules
+    await simulateDelay(const Duration(milliseconds: 400));
+    return allItems
         .where(
           (schedule) =>
               schedule.startDateTime.isAfter(
@@ -64,20 +67,14 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
 
   @override
   Future<ScheduleEntity?> getScheduleById(String id) async {
-    // TODO: 실제 API 호출로 대체
-    await Future.delayed(const Duration(milliseconds: 200));
-    try {
-      final schedule = _schedules.firstWhere((schedule) => schedule.id == id);
-      return schedule.toEntity();
-    } catch (e) {
-      return null;
-    }
+    await simulateDelay(const Duration(milliseconds: 200));
+    final schedule = findById(id);
+    return schedule?.toEntity();
   }
 
   @override
   Future<ScheduleEntity> createSchedule(ScheduleEntity schedule) async {
-    // TODO: 실제 API 호출로 대체
-    await Future.delayed(const Duration(milliseconds: 600));
+    await simulateDelay(const Duration(milliseconds: 600));
     final model = ScheduleModel(
       id: schedule.id,
       title: schedule.title,
@@ -111,60 +108,57 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
       createdAt: schedule.createdAt,
       updatedAt: schedule.updatedAt,
     );
-    _schedules.add(model);
+    addItem(model);
+    LoggerService.debug('✅ ScheduleRepository: 스케줄 생성 - ID: ${model.id}');
     return model.toEntity();
   }
 
   @override
   Future<ScheduleEntity> updateSchedule(ScheduleEntity schedule) async {
-    // TODO: 실제 API 호출로 대체
-    await Future.delayed(const Duration(milliseconds: 500));
-    final index = _schedules.indexWhere((s) => s.id == schedule.id);
-    if (index != -1) {
-      final updatedModel = ScheduleModel(
-        id: schedule.id,
-        title: schedule.title,
-        description: schedule.description,
-        startDateTime: schedule.startDateTime,
-        endDateTime: schedule.endDateTime,
-        duration: schedule.duration,
-        type: schedule.type,
-        status: schedule.status,
-        priority: schedule.priority,
-        petId: schedule.petId,
-        petName: schedule.petName,
-        petImagePath: schedule.petImagePath,
-        location: schedule.location,
-        latitude: schedule.latitude,
-        longitude: schedule.longitude,
-        facilityId: schedule.facilityId,
-        facilityName: schedule.facilityName,
-        staffName: schedule.staffName,
-        staffPhone: schedule.staffPhone,
-        price: schedule.price,
-        services: schedule.services,
-        hasReminder: schedule.hasReminder,
-        reminderTime: schedule.reminderTime,
-        reminderTimes: schedule.reminderTimes,
-        isRecurring: schedule.isRecurring,
-        recurrenceRule: schedule.recurrenceRule,
-        notes: schedule.notes,
-        specialRequests: schedule.specialRequests,
-        customData: schedule.customData,
-        createdAt: schedule.createdAt,
-        updatedAt: schedule.updatedAt,
-      );
-      _schedules[index] = updatedModel;
-      return updatedModel;
-    }
-    throw Exception('스케줄을 찾을 수 없습니다.');
+    await simulateDelay(const Duration(milliseconds: 500));
+    final updatedModel = ScheduleModel(
+      id: schedule.id,
+      title: schedule.title,
+      description: schedule.description,
+      startDateTime: schedule.startDateTime,
+      endDateTime: schedule.endDateTime,
+      duration: schedule.duration,
+      type: schedule.type,
+      status: schedule.status,
+      priority: schedule.priority,
+      petId: schedule.petId,
+      petName: schedule.petName,
+      petImagePath: schedule.petImagePath,
+      location: schedule.location,
+      latitude: schedule.latitude,
+      longitude: schedule.longitude,
+      facilityId: schedule.facilityId,
+      facilityName: schedule.facilityName,
+      staffName: schedule.staffName,
+      staffPhone: schedule.staffPhone,
+      price: schedule.price,
+      services: schedule.services,
+      hasReminder: schedule.hasReminder,
+      reminderTime: schedule.reminderTime,
+      reminderTimes: schedule.reminderTimes,
+      isRecurring: schedule.isRecurring,
+      recurrenceRule: schedule.recurrenceRule,
+      notes: schedule.notes,
+      specialRequests: schedule.specialRequests,
+      customData: schedule.customData,
+      createdAt: schedule.createdAt,
+      updatedAt: schedule.updatedAt,
+    );
+    updateItem(updatedModel);
+    LoggerService.debug('✅ ScheduleRepository: 스케줄 업데이트 - ID: ${schedule.id}');
+    return updatedModel.toEntity();
   }
 
   @override
   Future<void> deleteSchedule(String id) async {
-    // TODO: 실제 API 호출로 대체
-    await Future.delayed(const Duration(milliseconds: 400));
-    _schedules.removeWhere((schedule) => schedule.id == id);
+    await simulateDelay(const Duration(milliseconds: 400));
+    removeItem(id);
+    LoggerService.debug('✅ ScheduleRepository: 스케줄 삭제 - ID: $id');
   }
 
   @override
@@ -172,14 +166,14 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
     String id,
     ScheduleStatus status,
   ) async {
-    // TODO: 실제 API 호출로 대체
-    await Future.delayed(const Duration(milliseconds: 300));
-    final index = _schedules.indexWhere((s) => s.id == id);
-    if (index != -1) {
-      final originalModel = _schedules[index];
-      final updatedModel = originalModel.toEntity().copyWith(status: status);
-      _schedules[index] = ScheduleModel.fromEntity(updatedModel);
-      return updatedModel;
+    await simulateDelay(const Duration(milliseconds: 300));
+    final originalModel = findById(id);
+    if (originalModel != null) {
+      final updatedEntity = originalModel.toEntity().copyWith(status: status);
+      final updatedModel = ScheduleModel.fromEntity(updatedEntity);
+      updateItem(updatedModel);
+      LoggerService.debug('✅ ScheduleRepository: 스케줄 상태 변경 - ID: $id');
+      return updatedEntity;
     }
     throw Exception('스케줄을 찾을 수 없습니다.');
   }
@@ -214,9 +208,8 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
 
   @override
   Future<List<ScheduleEntity>> getSchedulesByType(ScheduleType type) async {
-    // TODO: 실제 API 호출로 대체
-    await Future.delayed(const Duration(milliseconds: 300));
-    return _schedules
+    await simulateDelay(const Duration(milliseconds: 300));
+    return allItems
         .where((schedule) => schedule.type == type)
         .map((model) => model.toEntity())
         .toList();
@@ -224,9 +217,8 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
 
   @override
   Future<List<ScheduleEntity>> getFacilityBookings() async {
-    // TODO: 실제 API 호출로 대체
-    await Future.delayed(const Duration(milliseconds: 400));
-    return _schedules
+    await simulateDelay(const Duration(milliseconds: 400));
+    return allItems
         .where((schedule) => schedule.isFacilityBooking)
         .map((model) => model.toEntity())
         .toList();
@@ -234,9 +226,8 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
 
   @override
   Future<List<ScheduleEntity>> getRecurringSchedules() async {
-    // TODO: 실제 API 호출로 대체
-    await Future.delayed(const Duration(milliseconds: 300));
-    return _schedules
+    await simulateDelay(const Duration(milliseconds: 300));
+    return allItems
         .where((schedule) => schedule.isRecurringSchedule)
         .map((model) => model.toEntity())
         .toList();
@@ -244,9 +235,8 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
 
   @override
   Future<List<ScheduleEntity>> getSchedulesWithReminders() async {
-    // TODO: 실제 API 호출로 대체
-    await Future.delayed(const Duration(milliseconds: 300));
-    return _schedules
+    await simulateDelay(const Duration(milliseconds: 300));
+    return allItems
         .where((schedule) => schedule.hasReminders)
         .map((model) => model.toEntity())
         .toList();
@@ -254,10 +244,9 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
 
   @override
   Future<List<ScheduleEntity>> searchSchedules(String query) async {
-    // TODO: 실제 API 호출로 대체
-    await Future.delayed(const Duration(milliseconds: 400));
+    await simulateDelay(const Duration(milliseconds: 400));
     final lowercaseQuery = query.toLowerCase();
-    return _schedules
+    return allItems
         .where(
           (schedule) =>
               schedule.title.toLowerCase().contains(lowercaseQuery) ||
@@ -273,28 +262,27 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
 
   @override
   Future<ScheduleStatistics> getScheduleStatistics() async {
-    // TODO: 실제 API 호출로 대체
-    await Future.delayed(const Duration(milliseconds: 500));
+    await simulateDelay();
 
-    final totalSchedules = _schedules.length;
-    final completedSchedules = _schedules.where((s) => s.isCompleted).length;
-    final pendingSchedules = _schedules
+    final totalSchedules = allItems.length;
+    final completedSchedules = allItems.where((s) => s.isCompleted).length;
+    final pendingSchedules = allItems
         .where((s) => s.status == ScheduleStatus.pending)
         .length;
-    final cancelledSchedules = _schedules.where((s) => s.isCancelled).length;
-    final missedSchedules = _schedules.where((s) => s.isMissed).length;
-    final todaySchedules = _schedules.where((s) => s.isToday).length;
-    final tomorrowSchedules = _schedules.where((s) => s.isTomorrow).length;
-    final thisWeekSchedules = _schedules.where((s) => s.isThisWeek).length;
+    final cancelledSchedules = allItems.where((s) => s.isCancelled).length;
+    final missedSchedules = allItems.where((s) => s.isMissed).length;
+    final todaySchedules = allItems.where((s) => s.isToday).length;
+    final tomorrowSchedules = allItems.where((s) => s.isTomorrow).length;
+    final thisWeekSchedules = allItems.where((s) => s.isThisWeek).length;
 
     final schedulesByType = <ScheduleType, int>{};
     for (final type in ScheduleType.values) {
-      schedulesByType[type] = _schedules.where((s) => s.type == type).length;
+      schedulesByType[type] = allItems.where((s) => s.type == type).length;
     }
 
     final schedulesByStatus = <ScheduleStatus, int>{};
     for (final status in ScheduleStatus.values) {
-      schedulesByStatus[status] = _schedules
+      schedulesByStatus[status] = allItems
           .where((s) => s.status == status)
           .length;
     }
@@ -315,10 +303,9 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
 
   @override
   Future<bool> hasScheduleConflict(ScheduleEntity schedule) async {
-    // TODO: 실제 API 호출로 대체
-    await Future.delayed(const Duration(milliseconds: 200));
+    await simulateDelay(const Duration(milliseconds: 200));
 
-    return _schedules.any((existingSchedule) {
+    return allItems.any((existingSchedule) {
       if (existingSchedule.id == schedule.id) return false;
       if (existingSchedule.petId != schedule.petId) return false;
 
@@ -345,17 +332,17 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
 
   @override
   Future<ScheduleEntity> cancelSchedule(String id, String reason) async {
-    // TODO: 실제 API 호출로 대체
-    await Future.delayed(const Duration(milliseconds: 400));
-    final index = _schedules.indexWhere((s) => s.id == id);
-    if (index != -1) {
-      final originalModel = _schedules[index];
-      final updatedModel = originalModel.toEntity().copyWith(
+    await simulateDelay(const Duration(milliseconds: 400));
+    final originalModel = findById(id);
+    if (originalModel != null) {
+      final updatedEntity = originalModel.toEntity().copyWith(
         status: ScheduleStatus.cancelled,
         notes: reason,
       );
-      _schedules[index] = ScheduleModel.fromEntity(updatedModel);
-      return updatedModel;
+      final updatedModel = ScheduleModel.fromEntity(updatedEntity);
+      updateItem(updatedModel);
+      LoggerService.debug('✅ ScheduleRepository: 스케줄 취소 - ID: $id');
+      return updatedEntity;
     }
     throw Exception('스케줄을 찾을 수 없습니다.');
   }

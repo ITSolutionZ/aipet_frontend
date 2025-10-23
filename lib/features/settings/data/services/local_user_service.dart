@@ -1,7 +1,6 @@
 import 'package:aipet_frontend/features/settings/domain/entities/settings_entity.dart';
 import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:aipet_frontend/shared/services/local_database_service.dart';
-import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 
 /// 사용자 프로필 로컬 서비스

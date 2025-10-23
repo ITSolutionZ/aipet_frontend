@@ -1,10 +1,9 @@
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
-import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_statistics_entity.dart';
 import 'package:aipet_frontend/shared/core/api/api_client.dart';
 import 'package:aipet_frontend/shared/core/api/api_constants.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
-import 'package:flutter/foundation.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
 /// 산책 API 서비스
 /// API를 통한 산책 기록 CRUD 및 통계 조회
@@ -95,7 +94,9 @@ class WalkApiService {
       LoggerService.debug('⚠️ WalkAPI: 응답 데이터 없음 (Pet ID: $petId)');
       return Result.failure('펫 산책 기록을 가져올 수 없습니다');
     } catch (e, stackTrace) {
-      LoggerService.debug('❌ WalkAPI: 펫 산책 기록 조회 실패 - Pet ID: $petId, Error: $e');
+      LoggerService.debug(
+        '❌ WalkAPI: 펫 산책 기록 조회 실패 - Pet ID: $petId, Error: $e',
+      );
       LoggerService.debug('StackTrace: $stackTrace');
       return Result.failure('펫 산책 기록 조회 실패: ${e.toString()}');
     }
@@ -192,7 +193,9 @@ class WalkApiService {
       LoggerService.debug('⚠️ WalkAPI: 산책 기록 업데이트 응답 오류');
       return Result.failure('산책 기록을 업데이트할 수 없습니다');
     } catch (e, stackTrace) {
-      LoggerService.debug('❌ WalkAPI: 산책 기록 업데이트 실패 - ID: ${walkRecord.id}, Error: $e');
+      LoggerService.debug(
+        '❌ WalkAPI: 산책 기록 업데이트 실패 - ID: ${walkRecord.id}, Error: $e',
+      );
       LoggerService.debug('StackTrace: $stackTrace');
       return Result.failure('산책 기록 업데이트 실패: ${e.toString()}');
     }

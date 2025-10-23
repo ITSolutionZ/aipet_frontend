@@ -1,10 +1,10 @@
 import 'dart:convert';
-import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
-import 'package:flutter/foundation.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
 /// 급여 기록 저장 헬퍼
 import 'package:aipet_frontend/shared/services/cache_service.dart';
+
 class FeedingStorageHelper {
   static const String _keyFeedingRecords = 'feeding_records';
   // ✅ SharedPreferences 인스턴스 재사용
@@ -12,13 +12,15 @@ class FeedingStorageHelper {
   static Future<void> _init() async {
     await _cache.initialize();
   }
+
   static const String _keyFeedingSchedules = 'feeding_schedules';
 
   /// 급여 기록 가져오기
   static Future<List<Map<String, dynamic>>> getFeedingRecords() async {
     try {
       await _init();
-      final recordsJson = prefs.getStringList(_keyFeedingRecords) ?? [];
+      final recordsJson =
+          _cache.getPersistentCacheList(_keyFeedingRecords) ?? [];
 
       if (recordsJson.isEmpty) {
         return await _initializeDefaultRecords();
@@ -37,10 +39,10 @@ class FeedingStorageHelper {
   static Future<void> addFeedingRecord(Map<String, dynamic> record) async {
     try {
       await _init();
-      final records = prefs.getStringList(_keyFeedingRecords) ?? [];
+      final records = _cache.getPersistentCacheList(_keyFeedingRecords) ?? [];
 
       records.add(jsonEncode(record));
-      await prefs.setStringList(_keyFeedingRecords, records);
+      await _cache.setPersistentCacheList(_keyFeedingRecords, records);
 
       LoggerService.debug('急給記録追加成功: ${record['id']}');
     } catch (e) {
@@ -52,7 +54,8 @@ class FeedingStorageHelper {
   static Future<List<Map<String, dynamic>>> getFeedingSchedules() async {
     try {
       await _init();
-      final schedulesJson = prefs.getStringList(_keyFeedingSchedules) ?? [];
+      final schedulesJson =
+          _cache.getPersistentCacheList(_keyFeedingSchedules) ?? [];
 
       if (schedulesJson.isEmpty) {
         return await _initializeDefaultSchedules();
@@ -90,7 +93,7 @@ class FeedingStorageHelper {
       }).toList();
 
       final schedulesJson = updatedSchedules.map((s) => jsonEncode(s)).toList();
-      await prefs.setStringList(_keyFeedingSchedules, schedulesJson);
+      await _cache.setPersistentCacheList(_keyFeedingSchedules, schedulesJson);
 
       LoggerService.debug('急給スケジュール更新成功: $mealType');
     } catch (e) {
@@ -149,7 +152,7 @@ class FeedingStorageHelper {
 
     await _init();
     final recordsJson = defaultRecords.map((r) => jsonEncode(r)).toList();
-    await prefs.setStringList(_keyFeedingRecords, recordsJson);
+    await _cache.setPersistentCacheList(_keyFeedingRecords, recordsJson);
 
     return defaultRecords;
   }
@@ -180,7 +183,7 @@ class FeedingStorageHelper {
 
     await _init();
     final schedulesJson = defaultSchedules.map((s) => jsonEncode(s)).toList();
-    await prefs.setStringList(_keyFeedingSchedules, schedulesJson);
+    await _cache.setPersistentCacheList(_keyFeedingSchedules, schedulesJson);
 
     return defaultSchedules;
   }

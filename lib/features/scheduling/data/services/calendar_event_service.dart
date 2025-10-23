@@ -3,7 +3,6 @@ import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
 import 'package:aipet_frontend/features/scheduling/domain/entities/calendar_event_entity.dart';
 import 'package:aipet_frontend/shared/services/local_database_service.dart';
-import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 
 /// 캘린더 이벤트 로컬 저장 서비스

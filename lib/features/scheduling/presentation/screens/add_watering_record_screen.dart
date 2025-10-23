@@ -245,7 +245,8 @@ class _AddWateringRecordScreenState
   Future<void> _saveWateringRecord() async {
     if (_formKey.currentState!.validate()) {
       // 로컬 데이터로 저장
-      final cache = CacheService(); await cache.initialize();
+      final cache = CacheService();
+      await cache.initialize();
 
       final wateringRecord = {
         'id': DateTime.now().millisecondsSinceEpoch.toString(),
@@ -259,7 +260,7 @@ class _AddWateringRecordScreenState
       // 기존 기록 가져오기
       final records = cache.getPersistentCacheList('watering_records') ?? [];
       records.add(jsonEncode(wateringRecord));
-      await await cache.setPersistentCacheList('watering_records', records);
+      await cache.setPersistentCacheList('watering_records', records);
 
       if (mounted) {
         SnackBarService.showSuccess(context, '給水記録を保存しました');

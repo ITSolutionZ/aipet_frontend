@@ -103,17 +103,6 @@ class CacheService {
     _memoryCache.clear();
   }
 
-  /// Double 값 저장
-  Future<void> setDoubleValue(String key, double value) async {
-    await initialize();
-    await _prefs!.setDouble(key, value);
-  }
-
-  /// Double 값 조회
-  double? getDoubleValue(String key) {
-    return _prefs?.getDouble(key);
-  }
-
   // ========== 호환성 메서드 (기존 코드 지원) ==========
 
   /// List<String> 조회 (호환성 - 동기)

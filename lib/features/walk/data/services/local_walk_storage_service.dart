@@ -1,10 +1,9 @@
 import 'dart:convert';
-import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
-import 'package:flutter/material.dart';
-
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:aipet_frontend/shared/services/cache_service.dart';
+
 /// 로컬 산책 데이터 저장 서비스
 class LocalWalkStorageService {
   static const String _walkRecordsKey = 'walk_records';
@@ -24,9 +23,9 @@ class LocalWalkStorageService {
       final jsonList = walkRecords.map((record) => record.toJson()).toList();
       final jsonString = jsonEncode(jsonList);
 
-      final result = await prefs.setString(_walkRecordsKey, jsonString);
+      await _cache.setString(_walkRecordsKey, jsonString);
       LoggerService.debug('📱 산책 기록 저장 완료: ${walkRecords.length}개');
-      return result;
+      return true;
     } catch (e) {
       LoggerService.debug('❌ 산책 기록 저장 실패: $e');
       return false;
@@ -37,7 +36,7 @@ class LocalWalkStorageService {
   static Future<List<WalkRecordEntity>> loadWalkRecords() async {
     try {
       await _init();
-      final jsonString = prefs.getString(_walkRecordsKey);
+      final jsonString = _cache.getString(_walkRecordsKey);
 
       if (jsonString == null || jsonString.isEmpty) {
         LoggerService.debug('📱 저장된 산책 기록이 없습니다');
@@ -131,14 +130,14 @@ class LocalWalkStorageService {
       await _init();
 
       if (walkRecord == null) {
-        final result = await prefs.remove(_currentWalkKey);
+        await _cache.removeKey(_currentWalkKey);
         LoggerService.debug('📱 현재 산책 기록 제거');
-        return result;
+        return true;
       } else {
         final jsonString = jsonEncode(walkRecord.toJson());
-        final result = await prefs.setString(_currentWalkKey, jsonString);
+        await _cache.setString(_currentWalkKey, jsonString);
         LoggerService.debug('📱 현재 산책 기록 저장: ${walkRecord.id}');
-        return result;
+        return true;
       }
     } catch (e) {
       LoggerService.debug('❌ 현재 산책 저장 실패: $e');
@@ -150,7 +149,7 @@ class LocalWalkStorageService {
   static Future<WalkRecordEntity?> loadCurrentWalk() async {
     try {
       await _init();
-      final jsonString = prefs.getString(_currentWalkKey);
+      final jsonString = _cache.getString(_currentWalkKey);
 
       if (jsonString == null || jsonString.isEmpty) {
         LoggerService.debug('📱 현재 진행 중인 산책이 없습니다');
@@ -172,11 +171,11 @@ class LocalWalkStorageService {
   static Future<bool> clearAllData() async {
     try {
       await _init();
-      final result1 = await prefs.remove(_walkRecordsKey);
-      final result2 = await prefs.remove(_currentWalkKey);
+      await _cache.removeKey(_walkRecordsKey);
+      await _cache.removeKey(_currentWalkKey);
 
       LoggerService.debug('📱 모든 산책 데이터 삭제 완료');
-      return result1 && result2;
+      return true;
     } catch (e) {
       LoggerService.debug('❌ 데이터 삭제 실패: $e');
       return false;

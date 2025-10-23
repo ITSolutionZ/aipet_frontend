@@ -2,8 +2,10 @@ import 'package:aipet_frontend/features/pet_feeding/data/models/feeding_record_m
 import 'package:aipet_frontend/features/pet_feeding/data/services/pet_feeding_local_storage_service.dart';
 import 'package:aipet_frontend/features/pet_feeding/domain/entities/feeding_record_entity.dart';
 import 'package:aipet_frontend/features/pet_feeding/domain/repositories/pet_feeding_repository.dart';
-import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 
+/// 급여 기록 Repository 구현체
+/// Hybrid 패턴: 로컬 스토리지 서비스 사용 (추후 API 연동 예정)
 class PetFeedingRepositoryImpl implements PetFeedingRepository {
   PetFeedingRepositoryImpl();
 
@@ -15,6 +17,9 @@ class PetFeedingRepositoryImpl implements PetFeedingRepository {
       petId: petId,
     );
 
+    LoggerService.debug(
+      '✅ PetFeedingRepository: 급여 기록 ${recordsData.length}개 조회',
+    );
     return recordsData
         .map((data) => FeedingRecordModel.fromJson(data).toEntity())
         .toList();
@@ -53,6 +58,7 @@ class PetFeedingRepositoryImpl implements PetFeedingRepository {
 
     await PetFeedingLocalStorageService.addFeedingRecord(recordData);
 
+    LoggerService.debug('✅ PetFeedingRepository: 급여 기록 추가 - ID: ${record.id}');
     return record;
   }
 
@@ -67,6 +73,9 @@ class PetFeedingRepositoryImpl implements PetFeedingRepository {
 
     await PetFeedingLocalStorageService.updateFeedingRecord(recordData);
 
+    LoggerService.debug(
+      '✅ PetFeedingRepository: 급여 기록 업데이트 - ID: ${record.id}',
+    );
     return record;
   }
 
@@ -75,6 +84,7 @@ class PetFeedingRepositoryImpl implements PetFeedingRepository {
     await Future.delayed(const Duration(milliseconds: 400));
 
     await PetFeedingLocalStorageService.deleteFeedingRecord(recordId);
+    LoggerService.debug('✅ PetFeedingRepository: 급여 기록 삭제 - ID: $recordId');
   }
 
   @override

@@ -1,6 +1,5 @@
 import 'package:aipet_frontend/features/splash/domain/domain.dart';
 import 'package:aipet_frontend/shared/shared.dart';
-import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'repositories/splash_repository_impl.dart';

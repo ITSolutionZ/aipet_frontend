@@ -1,10 +1,9 @@
 import 'dart:convert';
-import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
-import 'package:flutter/foundation.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
+import 'package:aipet_frontend/shared/services/cache_service.dart';
 
 import '../models/favorite_product_model.dart';
-import 'package:aipet_frontend/shared/services/cache_service.dart';
 
 /// お気に入り管理サービス
 class FavoriteService {
@@ -19,7 +18,7 @@ class FavoriteService {
   Future<List<FavoriteProduct>> getFavoriteProducts() async {
     try {
       await _init();
-      final String? jsonString = prefs.getString(_key);
+      final String? jsonString = _cache.getString(_key);
 
       if (jsonString == null || jsonString.isEmpty) {
         return [];
@@ -48,7 +47,9 @@ class FavoriteService {
 
       // 既に存在するかチェック
       if (products.any((p) => p.itemCode == product.itemCode)) {
-        LoggerService.debug('⚠️ Product already in favorites: ${product.itemName}');
+        LoggerService.debug(
+          '⚠️ Product already in favorites: ${product.itemName}',
+        );
         return false;
       }
 
@@ -106,7 +107,7 @@ class FavoriteService {
   Future<bool> clearAllFavorites() async {
     try {
       await _init();
-      await prefs.remove(_key);
+      await _cache.removeKey(_key);
       LoggerService.debug('✅ Cleared all favorites');
       return true;
     } catch (e) {
@@ -120,7 +121,7 @@ class FavoriteService {
     await _init();
     final jsonList = products.map((p) => p.toJson()).toList();
     final jsonString = json.encode(jsonList);
-    await prefs.setString(_key, jsonString);
+    await _cache.setString(_key, jsonString);
     LoggerService.debug('💾 Saved ${products.length} favorite products');
   }
 }

@@ -1,7 +1,6 @@
 import 'package:aipet_frontend/features/settings/data/services/local_user_service.dart';
 import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:aipet_frontend/shared/domain/entities/user_profile_entity.dart';
-import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'user_profile_controller.g.dart';

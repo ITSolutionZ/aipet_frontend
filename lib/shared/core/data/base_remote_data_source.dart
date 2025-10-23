@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import '../domain/result.dart';
+
 import '../api/api_client.dart';
 import '../api/api_error_handler.dart';
 import 'base_data_source.dart';
@@ -25,7 +25,7 @@ abstract class BaseRemoteDataSource<T> implements RemoteDataSource<T> {
       );
 
       if (response.data == null) {
-        return Result.failure(
+        return ResultState.failure(
           ApiErrorHandler.handleError(
             DioException(
               requestOptions: response.requestOptions,
@@ -38,7 +38,7 @@ abstract class BaseRemoteDataSource<T> implements RemoteDataSource<T> {
       final data = fromJson(response.data!);
       return Success(data);
     } catch (e) {
-      return Result.failure(ApiErrorHandler.handleError(e));
+      return ResultState.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -54,7 +54,7 @@ abstract class BaseRemoteDataSource<T> implements RemoteDataSource<T> {
       );
 
       if (response.data == null) {
-        return Result.failure(
+        return ResultState.failure(
           ApiErrorHandler.handleError(
             DioException(
               requestOptions: response.requestOptions,
@@ -72,7 +72,7 @@ abstract class BaseRemoteDataSource<T> implements RemoteDataSource<T> {
 
       return Success(result);
     } catch (e) {
-      return Result.failure(ApiErrorHandler.handleError(e));
+      return ResultState.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -85,7 +85,7 @@ abstract class BaseRemoteDataSource<T> implements RemoteDataSource<T> {
       );
 
       if (response.data == null) {
-        return Result.failure(
+        return ResultState.failure(
           ApiErrorHandler.handleError(
             DioException(
               requestOptions: response.requestOptions,
@@ -99,7 +99,7 @@ abstract class BaseRemoteDataSource<T> implements RemoteDataSource<T> {
       final result = fromJson(responseData as Map<String, dynamic>);
       return Success(result);
     } catch (e) {
-      return Result.failure(ApiErrorHandler.handleError(e));
+      return ResultState.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -112,7 +112,7 @@ abstract class BaseRemoteDataSource<T> implements RemoteDataSource<T> {
       );
 
       if (response.data == null) {
-        return Result.failure(
+        return ResultState.failure(
           ApiErrorHandler.handleError(
             DioException(
               requestOptions: response.requestOptions,
@@ -126,7 +126,7 @@ abstract class BaseRemoteDataSource<T> implements RemoteDataSource<T> {
       final result = fromJson(responseData as Map<String, dynamic>);
       return Success(result);
     } catch (e) {
-      return Result.failure(ApiErrorHandler.handleError(e));
+      return ResultState.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -136,7 +136,7 @@ abstract class BaseRemoteDataSource<T> implements RemoteDataSource<T> {
       await apiClient.delete('$endpoint/$id');
       return const Success(null);
     } catch (e) {
-      return Result.failure(ApiErrorHandler.handleError(e));
+      return ResultState.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -165,7 +165,7 @@ abstract class BaseRemoteDataSource<T> implements RemoteDataSource<T> {
       );
 
       if (response.data == null) {
-        return Result.failure(
+        return ResultState.failure(
           ApiErrorHandler.handleError(
             DioException(
               requestOptions: response.requestOptions,
@@ -177,7 +177,7 @@ abstract class BaseRemoteDataSource<T> implements RemoteDataSource<T> {
 
       return Success(response.data!);
     } catch (e) {
-      return Result.failure(ApiErrorHandler.handleError(e));
+      return ResultState.failure(ApiErrorHandler.handleError(e));
     }
   }
 
@@ -200,7 +200,7 @@ abstract class BaseRemoteDataSource<T> implements RemoteDataSource<T> {
       );
 
       if (response.data == null) {
-        return Result.failure(
+        return ResultState.failure(
           ApiErrorHandler.handleError(
             DioException(
               requestOptions: response.requestOptions,
@@ -218,7 +218,7 @@ abstract class BaseRemoteDataSource<T> implements RemoteDataSource<T> {
 
       return Success(result);
     } catch (e) {
-      return Result.failure(ApiErrorHandler.handleError(e));
+      return ResultState.failure(ApiErrorHandler.handleError(e));
     }
   }
 }

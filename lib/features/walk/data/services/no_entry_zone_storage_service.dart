@@ -1,10 +1,9 @@
 import 'dart:convert';
-import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
 import 'package:aipet_frontend/features/walk/domain/entities/no_entry_zone_entity.dart';
-import 'package:flutter/foundation.dart';
-
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:aipet_frontend/shared/services/cache_service.dart';
+
 /// 금지구역 로컬 저장소 서비스
 class NoEntryZoneStorageService {
   static const String _storageKey = 'no_entry_zones';
@@ -14,11 +13,12 @@ class NoEntryZoneStorageService {
   static Future<void> _init() async {
     await _cache.initialize();
   }
+
   /// 모든 금지구역 로드
   static Future<List<NoEntryZone>> loadNoEntryZones() async {
     try {
       await _init();
-      final jsonString = prefs.getString(_storageKey);
+      final jsonString = _cache.getString(_storageKey);
 
       if (jsonString == null || jsonString.isEmpty) {
         return [];
@@ -60,7 +60,7 @@ class NoEntryZoneStorageService {
   static Future<void> clearNoEntryZones() async {
     try {
       await _init();
-      await prefs.remove(_storageKey);
+      await _cache.removeKey(_storageKey);
     } catch (e) {
       LoggerService.debug('금지구역 초기화 실패: $e');
     }
@@ -71,7 +71,7 @@ class NoEntryZoneStorageService {
     try {
       await _init();
       final jsonList = zones.map((zone) => zone.toJson()).toList();
-      await prefs.setString(_storageKey, jsonEncode(jsonList));
+      await _cache.setString(_storageKey, jsonEncode(jsonList));
     } catch (e) {
       LoggerService.debug('금지구역 저장 실패: $e');
     }

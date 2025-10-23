@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 

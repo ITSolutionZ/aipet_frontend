@@ -1,5 +1,4 @@
 import 'package:aipet_frontend/shared/shared.dart';
-import 'package:flutter/foundation.dart';
 
 import '../../domain/domain.dart';
 import '../services/notification_api_service.dart';
@@ -7,11 +6,9 @@ import '../services/notification_cache_service.dart';
 
 /// 📱 알림 Repository 구현체
 ///
-/// 로컬 저장소와 캐시 서비스를 사용하여 효율적인 데이터 관리를 제공합니다.
-/// 완전한 로컬 전용 구조로 외부 API 없이 동작합니다.
+/// Hybrid 패턴: 로컬 저장소 + 캐시 서비스를 사용하여 효율적인 데이터 관리 제공
+/// 완전한 로컬 전용 구조로 외부 API 없이 동작 (추후 API 연동 예정)
 class NotificationRepositoryImpl implements NotificationRepository {
-  static const String _tag = 'NotificationRepositoryImpl';
-
   final NotificationApiService _localService;
 
   NotificationRepositoryImpl({NotificationApiService? apiService})
@@ -30,9 +27,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
       final isCacheValid = await NotificationCacheService.isCacheValid(userId);
 
       if (isCacheValid) {
-        if (kDebugMode) {
-          LoggerService.debug('[$_tag] 🗄️ 유효한 캐시 데이터 사용');
-        }
+        LoggerService.debug('✅ NotificationRepository: 유효한 캐시 데이터 사용');
         return await NotificationCacheService.getCachedNotifications(userId);
       }
 
@@ -53,32 +48,28 @@ class NotificationRepositoryImpl implements NotificationRepository {
           notifications: notifications,
         );
 
-        if (kDebugMode) {
-          LoggerService.debug('[$_tag] ✅ 로컬 저장소에서 알림 조회 및 캐시 저장 완료');
-        }
+        LoggerService.debug(
+          '✅ NotificationRepository: 로컬 저장소에서 알림 조회 및 캐시 저장 완료',
+        );
 
         return localResult;
       } else {
         // 4. 로컬 조회 실패 시 캐시된 데이터라도 반환 시도
-        if (kDebugMode) {
-          LoggerService.debug('[$_tag] ⚠️ 로컬 조회 실패, 캐시된 데이터 조회 시도');
-        }
+        LoggerService.debug(
+          '⚠️ NotificationRepository: 로컬 조회 실패, 캐시된 데이터 조회 시도',
+        );
 
         final cacheResult =
             await NotificationCacheService.getCachedNotifications(userId);
         if (cacheResult.isSuccess) {
-          if (kDebugMode) {
-            LoggerService.debug('[$_tag] 🗄️ 만료된 캐시 데이터 사용');
-          }
+          LoggerService.debug('✅ NotificationRepository: 만료된 캐시 데이터 사용');
           return cacheResult;
         }
 
         return localResult; // 캐시도 없으면 로컬 에러 반환
       }
     } catch (error) {
-      if (kDebugMode) {
-        LoggerService.debug('[$_tag] ❌ 알림 조회 중 예외 발생: $error');
-      }
+      LoggerService.debug('❌ NotificationRepository: 알림 조회 중 예외 발생 - $error');
       return Result.failure('알림 조회 중 오류 발생: $error');
     }
   }
@@ -98,9 +89,9 @@ class NotificationRepositoryImpl implements NotificationRepository {
             .firstWhere((n) => n?.id == notificationId, orElse: () => null);
 
         if (notification != null) {
-          if (kDebugMode) {
-            LoggerService.debug('[$_tag] 🗄️ 캐시에서 특정 알림 조회 성공: $notificationId');
-          }
+          LoggerService.debug(
+            '✅ NotificationRepository: 캐시에서 특정 알림 조회 성공 - $notificationId',
+          );
           return Result.success('Notification found in cache', notification);
         }
       }
@@ -113,21 +104,21 @@ class NotificationRepositoryImpl implements NotificationRepository {
             .firstWhere((n) => n?.id == notificationId, orElse: () => null);
 
         if (notification != null) {
-          if (kDebugMode) {
-            LoggerService.debug('[$_tag] ✅ API에서 특정 알림 조회 성공: $notificationId');
-          }
+          LoggerService.debug(
+            '✅ NotificationRepository: API에서 특정 알림 조회 성공 - $notificationId',
+          );
           return Result.success('Notification found via API', notification);
         }
       }
 
-      if (kDebugMode) {
-        LoggerService.debug('[$_tag] ⚠️ 알림을 찾을 수 없음: $notificationId');
-      }
+      LoggerService.debug(
+        '⚠️ NotificationRepository: 알림을 찾을 수 없음 - $notificationId',
+      );
       return Result.success('Notification not found', null);
     } catch (error) {
-      if (kDebugMode) {
-        LoggerService.debug('[$_tag] ❌ 특정 알림 조회 중 예외 발생: $error');
-      }
+      LoggerService.debug(
+        '❌ NotificationRepository: 특정 알림 조회 중 예외 발생 - $error',
+      );
       return Result.failure('알림 조회 중 오류 발생: $error');
     }
   }
@@ -148,17 +139,14 @@ class NotificationRepositoryImpl implements NotificationRepository {
       if (result.isSuccess) {
         // 2. 성공한 경우 캐시 무효화 (다음 조회 시 최신 데이터 받기 위해)
         await NotificationCacheService.clearUserCache(userId);
-
-        if (kDebugMode) {
-          LoggerService.debug('[$_tag] ✅ 읽음 상태 업데이트 및 캐시 무효화 완료');
-        }
+        LoggerService.debug('✅ NotificationRepository: 읽음 상태 업데이트 및 캐시 무효화 완료');
       }
 
       return result;
     } catch (error) {
-      if (kDebugMode) {
-        LoggerService.debug('[$_tag] ❌ 읽음 상태 업데이트 중 예외 발생: $error');
-      }
+      LoggerService.debug(
+        '❌ NotificationRepository: 읽음 상태 업데이트 중 예외 발생 - $error',
+      );
       return Result.failure('읽음 상태 업데이트 중 오류 발생: $error');
     }
   }
@@ -175,17 +163,12 @@ class NotificationRepositoryImpl implements NotificationRepository {
       if (result.isSuccess) {
         // 2. 성공한 경우 캐시 무효화
         await NotificationCacheService.clearUserCache(userId);
-
-        if (kDebugMode) {
-          LoggerService.debug('[$_tag] ✅ 알림 삭제 및 캐시 무효화 완료');
-        }
+        LoggerService.debug('✅ NotificationRepository: 알림 삭제 및 캐시 무효화 완료');
       }
 
       return result;
     } catch (error) {
-      if (kDebugMode) {
-        LoggerService.debug('[$_tag] ❌ 알림 삭제 중 예외 발생: $error');
-      }
+      LoggerService.debug('❌ NotificationRepository: 알림 삭제 중 예외 발생 - $error');
       return Result.failure('알림 삭제 중 오류 발생: $error');
     }
   }
@@ -200,9 +183,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
         userId,
       );
       if (cachedSettings.isSuccess) {
-        if (kDebugMode) {
-          LoggerService.debug('[$_tag] 🗄️ 캐시된 설정 사용');
-        }
+        LoggerService.debug('✅ NotificationRepository: 캐시된 설정 사용');
         return cachedSettings;
       }
 
@@ -217,16 +198,14 @@ class NotificationRepositoryImpl implements NotificationRepository {
           settings: settings,
         );
 
-        if (kDebugMode) {
-          LoggerService.debug('[$_tag] ✅ 로컬 저장소에서 설정 조회 및 캐시 저장 완료');
-        }
+        LoggerService.debug(
+          '✅ NotificationRepository: 로컬 저장소에서 설정 조회 및 캐시 저장 완료',
+        );
       }
 
       return localResult;
     } catch (error) {
-      if (kDebugMode) {
-        LoggerService.debug('[$_tag] ❌ 설정 조회 중 예외 발생: $error');
-      }
+      LoggerService.debug('❌ NotificationRepository: 설정 조회 중 예외 발생 - $error');
       return Result.failure('설정 조회 중 오류 발생: $error');
     }
   }
@@ -250,16 +229,12 @@ class NotificationRepositoryImpl implements NotificationRepository {
           settings: settings,
         );
 
-        if (kDebugMode) {
-          LoggerService.debug('[$_tag] ✅ 설정 업데이트 및 캐시 동기화 완료');
-        }
+        LoggerService.debug('✅ NotificationRepository: 설정 업데이트 및 캐시 동기화 완료');
       }
 
       return result;
     } catch (error) {
-      if (kDebugMode) {
-        LoggerService.debug('[$_tag] ❌ 설정 업데이트 중 예외 발생: $error');
-      }
+      LoggerService.debug('❌ NotificationRepository: 설정 업데이트 중 예외 발생 - $error');
       return Result.failure('설정 업데이트 중 오류 발생: $error');
     }
   }
@@ -272,9 +247,7 @@ class NotificationRepositoryImpl implements NotificationRepository {
       // 로컬 저장소에서 통계 조회
       return await _localService.getNotificationStats(userId);
     } catch (error) {
-      if (kDebugMode) {
-        LoggerService.debug('[$_tag] ❌ 통계 조회 중 예외 발생: $error');
-      }
+      LoggerService.debug('❌ NotificationRepository: 통계 조회 중 예외 발생 - $error');
       return Result.failure('통계 조회 중 오류 발생: $error');
     }
   }

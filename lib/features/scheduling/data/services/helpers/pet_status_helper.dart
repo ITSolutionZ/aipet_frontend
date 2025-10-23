@@ -1,10 +1,9 @@
 import 'dart:convert';
 import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
-import 'package:flutter/foundation.dart';
-
 /// 펫 상태 관리 헬퍼
 import 'package:aipet_frontend/shared/services/cache_service.dart';
+
 class PetStatusHelper {
   static const String _keyPetStatuses = 'pet_statuses';
 
@@ -14,6 +13,7 @@ class PetStatusHelper {
   static Future<void> _init() async {
     await _cache.initialize();
   }
+
   static Future<void> updatePetStatus(
     String petId,
     Map<String, String> statusValues,
@@ -27,7 +27,7 @@ class PetStatusHelper {
         'lastUpdated': DateTime.now().toIso8601String(),
       };
 
-      await prefs.setString(statusKey, jsonEncode(statusData));
+      await _cache.setString(statusKey, jsonEncode(statusData));
       LoggerService.debug('ペット状態更新成功: $petId');
     } catch (e) {
       LoggerService.debug('ペット状態更新エラー: $e');
@@ -39,7 +39,7 @@ class PetStatusHelper {
     try {
       await _init();
       final statusKey = '${_keyPetStatuses}_$petId';
-      final statusJson = prefs.getString(statusKey);
+      final statusJson = _cache.getString(statusKey);
 
       if (statusJson != null) {
         return jsonDecode(statusJson) as Map<String, dynamic>;

@@ -4,7 +4,6 @@ import 'package:aipet_frontend/features/walk/data/services/walk_api_service.dart
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_statistics_entity.dart';
 import 'package:aipet_frontend/features/walk/domain/repositories/walk_repository.dart';
-import 'package:flutter/foundation.dart';
 
 import 'helpers/helpers.dart';
 

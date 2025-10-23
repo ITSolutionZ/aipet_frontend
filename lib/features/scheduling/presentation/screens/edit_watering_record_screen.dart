@@ -355,7 +355,8 @@ class _EditWateringRecordScreenState
   Future<void> _saveRecord() async {
     if (_formKey.currentState!.validate()) {
       // 로컬 데이터로 저장
-      final cache = CacheService(); await cache.initialize();
+      final cache = CacheService();
+      await cache.initialize();
 
       final recordId = widget.record['id'] as String;
 
@@ -378,7 +379,7 @@ class _EditWateringRecordScreenState
         return record;
       }).toList();
 
-      await await cache.setPersistentCacheList('watering_records', updatedRecords);
+      await cache.setPersistentCacheList('watering_records', updatedRecords);
 
       if (mounted) {
         SnackBarService.showSuccess(context, '給水記録を更新しました');
@@ -405,15 +406,20 @@ class _EditWateringRecordScreenState
                 Navigator.of(context).pop();
 
                 // 로컬 데이터에서 삭제
-                final cache = CacheService(); await cache.initialize();
-                final records = cache.getPersistentCacheList('watering_records') ?? [];
+                final cache = CacheService();
+                await cache.initialize();
+                final records =
+                    cache.getPersistentCacheList('watering_records') ?? [];
                 final currentRecordId = widget.record['id'] as String;
                 final filteredRecords = records.where((record) {
                   final data = jsonDecode(record) as Map<String, dynamic>;
                   return data['id'] != currentRecordId;
                 }).toList();
 
-                await await cache.setPersistentCacheList('watering_records', filteredRecords);
+                await cache.setPersistentCacheList(
+                  'watering_records',
+                  filteredRecords,
+                );
 
                 if (mounted) {
                   SnackBarService.showSuccess(context, '給水記録を削除しました');

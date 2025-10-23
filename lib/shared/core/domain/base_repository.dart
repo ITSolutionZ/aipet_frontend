@@ -97,14 +97,14 @@ mixin MemoryRepositoryMixin<T, ID> {
   /// ID로 아이템 찾기
   T? findById(ID id) {
     try {
-      return _items.firstWhere((item) => _getId(item) == id);
+      return _items.firstWhere((item) => getId(item) == id);
     } catch (e) {
       return null;
     }
   }
 
   /// ID 추출 메서드 (구현체에서 오버라이드)
-  ID _getId(T item);
+  ID getId(T item);
 
   /// 아이템 추가
   void addItem(T item) {
@@ -114,7 +114,7 @@ mixin MemoryRepositoryMixin<T, ID> {
   /// 아이템 업데이트
   void updateItem(T item) {
     final index = _items.indexWhere(
-      (existing) => _getId(existing) == _getId(item),
+      (existing) => getId(existing) == getId(item),
     );
     if (index != -1) {
       _items[index] = item;
@@ -123,7 +123,7 @@ mixin MemoryRepositoryMixin<T, ID> {
 
   /// 아이템 삭제
   void removeItem(ID id) {
-    _items.removeWhere((item) => _getId(item) == id);
+    _items.removeWhere((item) => getId(item) == id);
   }
 
   /// 시뮬레이션 지연

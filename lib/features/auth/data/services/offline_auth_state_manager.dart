@@ -1,11 +1,11 @@
 import 'dart:async';
-import 'package:aipet_frontend/shared/core/services/logger_service.dart';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../../../shared/core/data/result_types.dart';
 import '../../../../shared/core/domain/common_errors.dart';
-import '../../../../shared/core/domain/result.dart';
+import '../../../../shared/core/services/logger_service.dart';
 import '../../../../shared/core/services/secure_storage_service.dart';
 import '../models/auth_models.dart';
 import 'token_manager_service.dart';
