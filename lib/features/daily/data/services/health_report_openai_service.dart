@@ -1,9 +1,8 @@
 import 'package:aipet_frontend/app/config/app_config.dart';
-import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/core/services/ai_http_client_service.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:aipet_frontend/shared/services/base_logging_service.dart';
-import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 
 /// AI 건강 리포트 생성을 위한 OpenAI API 서비스
@@ -43,7 +42,9 @@ class HealthReportOpenAIService extends BaseLoggingService {
     }
 
     try {
-      LoggerService.debug('📊 HealthReportOpenAI: Generating monthly health report...');
+      LoggerService.debug(
+        '📊 HealthReportOpenAI: Generating monthly health report...',
+      );
 
       final prompt = _buildHealthReportPrompt(
         petName: petName,

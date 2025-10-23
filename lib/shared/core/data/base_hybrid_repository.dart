@@ -41,10 +41,10 @@ abstract class BaseHybridRepository<T> implements HybridRepository<T> {
       }
 
       return Result.failure(
-        remoteResult.errorOrNull ?? NetworkError(details: 'No data available'),
+        remoteResult.errorOrNull ?? UnknownError(details: 'データが見つかりませんでした'),
       );
     } catch (e) {
-      return Result.failure(UnknownError(details: e.toString()));
+      return Result.failure(UnknownError(details: 'データが見つかりませんでした'));
     }
   }
 
@@ -79,10 +79,10 @@ abstract class BaseHybridRepository<T> implements HybridRepository<T> {
       }
 
       return Result.failure(
-        remoteResult.errorOrNull ?? NetworkError(details: 'No data available'),
+        remoteResult.errorOrNull ?? UnknownError(details: 'データが見つかりませんでした'),
       );
     } catch (e) {
-      return Result.failure(UnknownError(details: e.toString()));
+      return Result.failure(UnknownError(details: 'データが見つかりませんでした'));
     }
   }
 
@@ -106,11 +106,10 @@ abstract class BaseHybridRepository<T> implements HybridRepository<T> {
       }
 
       return Result.failure(
-        remoteResult.errorOrNull ??
-            UnknownError(details: 'Create operation failed'),
+        remoteResult.errorOrNull ?? UnknownError(details: 'データの作成に失敗しました'),
       );
     } catch (e) {
-      return Result.failure(UnknownError(details: e.toString()));
+      return Result.failure(UnknownError(details: 'データの作成に失敗しました'));
     }
   }
 
@@ -139,11 +138,10 @@ abstract class BaseHybridRepository<T> implements HybridRepository<T> {
       }
 
       return Result.failure(
-        remoteResult.errorOrNull ??
-            UnknownError(details: 'Update operation failed'),
+        remoteResult.errorOrNull ?? UnknownError(details: 'データの更新に失敗しました'),
       );
     } catch (e) {
-      return Result.failure(UnknownError(details: e.toString()));
+      return Result.failure(UnknownError(details: 'データの更新に失敗しました'));
     }
   }
 
@@ -164,11 +162,10 @@ abstract class BaseHybridRepository<T> implements HybridRepository<T> {
       }
 
       return Result.failure(
-        remoteResult.errorOrNull ??
-            UnknownError(details: 'Delete operation failed'),
+        remoteResult.errorOrNull ?? UnknownError(details: 'データの削除に失敗しました'),
       );
     } catch (e) {
-      return Result.failure(UnknownError(details: e.toString()));
+      return Result.failure(UnknownError(details: 'データの削除に失敗しました'));
     }
   }
 
@@ -177,7 +174,7 @@ abstract class BaseHybridRepository<T> implements HybridRepository<T> {
     try {
       return const Success(null);
     } catch (e) {
-      return Result.failure(UnknownError(details: e.toString()));
+      return Result.failure(UnknownError(details: 'データの同期に失敗しました'));
     }
   }
 
@@ -189,10 +186,10 @@ abstract class BaseHybridRepository<T> implements HybridRepository<T> {
         return const Success(null);
       }
       return Result.failure(
-        result.errorOrNull ?? UnknownError(details: 'Cache clear failed'),
+        result.errorOrNull ?? UnknownError(details: 'キャッシュのクリアに失敗しました'),
       );
     } catch (e) {
-      return Result.failure(UnknownError(details: e.toString()));
+      return Result.failure(UnknownError(details: 'キャッシュのクリアに失敗しました'));
     }
   }
 

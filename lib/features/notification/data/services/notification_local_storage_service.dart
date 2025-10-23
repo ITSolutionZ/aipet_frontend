@@ -1,11 +1,10 @@
 import 'dart:convert';
-import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
-import 'package:flutter/foundation.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
+import 'package:aipet_frontend/shared/services/cache_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'helpers/notification_storage_defaults_helper.dart';
-import 'package:aipet_frontend/shared/services/cache_service.dart';
-import 'package:aipet_frontend/shared/services/cache_service.dart';
 
 /// 알림 로컬 저장소 서비스
 ///
@@ -27,9 +26,10 @@ class NotificationLocalStorageService {
   static Future<List<Map<String, dynamic>>> getNotifications() async {
     try {
       await _init();
-      final notificationsJson = prefs.getStringList(_keyNotifications) ?? [];
+      final notificationsJson = _cache.getStringList(_keyNotifications) ?? [];
 
       if (notificationsJson.isEmpty) {
+        final prefs = await SharedPreferences.getInstance();
         return await NotificationStorageDefaultsHelper.initializeDefaultNotifications(
           prefs,
           _keyNotifications,
@@ -49,7 +49,7 @@ class NotificationLocalStorageService {
   static Future<void> addNotification(Map<String, dynamic> notification) async {
     try {
       await _init();
-      final notifications = prefs.getStringList(_keyNotifications) ?? [];
+      final notifications = _cache.getStringList(_keyNotifications) ?? [];
 
       if (notification['id'] == null ||
           (notification['id'] as String).isEmpty) {
@@ -62,7 +62,7 @@ class NotificationLocalStorageService {
       }
 
       notifications.add(jsonEncode(notification));
-      await prefs.setStringList(_keyNotifications, notifications);
+      await _cache.setStringList(_keyNotifications, notifications);
 
       LoggerService.debug('알림 추가 성공: ${notification['id']}');
     } catch (e) {
@@ -76,7 +76,7 @@ class NotificationLocalStorageService {
   ) async {
     try {
       await _init();
-      final notifications = prefs.getStringList(_keyNotifications) ?? [];
+      final notifications = _cache.getStringList(_keyNotifications) ?? [];
 
       final index = notifications.indexWhere((n) {
         final notificationData = jsonDecode(n) as Map<String, dynamic>;
@@ -86,7 +86,7 @@ class NotificationLocalStorageService {
       if (index != -1) {
         notification['updatedAt'] = DateTime.now().toIso8601String();
         notifications[index] = jsonEncode(notification);
-        await prefs.setStringList(_keyNotifications, notifications);
+        await _cache.setStringList(_keyNotifications, notifications);
         LoggerService.debug('알림 업데이트 성공: ${notification['id']}');
       }
     } catch (e) {
@@ -98,14 +98,14 @@ class NotificationLocalStorageService {
   static Future<void> deleteNotification(String notificationId) async {
     try {
       await _init();
-      final notifications = prefs.getStringList(_keyNotifications) ?? [];
+      final notifications = _cache.getStringList(_keyNotifications) ?? [];
 
       notifications.removeWhere((n) {
         final notificationData = jsonDecode(n) as Map<String, dynamic>;
         return notificationData['id'] == notificationId;
       });
 
-      await prefs.setStringList(_keyNotifications, notifications);
+      await _cache.setStringList(_keyNotifications, notifications);
       LoggerService.debug('알림 삭제 성공: $notificationId');
     } catch (e) {
       LoggerService.debug('알림 삭제 실패: $e');
@@ -116,7 +116,7 @@ class NotificationLocalStorageService {
   static Future<void> clearAllNotifications() async {
     try {
       await _init();
-      await prefs.remove(_keyNotifications);
+      await _cache.removeKey(_keyNotifications);
       LoggerService.debug('모든 알림 삭제 성공');
     } catch (e) {
       LoggerService.debug('모든 알림 삭제 실패: $e');
@@ -127,9 +127,10 @@ class NotificationLocalStorageService {
   static Future<Map<String, dynamic>> getSettings() async {
     try {
       await _init();
-      final settingsJson = prefs.getString(_keySettings);
+      final settingsJson = _cache.getString(_keySettings);
 
       if (settingsJson == null || settingsJson.isEmpty) {
+        final prefs = await SharedPreferences.getInstance();
         return await NotificationStorageDefaultsHelper.initializeDefaultSettings(
           prefs,
           _keySettings,
@@ -140,6 +141,7 @@ class NotificationLocalStorageService {
     } catch (e) {
       LoggerService.debug('알림 설정 로드 실패: $e');
       await _init();
+      final prefs = await SharedPreferences.getInstance();
       return NotificationStorageDefaultsHelper.initializeDefaultSettings(
         prefs,
         _keySettings,
@@ -151,7 +153,7 @@ class NotificationLocalStorageService {
   static Future<void> saveSettings(Map<String, dynamic> settings) async {
     try {
       await _init();
-      await prefs.setString(_keySettings, jsonEncode(settings));
+      await _cache.setString(_keySettings, jsonEncode(settings));
       LoggerService.debug('알림 설정 저장 성공');
     } catch (e) {
       LoggerService.debug('알림 설정 저장 실패: $e');
@@ -162,9 +164,10 @@ class NotificationLocalStorageService {
   static Future<List<Map<String, dynamic>>> getStats({int days = 30}) async {
     try {
       await _init();
-      final statsJson = prefs.getStringList(_keyStats) ?? [];
+      final statsJson = _cache.getStringList(_keyStats) ?? [];
 
       if (statsJson.isEmpty) {
+        final prefs = await SharedPreferences.getInstance();
         return await NotificationStorageDefaultsHelper.initializeDefaultStats(
           prefs,
           _keyStats,
@@ -192,10 +195,10 @@ class NotificationLocalStorageService {
   static Future<void> addStats(Map<String, dynamic> stats) async {
     try {
       await _init();
-      final statsList = prefs.getStringList(_keyStats) ?? [];
+      final statsList = _cache.getStringList(_keyStats) ?? [];
 
       statsList.add(jsonEncode(stats));
-      await prefs.setStringList(_keyStats, statsList);
+      await _cache.setStringList(_keyStats, statsList);
 
       LoggerService.debug('알림 통계 추가 성공');
     } catch (e) {
@@ -209,9 +212,10 @@ class NotificationLocalStorageService {
   }) async {
     try {
       await _init();
-      final engagementJson = prefs.getStringList(_keyUserEngagement) ?? [];
+      final engagementJson = _cache.getStringList(_keyUserEngagement) ?? [];
 
       if (engagementJson.isEmpty) {
+        final prefs = await SharedPreferences.getInstance();
         return await NotificationStorageDefaultsHelper.initializeDefaultUserEngagement(
           prefs,
           _keyUserEngagement,
@@ -239,10 +243,10 @@ class NotificationLocalStorageService {
   static Future<void> addUserEngagement(Map<String, dynamic> engagement) async {
     try {
       await _init();
-      final engagementList = prefs.getStringList(_keyUserEngagement) ?? [];
+      final engagementList = _cache.getStringList(_keyUserEngagement) ?? [];
 
       engagementList.add(jsonEncode(engagement));
-      await prefs.setStringList(_keyUserEngagement, engagementList);
+      await _cache.setStringList(_keyUserEngagement, engagementList);
 
       LoggerService.debug('사용자 참여도 추가 성공');
     } catch (e) {

@@ -160,6 +160,18 @@ class CacheService {
   void invalidateCache(String key) {
     _memoryCache.remove(key);
   }
+
+  /// 만료된 메모리 캐시 정리
+  void cleanupExpiredCache() {
+    final expiredKeys = _memoryCache.entries
+        .where((entry) => entry.value.isExpired)
+        .map((entry) => entry.key)
+        .toList();
+
+    for (final key in expiredKeys) {
+      _memoryCache.remove(key);
+    }
+  }
 }
 
 /// 캐시 엔트리

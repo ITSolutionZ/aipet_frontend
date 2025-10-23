@@ -33,24 +33,16 @@ class AlarmTimeSettingsController extends _$AlarmTimeSettingsController {
       await cache.initialize();
 
       final morningTime = _parseTimeString(
-        (await cache.getPersistentCache('morning_alarm_time'))?['data']
-                as String? ??
-            '8:0',
+        cache.getString('morning_alarm_time') ?? '8:0',
       );
       final lunchTime = _parseTimeString(
-        (await cache.getPersistentCache('lunch_alarm_time'))?['data']
-                as String? ??
-            '12:0',
+        cache.getString('lunch_alarm_time') ?? '12:0',
       );
       final dinnerTime = _parseTimeString(
-        (await cache.getPersistentCache('dinner_alarm_time'))?['data']
-                as String? ??
-            '18:0',
+        cache.getString('dinner_alarm_time') ?? '18:0',
       );
       final walkTime = _parseTimeString(
-        (await cache.getPersistentCache('walk_alarm_time'))?['data']
-                as String? ??
-            '16:0',
+        cache.getString('walk_alarm_time') ?? '16:0',
       );
 
       state = state.copyWith(
@@ -91,18 +83,22 @@ class AlarmTimeSettingsController extends _$AlarmTimeSettingsController {
       final cache = CacheService();
       await cache.initialize();
 
-      await cache.setPersistentCache('morning_alarm_time', {
-        'data': '${state.morningTime.hour}:${state.morningTime.minute}',
-      });
-      await cache.setPersistentCache('lunch_alarm_time', {
-        'data': '${state.lunchTime.hour}:${state.lunchTime.minute}',
-      });
-      await cache.setPersistentCache('dinner_alarm_time', {
-        'data': '${state.dinnerTime.hour}:${state.dinnerTime.minute}',
-      });
-      await cache.setPersistentCache('walk_alarm_time', {
-        'data': '${state.walkTime.hour}:${state.walkTime.minute}',
-      });
+      await cache.setString(
+        'morning_alarm_time',
+        '${state.morningTime.hour}:${state.morningTime.minute}',
+      );
+      await cache.setString(
+        'lunch_alarm_time',
+        '${state.lunchTime.hour}:${state.lunchTime.minute}',
+      );
+      await cache.setString(
+        'dinner_alarm_time',
+        '${state.dinnerTime.hour}:${state.dinnerTime.minute}',
+      );
+      await cache.setString(
+        'walk_alarm_time',
+        '${state.walkTime.hour}:${state.walkTime.minute}',
+      );
 
       state = state.copyWith(isSaved: true);
     } catch (e) {

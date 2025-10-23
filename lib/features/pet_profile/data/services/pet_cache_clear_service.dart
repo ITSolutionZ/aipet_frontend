@@ -1,5 +1,5 @@
-import 'package:aipet_frontend/shared/services/cache_service.dart';
 import 'package:aipet_frontend/shared/core/services/logger_service.dart';
+import 'package:aipet_frontend/shared/services/cache_service.dart';
 import 'package:aipet_frontend/shared/services/local_data_manager.dart';
 import 'package:flutter/foundation.dart';
 
@@ -47,7 +47,7 @@ class PetCacheClearService {
   static Future<void> _clearPetProfileCache() async {
     try {
       // 메모리 캐시에서 펫 프로필 제거
-      _cacheService.clearMemoryCache(CacheKeys.petProfiles);
+      await _cacheService.removeKey(CacheKeys.petProfiles);
 
       if (kDebugMode) {
         LoggerService.debug('🧹 PetCacheClearService: 펫 프로필 캐시 클리어 완료');
@@ -63,7 +63,7 @@ class PetCacheClearService {
   static Future<void> _clearHealthSummaryCache() async {
     try {
       // 메모리 캐시에서 건강 요약 제거
-      _cacheService.clearMemoryCache(CacheKeys.healthSummary);
+      await _cacheService.removeKey(CacheKeys.healthSummary);
 
       if (kDebugMode) {
         LoggerService.debug('🧹 PetCacheClearService: 건강 요약 캐시 클리어 완료');
@@ -79,7 +79,7 @@ class PetCacheClearService {
   static Future<void> _clearDashboardCache() async {
     try {
       // 메모리 캐시에서 대시보드 데이터 제거
-      _cacheService.clearMemoryCache(CacheKeys.dashboard);
+      await _cacheService.removeKey(CacheKeys.dashboard);
 
       if (kDebugMode) {
         LoggerService.debug('🧹 PetCacheClearService: 대시보드 캐시 클리어 완료');
@@ -97,7 +97,7 @@ class PetCacheClearService {
   /// [return] 클리어 완료 여부
   static Future<bool> clearSpecificCache(String cacheKey) async {
     try {
-      _cacheService.clearMemoryCache(cacheKey);
+      await _cacheService.removeKey(cacheKey);
 
       if (kDebugMode) {
         LoggerService.debug('🧹 PetCacheClearService: $cacheKey 캐시 클리어 완료');
@@ -106,7 +106,9 @@ class PetCacheClearService {
       return true;
     } catch (error) {
       if (kDebugMode) {
-        LoggerService.debug('❌ PetCacheClearService: $cacheKey 캐시 클리어 실패: $error');
+        LoggerService.debug(
+          '❌ PetCacheClearService: $cacheKey 캐시 클리어 실패: $error',
+        );
       }
       return false;
     }
@@ -117,13 +119,13 @@ class PetCacheClearService {
   /// [return] 캐시 상태 정보
   static Map<String, dynamic> getCacheStatus() {
     try {
-      final petProfilesCache = _cacheService.getMemoryCache<List<dynamic>>(
+      final petProfilesCache = _cacheService.getCache<List<dynamic>>(
         CacheKeys.petProfiles,
       );
-      final healthSummaryCache = _cacheService.getMemoryCache<dynamic>(
+      final healthSummaryCache = _cacheService.getCache<dynamic>(
         CacheKeys.healthSummary,
       );
-      final dashboardCache = _cacheService.getMemoryCache<dynamic>(
+      final dashboardCache = _cacheService.getCache<dynamic>(
         CacheKeys.dashboard,
       );
 

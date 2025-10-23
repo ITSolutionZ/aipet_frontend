@@ -1,12 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image/image.dart' as img;
 import 'package:path/path.dart' as path;
 
 import '../../../../shared/core/api/api_client.dart';
 import '../../../../shared/core/data/result_types.dart';
 import '../../../../shared/core/domain/common_errors.dart';
-import '../../../../shared/core/domain/result.dart';
 import '../../../../shared/core/services/image_service.dart';
 import '../../../../shared/core/services/secure_storage_service.dart';
 import 'pet_api_service.dart';
@@ -62,7 +62,7 @@ class PetImageUploadService {
         uploadResult.errorOrNull ?? UnknownError(details: 'Upload failed'),
       );
     } catch (e) {
-      return ResultState.failure(UnknownError.toString()));
+      return ResultState.failure(UnknownError(details: 'Upload failed'));
     }
   }
 
@@ -97,7 +97,7 @@ class PetImageUploadService {
 
       return Success(uploadedUrls);
     } catch (e) {
-      return ResultState.failure(UnknownError.toString()));
+      return ResultState.failure(UnknownError(details: 'Upload failed'));
     }
   }
 
@@ -133,7 +133,9 @@ class PetImageUploadService {
 
       return Success(processedFile);
     } catch (e) {
-      return ResultState.failure(UnknownError.toString()));
+      return ResultState.failure(
+        UnknownError(details: 'Image processing failed'),
+      );
     }
   }
 
@@ -259,7 +261,9 @@ class PetImageUploadService {
 
       return Success(metadata);
     } catch (e) {
-      return ResultState.failure(UnknownError.toString()));
+      return ResultState.failure(
+        UnknownError(details: 'Image metadata failed: $e'),
+      );
     }
   }
 
@@ -296,7 +300,9 @@ class PetImageUploadService {
 
       return const Success(true);
     } catch (e) {
-      return ResultState.failure(UnknownError.toString()));
+      return ResultState.failure(
+        UnknownError(details: 'Image validation failed: $e'),
+      );
     }
   }
 }

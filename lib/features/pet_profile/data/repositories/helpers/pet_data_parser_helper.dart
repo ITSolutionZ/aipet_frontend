@@ -1,6 +1,5 @@
-import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/core/services/logger_service.dart';
-import 'package:flutter/foundation.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 
 /// Pet 데이터 파싱 헬퍼
 class PetDataParserHelper {
@@ -10,7 +9,9 @@ class PetDataParserHelper {
       // fromJson을 먼저 시도해보고, 실패하면 수동으로 생성
       return PetProfileEntity.fromJson(petData);
     } catch (e) {
-      LoggerService.debug('PetProfileEntity.fromJson failed, creating manually: $e');
+      LoggerService.debug(
+        'PetProfileEntity.fromJson failed, creating manually: $e',
+      );
       LoggerService.debug('Pet data keys: ${petData.keys.toList()}');
       LoggerService.debug('Pet data: $petData');
 

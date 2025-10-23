@@ -1,9 +1,7 @@
 import 'package:aipet_frontend/app/config/app_config.dart';
 import 'package:aipet_frontend/app/services/local_storage_service.dart';
 import 'package:aipet_frontend/app/services/ultra_fast_cache_service.dart';
-import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
 import 'package:aipet_frontend/shared/shared.dart';
-import 'package:flutter/material.dart';
 
 import '../../domain/domain.dart';
 import '../mappers/pet_mapper.dart';
@@ -50,8 +48,7 @@ class HomeRepositoryImpl implements HomeRepository {
       LoggerService.debug('✅ HomeRepositoryImpl: 병렬 데이터 조회 완료');
 
       final now = DateTime.now();
-      final currentTime =
-          DateTimeUtils.formatTime(now);
+      final currentTime = DateTimeUtils.formatTime(now);
 
       final dashboard = HomeDashboardEntity(
         currentTime: currentTime,
@@ -68,7 +65,9 @@ class HomeRepositoryImpl implements HomeRepository {
       LoggerService.debug('✅ HomeRepositoryImpl: getDashboardData 완료');
       return dashboard;
     } catch (error, stackTrace) {
-      LoggerService.debug('💥 HomeRepositoryImpl: getDashboardData 실패 - $error');
+      LoggerService.debug(
+        '💥 HomeRepositoryImpl: getDashboardData 실패 - $error',
+      );
       LoggerService.debug('📍 StackTrace: $stackTrace');
       rethrow;
     }
@@ -82,7 +81,7 @@ class HomeRepositoryImpl implements HomeRepository {
     try {
       // 사용자가 직접 요청하지 않은 경우 캐시 확인
       if (!userTriggered) {
-        final cachedWeather = _cacheService.getMemoryCache<WeatherEntity>(
+        final cachedWeather = _cacheService.getCache<WeatherEntity>(
           CacheKeys.weather,
         );
         if (cachedWeather != null) {
@@ -106,7 +105,7 @@ class HomeRepositoryImpl implements HomeRepository {
         final weatherEntity = WeatherMapper.toEntity(weatherData);
 
         // 날씨 데이터 캐시 저장 (5분 TTL)
-        _cacheService.setMemoryCache(
+        await _cacheService.setCache(
           CacheKeys.weather,
           weatherEntity,
           ttl: CacheTTL.short,
@@ -145,8 +144,9 @@ class HomeRepositoryImpl implements HomeRepository {
       LoggerService.debug('🐾 getPetSummaries: 시작');
 
       // 캐시에서 펫 요약 정보 확인
-      final cachedPetSummaries = _cacheService
-          .getMemoryCache<List<PetSummaryEntity>>(CacheKeys.petProfiles);
+      final cachedPetSummaries = _cacheService.getCache<List<PetSummaryEntity>>(
+        CacheKeys.petProfiles,
+      );
 
       if (cachedPetSummaries != null) {
         LoggerService.debug('⚡ getPetSummaries: 캐시에서 펫 요약 정보 반환');
@@ -159,7 +159,9 @@ class HomeRepositoryImpl implements HomeRepository {
 
       // 로컬 스토리지에서 펫 정보 가져오기 (실제 데이터)
       final petProfiles = await _localStorageService.pet.getAllPets();
-      LoggerService.debug('🐾 getPetSummaries: 로컬에서 ${petProfiles.length}개 펫 데이터 조회');
+      LoggerService.debug(
+        '🐾 getPetSummaries: 로컬에서 ${petProfiles.length}개 펫 데이터 조회',
+      );
 
       // 빈 데이터인 경우 빈 리스트 반환
       if (petProfiles.isEmpty) {
@@ -167,7 +169,7 @@ class HomeRepositoryImpl implements HomeRepository {
         final emptySummaries = <PetSummaryEntity>[];
 
         // 빈 리스트도 캐시에 저장
-        _cacheService.setMemoryCache(
+        await _cacheService.setCache(
           CacheKeys.petProfiles,
           emptySummaries,
           ttl: CacheTTL.long,
@@ -178,10 +180,12 @@ class HomeRepositoryImpl implements HomeRepository {
 
       // 펫 데이터를 요약 엔티티로 변환
       final petSummaries = PetMapper.toSummaryEntityListFromMaps(petProfiles);
-      LoggerService.debug('🐾 getPetSummaries: ${petSummaries.length}개 펫 요약 정보 생성 완료');
+      LoggerService.debug(
+        '🐾 getPetSummaries: ${petSummaries.length}개 펫 요약 정보 생성 완료',
+      );
 
       // 펫 요약 정보 캐시 저장 (1시간 TTL)
-      _cacheService.setMemoryCache(
+      await _cacheService.setCache(
         CacheKeys.petProfiles,
         petSummaries,
         ttl: CacheTTL.long,
@@ -210,7 +214,7 @@ class HomeRepositoryImpl implements HomeRepository {
       LoggerService.debug('🚶 getWalkSummary: 시작');
 
       // 캐시에서 산책 요약 정보 확인
-      final cachedWalkSummary = _cacheService.getMemoryCache<WalkSummary>(
+      final cachedWalkSummary = _cacheService.getCache<WalkSummary>(
         CacheKeys.walkSummary,
       );
 
@@ -270,7 +274,7 @@ class HomeRepositoryImpl implements HomeRepository {
       );
 
       // 산책 요약 정보 캐시 저장 (15분 TTL)
-      _cacheService.setMemoryCache(
+      await _cacheService.setCache(
         CacheKeys.walkSummary,
         walkSummary,
         ttl: CacheTTL.medium,
@@ -302,7 +306,7 @@ class HomeRepositoryImpl implements HomeRepository {
       LoggerService.debug('🏥 getPetHealthSummary: 시작');
 
       // 캐시에서 건강 요약 정보 확인
-      final cachedHealthSummary = _cacheService.getMemoryCache<HealthSummary>(
+      final cachedHealthSummary = _cacheService.getCache<HealthSummary>(
         CacheKeys.healthSummary,
       );
 
@@ -367,7 +371,7 @@ class HomeRepositoryImpl implements HomeRepository {
       );
 
       // 건강 요약 정보 캐시 저장 (15분 TTL)
-      _cacheService.setMemoryCache(
+      await _cacheService.setCache(
         CacheKeys.healthSummary,
         healthSummary,
         ttl: CacheTTL.medium,
@@ -398,7 +402,7 @@ class HomeRepositoryImpl implements HomeRepository {
 
       // 캐시에서 예약 정보 확인
       final cachedAppointments = _cacheService
-          .getMemoryCache<List<AppointmentSummary>>(CacheKeys.appointments);
+          .getCache<List<AppointmentSummary>>(CacheKeys.appointments);
 
       if (cachedAppointments != null) {
         LoggerService.debug('⚡ getUpcomingAppointments: 캐시에서 예약 정보 반환');
@@ -411,7 +415,9 @@ class HomeRepositoryImpl implements HomeRepository {
       // 로컬 스토리지에서 스케줄 정보 가져오기 (실제 데이터)
       final schedules = await _localStorageService.schedule
           .getUpcomingSchedules(limit: 10);
-      LoggerService.debug('📅 getUpcomingAppointments: ${schedules.length}개 스케줄 조회');
+      LoggerService.debug(
+        '📅 getUpcomingAppointments: ${schedules.length}개 스케줄 조회',
+      );
 
       final appointments = <AppointmentSummary>[];
 
@@ -427,7 +433,9 @@ class HomeRepositoryImpl implements HomeRepository {
                 final pet = await _localStorageService.pet.getPetById(petId);
                 petName = pet?['name'] ?? '';
               } catch (petError) {
-                LoggerService.debug('⚠️ getUpcomingAppointments: 펫 조회 실패 - $petError');
+                LoggerService.debug(
+                  '⚠️ getUpcomingAppointments: 펫 조회 실패 - $petError',
+                );
                 petName = 'Unknown Pet';
               }
             }
@@ -443,19 +451,23 @@ class HomeRepositoryImpl implements HomeRepository {
             );
           }
         } catch (scheduleError) {
-          LoggerService.debug('⚠️ getUpcomingAppointments: 스케줄 처리 실패 - $scheduleError');
+          LoggerService.debug(
+            '⚠️ getUpcomingAppointments: 스케줄 처리 실패 - $scheduleError',
+          );
           // 개별 스케줄 에러는 무시하고 계속 진행
         }
       }
 
       // 예약 정보 캐시 저장 (15분 TTL)
-      _cacheService.setMemoryCache(
+      await _cacheService.setCache(
         CacheKeys.appointments,
         appointments,
         ttl: CacheTTL.medium,
       );
 
-      LoggerService.debug('📅 getUpcomingAppointments: 완료 - ${appointments.length}개 예약');
+      LoggerService.debug(
+        '📅 getUpcomingAppointments: 완료 - ${appointments.length}개 예약',
+      );
       return appointments;
     } catch (error, stackTrace) {
       LoggerService.debug('❌ getUpcomingAppointments: 에러 발생 - $error');

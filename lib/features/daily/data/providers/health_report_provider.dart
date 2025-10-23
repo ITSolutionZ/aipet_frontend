@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:aipet_frontend/shared/shared.dart';
-import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../services/health_data_collection_service.dart';

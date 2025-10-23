@@ -1,10 +1,11 @@
 import 'dart:async';
-import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'dart:convert';
 
 import 'package:aipet_frontend/shared/core/domain/result.dart';
-import 'package:flutter/foundation.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:aipet_frontend/shared/services/cache_service.dart';
+import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../domain/domain.dart';
 
@@ -25,7 +26,7 @@ class NotificationCacheService {
 
   // ✅ SharedPreferences 인스턴스 재사용
   static final _cache = CacheService();
-  
+
   // ✅ CacheService 초기화
   static Future<void> _init() async {
     await _cache.initialize();
@@ -77,7 +78,7 @@ class NotificationCacheService {
       await _init();
       final cacheKey = '${_notificationsCacheKey}_$userId';
 
-      final cachedDataString = prefs.getString(cacheKey);
+      final cachedDataString = _cache.getString(cacheKey);
       if (cachedDataString == null) {
         return Result.failure('캐시된 데이터가 없습니다');
       }
@@ -154,7 +155,7 @@ class NotificationCacheService {
       await _init();
       final cacheKey = '${_settingsCacheKey}_$userId';
 
-      final cachedDataString = prefs.getString(cacheKey);
+      final cachedDataString = _cache.getString(cacheKey);
       if (cachedDataString == null) {
         return Result.failure('캐시된 설정이 없습니다');
       }
@@ -194,9 +195,9 @@ class NotificationCacheService {
     try {
       await _init();
 
-      await _cache.remove('${_notificationsCacheKey}_$userId');
-      await _cache.remove('${_settingsCacheKey}_$userId');
-      await _cache.remove('${_statsCacheKey}_$userId');
+      await _cache.removeKey('${_notificationsCacheKey}_$userId');
+      await _cache.removeKey('${_settingsCacheKey}_$userId');
+      await _cache.removeKey('${_statsCacheKey}_$userId');
 
       if (kDebugMode) {
         LoggerService.debug('[$_tag] ✅ 사용자 캐시 삭제 완료: $userId');
@@ -215,13 +216,16 @@ class NotificationCacheService {
   static Future<Result<bool>> clearAllCache() async {
     try {
       await _init();
+
+      // SharedPreferences에서 직접 모든 키를 조회하여 삭제
+      final prefs = await SharedPreferences.getInstance();
       final keys = prefs.getKeys();
 
       for (final key in keys) {
         if (key.startsWith(_notificationsCacheKey) ||
             key.startsWith(_settingsCacheKey) ||
             key.startsWith(_statsCacheKey)) {
-          await _cache.remove(key);
+          await _cache.removeKey(key);
         }
       }
 
@@ -246,7 +250,7 @@ class NotificationCacheService {
       await _init();
       final cacheKey = '${_notificationsCacheKey}_$userId';
 
-      final cachedDataString = prefs.getString(cacheKey);
+      final cachedDataString = _cache.getString(cacheKey);
       if (cachedDataString == null) {
         return false;
       }
@@ -275,8 +279,8 @@ class NotificationCacheService {
       final notificationsCacheKey = '${_notificationsCacheKey}_$userId';
       final settingsCacheKey = '${_settingsCacheKey}_$userId';
 
-      final notificationsCache = prefs.getString(notificationsCacheKey);
-      final settingsCache = prefs.getString(settingsCacheKey);
+      final notificationsCache = _cache.getString(notificationsCacheKey);
+      final settingsCache = _cache.getString(settingsCacheKey);
 
       DateTime? notificationsTimestamp;
       DateTime? settingsTimestamp;

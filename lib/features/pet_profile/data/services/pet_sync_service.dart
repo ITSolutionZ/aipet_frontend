@@ -1,11 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../shared/core/data/result_types.dart';
 import '../../../../shared/core/domain/common_errors.dart';
-import '../../../../shared/core/domain/result.dart';
 import '../../../../shared/domain/entities/pet_profile_entity.dart';
 import '../../../../shared/services/cache_service.dart';
 import 'helpers/helpers.dart';
@@ -65,7 +65,7 @@ class PetSyncService {
     SyncDirection direction,
   ) async {
     if (_currentStatus == SyncStatus.syncing) {
-      return ResultState.failure(SyncError.toString());
+      return ResultState.failure(SyncError('同期中です'));
     }
 
     _updateSyncStatus(SyncStatus.syncing);
@@ -81,7 +81,7 @@ class PetSyncService {
       }
     } catch (e) {
       _updateSyncStatus(SyncStatus.failed);
-      return ResultState.failure(SyncError.toString()));
+      return ResultState.failure(SyncError('同期に失敗しました', details: e.toString()));
     }
   }
 
@@ -124,14 +124,13 @@ class PetSyncService {
       final remotePets = remotePetsResult.dataOrNull!;
       final domainPets = remotePets.map((pet) => pet.toDomain()).toList();
 
-      await _cacheService.setPersistentCacheObject(
+      final cacheData = {
+        'pets': domainPets.map((pet) => pet.toJson()).toList(),
+        'last_sync': DateTime.now().toIso8601String(),
+      };
+      await _cacheService.setString(
         'synced_pet_profiles',
-        domainPets,
-        ttl: const Duration(hours: 24),
-        toJson: (pets) => {
-          'pets': pets.map((pet) => pet.toJson()).toList(),
-          'last_sync': DateTime.now().toIso8601String(),
-        },
+        jsonEncode(cacheData),
       );
 
       await SyncStorageHelper.updateSyncMetadata();
@@ -168,7 +167,9 @@ class PetSyncService {
       return Success(allSyncedPets);
     } catch (e) {
       _updateSyncStatus(SyncStatus.failed);
-      return ResultState.failure(SyncError.toString()));
+      return ResultState.failure(
+        SyncError('双方向同期に失敗しました', details: e.toString()),
+      );
     }
   }
 

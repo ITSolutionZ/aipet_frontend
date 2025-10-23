@@ -1,5 +1,4 @@
 import 'package:aipet_frontend/shared/shared.dart';
-import 'package:flutter/foundation.dart';
 
 /// 펫 등록 폼 검증 서비스
 ///
@@ -88,7 +87,9 @@ class PetRegistrationValidator with ValidationMixin {
 
   /// 품종 검증 (shared ValidationMixin 사용)
   String? validateBreed(String breed) {
-    LoggerService.debug('🔍 Validating breed: "$breed" (empty: ${breed.isEmpty})');
+    LoggerService.debug(
+      '🔍 Validating breed: "$breed" (empty: ${breed.isEmpty})',
+    );
     final result = validateRequired(breed, fieldName: '品種');
     LoggerService.debug(
       result == null
@@ -100,7 +101,9 @@ class PetRegistrationValidator with ValidationMixin {
 
   /// 성별 검증 (shared ValidationMixin 사용)
   String? validateGender(String gender) {
-    LoggerService.debug('🔍 Validating gender: "$gender" (empty: ${gender.isEmpty})');
+    LoggerService.debug(
+      '🔍 Validating gender: "$gender" (empty: ${gender.isEmpty})',
+    );
     final result = validateRequired(gender, fieldName: '性別');
     LoggerService.debug(
       result == null

@@ -1,10 +1,10 @@
 import 'dart:io';
+
 import '../../../../shared/core/api/api_constants.dart';
 import '../../../../shared/core/api/api_error_handler.dart';
 import '../../../../shared/core/data/base_remote_data_source.dart';
 import '../../../../shared/core/data/result_types.dart';
 import '../../../../shared/core/domain/common_errors.dart';
-import '../../../../shared/core/domain/result.dart';
 import '../models/pet_profile_api_model.dart';
 
 class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
@@ -56,7 +56,9 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
       );
 
       if (response.data == null) {
-        return ResultState.failure(UnknownError.toString());
+        return ResultState.failure(
+          UnknownError(details: 'Empty response data'),
+        );
       }
 
       final petData = response.data!['data'] ?? response.data!;
@@ -78,7 +80,9 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
       );
 
       if (response.data == null) {
-        return ResultState.failure(UnknownError.toString());
+        return ResultState.failure(
+          UnknownError(details: 'Empty response data'),
+        );
       }
 
       final petData = response.data!['data'] ?? response.data!;
@@ -152,7 +156,9 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
       );
 
       if (response.data == null) {
-        return ResultState.failure(UnknownError.toString());
+        return ResultState.failure(
+          UnknownError(details: 'Empty response data'),
+        );
       }
 
       final settingsData = response.data!['data'] ?? response.data!;
@@ -199,7 +205,9 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
       );
 
       if (response.data == null) {
-        return ResultState.failure(UnknownError.toString());
+        return ResultState.failure(
+          UnknownError(details: 'Empty response data'),
+        );
       }
 
       final managersData = response.data!['data'] ?? response.data!;
@@ -217,7 +225,9 @@ class PetApiService extends BaseRemoteDataSource<PetProfileApiModel> {
       );
 
       if (response.data == null) {
-        return ResultState.failure(UnknownError.toString());
+        return ResultState.failure(
+          UnknownError(details: 'Empty response data'),
+        );
       }
 
       final statusData = response.data!['data'] ?? response.data!;

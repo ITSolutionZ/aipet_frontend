@@ -1,9 +1,8 @@
 import 'dart:convert';
 
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
-/// 예약 데이터 로컬 저장소 서비스
-import 'package:aipet_frontend/shared/services/cache_service.dart';
 class ReservationLocalStorageService {
   static const String _keyReservations = 'reservations';
   // ✅ SharedPreferences 인스턴스 재사용
@@ -21,7 +20,7 @@ class ReservationLocalStorageService {
   /// 모든 예약 조회
   static Future<List<Map<String, dynamic>>> getReservations() async {
     await _init();
-    final jsonString = prefs.getString(_keyReservations);
+    final jsonString = _cache.getString(_keyReservations);
 
     if (jsonString == null) {
       // 초기 데이터 설정
@@ -147,7 +146,7 @@ class ReservationLocalStorageService {
     }).toList();
 
     final jsonString = jsonEncode(serializedList);
-    await prefs.setString(_keyReservations, jsonString);
+    await _cache.setString(_keyReservations, jsonString);
   }
 
   /// 초기 예약 데이터 설정
@@ -191,7 +190,7 @@ class ReservationLocalStorageService {
   /// 모든 예약 데이터 삭제
   static Future<void> clearAllReservations() async {
     await _init();
-    await prefs.remove(_keyReservations);
+    await _cache.removeKey(_keyReservations);
   }
 
   /// 상태 표시 이름 반환
@@ -214,15 +213,15 @@ class ReservationLocalStorageService {
   static Color getStatusColor(String status) {
     switch (status) {
       case pending:
-        return const Color(0xFFFF9500); // 오렌지
+        return AppColors.pointOrange; // 오렌지
       case confirmed:
-        return const Color(0xFF34C759); // 그린
+        return AppColors.pointGreen; // 그린
       case cancelled:
-        return const Color(0xFFFF3B30); // 레드
+        return AppColors.pointRed; // 레드
       case completed:
-        return const Color(0xFF007AFF); // 블루
+        return AppColors.pointBlue; // 블루
       default:
-        return const Color(0xFF8E8E93); // 그레이
+        return AppColors.pointGray; // 그레이
     }
   }
 

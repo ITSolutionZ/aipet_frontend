@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
 import '../../domain/domain.dart';
@@ -19,7 +18,9 @@ class WeatherAdviceService {
       );
       final prompt = _buildWeatherPrompt(weather);
 
-      LoggerService.debug('📡 WeatherAdviceService: Calling Weather OpenAI API...');
+      LoggerService.debug(
+        '📡 WeatherAdviceService: Calling Weather OpenAI API...',
+      );
       final result = await _weatherOpenAIService.generateWeatherAdvice(prompt);
 
       if (result.isSuccess && result.dataOrNull != null) {

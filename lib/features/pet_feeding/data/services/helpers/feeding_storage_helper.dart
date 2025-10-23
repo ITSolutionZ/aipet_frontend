@@ -1,10 +1,9 @@
 import 'dart:convert';
-import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
-import 'package:flutter/foundation.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
+import 'package:aipet_frontend/shared/services/cache_service.dart';
 
 /// 급여 저장소 헬퍼
-import 'package:aipet_frontend/shared/services/cache_service.dart';
 class FeedingStorageHelper {
   static const String _keyFeedingRecords = 'pet_feeding_records';
   // ✅ SharedPreferences 인스턴스 재사용
@@ -19,7 +18,7 @@ class FeedingStorageHelper {
   }) async {
     try {
       await _init();
-      final recordsJson = prefs.getStringList(_keyFeedingRecords) ?? [];
+      final recordsJson = _cache.getStringList(_keyFeedingRecords) ?? [];
 
       if (recordsJson.isEmpty) {
         return await _initializeDefaultRecords();
@@ -44,7 +43,7 @@ class FeedingStorageHelper {
   static Future<void> addFeedingRecord(Map<String, dynamic> record) async {
     try {
       await _init();
-      final records = prefs.getStringList(_keyFeedingRecords) ?? [];
+      final records = _cache.getStringList(_keyFeedingRecords) ?? [];
 
       // ID가 없으면 생성
       if (record['id'] == null || (record['id'] as String).isEmpty) {
@@ -57,7 +56,7 @@ class FeedingStorageHelper {
       }
 
       records.add(jsonEncode(record));
-      await prefs.setStringList(_keyFeedingRecords, records);
+      await _cache.setStringList(_keyFeedingRecords, records);
 
       LoggerService.debug('급여 기록 추가 성공: ${record['id']}');
     } catch (e) {
@@ -70,7 +69,7 @@ class FeedingStorageHelper {
   static Future<void> updateFeedingRecord(Map<String, dynamic> record) async {
     try {
       await _init();
-      final records = prefs.getStringList(_keyFeedingRecords) ?? [];
+      final records = _cache.getStringList(_keyFeedingRecords) ?? [];
 
       final index = records.indexWhere((r) {
         final recordData = jsonDecode(r) as Map<String, dynamic>;
@@ -80,7 +79,7 @@ class FeedingStorageHelper {
       if (index != -1) {
         record['updatedAt'] = DateTime.now().toIso8601String();
         records[index] = jsonEncode(record);
-        await prefs.setStringList(_keyFeedingRecords, records);
+        await _cache.setStringList(_keyFeedingRecords, records);
         LoggerService.debug('급여 기록 업데이트 성공: ${record['id']}');
       }
     } catch (e) {
@@ -93,14 +92,14 @@ class FeedingStorageHelper {
   static Future<void> deleteFeedingRecord(String recordId) async {
     try {
       await _init();
-      final records = prefs.getStringList(_keyFeedingRecords) ?? [];
+      final records = _cache.getStringList(_keyFeedingRecords) ?? [];
 
       records.removeWhere((r) {
         final recordData = jsonDecode(r) as Map<String, dynamic>;
         return recordData['id'] == recordId;
       });
 
-      await prefs.setStringList(_keyFeedingRecords, records);
+      await _cache.setStringList(_keyFeedingRecords, records);
       LoggerService.debug('급여 기록 삭제 성공: $recordId');
     } catch (e) {
       LoggerService.debug('급여 기록 삭제 실패: $e');
@@ -162,7 +161,7 @@ class FeedingStorageHelper {
     final defaultRecords = <Map<String, dynamic>>[];
 
     final recordsJson = defaultRecords.map((r) => jsonEncode(r)).toList();
-    await prefs.setStringList(_keyFeedingRecords, recordsJson);
+    await _cache.setStringList(_keyFeedingRecords, recordsJson);
 
     return defaultRecords;
   }

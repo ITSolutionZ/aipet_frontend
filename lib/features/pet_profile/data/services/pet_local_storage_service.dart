@@ -1,27 +1,27 @@
 import 'dart:convert';
+
 import 'package:aipet_frontend/shared/core/services/logger_service.dart';
-
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
-import 'package:flutter/foundation.dart';
-
 import 'package:aipet_frontend/shared/services/cache_service.dart';
+
 /// ペットローカルストレージサービス
 ///
 /// ペット情報をローカルに保存・管理します
 class PetLocalStorageService {
+  static const String _keyPets = 'local_pets';
+  static const String _keySelectedPetId = 'selected_pet_id';
+
   // ✅ SharedPreferences 인스턴스 재사용
   static final _cache = CacheService();
   static Future<void> _init() async {
     await _cache.initialize();
   }
-  static const String _keyPets = 'local_pets';
-  static const String _keySelectedPetId = 'selected_pet_id';
 
   /// ペットリストを取得
   static Future<List<PetProfileEntity>> getPets() async {
     try {
       await _init();
-      final petsJson = prefs.getStringList(_keyPets) ?? [];
+      final petsJson = _cache.getStringList(_keyPets) ?? [];
 
       if (petsJson.isEmpty) {
         // 初回起動時はデフォルトペットを作成
@@ -34,12 +34,18 @@ class PetLocalStorageService {
 
           // additionalInfo를 안전하게 복원
           final additionalInfo = data['additionalInfo'] is Map<String, dynamic>
-              ? _sanitizeAdditionalInfo(data['additionalInfo'] as Map<String, dynamic>)
+              ? _sanitizeAdditionalInfo(
+                  data['additionalInfo'] as Map<String, dynamic>,
+                )
               : <String, dynamic>{};
 
           LoggerService.debug('📖 Loading pet: ${data['name']}');
-          LoggerService.debug('📖 additionalInfo keys: ${additionalInfo.keys.toList()}');
-          LoggerService.debug('📖 forbiddenIngredients: ${additionalInfo['forbiddenIngredients']}');
+          LoggerService.debug(
+            '📖 additionalInfo keys: ${additionalInfo.keys.toList()}',
+          );
+          LoggerService.debug(
+            '📖 forbiddenIngredients: ${additionalInfo['forbiddenIngredients']}',
+          );
 
           return PetProfileEntity(
             id: data['id'] as String,
@@ -88,8 +94,12 @@ class PetLocalStorageService {
         final safeAdditionalInfo = _sanitizeAdditionalInfo(pet.additionalInfo);
 
         LoggerService.debug('💾 Saving pet: ${pet.name}');
-        LoggerService.debug('💾 additionalInfo keys: ${safeAdditionalInfo.keys.toList()}');
-        LoggerService.debug('💾 forbiddenIngredients: ${safeAdditionalInfo['forbiddenIngredients']}');
+        LoggerService.debug(
+          '💾 additionalInfo keys: ${safeAdditionalInfo.keys.toList()}',
+        );
+        LoggerService.debug(
+          '💾 forbiddenIngredients: ${safeAdditionalInfo['forbiddenIngredients']}',
+        );
 
         return jsonEncode({
           'id': pet.id,
@@ -108,7 +118,7 @@ class PetLocalStorageService {
         });
       }).toList();
 
-      await prefs.setStringList(_keyPets, petsJson);
+      await _cache.setStringList(_keyPets, petsJson);
       LoggerService.debug('✅ ペット保存成功: ${pets.length}匹');
     } catch (e, stackTrace) {
       LoggerService.debug('❌ ペット保存エラー: $e');
@@ -135,7 +145,9 @@ class PetLocalStorageService {
           final sanitizedList = List<String>.from(value.whereType<String>());
           if (sanitizedList.isNotEmpty) {
             result[key] = sanitizedList;
-            LoggerService.debug('💾 [$key] List saved: ${sanitizedList.length} items');
+            LoggerService.debug(
+              '💾 [$key] List saved: ${sanitizedList.length} items',
+            );
           }
         }
         // String 타입 필드 처리
@@ -233,19 +245,19 @@ class PetLocalStorageService {
   /// 選択中のペットIDを保存
   static Future<void> saveSelectedPetId(String petId) async {
     await _init();
-    await prefs.setString(_keySelectedPetId, petId);
+    await _cache.setString(_keySelectedPetId, petId);
   }
 
   /// 選択中のペットIDを取得
   static Future<String?> getSelectedPetId() async {
     await _init();
-    return prefs.getString(_keySelectedPetId);
+    return _cache.getString(_keySelectedPetId);
   }
 
   /// すべてのペットデータをクリア
   static Future<void> clearAll() async {
     await _init();
-    await prefs.remove(_keyPets);
-    await prefs.remove(_keySelectedPetId);
+    await _cache.removeKey(_keyPets);
+    await _cache.removeKey(_keySelectedPetId);
   }
 }

@@ -1,9 +1,8 @@
 import 'package:aipet_frontend/app/services/local_storage_service.dart';
-import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:aipet_frontend/features/pet_profile/domain/repositories/pet_profile_repository.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
-import 'package:flutter/foundation.dart';
 
 class PetProfileRepositoryImpl implements PetProfileRepository {
   final LocalStorageService _localStorageService;
@@ -152,7 +151,9 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
   @override
   Future<Result<String>> uploadPetImage(String petId, String imagePath) async {
     try {
-      LoggerService.debug('💾 uploadPetImage - petId: $petId, imagePath: $imagePath');
+      LoggerService.debug(
+        '💾 uploadPetImage - petId: $petId, imagePath: $imagePath',
+      );
 
       // 로컬 저장소에서 펫 정보 가져오기
       final petData = await _localStorageService.pet.getPetById(petId);

@@ -1,10 +1,10 @@
 import 'dart:convert';
-import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
-import 'package:flutter/foundation.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
 /// 시설 로컬 저장소 서비스
 import 'package:aipet_frontend/shared/services/cache_service.dart';
+
 ///
 /// 시설 정보와 즐겨찾기를 SharedPreferences에 저장/관리합니다
 class FacilityLocalStorageService {
@@ -15,13 +15,14 @@ class FacilityLocalStorageService {
   static Future<void> _init() async {
     await _cache.initialize();
   }
+
   static const String _keyHistory = 'facility_history';
 
   /// 시설 가져오기
   static Future<List<Map<String, dynamic>>> getFacilities() async {
     try {
       await _init();
-      final facilitiesJson = prefs.getStringList(_keyFacilities) ?? [];
+      final facilitiesJson = _cache.getStringList(_keyFacilities) ?? [];
 
       return facilitiesJson
           .map((json) => jsonDecode(json) as Map<String, dynamic>)
@@ -36,7 +37,7 @@ class FacilityLocalStorageService {
   static Future<void> addFacility(Map<String, dynamic> facility) async {
     try {
       await _init();
-      final facilities = prefs.getStringList(_keyFacilities) ?? [];
+      final facilities = _cache.getStringList(_keyFacilities) ?? [];
 
       if (facility['id'] == null || (facility['id'] as String).isEmpty) {
         facility['id'] = 'facility-${DateTime.now().millisecondsSinceEpoch}';
@@ -47,7 +48,7 @@ class FacilityLocalStorageService {
       }
 
       facilities.add(jsonEncode(facility));
-      await prefs.setStringList(_keyFacilities, facilities);
+      await _cache.setStringList(_keyFacilities, facilities);
 
       LoggerService.debug('시설 추가 성공: ${facility['id']}');
     } catch (e) {
@@ -61,7 +62,7 @@ class FacilityLocalStorageService {
   ) async {
     try {
       await _init();
-      final existingFacilities = prefs.getStringList(_keyFacilities) ?? [];
+      final existingFacilities = _cache.getStringList(_keyFacilities) ?? [];
 
       // 기존 시설 ID 맵 생성
       final existingIds = <String>{};
@@ -80,7 +81,7 @@ class FacilityLocalStorageService {
         }
       }
 
-      await prefs.setStringList(_keyFacilities, existingFacilities);
+      await _cache.setStringList(_keyFacilities, existingFacilities);
 
       LoggerService.debug('시설 일괄 추가 성공: ${facilitiesList.length}개');
     } catch (e) {
@@ -92,7 +93,7 @@ class FacilityLocalStorageService {
   static Future<void> updateFacility(Map<String, dynamic> facility) async {
     try {
       await _init();
-      final facilities = prefs.getStringList(_keyFacilities) ?? [];
+      final facilities = _cache.getStringList(_keyFacilities) ?? [];
 
       final index = facilities.indexWhere((f) {
         final facilityData = jsonDecode(f) as Map<String, dynamic>;
@@ -102,7 +103,7 @@ class FacilityLocalStorageService {
       if (index != -1) {
         facility['updatedAt'] = DateTime.now().toIso8601String();
         facilities[index] = jsonEncode(facility);
-        await prefs.setStringList(_keyFacilities, facilities);
+        await _cache.setStringList(_keyFacilities, facilities);
         LoggerService.debug('시설 업데이트 성공: ${facility['id']}');
       }
     } catch (e) {
@@ -114,14 +115,14 @@ class FacilityLocalStorageService {
   static Future<void> deleteFacility(String facilityId) async {
     try {
       await _init();
-      final facilities = prefs.getStringList(_keyFacilities) ?? [];
+      final facilities = _cache.getStringList(_keyFacilities) ?? [];
 
       facilities.removeWhere((f) {
         final facilityData = jsonDecode(f) as Map<String, dynamic>;
         return facilityData['id'] == facilityId;
       });
 
-      await prefs.setStringList(_keyFacilities, facilities);
+      await _cache.setStringList(_keyFacilities, facilities);
       LoggerService.debug('시설 삭제 성공: $facilityId');
     } catch (e) {
       LoggerService.debug('시설 삭제 실패: $e');
@@ -132,7 +133,7 @@ class FacilityLocalStorageService {
   static Future<List<String>> getFavorites() async {
     try {
       await _init();
-      return prefs.getStringList(_keyFavorites) ?? [];
+      return _cache.getStringList(_keyFavorites) ?? [];
     } catch (e) {
       LoggerService.debug('즐겨찾기 로드 실패: $e');
       return [];
@@ -143,7 +144,7 @@ class FacilityLocalStorageService {
   static Future<void> toggleFavorite(String facilityId) async {
     try {
       await _init();
-      final favorites = prefs.getStringList(_keyFavorites) ?? [];
+      final favorites = _cache.getStringList(_keyFavorites) ?? [];
 
       if (favorites.contains(facilityId)) {
         favorites.remove(facilityId);
@@ -151,7 +152,7 @@ class FacilityLocalStorageService {
         favorites.add(facilityId);
       }
 
-      await prefs.setStringList(_keyFavorites, favorites);
+      await _cache.setStringList(_keyFavorites, favorites);
       LoggerService.debug('즐겨찾기 토글 성공: $facilityId');
     } catch (e) {
       LoggerService.debug('즐겨찾기 토글 실패: $e');
@@ -162,7 +163,7 @@ class FacilityLocalStorageService {
   static Future<void> addToHistory(String facilityId) async {
     try {
       await _init();
-      final history = prefs.getStringList(_keyHistory) ?? [];
+      final history = _cache.getStringList(_keyHistory) ?? [];
 
       // 중복 제거
       history.remove(facilityId);
@@ -174,7 +175,7 @@ class FacilityLocalStorageService {
         history.removeRange(50, history.length);
       }
 
-      await prefs.setStringList(_keyHistory, history);
+      await _cache.setStringList(_keyHistory, history);
       LoggerService.debug('방문 기록 추가 성공: $facilityId');
     } catch (e) {
       LoggerService.debug('방문 기록 추가 실패: $e');
@@ -185,7 +186,7 @@ class FacilityLocalStorageService {
   static Future<List<String>> getHistory() async {
     try {
       await _init();
-      return prefs.getStringList(_keyHistory) ?? [];
+      return _cache.getStringList(_keyHistory) ?? [];
     } catch (e) {
       LoggerService.debug('방문 기록 로드 실패: $e');
       return [];
@@ -196,7 +197,7 @@ class FacilityLocalStorageService {
   static Future<void> clearAllFacilities() async {
     try {
       await _init();
-      await prefs.remove(_keyFacilities);
+      await _cache.removeKey(_keyFacilities);
       LoggerService.debug('모든 시설 삭제 성공');
     } catch (e) {
       LoggerService.debug('모든 시설 삭제 실패: $e');

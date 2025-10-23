@@ -1,9 +1,8 @@
 import 'package:aipet_frontend/app/config/app_config.dart';
-import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/core/services/ai_http_client_service.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:aipet_frontend/shared/services/base_logging_service.dart';
-import 'package:flutter/foundation.dart';
 
 /// 주차별 펫 케어 할 일 전용 OpenAI API 서비스
 class WeeklyTaskOpenAIService extends BaseLoggingService {
@@ -56,7 +55,9 @@ class WeeklyTaskOpenAIService extends BaseLoggingService {
       );
 
       if (!response.isSuccess) {
-        LoggerService.debug('❌ WeeklyTaskOpenAI: API call failed - ${response.message}');
+        LoggerService.debug(
+          '❌ WeeklyTaskOpenAI: API call failed - ${response.message}',
+        );
         return _getFallbackTask(petType, weekOfYear);
       }
 

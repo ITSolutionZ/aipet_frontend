@@ -1,6 +1,7 @@
+import 'dart:convert';
+
 import 'package:aipet_frontend/shared/core/data/result_types.dart';
 import 'package:aipet_frontend/shared/core/domain/common_errors.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/core/services/secure_storage_service.dart';
 import 'package:aipet_frontend/shared/domain/entities/pet_profile_entity.dart';
 import 'package:aipet_frontend/shared/services/cache_service.dart';
@@ -74,13 +75,12 @@ class SyncStorageHelper {
     CacheService cacheService,
   ) async {
     try {
-      final cachedData = await cacheService.getPersistentCache(
-        'synced_pet_profiles',
-      );
-      if (cachedData == null) {
+      final cachedDataString = cacheService.getString('synced_pet_profiles');
+      if (cachedDataString == null) {
         return const Success([]);
       }
 
+      final cachedData = jsonDecode(cachedDataString) as Map<String, dynamic>;
       final petsData = cachedData['pets'] as List<dynamic>;
       final pets = petsData
           .map(
@@ -174,7 +174,9 @@ class SyncStorageHelper {
           );
       }
     } catch (e) {
-      return ResultState.failure(SyncError.toString()));
+      return ResultState.failure(
+        SyncError('同期変更の適用に失敗しました', details: e.toString()),
+      );
     }
   }
 }

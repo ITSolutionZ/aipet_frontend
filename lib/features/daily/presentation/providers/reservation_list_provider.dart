@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:aipet_frontend/features/daily/data/services/reservation_local_storage_service.dart';
+import 'package:aipet_frontend/shared/services/cache_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 part 'reservation_list_provider.g.dart';
 
@@ -34,9 +34,17 @@ class ReservationListState {
 /// 예약 목록 Notifier
 @riverpod
 class ReservationListNotifier extends _$ReservationListNotifier {
+  // ✅ CacheService 인스턴스
+  final _cache = CacheService();
+
   @override
   ReservationListState build() {
     return const ReservationListState();
+  }
+
+  /// CacheService 초기화
+  Future<void> _init() async {
+    await _cache.initialize();
   }
 
   /// 예약 목록 로드 (로컬 저장소)
@@ -99,7 +107,8 @@ class ReservationListNotifier extends _$ReservationListNotifier {
       }).toList();
 
       // 로컬 저장소에 저장
-      // ✅ ReservationLocalStorageService 사용
+      // ✅ CacheService 사용
+      await _init();
       final jsonString = jsonEncode(
         updatedReservations.map((r) {
           final map = Map<String, dynamic>.from(r);
@@ -120,7 +129,7 @@ class ReservationListNotifier extends _$ReservationListNotifier {
           return map;
         }).toList(),
       );
-      await prefs.setString('reservations', jsonString);
+      await _cache.setString('reservations', jsonString);
 
       state = state.copyWith(reservations: updatedReservations);
     } catch (e) {
@@ -146,7 +155,8 @@ class ReservationListNotifier extends _$ReservationListNotifier {
       }).toList();
 
       // 로컬 저장소에 저장
-      // ✅ ReservationLocalStorageService 사용
+      // ✅ CacheService 사용
+      await _init();
       final jsonString = jsonEncode(
         updatedReservations.map((r) {
           final map = Map<String, dynamic>.from(r);
@@ -163,7 +173,7 @@ class ReservationListNotifier extends _$ReservationListNotifier {
           return map;
         }).toList(),
       );
-      await prefs.setString('reservations', jsonString);
+      await _cache.setString('reservations', jsonString);
 
       state = state.copyWith(reservations: updatedReservations);
     } catch (e) {

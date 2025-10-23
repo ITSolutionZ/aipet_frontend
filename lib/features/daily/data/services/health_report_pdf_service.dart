@@ -1,7 +1,6 @@
 import 'dart:io';
-import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
-import 'package:flutter/foundation.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -118,7 +117,9 @@ class HealthReportPdfService {
         ? '${aiReport.substring(0, 2000)}...\n\n※ レポートが長いため一部省略されました'
         : aiReport;
 
-    LoggerService.debug('📊 AI 리포트 길이: ${aiReport.length} → ${limitedAiReport.length}');
+    LoggerService.debug(
+      '📊 AI 리포트 길이: ${aiReport.length} → ${limitedAiReport.length}',
+    );
 
     // PDF 페이지 생성
     pdf.addPage(

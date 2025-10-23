@@ -1,10 +1,9 @@
 import 'dart:convert';
-import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
-import 'package:flutter/foundation.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
+import 'package:aipet_frontend/shared/services/cache_service.dart';
 
 /// 레시피 저장소 헬퍼
-import 'package:aipet_frontend/shared/services/cache_service.dart';
 class RecipeStorageHelper {
   static const String _keyRecipes = 'pet_recipes';
   // ✅ SharedPreferences 인스턴스 재사용
@@ -17,7 +16,7 @@ class RecipeStorageHelper {
   static Future<List<Map<String, dynamic>>> getRecipes() async {
     try {
       await _init();
-      final recipesJson = prefs.getStringList(_keyRecipes) ?? [];
+      final recipesJson = _cache.getStringList(_keyRecipes) ?? [];
 
       if (recipesJson.isEmpty) {
         return await _initializeDefaultRecipes();
@@ -36,7 +35,7 @@ class RecipeStorageHelper {
   static Future<void> addRecipe(Map<String, dynamic> recipe) async {
     try {
       await _init();
-      final recipes = prefs.getStringList(_keyRecipes) ?? [];
+      final recipes = _cache.getStringList(_keyRecipes) ?? [];
 
       if (recipe['id'] == null || (recipe['id'] as String).isEmpty) {
         recipe['id'] = 'recipe-${DateTime.now().millisecondsSinceEpoch}';
@@ -47,7 +46,7 @@ class RecipeStorageHelper {
       }
 
       recipes.add(jsonEncode(recipe));
-      await prefs.setStringList(_keyRecipes, recipes);
+      await _cache.setStringList(_keyRecipes, recipes);
 
       LoggerService.debug('레시피 추가 성공: ${recipe['id']}');
     } catch (e) {
@@ -63,7 +62,7 @@ class RecipeStorageHelper {
   ) async {
     try {
       await _init();
-      final recipes = prefs.getStringList(_keyRecipes) ?? [];
+      final recipes = _cache.getStringList(_keyRecipes) ?? [];
 
       final index = recipes.indexWhere((r) {
         final recipeData = jsonDecode(r) as Map<String, dynamic>;
@@ -77,7 +76,7 @@ class RecipeStorageHelper {
         existingRecipe['updatedAt'] = DateTime.now().toIso8601String();
 
         recipes[index] = jsonEncode(existingRecipe);
-        await prefs.setStringList(_keyRecipes, recipes);
+        await _cache.setStringList(_keyRecipes, recipes);
         LoggerService.debug('레시피 업데이트 성공: $recipeId');
       }
     } catch (e) {
@@ -90,14 +89,14 @@ class RecipeStorageHelper {
   static Future<void> deleteRecipe(String recipeId) async {
     try {
       await _init();
-      final recipes = prefs.getStringList(_keyRecipes) ?? [];
+      final recipes = _cache.getStringList(_keyRecipes) ?? [];
 
       recipes.removeWhere((r) {
         final recipeData = jsonDecode(r) as Map<String, dynamic>;
         return recipeData['id'] == recipeId;
       });
 
-      await prefs.setStringList(_keyRecipes, recipes);
+      await _cache.setStringList(_keyRecipes, recipes);
       LoggerService.debug('레시피 삭제 성공: $recipeId');
     } catch (e) {
       LoggerService.debug('레시피 삭제 실패: $e');
@@ -239,7 +238,7 @@ class RecipeStorageHelper {
     ];
 
     final recipesJson = defaultRecipes.map((r) => jsonEncode(r)).toList();
-    await prefs.setStringList(_keyRecipes, recipesJson);
+    await _cache.setStringList(_keyRecipes, recipesJson);
 
     return defaultRecipes;
   }

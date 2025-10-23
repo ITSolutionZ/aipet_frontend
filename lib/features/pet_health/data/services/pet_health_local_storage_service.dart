@@ -1,20 +1,20 @@
 import 'dart:convert';
-import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
-import 'package:flutter/foundation.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
+import 'package:aipet_frontend/shared/services/cache_service.dart';
 
 /// 펫 건강 로컬 저장소 서비스
-import 'package:aipet_frontend/shared/services/cache_service.dart';
 ///
 /// 건강 기록(백신, 체중)을 SharedPreferences에 저장/관리합니다
 class PetHealthLocalStorageService {
   static const String _keyVaccineRecords = 'pet_vaccine_records';
+  static const String _keyWeightRecords = 'pet_weight_records';
+
   // ✅ SharedPreferences 인스턴스 재사용
   static final _cache = CacheService();
   static Future<void> _init() async {
     await _cache.initialize();
   }
-  static const String _keyWeightRecords = 'pet_weight_records';
 
   /// 백신 기록 가져오기
   static Future<List<Map<String, dynamic>>> getVaccineRecords({
@@ -22,7 +22,7 @@ class PetHealthLocalStorageService {
   }) async {
     try {
       await _init();
-      final recordsJson = prefs.getStringList(_keyVaccineRecords) ?? [];
+      final recordsJson = _cache.getStringList(_keyVaccineRecords) ?? [];
 
       if (recordsJson.isEmpty) {
         return await _initializeDefaultVaccineRecords();
@@ -47,14 +47,14 @@ class PetHealthLocalStorageService {
   static Future<void> addVaccineRecord(Map<String, dynamic> record) async {
     try {
       await _init();
-      final records = prefs.getStringList(_keyVaccineRecords) ?? [];
+      final records = _cache.getStringList(_keyVaccineRecords) ?? [];
 
       if (record['id'] == null || (record['id'] as String).isEmpty) {
         record['id'] = 'vaccine-${DateTime.now().millisecondsSinceEpoch}';
       }
 
       records.add(jsonEncode(record));
-      await prefs.setStringList(_keyVaccineRecords, records);
+      await _cache.setStringList(_keyVaccineRecords, records);
 
       LoggerService.debug('백신 기록 추가 성공: ${record['id']}');
     } catch (e) {
@@ -66,7 +66,7 @@ class PetHealthLocalStorageService {
   static Future<void> updateVaccineRecord(Map<String, dynamic> record) async {
     try {
       await _init();
-      final records = prefs.getStringList(_keyVaccineRecords) ?? [];
+      final records = _cache.getStringList(_keyVaccineRecords) ?? [];
 
       final index = records.indexWhere((r) {
         final recordData = jsonDecode(r) as Map<String, dynamic>;
@@ -75,7 +75,7 @@ class PetHealthLocalStorageService {
 
       if (index != -1) {
         records[index] = jsonEncode(record);
-        await prefs.setStringList(_keyVaccineRecords, records);
+        await _cache.setStringList(_keyVaccineRecords, records);
         LoggerService.debug('백신 기록 업데이트 성공: ${record['id']}');
       }
     } catch (e) {
@@ -87,14 +87,14 @@ class PetHealthLocalStorageService {
   static Future<void> deleteVaccineRecord(String recordId) async {
     try {
       await _init();
-      final records = prefs.getStringList(_keyVaccineRecords) ?? [];
+      final records = _cache.getStringList(_keyVaccineRecords) ?? [];
 
       records.removeWhere((r) {
         final recordData = jsonDecode(r) as Map<String, dynamic>;
         return recordData['id'] == recordId;
       });
 
-      await prefs.setStringList(_keyVaccineRecords, records);
+      await _cache.setStringList(_keyVaccineRecords, records);
       LoggerService.debug('백신 기록 삭제 성공: $recordId');
     } catch (e) {
       LoggerService.debug('백신 기록 삭제 실패: $e');
@@ -107,7 +107,7 @@ class PetHealthLocalStorageService {
   }) async {
     try {
       await _init();
-      final recordsJson = prefs.getStringList(_keyWeightRecords) ?? [];
+      final recordsJson = _cache.getStringList(_keyWeightRecords) ?? [];
 
       if (recordsJson.isEmpty) {
         return await _initializeDefaultWeightRecords();
@@ -132,7 +132,7 @@ class PetHealthLocalStorageService {
   static Future<void> addWeightRecord(Map<String, dynamic> record) async {
     try {
       await _init();
-      final records = prefs.getStringList(_keyWeightRecords) ?? [];
+      final records = _cache.getStringList(_keyWeightRecords) ?? [];
 
       if (record['id'] == null || (record['id'] as String).isEmpty) {
         record['id'] = 'weight-${DateTime.now().millisecondsSinceEpoch}';
@@ -143,7 +143,7 @@ class PetHealthLocalStorageService {
       }
 
       records.add(jsonEncode(record));
-      await prefs.setStringList(_keyWeightRecords, records);
+      await _cache.setStringList(_keyWeightRecords, records);
 
       LoggerService.debug('체중 기록 추가 성공: ${record['id']}');
     } catch (e) {
@@ -155,7 +155,7 @@ class PetHealthLocalStorageService {
   static Future<void> updateWeightRecord(Map<String, dynamic> record) async {
     try {
       await _init();
-      final records = prefs.getStringList(_keyWeightRecords) ?? [];
+      final records = _cache.getStringList(_keyWeightRecords) ?? [];
 
       final index = records.indexWhere((r) {
         final recordData = jsonDecode(r) as Map<String, dynamic>;
@@ -165,7 +165,7 @@ class PetHealthLocalStorageService {
       if (index != -1) {
         record['updatedAt'] = DateTime.now().toIso8601String();
         records[index] = jsonEncode(record);
-        await prefs.setStringList(_keyWeightRecords, records);
+        await _cache.setStringList(_keyWeightRecords, records);
         LoggerService.debug('체중 기록 업데이트 성공: ${record['id']}');
       }
     } catch (e) {
@@ -177,14 +177,14 @@ class PetHealthLocalStorageService {
   static Future<void> deleteWeightRecord(String recordId) async {
     try {
       await _init();
-      final records = prefs.getStringList(_keyWeightRecords) ?? [];
+      final records = _cache.getStringList(_keyWeightRecords) ?? [];
 
       records.removeWhere((r) {
         final recordData = jsonDecode(r) as Map<String, dynamic>;
         return recordData['id'] == recordId;
       });
 
-      await prefs.setStringList(_keyWeightRecords, records);
+      await _cache.setStringList(_keyWeightRecords, records);
       LoggerService.debug('체중 기록 삭제 성공: $recordId');
     } catch (e) {
       LoggerService.debug('체중 기록 삭제 실패: $e');
@@ -215,7 +215,7 @@ class PetHealthLocalStorageService {
     ];
 
     final recordsJson = defaultRecords.map((r) => jsonEncode(r)).toList();
-    await prefs.setStringList(_keyVaccineRecords, recordsJson);
+    await _cache.setStringList(_keyVaccineRecords, recordsJson);
 
     return defaultRecords;
   }
@@ -257,7 +257,7 @@ class PetHealthLocalStorageService {
     ];
 
     final recordsJson = defaultRecords.map((r) => jsonEncode(r)).toList();
-    await prefs.setStringList(_keyWeightRecords, recordsJson);
+    await _cache.setStringList(_keyWeightRecords, recordsJson);
 
     return defaultRecords;
   }

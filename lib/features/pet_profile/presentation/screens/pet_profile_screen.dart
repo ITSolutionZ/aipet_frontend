@@ -268,7 +268,7 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
       context: context,
       builder: (context) => AlertDialog(
         title: const Text(PetProfileConstants.deleteConfirmDialogTitle),
-        content: const Text(PetProfileConstants.deleteConfirmMessage),
+        content: const Text('このペットを削除してもよろしいですか？'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -302,7 +302,7 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
       }
     } catch (e) {
       if (context.mounted) {
-        SnackBarService.showError(context, AppTexts.deleteError);
+        SnackBarService.showError(context, 'ペットの削除に失敗しました');
       }
     }
   }
@@ -346,7 +346,7 @@ class _ErrorWidget extends StatelessWidget {
           const Icon(Icons.error_outline, size: 64, color: AppColors.pointRed),
           const SizedBox(height: AppSpacing.lg),
           Text(
-            PetProfileConstants.errorMessage,
+            'エラーが発生しました',
             style: AppFonts.headlineSmall.copyWith(
               color: AppColors.pointDark,
               fontWeight: FontWeight.w600,

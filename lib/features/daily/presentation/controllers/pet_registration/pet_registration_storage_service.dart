@@ -1,6 +1,5 @@
-import 'package:aipet_frontend/shared/services/local_data_manager.dart';
 import 'package:aipet_frontend/shared/core/services/logger_service.dart';
-import 'package:flutter/foundation.dart';
+import 'package:aipet_frontend/shared/services/local_data_manager.dart';
 
 import 'pet_registration_form_data.dart';
 

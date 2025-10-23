@@ -1,6 +1,5 @@
-import 'package:aipet_frontend/shared/services/local_data_manager.dart';
 import 'package:aipet_frontend/shared/core/services/logger_service.dart';
-import 'package:flutter/foundation.dart';
+import 'package:aipet_frontend/shared/services/local_data_manager.dart';
 
 /// Pet 데이터 초기화 헬퍼
 class PetDataInitHelper {
@@ -53,7 +52,9 @@ class PetDataInitHelper {
     LocalDataManager localDataManager,
   ) async {
     if (!localDataManager.isInitialized) {
-      LoggerService.debug('LocalDataManager not initialized, initializing now...');
+      LoggerService.debug(
+        'LocalDataManager not initialized, initializing now...',
+      );
       await localDataManager.initialize();
       LoggerService.debug('LocalDataManager initialization completed');
     }

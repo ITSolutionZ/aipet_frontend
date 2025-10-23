@@ -165,53 +165,6 @@ class PetBasicInfoTab extends ConsumerWidget {
   static const double _borderWidth = 2.0;
   static const double _cardBorderRadius = 12.0;
 
-  // 동물별 주요 질병 데이터
-  static const Map<String, List<String>> _commonDiseases = {
-    'dog': [
-      '関節炎', // 관절염
-      '皮膚炎', // 피부염
-      '外耳炎', // 외이염
-      '歯周病', // 치주병
-      '心臓病', // 심장병
-      '糖尿病', // 당뇨병
-      '白内障', // 백내장
-      '股関節形成不全', // 고관절 형성부전
-    ],
-    'cat': [
-      '慢性腎臓病', // 만성신장병
-      '甲状腺機能亢進症', // 갑상선기능항진증
-      '糖尿病', // 당뇨병
-      '歯周病', // 치주병
-      '心臓病', // 심장병
-      '膀胱炎', // 방광염
-      '皮膚炎', // 피부염
-      '肥満', // 비만
-    ],
-    'rabbit': [
-      '歯の不正咬合', // 치아 부정교합
-      '消化器うっ滞', // 소화기 정체
-      '呼吸器感染症', // 호흡기 감염증
-      '皮膚炎', // 피부염
-      '肥満', // 비만
-      'ストレス', // 스트레스
-    ],
-    'hamster': [
-      '湿尾病', // 습미병
-      '呼吸器感染症', // 호흡기 감염증
-      '皮膚炎', // 피부염
-      '糖尿病', // 당뇨병
-      '腫瘍', // 종양
-    ],
-    'bird': [
-      '呼吸器感染症', // 호흡기 감염증
-      '羽毛引き抜き症', // 깃털 뽑기 증후군
-      '肝臓病', // 간장병
-      '肥満', // 비만
-      'ストレス', // 스트레스
-      '卵巣腫瘍', // 난소 종양
-    ],
-  };
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tabId = _generateTabId();
@@ -705,12 +658,6 @@ class PetBasicInfoTab extends ConsumerWidget {
         ],
       ),
     );
-  }
-
-  /// 펫 타입에 따른 주요 질병 반환
-  List<String> _getCommonDiseasesForPet() {
-    final petType = pet.type.toLowerCase();
-    return _commonDiseases[petType] ?? [];
   }
 
   /// 건강 상태 편집 버튼

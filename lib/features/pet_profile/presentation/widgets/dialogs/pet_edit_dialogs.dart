@@ -41,10 +41,7 @@ class PetEditDialogs {
                 Navigator.pop(context);
                 onSave(newName);
               } else {
-                SnackBarService.showWarning(
-                  context,
-                  PetProfileConstants.nameRequiredMessage,
-                );
+                SnackBarService.showWarning(context, '名前を入力してください');
               }
             },
             child: const Text(PetProfileConstants.saveLabel),
@@ -145,10 +142,7 @@ class PetEditDialogs {
                 Navigator.pop(context);
                 onSave(weight);
               } else {
-                SnackBarService.showWarning(
-                  context,
-                  PetProfileConstants.weightInvalidMessage,
-                );
+                SnackBarService.showWarning(context, '体重は0より大きい値を入力してください');
               }
             },
             child: const Text(PetProfileConstants.saveLabel),

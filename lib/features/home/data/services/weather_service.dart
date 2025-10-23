@@ -1,8 +1,7 @@
 import 'dart:convert';
-import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
 import 'package:aipet_frontend/app/config/app_config.dart';
-import 'package:flutter/foundation.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 
@@ -18,7 +17,9 @@ class WeatherService {
     bool userTriggered = false,
   }) async {
     try {
-      LoggerService.debug('🌤️ =============[ WeatherService 호출 ]=============');
+      LoggerService.debug(
+        '🌤️ =============[ WeatherService 호출 ]=============',
+      );
       LoggerService.debug(
         '📍 전달받은 위치: ${location != null ? '${location.name} (${location.latitude}, ${location.longitude})' : 'null - GPS 시도'}',
       );
@@ -60,7 +61,9 @@ class WeatherService {
         return weatherData;
       } else {
         // 에러 발생 시 기본 API로 폴백 (One Call API 권한 없는 경우)
-        LoggerService.debug('❌ One Call API 에러: ${response.statusCode} - 기본 API로 폴백');
+        LoggerService.debug(
+          '❌ One Call API 에러: ${response.statusCode} - 기본 API로 폴백',
+        );
         return await _getCurrentWeatherFallback(weatherLocation);
       }
     } catch (e) {
@@ -243,7 +246,9 @@ class WeatherService {
 
           // 일본이 아닌 경우 기본 위치 사용
           if (country != 'JP' && country != 'Japan') {
-            LoggerService.debug('⚠️ 위치가 일본이 아닙니다: $country. 기본 위치(도쿄 시나가와구) 사용');
+            LoggerService.debug(
+              '⚠️ 위치가 일본이 아닙니다: $country. 기본 위치(도쿄 시나가와구) 사용',
+            );
             return '東京都品川区';
           }
 

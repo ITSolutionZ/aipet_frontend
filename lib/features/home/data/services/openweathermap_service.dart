@@ -1,6 +1,5 @@
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 
 import '../../domain/domain.dart';
 

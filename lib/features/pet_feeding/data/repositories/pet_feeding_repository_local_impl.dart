@@ -2,7 +2,6 @@ import 'package:aipet_frontend/features/pet_feeding/data/models/feeding_record_m
 import 'package:aipet_frontend/features/pet_feeding/domain/entities/feeding_record_entity.dart';
 import 'package:aipet_frontend/features/pet_feeding/domain/repositories/pet_feeding_repository.dart';
 import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
-import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
 import 'package:aipet_frontend/shared/services/local_data_manager.dart';
 
 /// Pet Feeding Repository - 로컬 저장소 구현체
@@ -142,6 +141,7 @@ class PetFeedingRepositoryLocalImpl implements PetFeedingRepository {
         : 0.0;
     final completionRate = petRecords.isNotEmpty
         ? completedRecords.length / petRecords.length
+        : 0.0;
 
     final feedingsByHour = <String, int>{};
     for (final record in completedRecords) {
@@ -151,16 +151,9 @@ class PetFeedingRepositoryLocalImpl implements PetFeedingRepository {
     }
 
     return FeedingStatistics(
-      totalFeedings: records.length,
+      totalFeedings: petRecords.length,
       completedFeedings: completedRecords.length,
       skippedFeedings: skippedRecords.length,
-      totalAmount: totalAmount,
-      averageAmount: averageAmount,
-      completionRate: completionRate,
-      feedingsByHour: feedingsByHour,
-    );
-  }
-}
       totalAmount: totalAmount,
       averageAmount: averageAmount,
       completionRate: completionRate,

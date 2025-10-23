@@ -1,11 +1,10 @@
 import 'dart:convert';
-import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'dart:io';
 
 import 'package:aipet_frontend/features/allergy/data/repositories/saved_analysis_repository.dart';
 import 'package:aipet_frontend/features/pet_health/data/services/pet_health_local_storage_service.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:aipet_frontend/shared/domain/entities/pet_profile_entity.dart';
-import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 

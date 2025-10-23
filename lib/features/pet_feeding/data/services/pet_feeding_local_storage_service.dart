@@ -8,6 +8,8 @@ import 'helpers/helpers.dart';
 ///
 /// 급여 기록을 SharedPreferences에 저장/관리합니다
 class PetFeedingLocalStorageService {
+  static final _cache = CacheService();
+
   // ========== 급여 기록 관련 메서드 (헬퍼 위임) ==========
 
   /// 급여 기록 가져오기 (헬퍼 위임)
@@ -107,8 +109,8 @@ class PetFeedingLocalStorageService {
   static Future<void> clearAllData() async {
     try {
       await _cache.initialize();
-      await prefs.remove('pet_feeding_records');
-      await prefs.remove('pet_recipes');
+      await _cache.removeKey('pet_feeding_records');
+      await _cache.removeKey('pet_recipes');
 
       if (kDebugMode) {
         LoggerService.debug('모든 급여 데이터 초기화 완료');
