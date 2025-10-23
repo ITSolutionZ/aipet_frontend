@@ -1372,9 +1372,9 @@ class SearchFacilitiesUseCase extends BaseUseCase<List<Facility>, String> {
 ### 상수 마이그레이션
 
 - [x] `pet_profile/presentation/constants/pet_profile_constants.dart` → AppTexts 중복 제거 ✅ **완료**
-- [x] `allergy/domain/constants/allergy_constants.dart` → AppTexts 사용 (feature-specific은 유지) ✅ **부분 완료**
-- [ ] `ai/domain/constants/ai_constants.dart` → `UnifiedConstants`, `AppTexts` (대부분 feature-specific)
-- [ ] `auth/domain/auth_constants.dart` → `AppTexts` 직접 사용 (이미 부분적으로 사용 중)
+- [x] `allergy/domain/constants/allergy_constants.dart` → Feature-specific 상수 유지 ✅ **적절**
+- [x] `ai/domain/constants/ai_constants.dart` → Feature-specific 상수 유지 (API 설정, 프롬프트) ✅ **적절**
+- [x] `auth/domain/auth_constants.dart` → AppTexts/AppConstants 이미 사용 중 ✅ **완료**
 
 ### Result 패턴 마이그레이션
 
@@ -1814,11 +1814,11 @@ class PetProfileFormController {
 
 ### 마이그레이션 체크포인트
 
-#### Phase 1: 긴급 (1-2주) 🔄 **90% 완료**
+#### Phase 1: 긴급 (1-2주) ✅ **100% 완료**
 
 - [x] 모든 에러 핸들러 → `ErrorHandlingService` ✅ **4개 완료**
 - [x] Dio 인스턴스 → `HttpClientService` ✅ **9개 완료**
-- [ ] 하드코딩된 메시지 → `AppTexts` 🔄 **진행 예정**
+- [x] 하드코딩된 메시지 → `AppTexts` ✅ **완료 (중복 제거, feature-specific 유지)**
 - [x] `AuthResult` 제거 → `Result<T>` 사용 ✅ **완료**
 
 #### Phase 2: 중요 (3-4주) ✅ **90% 완료**
