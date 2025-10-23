@@ -101,7 +101,7 @@ class WalkRecordEntity {
   String get dateString {
     // ✅ DateTimeUtils 사용 (YYYY-MM-DD 형식)
     final date = startTime;
-    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+    return DateTimeUtils.formatDateKey(date);
   }
 
   /// 펫 이미지 경로 (기본값)

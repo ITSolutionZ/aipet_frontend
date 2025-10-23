@@ -119,7 +119,7 @@ class FeedingRecordsSection extends StatelessWidget {
                       ),
                     ),
                     subtitle: Text(
-                      '${selectedDate.year}/${selectedDate.month.toString().padLeft(2, '0')}/${selectedDate.day.toString().padLeft(2, '0')}',
+                      DateTimeUtils.formatDateSlash(selectedDate),
                       style: AppFonts.bodyMedium,
                     ),
                     trailing: IconButton(
@@ -188,7 +188,7 @@ class FeedingRecordsSection extends StatelessWidget {
                     'id': DateTime.now().millisecondsSinceEpoch.toString(),
                     'amount': '${amountController.text}g',
                     'date':
-                        '${selectedDate.year}/${selectedDate.month.toString().padLeft(2, '0')}/${selectedDate.day.toString().padLeft(2, '0')}',
+                        DateTimeUtils.formatDateSlash(selectedDate),
                     'note': noteController.text,
                     'timestamp': selectedDate.toIso8601String(),
                     'change': '+0g', // 변화량은 별도 계산 로직 필요

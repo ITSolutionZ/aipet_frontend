@@ -431,6 +431,6 @@ class _WeightRecordsCardState extends ConsumerState<WeightRecordsCard> {
   }
 
   String _formatDate(DateTime date) {
-    return '${date.year}/${date.month.toString().padLeft(2, '0')}/${date.day.toString().padLeft(2, '0')}';
+    return DateTimeUtils.formatDateSlash(date);
   }
 }

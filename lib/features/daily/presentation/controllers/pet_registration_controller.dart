@@ -83,7 +83,7 @@ class PetRegistrationController extends _$PetRegistrationController {
     state = state.copyWith(birthDate: date);
     if (date != null) {
       _birthDateController.text =
-          '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+          DateTimeUtils.formatDateKey(date);
     } else {
       _birthDateController.clear();
     }
@@ -94,7 +94,7 @@ class PetRegistrationController extends _$PetRegistrationController {
     state = state.copyWith(adoptionDate: date);
     if (date != null) {
       _adoptionDateController.text =
-          '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+          DateTimeUtils.formatDateKey(date);
     } else {
       _adoptionDateController.clear();
     }

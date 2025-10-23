@@ -54,7 +54,7 @@ class BookingDateSelector extends StatelessWidget {
                       borderRadius: BorderRadius.circular(AppSpacing.sm),
                     ),
                     child: Text(
-                      '${selectedDate!.year}/${selectedDate!.month.toString().padLeft(2, '0')}/${selectedDate!.day.toString().padLeft(2, '0')}',
+                      DateTimeUtils.formatDateSlash(selectedDate!),
                       style: AppFonts.bodySmall.copyWith(
                         color: AppColors.primary,
                         fontWeight: FontWeight.bold,

@@ -204,7 +204,7 @@ class TokenUsageService {
 
   // 내부 헬퍼 메서드들
   static String _formatDateKey(DateTime date) {
-    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+    return DateTimeUtils.formatDateKey(date);
   }
 
   static String _formatHourKey(DateTime dateTime) {
