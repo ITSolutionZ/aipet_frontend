@@ -78,9 +78,11 @@ class AlarmTimeSettingsController extends _$AlarmTimeSettingsController {
   /// 알림 시간 저장
   Future<void> saveAlarmTimes() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      // ✅ CacheService 사용
+      final cache = CacheService();
+      await cache.initialize();
 
-      await prefs.setString(
+      await cache.setPersistentCache(
         'morning_alarm_time',
         '${state.morningTime.hour}:${state.morningTime.minute}',
       );

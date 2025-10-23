@@ -99,7 +99,7 @@ class ReservationListNotifier extends _$ReservationListNotifier {
       }).toList();
 
       // 로컬 저장소에 저장
-      final prefs = await SharedPreferences.getInstance();
+      // ✅ ReservationLocalStorageService 사용
       final jsonString = jsonEncode(
         updatedReservations.map((r) {
           final map = Map<String, dynamic>.from(r);
@@ -146,7 +146,7 @@ class ReservationListNotifier extends _$ReservationListNotifier {
       }).toList();
 
       // 로컬 저장소에 저장
-      final prefs = await SharedPreferences.getInstance();
+      // ✅ ReservationLocalStorageService 사용
       final jsonString = jsonEncode(
         updatedReservations.map((r) {
           final map = Map<String, dynamic>.from(r);
