@@ -28,7 +28,7 @@ class AiChatStatePersistence {
   Future<Result<void>> saveSelectedPet(String petId) async {
     try {
       await _init();
-      final success = await prefs.setString(
+      final success = await _cache.setString(
         '$_keyPrefix$_keySelectedPet',
         petId,
       );
@@ -51,7 +51,7 @@ class AiChatStatePersistence {
   Future<Result<String?>> loadSelectedPetId() async {
     try {
       await _init();
-      final petId = prefs.getString('$_keyPrefix$_keySelectedPet');
+      final petId = _cache.getString('$_keyPrefix$_keySelectedPet');
 
       return Result.success('펫 선택 상태를 불러왔습니다', petId);
     } catch (e) {
@@ -66,14 +66,14 @@ class AiChatStatePersistence {
       await _init();
 
       if (category == null) {
-        await prefs.remove('$_keyPrefix$_keySelectedCategory');
+        await _cache.removeKey('$_keyPrefix$_keySelectedCategory');
       } else {
         final categoryJson = jsonEncode({
           'id': category.id,
           'name': category.name,
           'description': category.description,
         });
-        await prefs.setString('$_keyPrefix$_keySelectedCategory', categoryJson);
+        await _cache.setString('$_keyPrefix$_keySelectedCategory', categoryJson);
       }
 
       if (kDebugMode) {
@@ -93,7 +93,7 @@ class AiChatStatePersistence {
   Future<Result<AiCategoryEntity?>> loadSelectedCategory() async {
     try {
       await _init();
-      final categoryJson = prefs.getString('$_keyPrefix$_keySelectedCategory');
+      final categoryJson = _cache.getString('$_keyPrefix$_keySelectedCategory');
 
       if (categoryJson == null) {
         return Result.success('저장된 카테고리가 없습니다', null);
@@ -121,9 +121,9 @@ class AiChatStatePersistence {
       await _init();
 
       if (message.trim().isEmpty) {
-        await prefs.remove('$_keyPrefix$_keyDraftMessage');
+        await _cache.removeKey('$_keyPrefix$_keyDraftMessage');
       } else {
-        await prefs.setString('$_keyPrefix$_keyDraftMessage', message);
+        await _cache.setString('$_keyPrefix$_keyDraftMessage', message);
       }
 
       return Result.success('임시 메시지가 저장되었습니다', null);
@@ -137,7 +137,7 @@ class AiChatStatePersistence {
   Future<Result<String?>> loadDraftMessage() async {
     try {
       await _init();
-      final draftMessage = prefs.getString('$_keyPrefix$_keyDraftMessage');
+      final draftMessage = _cache.getString('$_keyPrefix$_keyDraftMessage');
 
       return Result.success('임시 메시지를 불러왔습니다', draftMessage);
     } catch (e) {
@@ -169,7 +169,7 @@ class AiChatStatePersistence {
             .toList(),
       );
 
-      await prefs.setString('$_keyPrefix$_keyRecentMessages', messagesJson);
+      await _cache.setString('$_keyPrefix$_keyRecentMessages', messagesJson);
 
       if (kDebugMode) {
         LoggerService.debug(
@@ -188,7 +188,7 @@ class AiChatStatePersistence {
   Future<Result<List<AiMessageEntity>>> loadCachedMessages() async {
     try {
       await _init();
-      final messagesJson = prefs.getString('$_keyPrefix$_keyRecentMessages');
+      final messagesJson = _cache.getString('$_keyPrefix$_keyRecentMessages');
 
       if (messagesJson == null) {
         return Result.success('캐시된 메시지가 없습니다', []);
@@ -226,7 +226,7 @@ class AiChatStatePersistence {
       final keysToRemove = <String>[];
 
       // AI 채팅 관련 모든 키 찾기
-      for (final key in prefs.getKeys()) {
+      for (final key in _cache._prefs?.getKeys() ?? <String>{}) {
         if (key.startsWith(_keyPrefix)) {
           keysToRemove.add(key);
         }
@@ -234,7 +234,7 @@ class AiChatStatePersistence {
 
       // 일괄 삭제
       for (final key in keysToRemove) {
-        await prefs.remove(key);
+        await _cache.removeKey(key);
       }
 
       if (kDebugMode) {
@@ -254,8 +254,8 @@ class AiChatStatePersistence {
   Future<Result<void>> clearPetChatState(String petId) async {
     try {
       await _init();
-      await prefs.remove('$_keyPrefix${petId}_messages');
-      await prefs.remove('$_keyPrefix${petId}_draft');
+      await _cache.removeKey('$_keyPrefix${petId}_messages');
+      await _cache.removeKey('$_keyPrefix${petId}_draft');
 
       if (kDebugMode) {
         LoggerService.debug('🗑️ Cleared chat state for pet: $petId');
