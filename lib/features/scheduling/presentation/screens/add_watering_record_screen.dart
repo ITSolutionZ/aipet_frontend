@@ -257,7 +257,7 @@ class _AddWateringRecordScreenState
       };
 
       // 기존 기록 가져오기
-      final records = await cache.getPersistentCacheList('watering_records') ?? [];
+      final records = cache.getPersistentCacheList('watering_records') ?? [];
       records.add(jsonEncode(wateringRecord));
       await await cache.setPersistentCacheList('watering_records', records);
 

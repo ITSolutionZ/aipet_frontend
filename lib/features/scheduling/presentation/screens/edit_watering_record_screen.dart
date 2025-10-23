@@ -369,7 +369,7 @@ class _EditWateringRecordScreenState
       };
 
       // 기존 기록 가져오기
-      final records = await cache.getPersistentCacheList('watering_records') ?? [];
+      final records = cache.getPersistentCacheList('watering_records') ?? [];
       final updatedRecords = records.map((record) {
         final data = jsonDecode(record) as Map<String, dynamic>;
         if (data['id'] == recordId) {
@@ -406,7 +406,7 @@ class _EditWateringRecordScreenState
 
                 // 로컬 데이터에서 삭제
                 final cache = CacheService(); await cache.initialize();
-                final records = await cache.getPersistentCacheList('watering_records') ?? [];
+                final records = cache.getPersistentCacheList('watering_records') ?? [];
                 final currentRecordId = widget.record['id'] as String;
                 final filteredRecords = records.where((record) {
                   final data = jsonDecode(record) as Map<String, dynamic>;

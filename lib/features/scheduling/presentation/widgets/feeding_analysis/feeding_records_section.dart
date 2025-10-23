@@ -194,7 +194,7 @@ class FeedingRecordsSection extends StatelessWidget {
                     'change': '+0g', // 변화량은 별도 계산 로직 필요
                   };
 
-                  final records = await cache.getPersistentCacheList('feeding_records') ?? [];
+                  final records = cache.getPersistentCacheList('feeding_records') ?? [];
                   records.add(jsonEncode(feedingRecord));
                   await await cache.setPersistentCacheList('feeding_records', records);
 
