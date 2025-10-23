@@ -30,8 +30,6 @@ class NotificationCacheService {
   static Future<void> _init() async {
     await _cache.initialize();
   }
-    return await _cache.initialize();
-  }
 
   /// 알림 목록을 캐시에 저장
   ///
@@ -42,7 +40,7 @@ class NotificationCacheService {
     required List<NotificationModel> notifications,
   }) async {
     try {
-      final prefs = await _cache.initialize();
+      await _init();
       final cacheKey = '${_notificationsCacheKey}_$userId';
 
       final notificationsJson = notifications
@@ -54,7 +52,7 @@ class NotificationCacheService {
         'timestamp': DateTime.now().millisecondsSinceEpoch,
       };
 
-      await prefs.setString(cacheKey, json.encode(cacheData));
+      await _cache.setString(cacheKey, json.encode(cacheData));
 
       if (kDebugMode) {
         LoggerService.debug('[$_tag] ✅ 알림 캐시 저장 완료: ${notifications.length}개');
@@ -76,7 +74,7 @@ class NotificationCacheService {
     String userId,
   ) async {
     try {
-      final prefs = await _cache.initialize();
+      await _init();
       final cacheKey = '${_notificationsCacheKey}_$userId';
 
       final cachedDataString = prefs.getString(cacheKey);
@@ -123,7 +121,7 @@ class NotificationCacheService {
     required Map<String, dynamic> settings,
   }) async {
     try {
-      final prefs = await _cache.initialize();
+      await _init();
       final cacheKey = '${_settingsCacheKey}_$userId';
 
       final cacheData = {
@@ -131,7 +129,7 @@ class NotificationCacheService {
         'timestamp': DateTime.now().millisecondsSinceEpoch,
       };
 
-      await prefs.setString(cacheKey, json.encode(cacheData));
+      await _cache.setString(cacheKey, json.encode(cacheData));
 
       if (kDebugMode) {
         LoggerService.debug('[$_tag] ✅ 설정 캐시 저장 완료');
@@ -153,7 +151,7 @@ class NotificationCacheService {
     String userId,
   ) async {
     try {
-      final prefs = await _cache.initialize();
+      await _init();
       final cacheKey = '${_settingsCacheKey}_$userId';
 
       final cachedDataString = prefs.getString(cacheKey);
@@ -194,11 +192,11 @@ class NotificationCacheService {
   /// [userId] 사용자 ID
   static Future<Result<bool>> clearUserCache(String userId) async {
     try {
-      final prefs = await _cache.initialize();
+      await _init();
 
-      await prefs.remove('${_notificationsCacheKey}_$userId');
-      await prefs.remove('${_settingsCacheKey}_$userId');
-      await prefs.remove('${_statsCacheKey}_$userId');
+      await _cache.remove('${_notificationsCacheKey}_$userId');
+      await _cache.remove('${_settingsCacheKey}_$userId');
+      await _cache.remove('${_statsCacheKey}_$userId');
 
       if (kDebugMode) {
         LoggerService.debug('[$_tag] ✅ 사용자 캐시 삭제 완료: $userId');
@@ -216,14 +214,14 @@ class NotificationCacheService {
   /// 전체 캐시 삭제
   static Future<Result<bool>> clearAllCache() async {
     try {
-      final prefs = await _cache.initialize();
+      await _init();
       final keys = prefs.getKeys();
 
       for (final key in keys) {
         if (key.startsWith(_notificationsCacheKey) ||
             key.startsWith(_settingsCacheKey) ||
             key.startsWith(_statsCacheKey)) {
-          await prefs.remove(key);
+          await _cache.remove(key);
         }
       }
 
@@ -245,7 +243,7 @@ class NotificationCacheService {
   /// [userId] 사용자 ID
   static Future<bool> isCacheValid(String userId) async {
     try {
-      final prefs = await _cache.initialize();
+      await _init();
       final cacheKey = '${_notificationsCacheKey}_$userId';
 
       final cachedDataString = prefs.getString(cacheKey);
@@ -272,7 +270,7 @@ class NotificationCacheService {
   /// [userId] 사용자 ID
   static Future<Map<String, dynamic>> getCacheStatus(String userId) async {
     try {
-      final prefs = await _cache.initialize();
+      await _init();
 
       final notificationsCacheKey = '${_notificationsCacheKey}_$userId';
       final settingsCacheKey = '${_settingsCacheKey}_$userId';

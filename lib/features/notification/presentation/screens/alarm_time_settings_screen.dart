@@ -227,7 +227,7 @@ class _AlarmTimeSettingsScreenState
             borderRadius: BorderRadius.circular(AppSpacing.sm),
           ),
           child: Text(
-            DateTimeUtils.formatTime(time),
+            '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}',
             style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.w600,
