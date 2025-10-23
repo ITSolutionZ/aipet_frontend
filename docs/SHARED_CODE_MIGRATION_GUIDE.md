@@ -1971,11 +1971,14 @@ Phase 3 (개선 - 5-8주): ✅ 100% 완료
 ### 최종 결과: 49 → 0 (100% 달성!)
 
 #### Phase별 진행
+
 1. **Entity/Helper 레벨** (49 → 36)
+
    - walk_record_entity, schedule_entity getter 통합
    - formatTime 메서드 통합
 
 2. **타이머/날짜 형식** (36 → 14)
+
    - HH:MM:SS 타이머 → DateTimeUtils.formatElapsedTime
    - YYYY-MM-DD, YYYY/MM/DD → DateTimeUtils.formatDateKey/Slash
 
@@ -1985,10 +1988,10 @@ Phase 3 (개선 - 5-8주): ✅ 100% 완료
 
 #### 통합 효과
 
-| 지표 | 개선 전 | 개선 후 | 효과 |
-|------|---------|---------|------|
-| padLeft(2,'0') | 49곳 | 0곳 | 100% |
-| DateTimeUtils 사용 | 0곳 | 30+ 곳 | 신규 |
-| 중복 메서드 | 8개 | 0개 | 통합 |
+| 지표               | 개선 전 | 개선 후 | 효과 |
+| ------------------ | ------- | ------- | ---- |
+| padLeft(2,'0')     | 49곳    | 0곳     | 100% |
+| DateTimeUtils 사용 | 0곳     | 30+ 곳  | 신규 |
+| 중복 메서드        | 8개     | 0개     | 통합 |
 
 ✅ **Features Layer에서 날짜/시간 포맷팅 완전 통합!**
