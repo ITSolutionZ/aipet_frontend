@@ -258,14 +258,6 @@ class CacheKeys {
 }
 
 /// 캐시 TTL 상수
-class CacheTTL {
-  static const Duration location = Duration(seconds: 30); // 위치 정보 (30초)
-  static const Duration short = Duration(minutes: 5); // 날씨 등 자주 변하는 데이터
-  static const Duration medium = Duration(minutes: 15); // 홈 대시보드
-  static const Duration long = Duration(hours: 1); // 펫 프로필 등 정적 데이터
-  static const Duration veryLong = Duration(hours: 24); // 거의 변하지 않는 데이터
-}
-
   /// List<String> 조회 (호환성)
   Future<List<String>?> getPersistentCacheList(String key) async {
     await initialize();
@@ -277,4 +269,24 @@ class CacheTTL {
     await initialize();
     await _prefs!.setStringList(key, value);
   }
+}
+
+/// 캐시 키 상수
+class CacheKeys {
+  static const String homeDashboard = 'home_dashboard';
+  static const String dashboard = 'dashboard';
+  static const String weather = 'weather_data';
+  static const String petProfiles = 'pet_profiles';
+  static const String walkSummary = 'walk_summary';
+  static const String healthSummary = 'health_summary';
+  static const String appointments = 'appointments';
+}
+
+/// 캐시 TTL 상수
+class CacheTTL {
+  static const Duration location = Duration(seconds: 30); // 위치 정보 (30초)
+  static const Duration short = Duration(minutes: 5); // 날씨 등 자주 변하는 데이터
+  static const Duration medium = Duration(minutes: 15); // 홈 대시보드
+  static const Duration long = Duration(hours: 1); // 펫 프로필 등 정적 데이터
+  static const Duration veryLong = Duration(hours: 24); // 거의 변하지 않는 데이터
 }
