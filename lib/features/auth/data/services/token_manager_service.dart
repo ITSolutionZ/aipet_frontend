@@ -35,7 +35,7 @@ class TokenManagerService {
       _scheduleTokenRefresh(token);
       return const Success(null);
     } catch (e) {
-      return Result.failure(CacheError.toString()));
+      return ResultState.failure(CacheError.toString()));
     }
   }
 
@@ -50,7 +50,7 @@ class TokenManagerService {
 
       return const Success(null);
     } catch (e) {
-      return Result.failure(CacheError.toString()));
+      return ResultState.failure(CacheError.toString()));
     }
   }
 
@@ -58,12 +58,12 @@ class TokenManagerService {
     try {
       final currentTokenResult = await getCurrentToken();
       if (currentTokenResult.isFailure) {
-        return Result.failure(currentTokenResult.errorOrNull!);
+        return ResultState.failure(currentTokenResult.errorOrNull!);
       }
 
       final currentToken = currentTokenResult.dataOrNull;
       if (currentToken == null) {
-        return Result.failure(AuthenticationError.toString());
+        return ResultState.failure(AuthenticationError.toString());
       }
 
       final refreshResult = await _apiAuthService.refreshToken(
@@ -71,7 +71,7 @@ class TokenManagerService {
       );
       if (refreshResult.isFailure) {
         await clearToken();
-        return Result.failure(refreshResult.errorOrNull!);
+        return ResultState.failure(refreshResult.errorOrNull!);
       }
 
       final newToken = refreshResult.dataOrNull!;
@@ -79,7 +79,7 @@ class TokenManagerService {
 
       return Success(newToken);
     } catch (e) {
-      return Result.failure(UnknownError.toString()));
+      return ResultState.failure(UnknownError.toString()));
     }
   }
 
@@ -107,7 +107,7 @@ class TokenManagerService {
 
       return Success(token);
     } catch (e) {
-      return Result.failure(CacheError.toString()));
+      return ResultState.failure(CacheError.toString()));
     }
   }
 
