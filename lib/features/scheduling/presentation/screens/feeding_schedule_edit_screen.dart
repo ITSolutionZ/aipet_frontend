@@ -174,7 +174,7 @@ class _FeedingScheduleEditScreenState
   /// 저장 처리
   Future<void> _saveSchedule() async {
     final timeString =
-        DateTimeUtils.formatTime(_selectedTime);
+        '${_selectedTime.hour.toString().padLeft(2, '0')}:${_selectedTime.minute.toString().padLeft(2, '0')}';
     final amount = '${_amountController.text}g';
 
     // 로컬 저장소 업데이트
