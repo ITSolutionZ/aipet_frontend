@@ -1,7 +1,7 @@
 import 'package:aipet_frontend/features/notification/data/providers/notification_controller_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../../../../shared/services/cache_service.dart';
 
 import '../../domain/domain.dart';
 
@@ -28,20 +28,21 @@ class AlarmTimeSettingsController extends _$AlarmTimeSettingsController {
 
       await _getNotificationSettingsUseCase(userId);
 
-      // SharedPreferences에서 저장된 시간 정보 로드
-      final prefs = await SharedPreferences.getInstance();
+      // ✅ CacheService 사용
+      final cache = CacheService();
+      await cache.initialize();
 
       final morningTime = _parseTimeString(
-        prefs.getString('morning_alarm_time') ?? '8:0',
+        (await cache.getPersistentCache('morning_alarm_time'))?['data'] as String? ?? '8:0',
       );
       final lunchTime = _parseTimeString(
-        prefs.getString('lunch_alarm_time') ?? '12:0',
+        (await cache.getPersistentCache('lunch_alarm_time'))?['data'] as String? ?? '12:0',
       );
       final dinnerTime = _parseTimeString(
-        prefs.getString('dinner_alarm_time') ?? '18:0',
+        (await cache.getPersistentCache('dinner_alarm_time'))?['data'] as String? ?? '18:0',
       );
       final walkTime = _parseTimeString(
-        prefs.getString('walk_alarm_time') ?? '16:0',
+        (await cache.getPersistentCache('walk_alarm_time'))?['data'] as String? ?? '16:0',
       );
 
       state = state.copyWith(
@@ -84,19 +85,19 @@ class AlarmTimeSettingsController extends _$AlarmTimeSettingsController {
 
       await cache.setPersistentCache(
         'morning_alarm_time',
-        '${state.morningTime.hour}:${state.morningTime.minute}',
+        {'data': '${state.morningTime.hour}:${state.morningTime.minute}'},
       );
-      await prefs.setString(
+      await cache.setPersistentCache(
         'lunch_alarm_time',
-        '${state.lunchTime.hour}:${state.lunchTime.minute}',
+        {'data': '${state.lunchTime.hour}:${state.lunchTime.minute}'},
       );
-      await prefs.setString(
+      await cache.setPersistentCache(
         'dinner_alarm_time',
-        '${state.dinnerTime.hour}:${state.dinnerTime.minute}',
+        {'data': '${state.dinnerTime.hour}:${state.dinnerTime.minute}'},
       );
-      await prefs.setString(
+      await cache.setPersistentCache(
         'walk_alarm_time',
-        '${state.walkTime.hour}:${state.walkTime.minute}',
+        {'data': '${state.walkTime.hour}:${state.walkTime.minute}'},
       );
 
       state = state.copyWith(isSaved: true);
