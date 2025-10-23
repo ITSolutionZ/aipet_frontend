@@ -28,19 +28,15 @@ class AiChatStatePersistence {
   Future<Result<void>> saveSelectedPet(String petId) async {
     try {
       await _init();
-      final success = await _cache.setString(
+      await _cache.setString(
         '$_keyPrefix$_keySelectedPet',
         petId,
       );
 
-      if (success) {
-        if (kDebugMode) {
-          LoggerService.debug('💾 Selected pet saved: $petId');
-        }
-        return Result.success('펫 선택 상태가 저장되었습니다', null);
-      } else {
-        return Result.failure('펫 선택 상태 저장에 실패했습니다');
+      if (kDebugMode) {
+        LoggerService.debug('💾 Selected pet saved: $petId');
       }
+      return Result.success('펫 선택 상태가 저장되었습니다', null);
     } catch (e) {
       LoggerService.debug('❌ Failed to save selected pet: $e');
       return Result.failure('펫 저장 중 오류가 발생했습니다: $e');
@@ -223,19 +219,12 @@ class AiChatStatePersistence {
   Future<Result<void>> clearAllChatState() async {
     try {
       await _init();
-      final keysToRemove = <String>[];
-
-      // AI 채팅 관련 모든 키 찾기
-      for (final key in _cache._prefs?.getKeys() ?? <String>{}) {
-        if (key.startsWith(_keyPrefix)) {
-          keysToRemove.add(key);
-        }
-      }
-
-      // 일괄 삭제
-      for (final key in keysToRemove) {
-        await _cache.removeKey(key);
-      }
+      
+      // AI 채팅 관련 주요 키들 직접 삭제
+      await _cache.removeKey('$_keyPrefix$_keySelectedPet');
+      await _cache.removeKey('$_keyPrefix$_keySelectedCategory');
+      await _cache.removeKey('$_keyPrefix$_keyDraftMessage');
+      await _cache.removeKey('$_keyPrefix$_keyRecentMessages');
 
       if (kDebugMode) {
         LoggerService.debug(
