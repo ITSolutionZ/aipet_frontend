@@ -265,3 +265,16 @@ class CacheTTL {
   static const Duration long = Duration(hours: 1); // 펫 프로필 등 정적 데이터
   static const Duration veryLong = Duration(hours: 24); // 거의 변하지 않는 데이터
 }
+
+  /// List<String> 조회 (호환성)
+  Future<List<String>?> getPersistentCacheList(String key) async {
+    await initialize();
+    return _prefs?.getStringList(key);
+  }
+
+  /// List<String> 저장 (호환성)
+  Future<void> setPersistentCacheList(String key, List<String> value) async {
+    await initialize();
+    await _prefs!.setStringList(key, value);
+  }
+}
