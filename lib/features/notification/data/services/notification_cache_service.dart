@@ -39,7 +39,7 @@ class NotificationCacheService {
     required List<NotificationModel> notifications,
   }) async {
     try {
-      final prefs = await _preferences;
+      final prefs = await _cache.initialize();
       final cacheKey = '${_notificationsCacheKey}_$userId';
 
       final notificationsJson = notifications
@@ -73,7 +73,7 @@ class NotificationCacheService {
     String userId,
   ) async {
     try {
-      final prefs = await _preferences;
+      final prefs = await _cache.initialize();
       final cacheKey = '${_notificationsCacheKey}_$userId';
 
       final cachedDataString = prefs.getString(cacheKey);
@@ -120,7 +120,7 @@ class NotificationCacheService {
     required Map<String, dynamic> settings,
   }) async {
     try {
-      final prefs = await _preferences;
+      final prefs = await _cache.initialize();
       final cacheKey = '${_settingsCacheKey}_$userId';
 
       final cacheData = {
@@ -150,7 +150,7 @@ class NotificationCacheService {
     String userId,
   ) async {
     try {
-      final prefs = await _preferences;
+      final prefs = await _cache.initialize();
       final cacheKey = '${_settingsCacheKey}_$userId';
 
       final cachedDataString = prefs.getString(cacheKey);
@@ -191,7 +191,7 @@ class NotificationCacheService {
   /// [userId] 사용자 ID
   static Future<Result<bool>> clearUserCache(String userId) async {
     try {
-      final prefs = await _preferences;
+      final prefs = await _cache.initialize();
 
       await prefs.remove('${_notificationsCacheKey}_$userId');
       await prefs.remove('${_settingsCacheKey}_$userId');
@@ -213,7 +213,7 @@ class NotificationCacheService {
   /// 전체 캐시 삭제
   static Future<Result<bool>> clearAllCache() async {
     try {
-      final prefs = await _preferences;
+      final prefs = await _cache.initialize();
       final keys = prefs.getKeys();
 
       for (final key in keys) {
@@ -242,7 +242,7 @@ class NotificationCacheService {
   /// [userId] 사용자 ID
   static Future<bool> isCacheValid(String userId) async {
     try {
-      final prefs = await _preferences;
+      final prefs = await _cache.initialize();
       final cacheKey = '${_notificationsCacheKey}_$userId';
 
       final cachedDataString = prefs.getString(cacheKey);
@@ -269,7 +269,7 @@ class NotificationCacheService {
   /// [userId] 사용자 ID
   static Future<Map<String, dynamic>> getCacheStatus(String userId) async {
     try {
-      final prefs = await _preferences;
+      final prefs = await _cache.initialize();
 
       final notificationsCacheKey = '${_notificationsCacheKey}_$userId';
       final settingsCacheKey = '${_settingsCacheKey}_$userId';
