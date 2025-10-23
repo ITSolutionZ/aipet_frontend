@@ -212,7 +212,7 @@ class AiMessageBubble extends ConsumerWidget {
     } else if (difference.inDays < 1) {
       return '${difference.inHours}時間前';
     } else {
-      return '${dateTime.month}/${dateTime.day} ${dateTime.hour}:${dateTime.minute.toString().padLeft(2, '0')}';
+      return ('${dateTime.month}/${dateTime.day} ' + DateTimeUtils.formatTime(dateTime));
     }
   }
 }

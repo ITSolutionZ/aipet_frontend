@@ -208,7 +208,7 @@ class TokenUsageService {
   }
 
   static String _formatHourKey(DateTime dateTime) {
-    return '${_formatDateKey(dateTime)}-${dateTime.hour.toString().padLeft(2, '0')}';
+    return (_formatDateKey(dateTime) + '-' + DateTimeUtils.formatTwoDigits(dateTime.hour));
   }
 
   static int _getRequestCountForDate(DateTime date) {

@@ -126,7 +126,7 @@ class AiFavoriteCardWidget extends StatelessWidget {
     final difference = now.difference(dateTime);
 
     if (difference.inDays == 0) {
-      return '今日 ${dateTime.hour}:${dateTime.minute.toString().padLeft(2, '0')}';
+      return ('今日 ' + DateTimeUtils.formatTime(dateTime));
     } else if (difference.inDays == 1) {
       return '昨日';
     } else if (difference.inDays < 7) {

@@ -102,8 +102,7 @@ class LocalScheduleService {
   Future<List<Map<String, dynamic>>> getTodaySchedules() async {
     final db = await _dbService.database;
     final today = DateTime.now();
-    final todayStr =
-        DateTimeUtils.formatDateKey(today);
+    final todayStr = DateTimeUtils.formatDateKey(today);
 
     return db.rawQuery(
       '''

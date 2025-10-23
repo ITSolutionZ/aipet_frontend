@@ -182,7 +182,7 @@ class _HospitalQrScannerScreenState
       'queueNumber':
           'A-${DateTime.now().millisecond.toString().padLeft(3, '0')}',
       'reservationTime':
-          '${DateTime.now().hour}:${DateTime.now().minute.toString().padLeft(2, '0')}',
+          DateTimeUtils.formatTime(DateTime.now()),
       'waitingCount': 3,
     };
 

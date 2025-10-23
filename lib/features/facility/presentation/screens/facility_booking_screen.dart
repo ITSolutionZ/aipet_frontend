@@ -891,7 +891,7 @@ class _FacilityBookingScreenState extends ConsumerState<FacilityBookingScreen> {
                       ),
                       child: Center(
                         child: Text(
-                          '${hour.toString().padLeft(2, '0')}:00',
+                          DateTimeUtils.formatTwoDigits(hour) + ':00',
                           style: AppFonts.bodySmall.copyWith(
                             fontWeight: FontWeight.w500,
                             color: AppColors.textPrimary,

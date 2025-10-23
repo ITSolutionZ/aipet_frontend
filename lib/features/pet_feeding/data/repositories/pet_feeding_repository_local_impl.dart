@@ -2,6 +2,7 @@ import 'package:aipet_frontend/features/pet_feeding/data/models/feeding_record_m
 import 'package:aipet_frontend/features/pet_feeding/domain/entities/feeding_record_entity.dart';
 import 'package:aipet_frontend/features/pet_feeding/domain/repositories/pet_feeding_repository.dart';
 import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
+import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
 import 'package:aipet_frontend/shared/services/local_data_manager.dart';
 
 /// Pet Feeding Repository - 로컬 저장소 구현체
@@ -145,7 +146,7 @@ class PetFeedingRepositoryLocalImpl implements PetFeedingRepository {
 
     final feedingsByHour = <String, int>{};
     for (var record in petRecords) {
-      final hour = record.fedTime.hour.toString().padLeft(2, '0');
+      // ✅ DateTimeUtils 사용
       feedingsByHour[hour] = (feedingsByHour[hour] ?? 0) + 1;
     }
 
