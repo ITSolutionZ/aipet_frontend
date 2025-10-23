@@ -227,9 +227,7 @@ class AiChatStatePersistence {
       await _cache.removeKey('$_keyPrefix$_keyRecentMessages');
 
       if (kDebugMode) {
-        LoggerService.debug(
-          '🗑️ Cleared ${keysToRemove.length} chat state entries',
-        );
+        LoggerService.debug('🗑️ Cleared AI chat state entries');
       }
 
       return Result.success('채팅 상태가 초기화되었습니다', null);

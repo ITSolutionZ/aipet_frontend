@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:aipet_frontend/shared/shared.dart';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import '../../domain/domain.dart';

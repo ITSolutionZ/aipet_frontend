@@ -1,6 +1,5 @@
 import 'package:aipet_frontend/features/pet_profile/pet_profile.dart';
 import 'package:aipet_frontend/shared/shared.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/data.dart';

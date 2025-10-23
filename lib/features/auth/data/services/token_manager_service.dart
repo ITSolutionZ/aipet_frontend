@@ -35,7 +35,7 @@ class TokenManagerService {
       _scheduleTokenRefresh(token);
       return const Success(null);
     } catch (e) {
-      return ResultState.failure(CacheError.toString()));
+      return ResultState.failure(CacheError('토큰 저장 실패', details: e.toString()));
     }
   }
 
@@ -50,7 +50,7 @@ class TokenManagerService {
 
       return const Success(null);
     } catch (e) {
-      return ResultState.failure(CacheError.toString()));
+      return ResultState.failure(CacheError('토큰 삭제 실패', details: e.toString()));
     }
   }
 
@@ -63,7 +63,7 @@ class TokenManagerService {
 
       final currentToken = currentTokenResult.dataOrNull;
       if (currentToken == null) {
-        return ResultState.failure(AuthenticationError.toString());
+        return ResultState.failure(AuthenticationError('토큰이 없습니다'));
       }
 
       final refreshResult = await _apiAuthService.refreshToken(
@@ -79,7 +79,7 @@ class TokenManagerService {
 
       return Success(newToken);
     } catch (e) {
-      return ResultState.failure(UnknownError.toString()));
+      return ResultState.failure(UnknownError(details: e.toString()));
     }
   }
 
@@ -107,7 +107,7 @@ class TokenManagerService {
 
       return Success(token);
     } catch (e) {
-      return ResultState.failure(CacheError.toString()));
+      return ResultState.failure(CacheError('토큰 로드 실패', details: e.toString()));
     }
   }
 

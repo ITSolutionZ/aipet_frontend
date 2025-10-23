@@ -20,7 +20,7 @@ class SavedAnalysisRepository {
   Future<Result<List<SavedAnalysisEntity>>> loadAll() async {
     try {
       await _init();
-      final jsonString = prefs.getString(_key);
+      final jsonString = _cache.getString(_key);
 
       if (jsonString == null || jsonString.isEmpty) {
         return Result.success('データがありません', []);
@@ -53,7 +53,7 @@ class SavedAnalysisRepository {
 
       // JSON으로 변환하여 저장
       final jsonList = analyses.map((a) => _toJson(a)).toList();
-      await prefs.setString(_key, jsonEncode(jsonList));
+      await _cache.setString(_key, jsonEncode(jsonList));
 
       return Result.success('分析結果を保存しました');
     } catch (e) {
@@ -79,7 +79,7 @@ class SavedAnalysisRepository {
 
       // JSON으로 변환하여 저장
       final jsonList = analyses.map((a) => _toJson(a)).toList();
-      await prefs.setString(_key, jsonEncode(jsonList));
+      await _cache.setString(_key, jsonEncode(jsonList));
 
       return Result.success('分析結果を削除しました');
     } catch (e) {
@@ -97,7 +97,7 @@ class SavedAnalysisRepository {
   Future<Result<void>> deleteAll() async {
     try {
       await _init();
-      await prefs.remove(_key);
+      await _cache.removeKey(_key);
       return Result.success('すべての分析結果を削除しました');
     } catch (e) {
       if (kDebugMode) {
