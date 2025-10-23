@@ -105,7 +105,7 @@ class PetFeedingLocalStorageService {
   /// 모든 데이터 초기화
   static Future<void> clearAllData() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _cache.initialize();
       await prefs.remove('pet_feeding_records');
       await prefs.remove('pet_recipes');
 

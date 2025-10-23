@@ -33,7 +33,8 @@ class AiLocalStorageService extends BaseLoggingService {
 
   /// SharedPreferences 인스턴스 가져오기
   Future<SharedPreferences> get _prefs async {
-    return SharedPreferences.getInstance();
+    await _cache.initialize();
+    return _cache;
   }
 
   // ===== 채팅 히스토리 관리 =====
