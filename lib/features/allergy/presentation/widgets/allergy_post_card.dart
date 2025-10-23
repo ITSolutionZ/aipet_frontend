@@ -1,7 +1,8 @@
-import '../../domain/domain.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import '../../domain/domain.dart';
 
 /// 알레르기 게시글 카드
 class AllergyPostCard extends StatelessWidget {

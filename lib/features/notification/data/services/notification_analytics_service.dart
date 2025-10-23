@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
-import '../../domain/domain.dart';
 import 'package:flutter/foundation.dart';
 
+import '../../domain/domain.dart';
 import 'helpers/notification_analytics_calculator_helper.dart';
 import 'helpers/notification_analytics_storage_helper.dart';
 import 'helpers/notification_analytics_trend_helper.dart';

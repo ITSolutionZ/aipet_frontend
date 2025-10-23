@@ -4,12 +4,12 @@ import 'package:aipet_frontend/app/router/app_router.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../data/data.dart';
 import '../../domain/domain.dart';
 import '../controllers/onboarding_controller.dart';
 import '../widgets/onboarding_widgets.dart';
-import 'package:go_router/go_router.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});

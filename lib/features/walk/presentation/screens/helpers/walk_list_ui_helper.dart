@@ -4,8 +4,6 @@ import 'package:aipet_frontend/shared/services/image_storage_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../pet_profile/domain/entities/pet_profile_entity.dart';
-
 /// 산책 리스트 UI 헬퍼
 class WalkListUiHelper {
   /// 펫 선택 리스트 빌드 (펫이 없는 경우)

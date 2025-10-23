@@ -174,6 +174,11 @@ class AllergyAnalysisDatasourceImpl implements AllergyAnalysisDatasource {
 
   @override
   Future<void> saveAllergyReport(AllergyReport report) async {}
+
+  @override
+  Future<List<AllergyAnalysisResult>> getAnalysisHistory(String petId) async {
+    return [];
+  }
 }
 
 class AllergyAnalysisLocalDatasourceImpl
