@@ -1830,10 +1830,10 @@ class PetProfileFormController {
 - [x] 로깅 → `LoggerService` ✅ **100% 완료 (126개 파일, 1,552곳 일괄 변환)**
 - [ ] 유효성 검사 → `ValidationService`
 
-#### Phase 3: 개선 (5-8주)
+#### Phase 3: 개선 (5-8주) 🔄 **진행 중**
 
-- [ ] debugPrint → `LoggerService`
-- [ ] 로컬 저장소 → `BaseLocalDataSource`
+- [x] debugPrint → `LoggerService` ✅ **100% 완료 (1,552곳)**
+- [ ] 로컬 저장소 → `BaseLocalDataSource` (124곳 남음)
 - [ ] Repository → `BaseHybridRepository`
 - [ ] 날짜/시간 → `DateTimeService`
 
