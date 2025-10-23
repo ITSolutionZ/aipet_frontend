@@ -101,7 +101,7 @@ class WalkRecordCardWidget extends StatelessWidget {
   }
 
   String _formatTime(DateTime dateTime) {
-    return '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
+    return DateTimeUtils.formatTime(dateTime);
   }
 
   String _formatDuration(Duration duration) {

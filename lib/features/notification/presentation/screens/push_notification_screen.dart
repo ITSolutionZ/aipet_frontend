@@ -541,7 +541,7 @@ class _PushNotificationScreenState
             borderRadius: BorderRadius.circular(AppSpacing.sm),
           ),
           child: Text(
-            '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}',
+            DateTimeUtils.formatTime(time),
             style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.w600,

@@ -12,7 +12,7 @@ class TodayMealsCard extends StatelessWidget {
   /// DateTime을 시간 문자열로 변환
   String _formatTime(DateTime? dateTime) {
     if (dateTime == null) return '--:--';
-    return '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
+    return DateTimeUtils.formatTime(dateTime);
   }
 
   @override

@@ -246,7 +246,7 @@ class _TodayAppointmentsScreenState
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '${scheduledTime.hour.toString().padLeft(2, '0')}:${scheduledTime.minute.toString().padLeft(2, '0')}',
+                        DateTimeUtils.formatTime(scheduledTime),
                         style: AppFonts.titleLarge.copyWith(
                           fontWeight: FontWeight.bold,
                           color: AppColors.pointDark,

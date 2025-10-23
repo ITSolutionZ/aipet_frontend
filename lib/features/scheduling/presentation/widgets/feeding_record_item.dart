@@ -71,6 +71,6 @@ class FeedingRecordItem extends StatelessWidget {
   }
 
   String _formatTime(DateTime time) {
-    return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
+    return DateTimeUtils.formatTime(time);
   }
 }

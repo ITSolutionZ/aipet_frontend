@@ -90,7 +90,7 @@ class WalkInfoBottomSheet extends StatelessWidget {
 
   /// 시간 포맷팅 (HH:MM 형식)
   String _formatTime(DateTime dateTime) {
-    return '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
+    return DateTimeUtils.formatTime(dateTime);
   }
 
   /// 시간 문자열 포맷팅

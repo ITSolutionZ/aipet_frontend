@@ -51,7 +51,7 @@ class HomeRepositoryImpl implements HomeRepository {
 
       final now = DateTime.now();
       final currentTime =
-          '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
+          DateTimeUtils.formatTime(now);
 
       final dashboard = HomeDashboardEntity(
         currentTime: currentTime,
