@@ -7,6 +7,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../entities/ai_category_entity.dart';
 import '../entities/ai_message_entity.dart';
+  // ✅ SharedPreferences 인스턴스 재사용
+  static SharedPreferences? _prefs;
+  static Future<void> _init() async {
+    _prefs ??= await SharedPreferences.getInstance();
+  }
 
 /// 🎯 AI 채팅 상태 영속화 관리자
 ///
@@ -21,7 +26,7 @@ class AiChatStatePersistence {
   /// ✅ 선택된 펫 저장
   Future<Result<void>> saveSelectedPet(String petId) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final success = await prefs.setString(
         '$_keyPrefix$_keySelectedPet',
         petId,
@@ -44,7 +49,7 @@ class AiChatStatePersistence {
   /// ✅ 선택된 펫 로드
   Future<Result<String?>> loadSelectedPetId() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final petId = prefs.getString('$_keyPrefix$_keySelectedPet');
 
       return Result.success('펫 선택 상태를 불러왔습니다', petId);
@@ -57,7 +62,7 @@ class AiChatStatePersistence {
   /// ✅ 선택된 카테고리 저장
   Future<Result<void>> saveSelectedCategory(AiCategoryEntity? category) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
 
       if (category == null) {
         await prefs.remove('$_keyPrefix$_keySelectedCategory');
@@ -84,7 +89,7 @@ class AiChatStatePersistence {
   /// ✅ 선택된 카테고리 로드
   Future<Result<AiCategoryEntity?>> loadSelectedCategory() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final categoryJson = prefs.getString('$_keyPrefix$_keySelectedCategory');
 
       if (categoryJson == null) {
@@ -110,7 +115,7 @@ class AiChatStatePersistence {
   /// ✅ 임시 메시지 저장 (작성 중인 메시지)
   Future<Result<void>> saveDraftMessage(String message) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
 
       if (message.trim().isEmpty) {
         await prefs.remove('$_keyPrefix$_keyDraftMessage');
@@ -128,7 +133,7 @@ class AiChatStatePersistence {
   /// ✅ 임시 메시지 로드
   Future<Result<String?>> loadDraftMessage() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final draftMessage = prefs.getString('$_keyPrefix$_keyDraftMessage');
 
       return Result.success('임시 메시지를 불러왔습니다', draftMessage);
@@ -144,7 +149,7 @@ class AiChatStatePersistence {
     int maxMessages = 20,
   }) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
 
       // 최근 메시지만 캐시 (성능 고려)
       final recentMessages = messages.take(maxMessages).toList();
@@ -177,7 +182,7 @@ class AiChatStatePersistence {
   /// ✅ 캐시된 최근 메시지 로드
   Future<Result<List<AiMessageEntity>>> loadCachedMessages() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final messagesJson = prefs.getString('$_keyPrefix$_keyRecentMessages');
 
       if (messagesJson == null) {
@@ -212,7 +217,7 @@ class AiChatStatePersistence {
   /// ✅ 채팅 상태 초기화 (로그아웃, 앱 재설치 등)
   Future<Result<void>> clearAllChatState() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final keysToRemove = <String>[];
 
       // AI 채팅 관련 모든 키 찾기
@@ -241,7 +246,7 @@ class AiChatStatePersistence {
   /// ✅ 특정 펫의 채팅 상태만 삭제
   Future<Result<void>> clearPetChatState(String petId) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       await prefs.remove('$_keyPrefix${petId}_messages');
       await prefs.remove('$_keyPrefix${petId}_draft');
 

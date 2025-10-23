@@ -6,13 +6,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// 급여 저장소 헬퍼
 class FeedingStorageHelper {
   static const String _keyFeedingRecords = 'pet_feeding_records';
+  // ✅ SharedPreferences 인스턴스 재사용
+  static SharedPreferences? _prefs;
+  static Future<void> _init() async {
+    _prefs ??= await SharedPreferences.getInstance();
+  }
 
   /// 급여 기록 가져오기
   static Future<List<Map<String, dynamic>>> getFeedingRecords({
     String? petId,
   }) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final recordsJson = prefs.getStringList(_keyFeedingRecords) ?? [];
 
       if (recordsJson.isEmpty) {
@@ -37,7 +42,7 @@ class FeedingStorageHelper {
   /// 급여 기록 추가
   static Future<void> addFeedingRecord(Map<String, dynamic> record) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final records = prefs.getStringList(_keyFeedingRecords) ?? [];
 
       // ID가 없으면 생성
@@ -63,7 +68,7 @@ class FeedingStorageHelper {
   /// 급여 기록 업데이트
   static Future<void> updateFeedingRecord(Map<String, dynamic> record) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final records = prefs.getStringList(_keyFeedingRecords) ?? [];
 
       final index = records.indexWhere((r) {
@@ -86,7 +91,7 @@ class FeedingStorageHelper {
   /// 급여 기록 삭제
   static Future<void> deleteFeedingRecord(String recordId) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final records = prefs.getStringList(_keyFeedingRecords) ?? [];
 
       records.removeWhere((r) {
@@ -152,7 +157,7 @@ class FeedingStorageHelper {
 
   /// 초기 기본 급여 기록 생성
   static Future<List<Map<String, dynamic>>> _initializeDefaultRecords() async {
-    final prefs = await SharedPreferences.getInstance();
+    await _init();
     final defaultRecords = <Map<String, dynamic>>[];
 
     final recordsJson = defaultRecords.map((r) => jsonEncode(r)).toList();

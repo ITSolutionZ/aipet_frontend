@@ -6,11 +6,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// 레시피 저장소 헬퍼
 class RecipeStorageHelper {
   static const String _keyRecipes = 'pet_recipes';
+  // ✅ SharedPreferences 인스턴스 재사용
+  static SharedPreferences? _prefs;
+  static Future<void> _init() async {
+    _prefs ??= await SharedPreferences.getInstance();
+  }
 
   /// 레시피 가져오기
   static Future<List<Map<String, dynamic>>> getRecipes() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final recipesJson = prefs.getStringList(_keyRecipes) ?? [];
 
       if (recipesJson.isEmpty) {
@@ -29,7 +34,7 @@ class RecipeStorageHelper {
   /// 레시피 추가
   static Future<void> addRecipe(Map<String, dynamic> recipe) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final recipes = prefs.getStringList(_keyRecipes) ?? [];
 
       if (recipe['id'] == null || (recipe['id'] as String).isEmpty) {
@@ -56,7 +61,7 @@ class RecipeStorageHelper {
     Map<String, dynamic> updates,
   ) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final recipes = prefs.getStringList(_keyRecipes) ?? [];
 
       final index = recipes.indexWhere((r) {
@@ -83,7 +88,7 @@ class RecipeStorageHelper {
   /// 레시피 삭제
   static Future<void> deleteRecipe(String recipeId) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final recipes = prefs.getStringList(_keyRecipes) ?? [];
 
       recipes.removeWhere((r) {
@@ -195,7 +200,7 @@ class RecipeStorageHelper {
 
   /// 초기 기본 레시피 생성
   static Future<List<Map<String, dynamic>>> _initializeDefaultRecipes() async {
-    final prefs = await SharedPreferences.getInstance();
+    await _init();
     final defaultRecipes = [
       {
         'id': 'recipe-1',

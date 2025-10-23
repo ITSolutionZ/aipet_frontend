@@ -6,12 +6,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// 급여 기록 저장 헬퍼
 class FeedingStorageHelper {
   static const String _keyFeedingRecords = 'feeding_records';
+  // ✅ SharedPreferences 인스턴스 재사용
+  static SharedPreferences? _prefs;
+  static Future<void> _init() async {
+    _prefs ??= await SharedPreferences.getInstance();
+  }
   static const String _keyFeedingSchedules = 'feeding_schedules';
 
   /// 급여 기록 가져오기
   static Future<List<Map<String, dynamic>>> getFeedingRecords() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final recordsJson = prefs.getStringList(_keyFeedingRecords) ?? [];
 
       if (recordsJson.isEmpty) {
@@ -30,7 +35,7 @@ class FeedingStorageHelper {
   /// 급여 기록 추가
   static Future<void> addFeedingRecord(Map<String, dynamic> record) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final records = prefs.getStringList(_keyFeedingRecords) ?? [];
 
       records.add(jsonEncode(record));
@@ -45,7 +50,7 @@ class FeedingStorageHelper {
   /// 급여 스케줄 가져오기
   static Future<List<Map<String, dynamic>>> getFeedingSchedules() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final schedulesJson = prefs.getStringList(_keyFeedingSchedules) ?? [];
 
       if (schedulesJson.isEmpty) {
@@ -68,7 +73,7 @@ class FeedingStorageHelper {
     String amount,
   ) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final schedules = await getFeedingSchedules();
 
       final updatedSchedules = schedules.map((schedule) {
@@ -141,7 +146,7 @@ class FeedingStorageHelper {
       },
     ];
 
-    final prefs = await SharedPreferences.getInstance();
+    await _init();
     final recordsJson = defaultRecords.map((r) => jsonEncode(r)).toList();
     await prefs.setStringList(_keyFeedingRecords, recordsJson);
 
@@ -172,7 +177,7 @@ class FeedingStorageHelper {
       },
     ];
 
-    final prefs = await SharedPreferences.getInstance();
+    await _init();
     final schedulesJson = defaultSchedules.map((s) => jsonEncode(s)).toList();
     await prefs.setStringList(_keyFeedingSchedules, schedulesJson);
 

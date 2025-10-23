@@ -8,6 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsRepositoryImpl implements SettingsRepository {
+  // ✅ SharedPreferences 인스턴스 재사용
+  static SharedPreferences? _prefs;
+  static Future<void> _init() async {
+    _prefs ??= await SharedPreferences.getInstance();
+  }
   // LocalUserService 인스턴스 (사용자 프로필용)
   final LocalUserService _userService = LocalUserService();
 
@@ -81,7 +86,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
       }
 
       // 로컬에서 비밀번호 변경 처리 (실제로는 암호화 필요)
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       await prefs.setString(_keyUserPassword, request.newPassword);
 
       return Result.success('パスワードが変更されました', null);
@@ -93,7 +98,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
   @override
   Future<Result<void>> deleteAccount() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
 
       // 사용자 관련 모든 데이터 삭제
       await prefs.remove(_keyUserProfile);
@@ -111,7 +116,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
   @override
   Future<Result<AppSettingsEntity>> getAppSettings() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final settingsJson = prefs.getString(_keyAppSettings);
 
       if (settingsJson != null) {
@@ -155,7 +160,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
     AppSettingsEntity settings,
   ) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final settingsMap = {
         'language': settings.language,
         'theme': settings.theme.name,
@@ -175,7 +180,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
   @override
   Future<Result<DataExportResult>> exportAppData() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
 
       // 모든 설정 데이터 수집
       final exportData = {
@@ -201,7 +206,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
   @override
   Future<Result<void>> importAppData(String filePath) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final exportedDataJson = prefs.getString(_keyExportedData);
 
       if (exportedDataJson != null) {
@@ -228,7 +233,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
   @override
   Future<Result<void>> clearAppCache() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
 
       // 캐시 관련 데이터만 삭제 (사용자 데이터는 유지)
       await prefs.remove(_keyCacheSize);
@@ -243,7 +248,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
   @override
   Future<Result<int>> getCacheSize() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final cachedSize = prefs.getInt(_keyCacheSize);
 
       if (cachedSize != null) {
@@ -267,7 +272,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
     String? detailAddress,
   }) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final locationMap = {
         'postalCode': postalCode,
         'address': address,
@@ -285,7 +290,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
   @override
   Future<Result<Map<String, dynamic>>> getUserLocation() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      await _init();
       final locationJson = prefs.getString(_keyUserLocation);
 
       if (locationJson != null) {
