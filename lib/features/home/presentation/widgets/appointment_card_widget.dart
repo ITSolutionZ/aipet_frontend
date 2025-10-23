@@ -83,7 +83,7 @@ class AppointmentCardWidget extends StatelessWidget {
                 ),
               ),
               Text(
-                '${appointment.scheduledTime.hour}:${appointment.scheduledTime.minute.toString().padLeft(2, '0')}',
+                DateTimeUtils.formatTime(appointment.scheduledTime),
                 style: AppTextStyles.titleMedium.copyWith(
                   color: AppColors.primary,
                   fontWeight: FontWeight.bold,

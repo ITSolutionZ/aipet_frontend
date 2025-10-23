@@ -103,7 +103,7 @@ class LocalScheduleService {
     final db = await _dbService.database;
     final today = DateTime.now();
     final todayStr =
-        '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
+        DateTimeUtils.formatDateKey(today);
 
     return db.rawQuery(
       '''

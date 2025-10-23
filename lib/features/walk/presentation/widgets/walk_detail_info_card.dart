@@ -39,7 +39,7 @@ class WalkDetailInfoCard extends StatelessWidget {
 
   Widget _buildTimeRow() {
     final endTimeString = walkRecord.endTime != null
-        ? '${walkRecord.endTime!.hour.toString().padLeft(2, '0')}:${walkRecord.endTime!.minute.toString().padLeft(2, '0')}'
+        ? DateTimeUtils.formatTime(walkRecord.endTime!)
         : '進行中';
 
     return Row(

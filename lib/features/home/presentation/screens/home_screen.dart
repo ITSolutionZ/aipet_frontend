@@ -236,7 +236,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                                     ),
                                   ),
                                   Text(
-                                    '${appointment.scheduledTime.hour}:${appointment.scheduledTime.minute.toString().padLeft(2, '0')}',
+                                    DateTimeUtils.formatTime(appointment.scheduledTime),
                                     style: AppTextStyles.bodySmall.copyWith(
                                       color: AppColors.textSecondary,
                                     ),
