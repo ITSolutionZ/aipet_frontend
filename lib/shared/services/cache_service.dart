@@ -257,30 +257,6 @@ class CacheKeys {
   static const String appointments = 'appointments';
 }
 
-  /// List<String> 조회 (호환성)
-  Future<List<String>?> getPersistentCacheList(String key) async {
-    await initialize();
-    return _prefs?.getStringList(key);
-  }
-
-  /// List<String> 저장 (호환성)
-  Future<void> setPersistentCacheList(String key, List<String> value) async {
-    await initialize();
-    await _prefs!.setStringList(key, value);
-  }
-}
-
-/// 캐시 키 상수
-class CacheKeys {
-  static const String homeDashboard = 'home_dashboard';
-  static const String dashboard = 'dashboard';
-  static const String weather = 'weather_data';
-  static const String petProfiles = 'pet_profiles';
-  static const String walkSummary = 'walk_summary';
-  static const String healthSummary = 'health_summary';
-  static const String appointments = 'appointments';
-}
-
 /// 캐시 TTL 상수
 class CacheTTL {
   static const Duration location = Duration(seconds: 30); // 위치 정보 (30초)
