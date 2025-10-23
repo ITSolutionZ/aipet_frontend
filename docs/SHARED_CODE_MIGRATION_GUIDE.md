@@ -1814,12 +1814,12 @@ class PetProfileFormController {
 
 ### 마이그레이션 체크포인트
 
-#### Phase 1: 긴급 (1-2주) ✅ **완료**
+#### Phase 1: 긴급 (1-2주) 🔄 **90% 완료**
 
 - [x] 모든 에러 핸들러 → `ErrorHandlingService` ✅ **4개 완료**
 - [x] Dio 인스턴스 → `HttpClientService` ✅ **9개 완료**
-- [ ] 하드코딩된 메시지 → `AppTexts`
-- [ ] `AuthResult` 제거 → `Result<T>` 사용
+- [ ] 하드코딩된 메시지 → `AppTexts` 🔄 **진행 예정**
+- [x] `AuthResult` 제거 → `Result<T>` 사용 ✅ **완료**
 
 #### Phase 2: 중요 (3-4주) ✅ **90% 완료**
 

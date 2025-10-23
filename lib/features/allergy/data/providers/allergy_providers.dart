@@ -90,7 +90,7 @@ class SelectedAllergyProducts extends _$SelectedAllergyProducts {
     try {
       final data = state[petId];
       if (data == null) {
-        return Result.failure(AllergyConstants.noProductsSelectedError);
+        return Result.failure(AppTexts.noData);
       }
 
       if (data.allergyProducts.isEmpty) {
@@ -122,7 +122,7 @@ class SelectedAllergyProducts extends _$SelectedAllergyProducts {
         LoggerService.debug('StackTrace: $stackTrace');
       }
       return Result.failure(
-        AllergyConstants.analysisErrorMessage,
+        AppTexts.error,
         error is Exception ? error : Exception(error.toString()),
       );
     }

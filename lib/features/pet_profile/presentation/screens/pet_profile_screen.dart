@@ -299,7 +299,7 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
       if (context.mounted) {
         SnackBarService.showSuccess(
           context,
-          PetProfileConstants.deleteSuccessMessage,
+          AppTexts.deleted,
         );
         context.go('/home');
       }
@@ -307,7 +307,7 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
       if (context.mounted) {
         SnackBarService.showError(
           context,
-          PetProfileConstants.deleteErrorMessage,
+          AppTexts.deleteError,
         );
       }
     }
@@ -327,7 +327,7 @@ class _LoadingWidget extends StatelessWidget {
           CircularProgressIndicator(color: AppColors.pointBrown),
           SizedBox(height: AppSpacing.md),
           Text(
-            PetProfileConstants.loadingMessage,
+            AppTexts.loading,
             style: TextStyle(color: AppColors.textSecondary),
           ),
         ],
