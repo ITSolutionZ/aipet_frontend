@@ -109,8 +109,10 @@ class PetFeedingRepositoryImpl implements PetFeedingRepository {
         : 0.0;
 
     final feedingsByHour = <String, int>{};
+    for (final record in completedRecords) {
       // ✅ DateTimeUtils 사용
       final timeStr = DateTimeUtils.formatTime(record.fedTime);
+      final hour = timeStr.split(':')[0];
       feedingsByHour[hour] = (feedingsByHour[hour] ?? 0) + 1;
     }
 

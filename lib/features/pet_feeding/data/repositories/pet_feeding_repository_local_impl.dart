@@ -142,18 +142,25 @@ class PetFeedingRepositoryLocalImpl implements PetFeedingRepository {
         : 0.0;
     final completionRate = petRecords.isNotEmpty
         ? completedRecords.length / petRecords.length
-        : 0.0;
 
     final feedingsByHour = <String, int>{};
-      // ✅ DateTimeUtils 사용
+    for (final record in completedRecords) {
       final timeStr = DateTimeUtils.formatTime(record.fedTime);
+      final hour = timeStr.split(':')[0];
       feedingsByHour[hour] = (feedingsByHour[hour] ?? 0) + 1;
     }
 
     return FeedingStatistics(
-      totalFeedings: petRecords.length,
+      totalFeedings: records.length,
       completedFeedings: completedRecords.length,
       skippedFeedings: skippedRecords.length,
+      totalAmount: totalAmount,
+      averageAmount: averageAmount,
+      completionRate: completionRate,
+      feedingsByHour: feedingsByHour,
+    );
+  }
+}
       totalAmount: totalAmount,
       averageAmount: averageAmount,
       completionRate: completionRate,
