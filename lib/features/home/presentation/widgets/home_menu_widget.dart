@@ -79,11 +79,10 @@ class _MenuItemWidget extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             // 아이콘 이미지
-            Image.asset(
-              item.iconPath,
+            SizedBox(
               width: 32,
               height: 32,
-              fit: BoxFit.contain,
+              child: Image.asset(item.iconPath, fit: BoxFit.cover),
             ),
             const SizedBox(height: 6),
             // 메뉴 이름

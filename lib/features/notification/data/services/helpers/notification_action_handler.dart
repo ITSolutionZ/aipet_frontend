@@ -1,8 +1,9 @@
 import 'package:aipet_frontend/app/router/app_router.dart';
-import '../../../domain/domain.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../../domain/domain.dart';
 
 /// 알림 액션 처리 헬퍼
 class NotificationActionHandler {

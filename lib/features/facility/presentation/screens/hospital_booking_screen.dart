@@ -1,6 +1,5 @@
 import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
 import 'package:aipet_frontend/features/settings/data/providers/settings_providers.dart';
-import 'package:aipet_frontend/shared/domain/entities/pet_profile_entity.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

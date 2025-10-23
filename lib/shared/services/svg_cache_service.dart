@@ -1,8 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+// import 'package:webview_flutter/webview_flutter.dart';  // iOS 시뮬레이터 호환성 문제로 임시 비활성화
 
 /// 전체 SVG 캐싱 서비스
 ///
@@ -14,7 +13,8 @@ class SvgCacheService {
   factory SvgCacheService() => _instance;
   SvgCacheService._internal();
 
-  final Map<String, WebViewController> _svgCache = {};
+  final Map<String, dynamic> _svgCache =
+      {}; // WebViewController -> dynamic (임시)
   bool _initialized = false;
 
   // 미리 로드할 SVG 파일 목록
@@ -90,103 +90,23 @@ class SvgCacheService {
     }
   }
 
-  /// 캐시된 WebViewController 가져오기
-  WebViewController? getCachedController(String fileName) {
-    return _svgCache[fileName];
+  /// 캐시된 WebViewController 가져오기 (임시 비활성화)
+  dynamic getCachedController(String fileName) {
+    debugPrint('⚠️ WebView 기능이 비활성화되었습니다: $fileName');
+    return null;
   }
 
-  /// 동적으로 SVG 로드 (캐시에 없을 때)
-  Future<WebViewController?> loadSvg(String fileName) async {
-    // 이미 캐시에 있으면 반환
-    if (_svgCache.containsKey(fileName)) {
-      return _svgCache[fileName];
-    }
-
-    try {
-      final controller = await _createWebViewController(fileName);
-      _svgCache[fileName] = controller;
-      debugPrint('🎨 Dynamically loaded SVG: $fileName');
-      return controller;
-    } catch (e) {
-      debugPrint('❌ Failed to load SVG: $fileName - $e');
-      return null;
-    }
+  /// 동적으로 SVG 로드 (임시 비활성화)
+  Future<dynamic> loadSvg(String fileName) async {
+    debugPrint('⚠️ WebView 기능이 비활성화되었습니다: $fileName');
+    return null;
   }
 
-  /// 새로운 WebViewController 생성
-  Future<WebViewController> _createWebViewController(String fileName) async {
-    final svgString = await rootBundle.loadString(
-      'assets/meteocons/design/fill/animation-ready/$fileName.svg',
-    );
-
-    final htmlContent =
-        '''
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-        <style>
-          html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: transparent;
-            overflow: hidden;
-          }
-          svg {
-            width: 100%;
-            height: 100%;
-            max-width: 100%;
-            max-height: 100%;
-          }
-        </style>
-      </head>
-      <body>
-        $svgString
-        <script>
-          // 애니메이션 프레임 레이트 제한 (30 FPS)
-          let lastFrameTime = 0;
-          const frameInterval = 1000 / 30;
-
-          if (typeof requestAnimationFrame !== 'undefined') {
-            const originalRAF = requestAnimationFrame;
-            requestAnimationFrame = function(callback) {
-              return originalRAF((currentTime) => {
-                const elapsed = currentTime - lastFrameTime;
-                if (elapsed >= frameInterval) {
-                  lastFrameTime = currentTime;
-                  try {
-                    callback(currentTime);
-                  } catch (e) {
-                    // 에러 무시
-                  }
-                }
-              });
-            };
-          }
-        </script>
-      </body>
-      </html>
-    ''';
-
-    final controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setBackgroundColor(Colors.transparent)
-      ..enableZoom(false)
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onWebResourceError: (error) => {
-            // 에러 로그 최소화
-          },
-        ),
-      )
-      ..loadHtmlString(htmlContent);
-
-    return controller;
+  /// 새로운 WebViewController 생성 (임시 비활성화)
+  Future<dynamic> _createWebViewController(String fileName) async {
+    // WebView 비활성화로 인해 빈 구현
+    debugPrint('⚠️ WebView 기능이 비활성화되어 SVG 로드를 건너뜁니다: $fileName');
+    return null;
   }
 
   /// 캐시 상태 확인

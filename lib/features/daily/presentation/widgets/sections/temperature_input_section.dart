@@ -1,4 +1,3 @@
-import 'package:aipet_frontend/shared/mixins/mixins.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+// import 'package:webview_flutter/webview_flutter.dart';  // iOS 시뮬레이터 호환성 문제로 임시 비활성화
 
 /// 날씨 아이콘 WebView 캐싱 서비스
 ///
@@ -12,8 +12,8 @@ class WeatherIconCacheService {
   factory WeatherIconCacheService() => _instance;
   WeatherIconCacheService._internal();
 
-  // 캐시된 WebView 컨트롤러들
-  final Map<String, WebViewController> _cachedControllers = {};
+  // 캐시된 WebView 컨트롤러들 (임시 비활성화)
+  final Map<String, dynamic> _cachedControllers = {};
   bool _isInitialized = false;
 
   /// 캐시 초기화 여부 확인
@@ -111,31 +111,17 @@ class WeatherIconCacheService {
         </html>
       ''';
 
-      final controller = WebViewController()
-        ..setJavaScriptMode(JavaScriptMode.unrestricted)
-        ..setBackgroundColor(Colors.transparent)
-        ..enableZoom(false)
-        ..setNavigationDelegate(
-          NavigationDelegate(
-            onWebResourceError: (error) {
-              // 에러 로그 최소화
-            },
-          ),
-        );
-
-      // ignore: unawaited_futures
-      controller.loadHtmlString(htmlContent);
-
-      _cachedControllers[fileName] = controller;
-      debugPrint('🎨 Cached weather icon: $fileName');
+      // WebView 임시 비활성화
+      debugPrint('⚠️ WebView가 비활성화되어 아이콘을 로드하지 않습니다: $fileName');
     } catch (e) {
       debugPrint('❌ Failed to load weather icon $fileName: $e');
     }
   }
 
-  /// 캐시된 컨트롤러 가져오기
-  WebViewController? getCachedController(String fileName) {
-    return _cachedControllers[fileName];
+  /// 캐시된 컨트롤러 가져오기 (임시 비활성화)
+  dynamic getCachedController(String fileName) {
+    debugPrint('⚠️ WebView 기능이 비활성화되었습니다: $fileName');
+    return null;
   }
 
   /// 캐시 정리
