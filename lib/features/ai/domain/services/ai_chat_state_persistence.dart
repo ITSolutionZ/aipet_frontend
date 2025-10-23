@@ -1,9 +1,9 @@
 import 'dart:convert';
 
+import 'package:aipet_frontend/shared/services/cache_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:aipet_frontend/shared/services/cache_service.dart';
 
 import '../entities/ai_category_entity.dart';
 import '../entities/ai_message_entity.dart';
@@ -77,7 +77,9 @@ class AiChatStatePersistence {
       }
 
       if (kDebugMode) {
-        LoggerService.debug('💾 Selected category saved: ${category?.name ?? 'none'}');
+        LoggerService.debug(
+          '💾 Selected category saved: ${category?.name ?? 'none'}',
+        );
       }
 
       return Result.success('카테고리 선택 상태가 저장되었습니다', null);
@@ -170,7 +172,9 @@ class AiChatStatePersistence {
       await prefs.setString('$_keyPrefix$_keyRecentMessages', messagesJson);
 
       if (kDebugMode) {
-        LoggerService.debug('💾 Cached ${recentMessages.length} recent messages');
+        LoggerService.debug(
+          '💾 Cached ${recentMessages.length} recent messages',
+        );
       }
 
       return Result.success('최근 메시지가 캐시되었습니다', null);
@@ -234,7 +238,9 @@ class AiChatStatePersistence {
       }
 
       if (kDebugMode) {
-        LoggerService.debug('🗑️ Cleared ${keysToRemove.length} chat state entries');
+        LoggerService.debug(
+          '🗑️ Cleared ${keysToRemove.length} chat state entries',
+        );
       }
 
       return Result.success('채팅 상태가 초기화되었습니다', null);
