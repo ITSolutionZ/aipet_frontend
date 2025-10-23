@@ -1,4 +1,5 @@
 import '../domain/common_errors.dart';
+import '../domain/result.dart';
 import 'base_data_source.dart';
 import 'result_types.dart';
 

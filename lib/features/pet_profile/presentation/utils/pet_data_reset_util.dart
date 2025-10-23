@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/features/pet_profile/data/services/pet_cache_clear_service.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:aipet_frontend/shared/services/local_data_manager.dart';
 import 'package:flutter/foundation.dart';
 

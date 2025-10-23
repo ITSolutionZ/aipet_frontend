@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/features/pet_profile/presentation/logic/pet_profile_logic.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

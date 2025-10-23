@@ -1,4 +1,5 @@
 /// 펫 급여 로컬 저장소 서비스 (리팩토링됨)
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 library;
 
 import 'package:aipet_frontend/shared/services/cache_service.dart';

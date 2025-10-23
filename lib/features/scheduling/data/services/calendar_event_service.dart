@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
 import 'package:aipet_frontend/features/scheduling/domain/entities/calendar_event_entity.dart';
 import 'package:aipet_frontend/shared/services/local_database_service.dart';

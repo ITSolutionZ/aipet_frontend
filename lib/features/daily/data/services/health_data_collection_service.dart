@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'dart:io';
 
 import 'package:aipet_frontend/features/allergy/data/repositories/saved_analysis_repository.dart';

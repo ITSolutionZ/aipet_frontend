@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/shared/services/base_logging_service.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:flutter/foundation.dart';
 
 import 'ai_cache_strategy.dart';

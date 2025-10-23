@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/shared/services/cache_service.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:flutter/material.dart';
 
 /// 홈 화면 전용 캐시 관리자

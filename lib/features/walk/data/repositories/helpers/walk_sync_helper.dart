@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/features/walk/data/services/walk_api_service.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 import 'package:aipet_frontend/shared/services/sync_queue_service.dart';
 import 'package:flutter/foundation.dart';

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import '../domain/result.dart';
 import '../api/api_client.dart';
 import '../api/api_error_handler.dart';
 import 'base_data_source.dart';

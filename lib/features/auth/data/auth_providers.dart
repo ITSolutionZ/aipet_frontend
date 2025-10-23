@@ -1,4 +1,5 @@
 /// Auth Data Layer Providers
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 ///
 /// 개발 모드용 Provider 설정
 library;

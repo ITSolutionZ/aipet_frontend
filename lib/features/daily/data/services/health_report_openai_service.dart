@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/app/config/app_config.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/core/services/ai_http_client_service.dart';
 import 'package:aipet_frontend/shared/services/base_logging_service.dart';

@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/app/config/app_config.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../domain/domain.dart';

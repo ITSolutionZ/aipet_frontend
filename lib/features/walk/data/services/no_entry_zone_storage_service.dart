@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
 import 'package:aipet_frontend/features/walk/domain/entities/no_entry_zone_entity.dart';
 import 'package:flutter/foundation.dart';

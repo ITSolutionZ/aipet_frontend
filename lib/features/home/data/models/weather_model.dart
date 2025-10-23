@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
 class WeatherData {
   final double temperature;

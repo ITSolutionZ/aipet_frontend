@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
 import 'package:aipet_frontend/features/walk/domain/entities/walk_location_entity.dart';
 import 'package:aipet_frontend/features/walk/domain/services/walk_tracking_optimizer.dart'

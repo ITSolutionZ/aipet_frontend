@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
 import 'package:aipet_frontend/features/daily/data/providers/vaccine_provider.dart';
 import 'package:aipet_frontend/features/daily/presentation/controllers/daily_health_controller.dart';
