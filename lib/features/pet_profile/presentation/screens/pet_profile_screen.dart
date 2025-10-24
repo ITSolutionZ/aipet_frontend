@@ -193,10 +193,22 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
                 isEditMode: state.isEditMode,
                 onToggleEdit: _toggleEditMode,
               ),
-              PetHealthTab(pet: state.selectedPet!),
-              PetNutritionTab(pet: state.selectedPet!),
-              PetActivityTab(pet: state.selectedPet!),
-              PetAdoptionTab(pet: state.selectedPet!),
+              PetHealthTab(
+                pet: state.selectedPet!,
+                isEditMode: state.isEditMode,
+              ),
+              PetNutritionTab(
+                pet: state.selectedPet!,
+                isEditMode: state.isEditMode,
+              ),
+              PetActivityTab(
+                pet: state.selectedPet!,
+                isEditMode: state.isEditMode,
+              ),
+              PetAdoptionTab(
+                pet: state.selectedPet!,
+                isEditMode: state.isEditMode,
+              ),
             ],
           ),
         ),

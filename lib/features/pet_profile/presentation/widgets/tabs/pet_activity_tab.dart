@@ -4,8 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class PetActivityTab extends ConsumerWidget {
   final PetProfileEntity pet;
+  final bool isEditMode;
 
-  const PetActivityTab({super.key, required this.pet});
+  const PetActivityTab({
+    super.key,
+    required this.pet,
+    this.isEditMode = false,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
