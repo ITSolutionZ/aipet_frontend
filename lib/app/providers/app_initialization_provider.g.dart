@@ -50,7 +50,7 @@ final class AppInitializationProvider
   }
 }
 
-String _$appInitializationHash() => r'27953a3279a64c62c37a5f8fad5aa469690eb4c7';
+String _$appInitializationHash() => r'42ff1f976fac2c979bdc201c79c0f633e3ee93ea';
 
 /// 앱 초기화 상태를 관리하는 Provider
 ///

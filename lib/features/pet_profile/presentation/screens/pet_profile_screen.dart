@@ -95,15 +95,25 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
       ),
       actions: [
         if (!state.isEditMode) ...[
+          // 편집 모드가 아닐 때: 편집 아이콘과 더보기 메뉴
           IconButton(
             icon: const Icon(Icons.edit),
-            onPressed: () => _navigateToEditScreen(context, state.selectedPet!),
+            onPressed: _toggleEditMode,
             tooltip: PetProfileConstants.editLabel,
           ),
           IconButton(
             icon: const Icon(Icons.more_vert),
             onPressed: () => _showMoreOptions(context),
             tooltip: 'メニュー',
+          ),
+        ] else ...[
+          // 편집 모드일 때: 취소 버튼
+          TextButton(
+            onPressed: _toggleEditMode,
+            child: const Text(
+              'キャンセル',
+              style: TextStyle(color: AppColors.pointDark),
+            ),
           ),
         ],
       ],
@@ -198,21 +208,56 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
     BuildContext context,
     PetProfileUnifiedState state,
   ) {
-    if (state.selectedPet == null || state.isEditMode) {
+    if (state.selectedPet == null) {
       return null;
     }
 
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
-      child: ElevatedButton(
-        onPressed: () => _navigateToEditScreen(context, state.selectedPet!),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.pointBrown,
-          foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
-        ),
-        child: const Text(PetProfileConstants.editLabel),
-      ),
+      child: state.isEditMode
+          ? Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: _toggleEditMode,
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: AppSpacing.md,
+                      ),
+                      side: const BorderSide(color: AppColors.pointBrown),
+                    ),
+                    child: const Text(
+                      'キャンセル',
+                      style: TextStyle(color: AppColors.pointBrown),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () =>
+                        _savePetProfile(context, state.selectedPet!),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.pointBrown,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: AppSpacing.md,
+                      ),
+                    ),
+                    child: const Text('保存'),
+                  ),
+                ),
+              ],
+            )
+          : ElevatedButton(
+              onPressed: _toggleEditMode,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.pointBrown,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+              ),
+              child: const Text(PetProfileConstants.editLabel),
+            ),
     );
   }
 
@@ -220,9 +265,27 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
     ref.read(petProfileUnifiedControllerProvider.notifier).toggleEditMode();
   }
 
-  /// 편집 화면으로 이동 (펫 등록 화면을 편집 모드로 사용)
-  void _navigateToEditScreen(BuildContext context, PetProfileEntity pet) {
-    context.go('/daily-pet-registration?petId=${pet.id}');
+  /// 펫 프로필 저장
+  Future<void> _savePetProfile(
+    BuildContext context,
+    PetProfileEntity pet,
+  ) async {
+    try {
+      LoggerService.debug('💾 Saving pet profile: ${pet.name}');
+
+      final controller = ref.read(petProfileUnifiedControllerProvider.notifier);
+      await controller.savePetProfile();
+
+      if (mounted) {
+        SnackBarService.showSuccess(context, 'ペット情報を保存しました');
+        _toggleEditMode(); // 편집 모드 종료
+      }
+    } catch (e) {
+      LoggerService.debug('❌ Failed to save pet profile: $e');
+      if (mounted) {
+        SnackBarService.showError(context, 'ペット情報の保存に失敗しました');
+      }
+    }
   }
 
   void _showMoreOptions(BuildContext context) {

@@ -9,6 +9,7 @@ import 'package:aipet_frontend/features/pet_profile/presentation/utils/utils.dar
 import 'package:aipet_frontend/firebase_options.dart';
 import 'package:aipet_frontend/shared/core/services/http_client_service.dart';
 import 'package:aipet_frontend/shared/design/design.dart';
+import 'package:aipet_frontend/shared/services/image_storage_service.dart';
 import 'package:aipet_frontend/shared/services/local_data_manager.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -89,6 +90,7 @@ class AppBootstrap {
       _initializeSentry(),
       _initializeLocalDataManager(),
       _initializeLocalStorage(),
+      _initializeImageStorage(),
       _clearPetCache(),
     ];
 
@@ -240,6 +242,24 @@ class AppBootstrap {
     } catch (e) {
       debugPrint('⚠️ LocalStorageService initialization failed: $e');
       // LocalStorageService 초기화 실패해도 앱은 계속 실행
+    }
+  }
+
+  /// 이미지 스토리지 서비스를 초기화합니다.
+  ///
+  /// 프로필, 펫, 일반 이미지 저장소를 초기화합니다.
+  static Future<void> _initializeImageStorage() async {
+    try {
+      await ImageStorageService().initialize();
+      debugPrint('✅ ImageStorageService initialized successfully');
+
+      // 저장소 상태 출력 (디버그 모드에서만)
+      if (AppConfig.current.isDebugMode) {
+        await ImageStorageService().printStorageStatus();
+      }
+    } catch (e) {
+      debugPrint('⚠️ ImageStorageService initialization failed: $e');
+      // ImageStorageService 초기화 실패해도 앱은 계속 실행
     }
   }
 
