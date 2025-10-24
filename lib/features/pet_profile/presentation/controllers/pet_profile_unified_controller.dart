@@ -133,9 +133,9 @@ class PetProfileUnifiedController extends _$PetProfileUnifiedController {
       final result = await _logic.updatePetProfile(updatedPet);
 
       if (result.isSuccess) {
+        // ✅ isEditMode는 호출하는 쪽에서 관리하도록 제거
         state = state.copyWith(
           selectedPet: result.dataOrNull,
-          isEditMode: false,
           isLoading: false,
           errorMessage: null,
         );

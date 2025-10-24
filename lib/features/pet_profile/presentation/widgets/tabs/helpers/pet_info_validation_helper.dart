@@ -38,9 +38,13 @@ class PetInfoValidationHelper {
     // ignore: unused_local_variable
     final _ = updatedPet; // 사용하지 않는 변수 경고 제거
 
+    LoggerService.debug('💾 보존 버튼 누름: 데이터 저장 완료');
     SnackBarService.showSaved(context, itemName: 'ペット情報');
 
+    // 스낵바 표시 후 편집 모드 종료
+    LoggerService.debug('🔄 편집 모드 종료 시도 중...');
     onToggleEdit();
+    LoggerService.debug('✅ onToggleEdit() 호출 완료');
   }
 
   /// 편집 취소
