@@ -6,11 +6,7 @@ class PetHealthTab extends ConsumerWidget {
   final PetProfileEntity pet;
   final bool isEditMode;
 
-  const PetHealthTab({
-    super.key,
-    required this.pet,
-    this.isEditMode = false,
-  });
+  const PetHealthTab({super.key, required this.pet, this.isEditMode = false});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -242,10 +238,7 @@ class PetHealthTab extends ConsumerWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: iconColor.withValues(alpha: 0.3),
-          width: 2,
-        ),
+        border: Border.all(color: iconColor.withValues(alpha: 0.3), width: 2),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -297,17 +290,11 @@ class PetHealthTab extends ConsumerWidget {
         decoration: BoxDecoration(
           color: AppColors.pointOffWhite,
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: accentColor.withValues(alpha: 0.2),
-          ),
+          border: Border.all(color: accentColor.withValues(alpha: 0.2)),
         ),
         child: Row(
           children: [
-            Icon(
-              Icons.calendar_today,
-              size: 16,
-              color: accentColor,
-            ),
+            Icon(Icons.calendar_today, size: 16, color: accentColor),
             const SizedBox(width: AppSpacing.sm),
             Text(
               '$label:',
@@ -320,9 +307,7 @@ class PetHealthTab extends ConsumerWidget {
             Expanded(
               child: Text(
                 dateText,
-                style: AppFonts.bodyMedium.copyWith(
-                  color: AppColors.pointDark,
-                ),
+                style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark),
               ),
             ),
           ],
@@ -340,9 +325,7 @@ class PetHealthTab extends ConsumerWidget {
       decoration: BoxDecoration(
         color: statusColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: statusColor.withValues(alpha: 0.3),
-        ),
+        border: Border.all(color: statusColor.withValues(alpha: 0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -355,11 +338,7 @@ class PetHealthTab extends ConsumerWidget {
             ),
           ),
           const SizedBox(width: 4),
-          Icon(
-            Icons.arrow_drop_down,
-            size: 16,
-            color: statusColor,
-          ),
+          Icon(Icons.arrow_drop_down, size: 16, color: statusColor),
         ],
       ),
     );
