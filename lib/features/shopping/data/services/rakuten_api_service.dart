@@ -358,7 +358,35 @@ class RakutenApiService {
     );
   }
 
-  /// 簡易的な画像URLを取得
+  /// ショップ画像URLを取得 (ブランドロゴ用)
+  String _getShopImageUrl(Map<String, dynamic> item) {
+    // 1. shopImageUrl フィールドを優先
+    final shopImageUrl = _safeGetString(item, 'shopImageUrl');
+    if (shopImageUrl.isNotEmpty) {
+      LoggerService.debug('  ✅ shopImageUrl found: $shopImageUrl');
+      return shopImageUrl;
+    }
+
+    // 2. shopIcon フィールド
+    final shopIcon = _safeGetString(item, 'shopIcon');
+    if (shopIcon.isNotEmpty) {
+      LoggerService.debug('  ✅ shopIcon found: $shopIcon');
+      return shopIcon;
+    }
+
+    // 3. shopLogo フィールド
+    final shopLogo = _safeGetString(item, 'shopLogo');
+    if (shopLogo.isNotEmpty) {
+      LoggerService.debug('  ✅ shopLogo found: $shopLogo');
+      return shopLogo;
+    }
+
+    // 4. Fallback: 상품 이미지 사용
+    LoggerService.debug('  ⚠️ No shop image found, using product image');
+    return _getSimpleImageUrl(item);
+  }
+
+  /// 簡易的な画像URLを取得 (商品画像用)
   String _getSimpleImageUrl(Map<String, dynamic> item) {
     // mediumImageUrlsから取得を試行
     final mediumImages = item['mediumImageUrls'] as List?;
@@ -513,12 +541,38 @@ class RakutenApiService {
         final Map<String, RakutenBrand> brandMap = {};
         final Set<String> processedShops = {};
 
+        // 디버그: 첫 번째 아이템의 모든 키 확인
+        if (items.isNotEmpty && items[0] is Map<String, dynamic>) {
+          final firstItem = items[0] as Map<String, dynamic>;
+          LoggerService.debug('📋 First item keys for brand extraction:');
+          LoggerService.debug('  Available keys: ${firstItem.keys.toList()}');
+
+          // Shop 관련 필드 확인
+          final shopRelatedKeys = firstItem.keys
+              .where((k) => k.toLowerCase().contains('shop'))
+              .toList();
+          LoggerService.debug('  Shop-related keys: $shopRelatedKeys');
+
+          // Image 관련 필드 확인
+          final imageRelatedKeys = firstItem.keys
+              .where(
+                (k) =>
+                    k.toLowerCase().contains('image') ||
+                    k.toLowerCase().contains('url'),
+              )
+              .toList();
+          LoggerService.debug('  Image-related keys: $imageRelatedKeys');
+        }
+
         for (final item in items) {
           if (item is! Map<String, dynamic>) continue;
 
           final shopName = _safeGetString(item, 'shopName');
           final shopCode = _safeGetString(item, 'shopCode');
-          final imageUrl = _getSimpleImageUrl(item);
+          final shopUrl = _safeGetString(item, 'shopUrl');
+
+          // 상점 이미지 URL 가져오기 (우선순위: shopImageUrl > mediumImageUrls)
+          final shopImageUrl = _getShopImageUrl(item);
 
           // shopNameが空またはすでに処理済みの場合はスキップ
           if (shopName.isEmpty || processedShops.contains(shopCode)) continue;
@@ -530,20 +584,22 @@ class RakutenApiService {
           final description = brandInfo['description'] ?? '';
 
           LoggerService.debug('🏪 Shop: $shopName → Brand: $brandName');
+          LoggerService.debug('  - shopCode: $shopCode');
+          LoggerService.debug('  - shopImageUrl: $shopImageUrl');
 
           if (brandName.isNotEmpty && !brandMap.containsKey(shopCode)) {
             brandMap[shopCode] = RakutenBrand(
               brandId: shopCode,
               brandName: brandName,
               brandNameJapanese: brandNameJapanese,
-              brandLogoUrl: imageUrl,
+              brandLogoUrl: shopImageUrl,
               brandDescription: description,
               productCount: 1,
             );
             processedShops.add(shopCode);
 
             LoggerService.debug(
-              '✅ Brand added: $brandName (Logo: ${imageUrl.isNotEmpty ? "✓" : "✗"})',
+              '✅ Brand added: $brandName (Logo: ${shopImageUrl.isNotEmpty ? "✓" : "✗"})',
             );
 
             // 최대 8개 브랜드만 수집

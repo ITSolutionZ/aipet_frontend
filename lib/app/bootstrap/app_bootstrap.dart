@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:aipet_frontend/app/security/security_bootstrap.dart';
+import 'package:aipet_frontend/app/services/local_storage_service.dart';
 import 'package:aipet_frontend/features/pet_profile/data/data.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/monitoring/app_monitoring_dashboard.dart';
 import 'package:aipet_frontend/shared/performance/memory_optimizer.dart';
 import 'package:aipet_frontend/shared/performance/performance_monitor.dart';
@@ -183,8 +187,8 @@ class AppBootstrap {
         await imageStorageService.printStorageStatus();
       }
 
-      // 2. 펫 데이터 초기화 (로컬 저장소에서 로드)
-      await PetLocalStorageService.getPets();
+      // 2. 펫 데이터 초기화 (SQLite DB에서 로드)
+      await _initializePetData();
 
       if (kDebugMode) {
         final pets = await PetLocalStorageService.getPets();
@@ -194,6 +198,86 @@ class AppBootstrap {
       if (kDebugMode) {
         debugPrint('⚠️ Failed to initialize local data: $e');
       }
+    }
+  }
+
+  /// 펫 데이터 초기화 (SQLite → SharedPreferences 동기화)
+  static Future<void> _initializePetData() async {
+    try {
+      // LocalStorageService를 통해 SQLite DB에서 펫 데이터 로드
+      final localStorageService = LocalStorageService.instance;
+      await localStorageService.initialize();
+
+      final sqlitePets = await localStorageService.pet.getAllPets();
+
+      if (kDebugMode) {
+        debugPrint('📊 SQLite pets count: ${sqlitePets.length}');
+      }
+
+      if (sqlitePets.isNotEmpty) {
+        // SQLite의 펫 데이터를 Entity로 변환
+        final petEntities = sqlitePets.map((petData) {
+          return PetProfileEntity(
+            id: petData['petId']?.toString() ?? '',
+            name: petData['name']?.toString() ?? '',
+            type: petData['type']?.toString() ?? 'dog',
+            breed: petData['breed']?.toString(),
+            birthDate:
+                DateTime.tryParse(petData['birth_date']?.toString() ?? '') ??
+                DateTime.now(),
+            gender: petData['gender']?.toString() ?? 'unknown',
+            weight: (petData['weight'] as num?)?.toDouble() ?? 0.0,
+            size: petData['size']?.toString(),
+            microchipNumber: petData['microchip_number']?.toString(),
+            arrivalDate: DateTime.tryParse(
+              petData['arrival_date']?.toString() ?? '',
+            ),
+            neutered: (petData['is_neutered'] as int?) == 1,
+            imagePath: petData['profile_image']?.toString(),
+            ownerId: petData['ownerId']?.toString() ?? 'unknown',
+            createdAt:
+                DateTime.tryParse(petData['created_at']?.toString() ?? '') ??
+                DateTime.now(),
+            updatedAt:
+                DateTime.tryParse(petData['updated_at']?.toString() ?? '') ??
+                DateTime.now(),
+            isActive: (petData['is_active'] as int?) == 1,
+            additionalInfo: _parseAdditionalInfo(petData),
+          );
+        }).toList();
+
+        // SharedPreferences에 동기화
+        await PetLocalStorageService.savePets(petEntities);
+
+        if (kDebugMode) {
+          debugPrint(
+            '✅ Synchronized ${petEntities.length} pets to SharedPreferences',
+          );
+        }
+      }
+    } catch (e, stackTrace) {
+      if (kDebugMode) {
+        debugPrint('⚠️ Failed to initialize pet data: $e');
+        debugPrint('Stack trace: $stackTrace');
+      }
+    }
+  }
+
+  /// additionalInfo 파싱
+  static Map<String, dynamic> _parseAdditionalInfo(
+    Map<String, dynamic> petData,
+  ) {
+    try {
+      // additionalInfo JSON 문자열 파싱
+      if (petData['additionalInfo'] is String) {
+        return jsonDecode(petData['additionalInfo'] as String)
+            as Map<String, dynamic>;
+      } else if (petData['additionalInfo'] is Map) {
+        return petData['additionalInfo'] as Map<String, dynamic>;
+      }
+      return {};
+    } catch (e) {
+      return {};
     }
   }
 

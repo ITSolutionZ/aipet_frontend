@@ -38,6 +38,7 @@ class _PetRegistrationFormState extends ConsumerState<_PetRegistrationForm> {
   late final PetRegistrationController _controller;
   late final RegistrationFormHandlers _handlers;
   bool _isLoading = false;
+  bool _hasLoadedPetData = false; // 펫 데이터 로드 여부 플래그
 
   @override
   void initState() {
@@ -50,11 +51,23 @@ class _PetRegistrationFormState extends ConsumerState<_PetRegistrationForm> {
       logic: _logic,
       formKey: _formKey,
     );
+  }
 
-    // petId가 있으면 기존 펫 정보 로드
-    if (widget.petId != null && widget.petId!.isNotEmpty) {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // petId가 있고 아직 로드하지 않았으면 로드
+    if (widget.petId != null &&
+        widget.petId!.isNotEmpty &&
+        !_hasLoadedPetData) {
+      _hasLoadedPetData = true;
+
+      // 다음 프레임에 로드 (Riverpod 생명주기 안전)
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _loadExistingPetData(widget.petId!);
+        if (mounted) {
+          _loadExistingPetData(widget.petId!);
+        }
       });
     }
   }
@@ -127,6 +140,8 @@ class _PetRegistrationFormState extends ConsumerState<_PetRegistrationForm> {
 
   /// 기존 펫 데이터 로드
   Future<void> _loadExistingPetData(String petId) async {
+    if (!mounted) return;
+
     try {
       LoggerService.debug('🔍 Loading existing pet data for ID: $petId');
 
@@ -136,46 +151,102 @@ class _PetRegistrationFormState extends ConsumerState<_PetRegistrationForm> {
       );
       await petProfileNotifier.loadPetProfile(petId);
 
+      if (!mounted) return;
+
       final petProfileState = ref.read(petProfileUnifiedControllerProvider);
+      LoggerService.debug(
+        '📊 petProfileState.selectedPet: ${petProfileState.selectedPet != null}',
+      );
 
       if (petProfileState.selectedPet != null) {
         final pet = petProfileState.selectedPet!;
         LoggerService.debug('✅ Pet loaded: ${pet.name}');
+        LoggerService.debug(
+          '📋 Pet data - id: ${pet.id}, type: ${pet.type}, breed: ${pet.breed}',
+        );
+        LoggerService.debug(
+          '📋 Pet birthDate: ${pet.birthDate}, gender: ${pet.gender}, weight: ${pet.weight}',
+        );
+        LoggerService.debug('📋 Pet imagePath: ${pet.imagePath}');
+        LoggerService.debug('📋 Pet additionalInfo: ${pet.additionalInfo}');
 
         // 폼 데이터에 기존 펫 정보 설정
+        LoggerService.debug('🔄 Updating basic pet info...');
         _controller.updatePetName(pet.name);
+        LoggerService.debug('  ✓ Name: ${pet.name}');
+
         _controller.updatePetType(pet.type);
+        LoggerService.debug('  ✓ Type: ${pet.type}');
+
         _controller.updateBreed(pet.breed ?? '');
+        LoggerService.debug('  ✓ Breed: ${pet.breed}');
+
         _controller.updateGender(pet.gender);
+        LoggerService.debug('  ✓ Gender: ${pet.gender}');
+
         _controller.updateWeight(pet.weight.toString());
+        LoggerService.debug('  ✓ Weight: ${pet.weight}');
+
         _controller.updateBirthDate(pet.birthDate);
-        _controller.updatePetImagePath(pet.imagePath);
+        LoggerService.debug('  ✓ BirthDate: ${pet.birthDate}');
+
+        if (pet.imagePath != null) {
+          _controller.updatePetImagePath(pet.imagePath);
+          LoggerService.debug('  ✓ ImagePath: ${pet.imagePath}');
+        } else {
+          LoggerService.debug('  ⚠️ ImagePath: null');
+        }
+
+        LoggerService.debug('✅ Basic pet info updated in controller');
 
         // 추가 정보 설정
         if (pet.additionalInfo != null) {
           final additionalInfo = pet.additionalInfo!;
+          LoggerService.debug('🔍 Loading additionalInfo fields...');
+          LoggerService.debug('   All keys: ${additionalInfo.keys.toList()}');
 
           // 중성화 여부 설정 (updateNeuteringStatus 메서드 사용)
-          _controller.updateNeuteringStatus(
-            additionalInfo['isNeutered'] == true,
+          final isNeutered = additionalInfo['isNeutered'] == true;
+          LoggerService.debug(
+            '  ✓ isNeutered: $isNeutered (raw: ${additionalInfo['isNeutered']})',
           );
+          _controller.updateNeuteringStatus(isNeutered);
 
-          _controller.updateGuardianName(additionalInfo['guardianName'] ?? '');
-          _controller.updateInstitutionName(
-            additionalInfo['institutionName'] ?? '',
+          // 외견 설정
+          final appearance = additionalInfo['appearance']?.toString() ?? '';
+          LoggerService.debug(
+            '  ✓ appearance: $appearance (raw: ${additionalInfo['appearance']})',
           );
-          _controller.updateRegistrationNumber(
-            additionalInfo['registrationNumber'] ?? '',
-          );
+          _controller.updateAppearance(appearance);
+
+          final guardianName = additionalInfo['guardianName']?.toString() ?? '';
+          _controller.updateGuardianName(guardianName);
+          LoggerService.debug('  ✓ guardianName: $guardianName');
+
+          final institutionName =
+              additionalInfo['institutionName']?.toString() ?? '';
+          _controller.updateInstitutionName(institutionName);
+          LoggerService.debug('  ✓ institutionName: $institutionName');
+
+          final registrationNumber =
+              additionalInfo['registrationNumber']?.toString() ?? '';
+          _controller.updateRegistrationNumber(registrationNumber);
+          LoggerService.debug('  ✓ registrationNumber: $registrationNumber');
 
           // 입양일 설정
           if (additionalInfo['adoptionDate'] != null) {
-            final adoptionDate = DateTime.tryParse(
-              additionalInfo['adoptionDate'],
-            );
+            final adoptionDateStr = additionalInfo['adoptionDate'].toString();
+            LoggerService.debug('  🔍 adoptionDate string: $adoptionDateStr');
+
+            final adoptionDate = DateTime.tryParse(adoptionDateStr);
             if (adoptionDate != null) {
               _controller.updateAdoptionDate(adoptionDate);
+              LoggerService.debug('  ✓ adoptionDate updated: $adoptionDate');
+            } else {
+              LoggerService.debug('  ⚠️ adoptionDate parse failed');
             }
+          } else {
+            LoggerService.debug('  ⚠️ adoptionDate: null');
           }
 
           // 금지 성분 설정 (기존 리스트 클리어 후 추가)
@@ -190,14 +261,29 @@ class _PetRegistrationFormState extends ConsumerState<_PetRegistrationForm> {
           }
 
           // 관리 부위 설정
-          _controller.updateBodyPartsToManage(
-            additionalInfo['bodyPartsToManage'] ?? '',
-          );
+          final bodyParts =
+              additionalInfo['bodyPartsToManage']?.toString() ?? '';
+          _controller.updateBodyPartsToManage(bodyParts);
+          LoggerService.debug('  ✓ bodyPartsToManage: $bodyParts');
 
           // 먹이 정보 설정
-          _controller.updateFood(additionalInfo['food'] ?? '');
-          _controller.updateSupplement(additionalInfo['supplement'] ?? '');
-          _controller.updateTreat(additionalInfo['treat'] ?? '');
+          final food = additionalInfo['food']?.toString() ?? '';
+          _controller.updateFood(food);
+          LoggerService.debug('  ✓ food: $food');
+
+          final supplement = additionalInfo['supplement']?.toString() ?? '';
+          _controller.updateSupplement(supplement);
+          LoggerService.debug('  ✓ supplement: $supplement');
+
+          final treat = additionalInfo['treat']?.toString() ?? '';
+          _controller.updateTreat(treat);
+          LoggerService.debug(
+            '  ✓ treat: $treat (raw: ${additionalInfo['treat']})',
+          );
+
+          LoggerService.debug('✅ All additionalInfo fields loaded');
+        } else {
+          LoggerService.debug('⚠️ additionalInfo is null!');
         }
 
         LoggerService.debug('✅ Existing pet data loaded successfully');

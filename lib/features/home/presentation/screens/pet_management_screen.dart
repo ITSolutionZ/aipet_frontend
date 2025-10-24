@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
-/// 펫 관리 화면
+/// ペット管理画面
 class PetManagementScreen extends ConsumerStatefulWidget {
   const PetManagementScreen({super.key});
 
@@ -18,7 +18,7 @@ class PetManagementScreen extends ConsumerStatefulWidget {
 }
 
 class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
-  // 0: 관리중인 반려동물, 1: 숨김 반려동물
+  // 0: 管理中のペット, 1: 非表示のペット
   int _selectedTabIndex = 0;
 
   @override
@@ -29,10 +29,6 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
       backgroundColor: AppColors.pointOffWhite,
       appBar: SoftGradientAppBar(
         title: '',
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(Icons.arrow_back, color: AppColors.pointDark),
-        ),
         actions: [
           IconButton(
             onPressed: () => context.push('/home'),
@@ -58,7 +54,7 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
             ),
             child: Row(
               children: [
-                // 관리중인 반려동물 탭
+                // 管理中のペット タブ
                 Expanded(
                   child: GestureDetector(
                     onTap: () => setState(() => _selectedTabIndex = 0),
@@ -75,7 +71,7 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
                         ),
                       ),
                       child: Text(
-                        '관리중인 반려동물',
+                        '管理中のペット',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 14,
@@ -88,7 +84,7 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
                     ),
                   ),
                 ),
-                // 숨김 반려동물 탭
+                // 非表示のペット タブ
                 Expanded(
                   child: GestureDetector(
                     onTap: () => setState(() => _selectedTabIndex = 1),
@@ -105,7 +101,7 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
                         ),
                       ),
                       child: Text(
-                        '숨김 반려동물',
+                        '非表示のペット',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 14,
@@ -150,7 +146,7 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
                       ),
                     ),
                     child: const Text(
-                      '내가 등록한 반려동물',
+                      '登録したペット',
                       style: TextStyle(
                         fontSize: 12,
                         color: AppColors.pointBrown,
@@ -170,7 +166,7 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
                       ),
                     ),
                     child: const Text(
-                      '공유 받은 반려동물',
+                      '共有されたペット',
                       style: TextStyle(
                         fontSize: 12,
                         color: AppColors.pointGray,
@@ -224,7 +220,7 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
                 ),
                 error: (error, stack) => const Center(
                   child: Text(
-                    '펫 정보를 불러오는데 실패했습니다',
+                    'ペット情報の読み込みに失敗しました',
                     style: TextStyle(color: AppColors.pointGray),
                   ),
                 ),
@@ -242,16 +238,19 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
     );
   }
 
-  /// 펫 카드 위젯
+  /// ペットカードウィジェット
   Widget _buildPetCard(BuildContext context, PetProfileEntity pet) {
-    // 숨김 탭 여부 확인
+    // 非表示タブかどうか確認
     final isHiddenTab = _selectedTabIndex == 1;
 
     return Dismissible(
       key: Key('pet_${pet.id}'),
       direction: DismissDirection.horizontal,
-      background: _buildSwipeBackground(true, isHiddenTab), // 삭제 배경
-      secondaryBackground: _buildSwipeBackground(false, isHiddenTab), // 숨김/복원 배경
+      background: _buildSwipeBackground(true, isHiddenTab), // 削除背景
+      secondaryBackground: _buildSwipeBackground(
+        false,
+        isHiddenTab,
+      ), // 非表示/復元背景
       resizeDuration: const Duration(milliseconds: 200),
       confirmDismiss: (direction) async {
         return _showSwipeActionDialog(context, pet, direction);
@@ -260,7 +259,7 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
         if (direction == DismissDirection.startToEnd) {
           _deletePet(context, pet);
         } else {
-          // 숨김 탭이면 복원, 아니면 숨김
+          // 非表示タブなら復元、そうでなければ非表示
           if (isHiddenTab) {
             _restorePet(context, pet);
           } else {
@@ -295,7 +294,7 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
           ),
           child: Row(
             children: [
-              // 펫 이미지
+              // ペット画像
               Container(
                 width: 60,
                 height: 60,
@@ -316,7 +315,7 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
               ),
               const SizedBox(width: 12),
 
-              // 펫 정보
+              // ペット情報
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -397,7 +396,7 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
                       ),
                       SizedBox(width: 4),
                       Text(
-                        '공동관리자 초대하기',
+                        '共同管理者を招待',
                         style: TextStyle(
                           fontSize: 11,
                           color: AppColors.pointBrown,
@@ -417,12 +416,12 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
 
   /// 스와이프 배경 위젯
   Widget _buildSwipeBackground(bool isDelete, bool isHiddenTab) {
-    // 숨김 탭에서는 오른쪽 스와이프가 "복원"
+    // 非表示タブでは右スワイプが「復元」
     final isRestore = !isDelete && isHiddenTab;
     final icon = isDelete
         ? Icons.delete
         : (isRestore ? Icons.visibility : Icons.visibility_off);
-    final label = isDelete ? '삭제' : (isRestore ? '복원' : '숨김');
+    final label = isDelete ? '削除' : (isRestore ? '復元' : '非表示');
     final color = isDelete
         ? Colors.red
         : (isRestore ? Colors.green : Colors.orange);
@@ -434,21 +433,14 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
         gradient: LinearGradient(
           begin: isDelete ? Alignment.centerLeft : Alignment.centerRight,
           end: isDelete ? Alignment.centerRight : Alignment.centerLeft,
-          colors: [
-            color.withValues(alpha: 0.8),
-            color.withValues(alpha: 0.6),
-          ],
+          colors: [color.withValues(alpha: 0.8), color.withValues(alpha: 0.6)],
         ),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            icon,
-            color: Colors.white,
-            size: 24,
-          ),
+          Icon(icon, color: Colors.white, size: 24),
           const SizedBox(height: 4),
           Text(
             label,
@@ -473,30 +465,27 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
     final isHiddenTab = _selectedTabIndex == 1;
     final isRestore = !isDelete && isHiddenTab;
 
-    final action = isDelete ? '삭제' : (isRestore ? '복원' : '숨김');
+    final action = isDelete ? '削除' : (isRestore ? '復元' : '非表示');
     final message = isDelete
-        ? '${pet.name}을(를) 영구적으로 삭제하시겠습니까?'
-        : (isRestore
-            ? '${pet.name}을(를) 다시 관리중으로 복원하시겠습니까?'
-            : '${pet.name}을(를) 숨김 처리하시겠습니까?');
-    final actionColor =
-        isDelete ? Colors.red : (isRestore ? Colors.green : Colors.orange);
+        ? '${pet.name}を完全に削除しますか？'
+        : (isRestore ? '${pet.name}を管理中に戻しますか？' : '${pet.name}を非表示にしますか？');
+    final actionColor = isDelete
+        ? Colors.red
+        : (isRestore ? Colors.green : Colors.orange);
 
     return await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text('펫 $action'),
+            title: Text('ペット$action'),
             content: Text(message),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                child: const Text('취소'),
+                child: const Text('キャンセル'),
               ),
               TextButton(
                 onPressed: () => Navigator.of(context).pop(true),
-                style: TextButton.styleFrom(
-                  foregroundColor: actionColor,
-                ),
+                style: TextButton.styleFrom(foregroundColor: actionColor),
                 child: Text(action),
               ),
             ],
@@ -505,12 +494,12 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
         false;
   }
 
-  /// 펫 삭제 처리
+  /// ペット削除処理
   void _deletePet(BuildContext context, PetProfileEntity pet) {
     final petName = pet.name;
     final scaffoldMessenger = ScaffoldMessenger.of(context);
 
-    // 리포지토리를 통해 삭제
+    // リポジトリを通じて削除
     final notifier = ref.read(petProfilesProvider.notifier);
     notifier
         .deletePet(pet.id)
@@ -519,7 +508,7 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
           if (mounted) {
             scaffoldMessenger.showSnackBar(
               SnackBar(
-                content: Text('$petName이(가) 삭제되었습니다'),
+                content: Text('$petNameが削除されました'),
                 backgroundColor: Colors.red,
               ),
             );
@@ -530,7 +519,7 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
           if (mounted) {
             scaffoldMessenger.showSnackBar(
               SnackBar(
-                content: Text('삭제 중 오류가 발생했습니다: ${error.toString()}'),
+                content: Text('削除中にエラーが発生しました: ${error.toString()}'),
                 backgroundColor: Colors.red,
               ),
             );
@@ -538,19 +527,19 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
         });
   }
 
-  /// 펫 숨김 처리
+  /// ペット非表示処理
   void _hidePet(BuildContext context, PetProfileEntity pet) {
-    // 펫 상태를 숨김으로 업데이트
+    // ペット状態を非表示に更新
     final hiddenPet = pet.copyWith(petStatus: PetStatus.hidden);
     final petName = pet.name;
     final scaffoldMessenger = ScaffoldMessenger.of(context);
 
-    // 즉시 탭을 숨김 탭으로 전환
+    // 即座にタブを非表示タブに切り替え
     setState(() {
       _selectedTabIndex = 1;
     });
 
-    // 리포지토리를 통해 업데이트
+    // リポジトリを通じて更新
     final notifier = ref.read(petProfilesProvider.notifier);
     notifier
         .updatePet(hiddenPet)
@@ -559,7 +548,7 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
           if (mounted) {
             scaffoldMessenger.showSnackBar(
               SnackBar(
-                content: Text('$petName이(가) 숨김 처리되었습니다'),
+                content: Text('$petNameが非表示になりました'),
                 backgroundColor: Colors.orange,
               ),
             );
@@ -574,7 +563,7 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
 
             scaffoldMessenger.showSnackBar(
               SnackBar(
-                content: Text('숨김 처리 중 오류가 발생했습니다: ${error.toString()}'),
+                content: Text('非表示処理中にエラーが発生しました: ${error.toString()}'),
                 backgroundColor: Colors.red,
               ),
             );
@@ -582,19 +571,19 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
         });
   }
 
-  /// 펫 복원 처리 (숨김 해제)
+  /// ペット復元処理（非表示解除）
   void _restorePet(BuildContext context, PetProfileEntity pet) {
-    // 펫 상태를 활성으로 업데이트
+    // ペット状態をアクティブに更新
     final activePet = pet.copyWith(petStatus: PetStatus.active);
     final petName = pet.name;
     final scaffoldMessenger = ScaffoldMessenger.of(context);
 
-    // 즉시 탭을 관리중인 반려동물 탭으로 전환
+    // 即座にタブを管理中のペットタブに切り替え
     setState(() {
       _selectedTabIndex = 0;
     });
 
-    // 리포지토리를 통해 업데이트
+    // リポジトリを通じて更新
     final notifier = ref.read(petProfilesProvider.notifier);
     notifier
         .updatePet(activePet)
@@ -603,7 +592,7 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
           if (mounted) {
             scaffoldMessenger.showSnackBar(
               SnackBar(
-                content: Text('$petName이(가) 관리중으로 복원되었습니다'),
+                content: Text('$petNameが管理中に復元されました'),
                 backgroundColor: Colors.green,
               ),
             );
@@ -647,7 +636,7 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
           ),
           const SizedBox(height: 20),
           const Text(
-            '등록된 반려동물이 없습니다',
+            '登録されたペットがいません',
             style: TextStyle(
               fontSize: 16,
               color: AppColors.pointGray,
@@ -656,7 +645,7 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
           ),
           const SizedBox(height: 8),
           const Text(
-            '새로운 반려동물을 등록해보세요',
+            '新しいペットを登録してください',
             style: TextStyle(fontSize: 14, color: AppColors.pointGray),
           ),
         ],
@@ -735,7 +724,7 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
 
               const SizedBox(height: 20),
               const Text(
-                'QR 코드를 스캔하여 반려동물 정보를 공유하세요',
+                'QRコードをスキャンしてペット情報を共有してください',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 12, color: AppColors.pointGray),
               ),
@@ -786,24 +775,28 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
     );
   }
 
-  /// 편집 화면으로 이동 (펫 등록 화면을 편집 모드로 사용)
+  /// 編集画面に移動（ペット登録画面を編集モードで使用）
   void _navigateToEditScreen(BuildContext context, PetProfileEntity pet) {
     context.go('/daily-pet-registration?petId=${pet.id}');
   }
 
-  /// 펫 이미지 빌드 - 강화된 로컬 저장 지원
+  /// ペット画像ビルド - 強化されたローカル保存サポート
   Widget _buildPetImage(PetProfileEntity pet) {
     if (pet.imagePath == null || pet.imagePath!.isEmpty) {
       return const Icon(Icons.pets, color: AppColors.pointGray, size: 30);
     }
 
-    LoggerService.debug('🖼️ PetManagementScreen - imagePath: ${pet.imagePath}');
+    LoggerService.debug(
+      '🖼️ PetManagementScreen - imagePath: ${pet.imagePath}',
+    );
 
     // 상대 경로를 절대 경로로 변환
     final storageService = ImageStorageService();
     final absolutePath =
         storageService.getAbsolutePath(pet.imagePath!) ?? pet.imagePath!;
-    LoggerService.debug('🖼️ PetManagementScreen - absolutePath: $absolutePath');
+    LoggerService.debug(
+      '🖼️ PetManagementScreen - absolutePath: $absolutePath',
+    );
 
     final imageType = ImageService.getImageType(absolutePath);
     LoggerService.debug('🖼️ PetManagementScreen - imageType: $imageType');
@@ -812,7 +805,9 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
       case ImageType.file:
         final file = File(absolutePath);
         final fileExists = file.existsSync();
-        LoggerService.debug('🖼️ PetManagementScreen - File exists: $fileExists');
+        LoggerService.debug(
+          '🖼️ PetManagementScreen - File exists: $fileExists',
+        );
 
         if (!fileExists) {
           LoggerService.debug(
@@ -825,7 +820,9 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
           file,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
-            LoggerService.debug('🖼️ PetManagementScreen - File image error: $error');
+            LoggerService.debug(
+              '🖼️ PetManagementScreen - File image error: $error',
+            );
             return const Icon(Icons.pets, color: AppColors.pointGray, size: 30);
           },
         );
@@ -834,7 +831,9 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
           absolutePath,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
-            LoggerService.debug('🖼️ PetManagementScreen - Network image error: $error');
+            LoggerService.debug(
+              '🖼️ PetManagementScreen - Network image error: $error',
+            );
             return const Icon(Icons.pets, color: AppColors.pointGray, size: 30);
           },
         );
@@ -843,7 +842,9 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
           absolutePath,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
-            LoggerService.debug('🖼️ PetManagementScreen - Asset image error: $error');
+            LoggerService.debug(
+              '🖼️ PetManagementScreen - Asset image error: $error',
+            );
             return const Icon(Icons.pets, color: AppColors.pointGray, size: 30);
           },
         );

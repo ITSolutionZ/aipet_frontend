@@ -1,3 +1,4 @@
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../models/rakuten_pet_product_model.dart';
@@ -89,12 +90,31 @@ class RakutenProductsNotifier extends _$RakutenProductsNotifier {
     }
 
     try {
+      final searchKeyword = keyword ?? state.currentKeyword;
+      LoggerService.debug(
+        '🔍 [Provider] Searching with keyword: "$searchKeyword"',
+      );
+
       final products = await _apiService.searchPetProducts(
-        keyword: keyword ?? state.currentKeyword,
+        keyword: searchKeyword,
         page: state.currentPage,
         hits: 30,
         sort: state.currentSort,
       );
+
+      LoggerService.debug(
+        '📦 [Provider] Search results: ${products.length} products',
+      );
+
+      if (products.isEmpty) {
+        LoggerService.debug(
+          '⚠️ [Provider] No products found for keyword: "$searchKeyword"',
+        );
+      } else {
+        LoggerService.debug(
+          '✅ [Provider] First product: ${products.first.itemName}',
+        );
+      }
 
       state = state.copyWith(
         isLoading: false,
@@ -103,6 +123,7 @@ class RakutenProductsNotifier extends _$RakutenProductsNotifier {
         currentPage: reset ? 2 : state.currentPage + 1,
       );
     } catch (e) {
+      LoggerService.debug('❌ [Provider] Search error: $e');
       state = state.copyWith(isLoading: false, error: e.toString());
     }
   }
