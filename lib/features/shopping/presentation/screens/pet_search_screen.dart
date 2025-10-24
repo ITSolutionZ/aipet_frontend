@@ -20,9 +20,12 @@ class PetSearchScreen extends ConsumerStatefulWidget {
 class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final TextEditingController _searchController = TextEditingController();
 
   // アコーディオン状態管理
   final Set<String> _expandedProducts = <String>{};
+  // 商品説明の展開状態管理 (商品コード -> 展開状態)
+  final Map<String, bool> _expandedDescriptions = <String, bool>{};
 
   final List<String> _categories = [
     'ペットフード',
@@ -297,6 +300,7 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
   @override
   void dispose() {
     _tabController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -334,6 +338,10 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
                         _buildFilterSection('原料成分でフードを見る', _ingredientFilters),
                         const SizedBox(height: AppSpacing.xl),
 
+                        // 検索入力フィールド
+                        _buildSearchInputField(),
+                        const SizedBox(height: AppSpacing.md),
+
                         // 액션 버튼들
                         _buildActionButtons(),
                         const SizedBox(height: AppSpacing.xl),
@@ -368,6 +376,71 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
         indicatorWeight: 3,
         tabs: _categories.map((category) => Tab(text: category)).toList(),
       ),
+    );
+  }
+
+  /// 検索入力フィールド構成
+  Widget _buildSearchInputField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '商品名で検索',
+          style: AppFonts.bodyLarge.copyWith(
+            fontWeight: FontWeight.bold,
+            color: AppColors.pointBrown,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.md),
+        Container(
+          decoration: BoxDecoration(
+            color: AppColors.pureWhite,
+            borderRadius: BorderRadius.circular(AppRadius.medium),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.pointBrown.withValues(alpha: 0.1),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: TextField(
+            controller: _searchController,
+            decoration: InputDecoration(
+              hintText: '検索ワードを入力してください（例：ドッグフード チキン）',
+              hintStyle: const TextStyle(
+                color: AppColors.pointGray,
+                fontSize: 14,
+              ),
+              prefixIcon: const Icon(
+                Icons.search,
+                color: AppColors.pointBrown,
+              ),
+              suffixIcon: _searchController.text.isNotEmpty
+                  ? IconButton(
+                      icon: const Icon(
+                        Icons.clear,
+                        color: AppColors.pointGray,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _searchController.clear();
+                        });
+                      },
+                    )
+                  : null,
+              border: InputBorder.none,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.lg,
+                vertical: AppSpacing.md,
+              ),
+            ),
+            onChanged: (value) {
+              setState(() {}); // suffixIcon 업데이트를 위해
+            },
+          ),
+        ),
+      ],
     );
   }
 
@@ -651,9 +724,13 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
                   const Divider(height: 1),
                   const SizedBox(height: 12),
 
-                  // 商品説明
+                  // 原料成分情報 (別セクション)
+                  _buildIngredientsSection(product),
+                  const SizedBox(height: 12),
+
+                  // 商品説明 (5行以上は折りたたみ)
                   if (product.itemCaption.isNotEmpty) ...[
-                    _buildDetailRow('商品説明', product.itemCaption),
+                    _buildExpandableDescription(product),
                     const SizedBox(height: 8),
                   ],
 
@@ -729,6 +806,180 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
     );
   }
 
+  /// 原料成分セクションを構築
+  Widget _buildIngredientsSection(RakutenPetProduct product) {
+    // itemCaptionから原料情報を抽出
+    final ingredients = _extractIngredients(product.itemCaption);
+
+    if (ingredients.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.pointGreen.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: AppColors.pointGreen.withValues(alpha: 0.2),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.eco, size: 16, color: AppColors.pointGreen),
+              const SizedBox(width: 4),
+              Text(
+                '原料成分情報',
+                style: AppFonts.bodyMedium.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.pointGreen,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            ingredients,
+            style: AppFonts.bodySmall.copyWith(
+              color: AppColors.textPrimary,
+              height: 1.5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 商品説明から原料情報を抽出
+  String _extractIngredients(String caption) {
+    if (caption.isEmpty) return '';
+
+    // HTML タグを除去
+    final String cleanCaption = caption
+        .replaceAll(RegExp(r'<[^>]*>'), ' ')
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
+
+    // 原料関連キーワードで検索
+    final keywords = ['原材料', '原料', '成分', '主原料', '主成分', '配合成分', '使用原料'];
+
+    for (final keyword in keywords) {
+      final index = cleanCaption.indexOf(keyword);
+      if (index != -1) {
+        // キーワードから次の区切りまでを抽出
+        final afterKeyword = cleanCaption.substring(index);
+        final endMarkers = ['。', '※', '■', '●', '【', '＜'];
+
+        int endIndex = afterKeyword.length;
+        for (final marker in endMarkers) {
+          final markerIndex = afterKeyword.indexOf(marker, keyword.length);
+          if (markerIndex != -1 && markerIndex < endIndex) {
+            endIndex = markerIndex;
+          }
+        }
+
+        String extracted = afterKeyword.substring(0, endIndex).trim();
+
+        // 最大200文字に制限
+        if (extracted.length > 200) {
+          extracted = '${extracted.substring(0, 197)}...';
+        }
+
+        return extracted;
+      }
+    }
+
+    return '';
+  }
+
+  /// 折りたたみ可能な商品説明を構築
+  Widget _buildExpandableDescription(RakutenPetProduct product) {
+    final isExpanded = _expandedDescriptions[product.itemCode] ?? false;
+
+    // HTML タグを除去してクリーンなテキストを取得
+    final cleanDescription = product.itemCaption
+        .replaceAll(RegExp(r'<[^>]*>'), ' ')
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
+
+    // テキストの行数を推定 (文字数ベース: 1行約30文字と仮定)
+    final estimatedLines = (cleanDescription.length / 30).ceil();
+    final needsExpansion = estimatedLines > 5;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: 80,
+              child: Text(
+                '商品説明',
+                style: AppFonts.bodySmall.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey[600],
+                ),
+              ),
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    cleanDescription,
+                    style: AppFonts.bodySmall.copyWith(
+                      color: AppColors.textPrimary,
+                      height: 1.5,
+                    ),
+                    maxLines: needsExpansion && !isExpanded ? 5 : null,
+                    overflow: needsExpansion && !isExpanded
+                        ? TextOverflow.ellipsis
+                        : null,
+                  ),
+                  // 5行以上の場合は「もっと見る」ボタンを表示
+                  if (needsExpansion) ...[
+                    const SizedBox(height: 4),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _expandedDescriptions[product.itemCode] = !isExpanded;
+                        });
+                      },
+                      child: Row(
+                        children: [
+                          Text(
+                            isExpanded ? '折りたたむ' : 'もっと見る',
+                            style: AppFonts.bodySmall.copyWith(
+                              color: AppColors.pointBrown,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(width: 2),
+                          Icon(
+                            isExpanded
+                                ? Icons.keyboard_arrow_up
+                                : Icons.keyboard_arrow_down,
+                            size: 16,
+                            color: AppColors.pointBrown,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
   /// 詳細情報行を構築
   Widget _buildDetailRow(String label, String value) {
     return Row(
@@ -760,27 +1011,55 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
       LoggerService.debug('🔗 Opening product page: ${product.itemName}');
       LoggerService.debug('🔗 Product URL: ${product.itemUrl}');
 
-      final Uri url = Uri.parse(product.itemUrl);
+      // URL 검증
+      if (product.itemUrl.isEmpty) {
+        LoggerService.debug('❌ Product URL is empty');
+        if (mounted) {
+          SnackBarService.showError(
+            context,
+            '商品URLが見つかりませんでした',
+            duration: const Duration(seconds: 2),
+          );
+        }
+        return;
+      }
 
-      if (await canLaunchUrl(url)) {
-        await launchUrl(
+      // URL 파싱 시도
+      Uri? url;
+      try {
+        url = Uri.parse(product.itemUrl);
+        LoggerService.debug('✅ URL parsed successfully: ${url.toString()}');
+      } catch (parseError) {
+        LoggerService.debug('❌ URL parse error: $parseError');
+        if (mounted) {
+          SnackBarService.showError(
+            context,
+            '無効な商品URLです',
+            duration: const Duration(seconds: 2),
+          );
+        }
+        return;
+      }
+
+      // URL 실행 가능 여부 확인
+      LoggerService.debug('🔍 Checking if URL can be launched...');
+      final canLaunch = await canLaunchUrl(url);
+      LoggerService.debug('🔍 Can launch URL: $canLaunch');
+
+      if (canLaunch) {
+        LoggerService.debug('🚀 Launching URL in external browser...');
+        final launched = await launchUrl(
           url,
           mode: LaunchMode.externalApplication, // 外部ブラウザで開く
         );
 
-        // 成功メッセージ
-        if (mounted) {
-          // ✅ Shared SnackBarService 사용
-          SnackBarService.showSuccess(
-            context,
-            '${product.itemName}の商品ページを開きました',
-            duration: const Duration(seconds: 2),
-          );
-        }
+        LoggerService.debug('🚀 Launch result: $launched');
+
+        // 성공 메시지는 표시하지 않음 (외부 브라우저가 열리므로)
       } else {
         // URLを開けない場合のエラーハンドリング
+        LoggerService.debug('❌ Cannot launch URL: ${url.toString()}');
         if (mounted) {
-          // ✅ Shared SnackBarService 사용
           SnackBarService.showError(
             context,
             '商品ページを開けませんでした',
@@ -788,13 +1067,13 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
           );
         }
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
       LoggerService.debug('❌ Error opening product page: $e');
+      LoggerService.debug('❌ Stack trace: $stackTrace');
       if (mounted) {
-        // ✅ Shared SnackBarService 사용
         SnackBarService.showError(
           context,
-          'エラーが発生しました: $e',
+          'エラーが発生しました: ${e.toString()}',
           duration: const Duration(seconds: 3),
         );
       }

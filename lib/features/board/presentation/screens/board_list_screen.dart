@@ -1,19 +1,20 @@
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../data/models/board_post_model.dart';
 import '../../data/services/mock_board_data.dart';
 
 /// 掲示板リスト画面
-class BoardListScreen extends StatefulWidget {
+class BoardListScreen extends ConsumerStatefulWidget {
   const BoardListScreen({super.key});
 
   @override
-  State<BoardListScreen> createState() => _BoardListScreenState();
+  ConsumerState<BoardListScreen> createState() => _BoardListScreenState();
 }
 
-class _BoardListScreenState extends State<BoardListScreen>
+class _BoardListScreenState extends ConsumerState<BoardListScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   List<BoardPost> _posts = [];
@@ -52,47 +53,49 @@ class _BoardListScreenState extends State<BoardListScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.pointOffWhite,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(
-          kToolbarHeight + 48,
-        ), // TabBar 높이 포함
-        child: Column(
-          children: [
-            const SoftGradientAppBar(
-              title: '', // 타이틀 삭제
-            ),
-            Flexible(
-              child: Container(
-                color: AppColors.pointBrown,
-                child: TabBar(
-                  controller: _tabController,
-                  isScrollable: true,
-                  labelColor: Colors.white,
-                  unselectedLabelColor: Colors.white70,
-                  indicatorColor: Colors.white,
-                  tabAlignment: TabAlignment.start,
-                  tabs: BoardCategory.values
-                      .map((category) => Tab(text: category.label))
-                      .toList(),
+    return MainNavigationScreen(
+      child: Scaffold(
+        backgroundColor: AppColors.pointOffWhite,
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(
+            kToolbarHeight + 48,
+          ), // TabBar 높이 포함
+          child: Column(
+            children: [
+              const SoftGradientAppBar(
+                title: '', // 타이틀 삭제
+              ),
+              Flexible(
+                child: Container(
+                  color: AppColors.pointBrown,
+                  child: TabBar(
+                    controller: _tabController,
+                    isScrollable: true,
+                    labelColor: Colors.white,
+                    unselectedLabelColor: Colors.white70,
+                    indicatorColor: Colors.white,
+                    tabAlignment: TabAlignment.start,
+                    tabs: BoardCategory.values
+                        .map((category) => Tab(text: category.label))
+                        .toList(),
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-      body: TabBarView(
-        controller: _tabController,
-        children: BoardCategory.values.map((category) {
-          return _buildPostList();
-        }).toList(),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _showNewPostDialog,
-        backgroundColor: AppColors.pointBrown,
-        icon: const Icon(Icons.edit, color: Colors.white),
-        label: const Text('投稿する', style: TextStyle(color: Colors.white)),
+        body: TabBarView(
+          controller: _tabController,
+          children: BoardCategory.values.map((category) {
+            return _buildPostList();
+          }).toList(),
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: _showNewPostDialog,
+          backgroundColor: AppColors.pointBrown,
+          icon: const Icon(Icons.edit, color: Colors.white),
+          label: const Text('投稿する', style: TextStyle(color: Colors.white)),
+        ),
       ),
     );
   }
@@ -344,6 +347,10 @@ class _BoardListScreenState extends State<BoardListScreen>
   }
 
   void _showNewPostDialog() {
-    SnackBarService.showInfo(context, '投稿機能は準備中です', duration: const Duration(seconds: 2));
+    SnackBarService.showInfo(
+      context,
+      '投稿機能は準備中です',
+      duration: const Duration(seconds: 2),
+    );
   }
 }

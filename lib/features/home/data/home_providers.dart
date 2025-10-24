@@ -71,4 +71,34 @@ class HomeDashboardNotifier extends _$HomeDashboardNotifier {
       rethrow;
     }
   }
+
+  /// 실시간 GPS 위치로 날씨 새로고침
+  Future<void> refreshWeatherWithGPS() async {
+    try {
+      LoggerService.debug('🌍 실시간 GPS 위치로 날씨 새로고침 시작');
+      final repository = ref.read(homeRepositoryProvider);
+
+      // userTriggered=true로 캐시 무시하고 실제 GPS 위치 가져오기
+      final weather = await repository.getCurrentWeather(userTriggered: true);
+
+      if (weather != null) {
+        LoggerService.debug('✅ GPS 날씨 업데이트 성공: ${weather.location}');
+
+        // 현재 대시보드 데이터를 가져와서 날씨만 업데이트
+        final currentDashboard = await future;
+        final updatedDashboard = HomeDashboardEntity(
+          currentTime: currentDashboard.currentTime,
+          weather: weather,
+          petProfiles: currentDashboard.petProfiles,
+          upcomingAppointments: currentDashboard.upcomingAppointments,
+          petHealthSummary: currentDashboard.petHealthSummary,
+          walkSummary: currentDashboard.walkSummary,
+        );
+
+        state = AsyncValue.data(updatedDashboard);
+      }
+    } catch (e) {
+      LoggerService.debug('❌ GPS 날씨 새로고침 실패: $e');
+    }
+  }
 }

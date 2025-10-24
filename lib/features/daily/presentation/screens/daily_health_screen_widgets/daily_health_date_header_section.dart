@@ -110,8 +110,11 @@ class DailyHealthDateHeaderSection extends ConsumerWidget {
                         color: AppColors.textPrimary,
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    _buildWeeklyTaskRow(ref, petType, weekOfYear),
+                    // 펫이 있을 때만 주차별 안내 표시
+                    if (pets.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      _buildWeeklyTaskRow(ref, petType, weekOfYear),
+                    ],
                   ],
                 ),
               ),
@@ -261,11 +264,7 @@ class DailyHealthDateHeaderSection extends ConsumerWidget {
                     color: AppColors.textPrimary,
                   ),
                 ),
-                const SizedBox(height: 8),
-                Consumer(
-                  builder: (context, ref, child) =>
-                      _buildWeeklyTaskRow(ref, 'dog', _getWeekOfYear(today)),
-                ),
+                // 에러 상태에서는 주차별 안내를 표시하지 않음
               ],
             ),
           ),

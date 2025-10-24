@@ -9,7 +9,7 @@ import 'qr_code_bottom_sheet.dart';
 class HomeMenuItems {
   static List<MenuItem> getMenuItems(BuildContext context) {
     return [
-      // 첫 번째 줄 (5개): 데일리케어 / 펫관리 / 알레르기 / 펫수첩 / 플레이
+      // 첫 번째 줄 (4개): 데일리케어 / 펫관리 / 알레르기 / 예약기록
       MenuItem(
         title: '毎日ケア',
         iconPath: 'assets/icons/home_menu/daily.png',
@@ -33,28 +33,13 @@ class HomeMenuItems {
         },
       ),
       MenuItem(
-        title: 'ペット手帳',
-        iconPath: 'assets/icons/home_menu/note.png',
-        onTap: () {
-          // ペットプロフィール画面へ移動
-          context.push('${RouteConstants.petProfileRoute}?petId=default');
-        },
-      ),
-      MenuItem(
-        title: 'プレイ',
-        iconPath: 'assets/icons/common/paw_show.png',
-        onTap: () {
-          context.push(RouteConstants.allTricksRoute);
-        },
-      ),
-      // 두 번째 줄 (5개): 예약기록 / 산책 / 게시판 / 카트 / QR코드
-      MenuItem(
         title: '予約記録',
         iconPath: 'assets/icons/home_menu/booking.png',
         onTap: () {
           context.go('/home/daily/reservation-status');
         },
       ),
+      // 두 번째 줄 (4개): 산책 / 게시판 / 카트 / QR코드
       MenuItem(
         title: 'お散歩',
         iconPath: 'assets/icons/home_menu/place.png',

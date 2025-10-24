@@ -12,6 +12,12 @@ class WeatherCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 디버그: 날씨 데이터 확인
+    LoggerService.debug('🌤️ WeatherCardWidget build:');
+    LoggerService.debug('  - location: ${weather.location}');
+    LoggerService.debug('  - temperature: ${weather.temperature}');
+    LoggerService.debug('  - description: ${weather.description}');
+
     // 위험 상황 체크 및 모달 표시
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (weather.isDangerous) {
@@ -24,9 +30,13 @@ class WeatherCardWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppSpacing.md),
+        border: Border.all(
+          color: AppColors.pointBrown.withValues(alpha: 0.2),
+          width: 1,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 10,
             spreadRadius: 1,
           ),

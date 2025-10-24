@@ -72,7 +72,7 @@ class AiFavoriteMessagesController {
     await Clipboard.setData(ClipboardData(text: text));
   }
 
-  /// QA 공유
+  /// QA 公유
   Future<void> shareQA(AiFavoriteQaEntity favorite) async {
     final petInfo = favorite.pet != null
         ? '【${favorite.pet!.name} (${favorite.pet!.type})】'

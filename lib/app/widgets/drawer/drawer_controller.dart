@@ -1,7 +1,5 @@
 import 'package:aipet_frontend/app/controllers/base_controller.dart';
 import 'package:aipet_frontend/app/router/routes/route_constants.dart';
-import 'package:aipet_frontend/shared/core/services/secure_storage_service.dart';
-import 'package:aipet_frontend/shared/core/services/ui_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -17,45 +15,11 @@ class DrawerController extends BaseController {
   /// [context] - UI操作用のBuildContext
   /// [return] - 成功した場合true、キャンセルまたは失敗の場合false
   Future<bool> logout(BuildContext context) async {
-    final result = await safeExecute<bool>(() async {
-      // 確認ダイアログ表示
-      final shouldLogout = await UiService.showConfirmDialog(
-        context,
-        title: 'ログアウト',
-        content: 'ログアウトしますか？',
-        confirmText: 'ログアウト',
-        cancelText: 'キャンセル',
-      );
-
-      if (!shouldLogout) return false;
-
-      // ローディング表示
-      if (context.mounted) {
-        UiService.showLoadingDialog(context, 'ログアウト中...');
-      }
-
-      try {
-        // セキュアストレージの認証情報のみ削除 (ログアウト処理)
-        await SecureStorageService.logout();
-
-        if (context.mounted) {
-          UiService.hideLoadingDialog(context);
-          UiService.showSuccess(context, 'ログアウトしました');
-          context.go('/login');
-        }
-
-        return true;
-      } catch (error) {
-        if (context.mounted) {
-          UiService.hideLoadingDialog(context);
-          UiService.showError(context, 'ログアウト中にエラーが発生しました');
-        }
-        handleError(error);
-        return false;
-      }
-    }, errorMessage: 'ログアウト処理');
-
-    return result ?? false;
+    // ローカル環境用: 確認なしで即座にログイン画面へ遷移
+    if (context.mounted) {
+      context.go(RouteConstants.loginRoute);
+    }
+    return true;
   }
 
   /// ペット追加画面へ遷移

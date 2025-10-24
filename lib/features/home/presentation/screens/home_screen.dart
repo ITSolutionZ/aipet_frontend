@@ -7,7 +7,6 @@ import 'package:lottie/lottie.dart';
 
 import '../../data/data.dart';
 import '../../domain/domain.dart';
-import '../controllers/home_controller.dart';
 import '../mixins/scroll_tracking_mixin.dart';
 import '../widgets/auto_banner_carousel.dart';
 import '../widgets/pet_profile_banner.dart';
@@ -50,6 +49,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
     // 앱 라이프사이클 관찰자 등록
     WidgetsBinding.instance.addObserver(this);
+
+    // 앱 시작 시 실시간 GPS 위치로 날씨 가져오기
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _refreshWeatherWithGPS();
+    });
   }
 
   @override
@@ -123,6 +127,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   /// 대시보드 UI 빌드
   Widget _buildDashboard(HomeDashboardEntity dashboard) {
+    LoggerService.debug('🏠 _buildDashboard called');
+    LoggerService.debug('  - hasPets: ${dashboard.hasPets}');
+    LoggerService.debug('  - weather location: ${dashboard.weather.location}');
+    LoggerService.debug('  - weather temp: ${dashboard.weather.temperature}');
+
     return SingleChildScrollView(
       controller: scrollController,
       child: Column(
@@ -136,7 +145,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
             child: HomeSearchBarWidget(
               onTap: _handleSearchTap,
-              onChanged: _handleSearchChanged,
             ),
           ),
           const SizedBox(height: AppSpacing.md), // 간격 줄임
@@ -155,7 +163,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
             child: HomeMenuGridWidget(
               menuItems: HomeMenuItems.getMenuItems(context),
-              crossAxisCount: 5,
+              crossAxisCount: 4,
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
@@ -421,18 +429,27 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     context.push('/pet-search');
   }
 
-  void _handleSearchChanged(String query) {
-    final controller = ref.read(homeControllerProvider);
-    controller.handleSearch(query);
-  }
-
   /// Pull-to-Refresh 핸들러
   Future<void> _handleRefresh() async {
-    // LoggerService.debug('🔄 HomeScreen: Pull-to-Refresh 시작');
+    LoggerService.debug('🔄 HomeScreen: Pull-to-Refresh 시작');
+
+    // 실시간 GPS 위치로 날씨 새로고침
+    await _refreshWeatherWithGPS();
 
     // 대시보드 데이터 다시 로드
     ref.invalidate(homeDashboardProvider);
 
-    // LoggerService.debug('✅ HomeScreen: Pull-to-Refresh 완료');
+    LoggerService.debug('✅ HomeScreen: Pull-to-Refresh 완료');
+  }
+
+  /// 실시간 GPS 위치로 날씨 새로고침
+  Future<void> _refreshWeatherWithGPS() async {
+    try {
+      LoggerService.debug('🌍 [HomeScreen] 실시간 GPS 날씨 새로고침 요청');
+      await ref.read(homeDashboardProvider.notifier).refreshWeatherWithGPS();
+      LoggerService.debug('✅ [HomeScreen] GPS 날씨 새로고침 완료');
+    } catch (e) {
+      LoggerService.debug('❌ [HomeScreen] GPS 날씨 새로고침 실패: $e');
+    }
   }
 }
