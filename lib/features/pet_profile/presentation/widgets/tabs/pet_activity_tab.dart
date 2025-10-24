@@ -6,11 +6,7 @@ class PetActivityTab extends ConsumerWidget {
   final PetProfileEntity pet;
   final bool isEditMode;
 
-  const PetActivityTab({
-    super.key,
-    required this.pet,
-    this.isEditMode = false,
-  });
+  const PetActivityTab({super.key, required this.pet, this.isEditMode = false});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
