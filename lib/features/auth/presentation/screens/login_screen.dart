@@ -117,6 +117,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       _emailController.text = authState.email;
     }
 
+    // 미디어쿼리로 화면 크기 가져오기
+    final screenHeight = MediaQuery.of(context).size.height;
+    final isSmallScreen = screenHeight < 700;
+
+    // 화면 크기에 따른 동적 크기 계산
+    final logoSize = isSmallScreen ? 100.0 : 120.0;
+    final verticalSpacing = isSmallScreen ? AppSpacing.md : AppSpacing.lg;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -130,8 +138,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 // 로고 섹션
                 Column(
                   children: [
-                    const SizedBox(height: AppSpacing.lg),
-                    const AuthLogo(width: 120, height: 120),
+                    SizedBox(height: verticalSpacing),
+                    AuthLogo(width: logoSize, height: logoSize),
                     const SizedBox(height: AppSpacing.md),
                     // 앱 이름
                     Text(

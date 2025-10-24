@@ -8,19 +8,27 @@ class WelcomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 미디어쿼리로 화면 크기 가져오기
+    final screenHeight = MediaQuery.of(context).size.height;
+    final isSmallScreen = screenHeight < 700;
+
+    // 화면 크기에 따른 동적 크기 계산
+    final logoSize = isSmallScreen ? 100.0 : 120.0;
+    final titleFontSize = isSmallScreen ? 28.0 : 32.0;
+
     return Scaffold(
       backgroundColor: AppColors.pointOffWhite,
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: Column(
             children: [
-              const SizedBox(height: AppSpacing.lg),
+              SizedBox(height: isSmallScreen ? AppSpacing.md : AppSpacing.lg),
 
               // ロゴエリア
               SizedBox(
-                width: 120,
-                height: 120,
+                width: logoSize,
+                height: logoSize,
                 child: Stack(
                   children: [
                     // 犬のシルエット
@@ -109,7 +117,7 @@ class WelcomeScreen extends StatelessWidget {
               Text(
                 'aipet',
                 style: AppFonts.fredoka(
-                  fontSize: 32,
+                  fontSize: titleFontSize,
                   color: AppColors.pointBrown,
                   fontWeight: FontWeight.bold,
                 ),
