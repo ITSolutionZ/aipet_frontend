@@ -4,8 +4,13 @@ import 'package:flutter/material.dart';
 /// 펫입양 탭 위젯
 class PetAdoptionTab extends StatelessWidget {
   final PetProfileEntity pet;
+  final bool isEditMode;
 
-  const PetAdoptionTab({required this.pet, super.key});
+  const PetAdoptionTab({
+    required this.pet,
+    this.isEditMode = false,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

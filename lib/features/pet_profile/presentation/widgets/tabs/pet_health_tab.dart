@@ -4,8 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class PetHealthTab extends ConsumerWidget {
   final PetProfileEntity pet;
+  final bool isEditMode;
 
-  const PetHealthTab({super.key, required this.pet});
+  const PetHealthTab({
+    super.key,
+    required this.pet,
+    this.isEditMode = false,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -199,14 +204,169 @@ class PetHealthTab extends ConsumerWidget {
       statusColor = AppColors.pointBlue;
     }
 
-    return GenericInfoCard.withIcon(
+    if (!isEditMode) {
+      return GenericInfoCard.withIcon(
+        icon: icon,
+        iconColor: iconColor,
+        iconBackgroundColor: iconColor.withValues(alpha: 0.1),
+        title: title,
+        subtitle: '前回: $lastDate\n次回: $nextDate',
+        badge: status,
+        badgeColor: statusColor,
+      );
+    }
+
+    // 편집 모드: 인라인 편집 가능
+    return _buildEditableHealthCard(
       icon: icon,
-      iconColor: iconColor,
-      iconBackgroundColor: iconColor.withValues(alpha: 0.1),
       title: title,
-      subtitle: '前回: $lastDate\n次回: $nextDate',
-      badge: status,
-      badgeColor: statusColor,
+      iconColor: iconColor,
+      status: status,
+      statusColor: statusColor,
+      lastDate: lastDate,
+      nextDate: nextDate,
     );
+  }
+
+  Widget _buildEditableHealthCard({
+    required IconData icon,
+    required String title,
+    required Color iconColor,
+    required String status,
+    required Color statusColor,
+    required String lastDate,
+    required String nextDate,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: iconColor.withValues(alpha: 0.3),
+          width: 2,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 헤더 행 (아이콘 + 제목 + 상태)
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.sm),
+                decoration: BoxDecoration(
+                  color: iconColor.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(icon, color: iconColor, size: 20),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Text(
+                  title,
+                  style: AppFonts.bodyMedium.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.pointDark,
+                  ),
+                ),
+              ),
+              // 상태 드롭다운
+              _buildStatusDropdown(status, statusColor),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+          // 전회 날짜
+          _buildDateField('前回', lastDate, iconColor),
+          const SizedBox(height: AppSpacing.sm),
+          // 다음 날짜
+          _buildDateField('次回', nextDate, iconColor),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDateField(String label, String dateText, Color accentColor) {
+    return InkWell(
+      onTap: () => _selectDate(dateText),
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm,
+        ),
+        decoration: BoxDecoration(
+          color: AppColors.pointOffWhite,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: accentColor.withValues(alpha: 0.2),
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              Icons.calendar_today,
+              size: 16,
+              color: accentColor,
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            Text(
+              '$label:',
+              style: AppFonts.bodySmall.copyWith(
+                color: AppColors.pointGray,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            Expanded(
+              child: Text(
+                dateText,
+                style: AppFonts.bodyMedium.copyWith(
+                  color: AppColors.pointDark,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatusDropdown(String currentStatus, Color statusColor) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm,
+        vertical: AppSpacing.xs,
+      ),
+      decoration: BoxDecoration(
+        color: statusColor.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: statusColor.withValues(alpha: 0.3),
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            currentStatus,
+            style: AppFonts.bodySmall.copyWith(
+              color: statusColor,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(width: 4),
+          Icon(
+            Icons.arrow_drop_down,
+            size: 16,
+            color: statusColor,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _selectDate(String currentDateText) async {
+    // TODO: DatePicker 구현
+    LoggerService.debug('날짜 선택 다이얼로그 표시: $currentDateText');
   }
 }
