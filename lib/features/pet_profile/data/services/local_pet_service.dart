@@ -19,7 +19,9 @@ class LocalPetService {
         whereArgs: [1],
         orderBy: 'created_at DESC',
       );
-      LoggerService.debug('🐾 LocalPetService.getAllPets: ${results.length}개 펫 조회 완료');
+      LoggerService.debug(
+        '🐾 LocalPetService.getAllPets: ${results.length}개 펫 조회 완료',
+      );
 
       // additionalInfo를 JSON 문자열에서 Map으로 파싱
       return results.map((pet) => _parsePetData(pet)).toList();
@@ -39,9 +41,13 @@ class LocalPetService {
     try {
       if (parsedData['additionalInfo'] is String) {
         final additionalInfoJson = parsedData['additionalInfo'] as String;
-        LoggerService.debug('📖 Parsing additionalInfo from JSON: $additionalInfoJson');
+        LoggerService.debug(
+          '📖 Parsing additionalInfo from JSON: $additionalInfoJson',
+        );
         parsedData['additionalInfo'] = jsonDecode(additionalInfoJson);
-        LoggerService.debug('✅ additionalInfo parsed: ${parsedData['additionalInfo']}');
+        LoggerService.debug(
+          '✅ additionalInfo parsed: ${parsedData['additionalInfo']}',
+        );
       }
     } catch (e) {
       LoggerService.debug('⚠️  additionalInfo 파싱 실패: $e');
@@ -95,8 +101,12 @@ class LocalPetService {
         petData['additionalInfo'] as Map<String, dynamic>? ?? {};
 
     LoggerService.debug('🔍 additionalInfo: $additionalInfo');
-    LoggerService.debug('🔍 additionalInfo type: ${additionalInfo.runtimeType}');
-    LoggerService.debug('🔍 additionalInfo keys: ${additionalInfo.keys.toList()}');
+    LoggerService.debug(
+      '🔍 additionalInfo type: ${additionalInfo.runtimeType}',
+    );
+    LoggerService.debug(
+      '🔍 additionalInfo keys: ${additionalInfo.keys.toList()}',
+    );
     LoggerService.debug(
       '🔍 registrationNumber from additionalInfo: ${additionalInfo['registrationNumber']}',
     );
@@ -124,6 +134,10 @@ class LocalPetService {
           (additionalInfo['isNeutered'] == true || petData['neutered'] == true)
           ? 1
           : 0,
+      'size': petData['size'],
+      'microchip_number':
+          petData['microchipNumber'] ?? additionalInfo['microchipId'],
+      'arrival_date': petData['arrivalDate']?.toString(),
       'is_active': 1,
       'pet_status': petData['petStatus']?.toString() ?? 'active',
       'created_at': now,
@@ -139,7 +153,9 @@ class LocalPetService {
       '   - registration_number: ${insertData['registration_number']}',
     );
     LoggerService.debug('   - guardian_name: ${insertData['guardian_name']}');
-    LoggerService.debug('   - institution_name: ${insertData['institution_name']}');
+    LoggerService.debug(
+      '   - institution_name: ${insertData['institution_name']}',
+    );
 
     await db.insert(
       'pets',
@@ -150,7 +166,9 @@ class LocalPetService {
     // 저장 후 확인
     final saved = await getPetById(id);
     LoggerService.debug('✅ LocalPetService.addPet - 저장 후 조회:');
-    LoggerService.debug('   - registration_number: ${saved?['registration_number']}');
+    LoggerService.debug(
+      '   - registration_number: ${saved?['registration_number']}',
+    );
     LoggerService.debug('   - guardian_name: ${saved?['guardian_name']}');
     LoggerService.debug('   - institution_name: ${saved?['institution_name']}');
 
@@ -190,6 +208,10 @@ class LocalPetService {
                 petData['neutered'] == true)
             ? 1
             : 0,
+        'size': petData['size'],
+        'microchip_number':
+            petData['microchipNumber'] ?? additionalInfo['microchipId'],
+        'arrival_date': petData['arrivalDate']?.toString(),
         'pet_status': petData['petStatus']?.toString() ?? 'active',
         'updated_at': DateTime.now().toIso8601String(),
         // ✅ additionalInfo 전체를 JSON 문자열로 저장
@@ -203,8 +225,12 @@ class LocalPetService {
         '   - registration_number: ${updateData['registration_number']}',
       );
       LoggerService.debug('   - guardian_name: ${updateData['guardian_name']}');
-      LoggerService.debug('   - institution_name: ${updateData['institution_name']}');
-      LoggerService.debug('   - additionalInfo (JSON): ${updateData['additionalInfo']}');
+      LoggerService.debug(
+        '   - institution_name: ${updateData['institution_name']}',
+      );
+      LoggerService.debug(
+        '   - additionalInfo (JSON): ${updateData['additionalInfo']}',
+      );
 
       final count = await db.update(
         'pets',
@@ -240,7 +266,9 @@ class LocalPetService {
           final sanitizedList = List<String>.from(value.whereType<String>());
           if (sanitizedList.isNotEmpty) {
             result[key] = sanitizedList;
-            LoggerService.debug('💾 [$key] List saved: ${sanitizedList.length} items');
+            LoggerService.debug(
+              '💾 [$key] List saved: ${sanitizedList.length} items',
+            );
           }
         }
         // String 타입 필드 처리

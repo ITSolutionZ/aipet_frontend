@@ -29,8 +29,8 @@ class HomeSearchBarWidget extends StatelessWidget {
         ],
       ),
       child: TextField(
+        readOnly: true, // 直接入力を無効化
         onTap: onTap,
-        onChanged: onChanged,
         decoration: InputDecoration(
           hintText: hintText,
           hintStyle: const TextStyle(color: AppColors.pointGray, fontSize: 16),

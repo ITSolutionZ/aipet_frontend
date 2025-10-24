@@ -1,5 +1,6 @@
 import 'package:aipet_frontend/features/notification/data/services/notification_service.dart';
 import 'package:aipet_frontend/features/onboarding/data/data.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:aipet_frontend/shared/core/services/performance_monitor_service.dart';
 import 'package:aipet_frontend/shared/core/services/user_experience_service.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -367,6 +368,30 @@ class AppInitialization extends _$AppInitialization {
       if (kDebugMode) {
         debugPrint('❌ 이미지 사전 로드 준비 중 오류: $e');
       }
+    }
+  }
+
+  /// 앱 상태를 초기화합니다 (로그아웃 시 사용)
+  ///
+  /// 인증 상태와 온보딩 상태를 제외한 모든 상태를 초기화합니다.
+  Future<void> reset() async {
+    try {
+      LoggerService.debug('🔄 앱 상태 리셋 시작');
+
+      // SharedPreferences 데이터 클리어 (온보딩 제외)
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('access_token');
+      await prefs.remove('refresh_token');
+      await prefs.remove('token_expiry_time');
+      await prefs.remove('last_data_sync');
+
+      // 상태를 미인증 상태로 리셋
+      state = state.copyWith(isAuthenticated: false, error: null);
+
+      LoggerService.debug('✅ 앱 상태 리셋 완료');
+    } catch (e) {
+      LoggerService.debug('❌ 앱 상태 리셋 실패: $e');
+      rethrow;
     }
   }
 }

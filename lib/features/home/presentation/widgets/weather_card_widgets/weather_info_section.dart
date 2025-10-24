@@ -12,6 +12,7 @@ class WeatherInfoSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    LoggerService.debug('🎨 WeatherInfoSection build');
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -27,12 +28,10 @@ class WeatherInfoSection extends StatelessWidget {
               ),
               const SizedBox(width: 2),
               // 온도 단위
-              SizedBox(
-                width: 30,
-                height: 30,
-                child: SvgPicture.asset(
-                  'assets/meteocons/design/fill/animation-ready/celsius.svg',
-                ),
+              _buildSvgIcon(
+                'assets/meteocons/design/fill/animation-ready/celsius.svg',
+                30,
+                30,
               ),
               const SizedBox(width: AppSpacing.sm),
               // 바람
@@ -59,20 +58,44 @@ class WeatherInfoSection extends StatelessWidget {
     );
   }
 
+  /// SVG 아이콘 빌더 (에러 핸들링 포함)
+  Widget _buildSvgIcon(
+    String assetPath,
+    double width,
+    double height, {
+    Color? color,
+  }) {
+    try {
+      return SizedBox(
+        width: width,
+        height: height,
+        child: SvgPicture.asset(
+          assetPath,
+          fit: BoxFit.contain,
+          // ignore: deprecated_member_use
+          color: color,
+        ),
+      );
+    } catch (e) {
+      LoggerService.debug('❌ SVG 로드 실패: $assetPath - $e');
+      return SizedBox(
+        width: width,
+        height: height,
+        child: const Icon(Icons.error_outline, size: 16),
+      );
+    }
+  }
+
   /// 바람 아이콘
   Widget _buildWindIcon() {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        SizedBox(
-          width: 28,
-          height: 28,
-          child: SvgPicture.asset(
-            'assets/meteocons/design/fill/animation-ready/wind.svg',
-            fit: BoxFit.contain,
-            // ignore: deprecated_member_use
-            color: AppColors.pointBlue,
-          ),
+        _buildSvgIcon(
+          'assets/meteocons/design/fill/animation-ready/wind.svg',
+          28,
+          28,
+          color: AppColors.pointBlue,
         ),
         const SizedBox(height: 2),
         Text(
@@ -91,15 +114,11 @@ class WeatherInfoSection extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        SizedBox(
-          width: 28,
-          height: 28,
-          child: SvgPicture.asset(
-            'assets/meteocons/design/fill/animation-ready/uv-index.svg',
-            fit: BoxFit.contain,
-            // ignore: deprecated_member_use
-            color: AppColors.pointYellow,
-          ),
+        _buildSvgIcon(
+          'assets/meteocons/design/fill/animation-ready/uv-index.svg',
+          28,
+          28,
+          color: AppColors.pointYellow,
         ),
         const SizedBox(height: 2),
         Text(
@@ -121,11 +140,7 @@ class WeatherInfoSection extends StatelessWidget {
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(
-            width: 28,
-            height: 28,
-            child: SvgPicture.asset(particleIcon, fit: BoxFit.contain),
-          ),
+          _buildSvgIcon(particleIcon, 28, 28),
           const SizedBox(height: 2),
           Text(
             _getWeatherParticleLabel(),
@@ -140,15 +155,11 @@ class WeatherInfoSection extends StatelessWidget {
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(
-            width: 28,
-            height: 28,
-            child: SvgPicture.asset(
-              'assets/meteocons/design/fill/animation-ready/humidity.svg',
-              fit: BoxFit.contain,
-              // ignore: deprecated_member_use
-              color: AppColors.pointBlue,
-            ),
+          _buildSvgIcon(
+            'assets/meteocons/design/fill/animation-ready/humidity.svg',
+            28,
+            28,
+            color: AppColors.pointBlue,
           ),
           const SizedBox(height: 2),
           Text(

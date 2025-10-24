@@ -31,7 +31,7 @@ class LocalDatabaseService {
 
     return openDatabase(
       path,
-      version: 10, // petStatusカラム追加のためバージョンアップ
+      version: 11, // size, microchip_number, arrival_date カラム追加のためバージョンアップ
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -55,6 +55,9 @@ class LocalDatabaseService {
         guardian_name TEXT,
         institution_name TEXT,
         is_neutered INTEGER DEFAULT 0,
+        size TEXT,
+        microchip_number TEXT,
+        arrival_date TEXT,
         is_active INTEGER DEFAULT 1,
         pet_status TEXT DEFAULT 'active',
         created_at TEXT NOT NULL,
@@ -227,6 +230,30 @@ class LocalDatabaseService {
 
   /// 데이터베이스 업그레이드
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    // 버전 11: size, microchip_number, arrival_date 컬럼 추가
+    if (oldVersion < 11) {
+      try {
+        await db.execute('ALTER TABLE pets ADD COLUMN size TEXT');
+        debugPrint('✅ size カラムを追加しました');
+      } catch (e) {
+        debugPrint('⚠️ size カラム追加失敗: $e');
+      }
+
+      try {
+        await db.execute('ALTER TABLE pets ADD COLUMN microchip_number TEXT');
+        debugPrint('✅ microchip_number カラムを追加しました');
+      } catch (e) {
+        debugPrint('⚠️ microchip_number カラム追加失敗: $e');
+      }
+
+      try {
+        await db.execute('ALTER TABLE pets ADD COLUMN arrival_date TEXT');
+        debugPrint('✅ arrival_date カラムを追加しました');
+      } catch (e) {
+        debugPrint('⚠️ arrival_date カラム追加失敗: $e');
+      }
+    }
+
     // 버전 10에서 petStatusカラム追加
     if (oldVersion < 10) {
       // petStatusカラムを追加
