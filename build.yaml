@@ -1,0 +1,7 @@
+targets:
+    $default:
+        builders:
+            freezed:
+                options:
+                    # Freezed生成時にフォーマットを無効化
+                    format_output: false

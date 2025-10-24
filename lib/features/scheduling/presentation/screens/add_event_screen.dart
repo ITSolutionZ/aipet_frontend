@@ -263,7 +263,7 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
                           _isAllDay = value;
                         });
                       },
-                      activeColor: AppColors.pointBlue,
+                      activeThumbColor: AppColors.pointBlue,
                     ),
                   ],
                 ),

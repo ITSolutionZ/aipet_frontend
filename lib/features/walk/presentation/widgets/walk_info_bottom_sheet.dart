@@ -1,8 +1,7 @@
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 import 'package:aipet_frontend/shared/core/services/logger_service.dart';
-import 'package:flutter/material.dart';
-
 import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
+import 'package:flutter/material.dart';
 /// 산책 정보 바텀시트
 class WalkInfoBottomSheet extends StatelessWidget {
   final WalkRecordEntity walkRecord;

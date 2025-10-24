@@ -57,6 +57,7 @@ class WeatherIconCacheService {
         'assets/meteocons/design/fill/animation-ready/$fileName.svg',
       );
 
+      // ignore: unused_local_variable
       final htmlContent =
           '''
         <!DOCTYPE html>

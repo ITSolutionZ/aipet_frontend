@@ -324,7 +324,7 @@ class NotificationScheduleListWidget extends StatelessWidget {
           onChanged: (value) {
             onScheduleToggle?.call(schedule.id);
           },
-          activeColor: AppColors.pointBlue,
+          activeThumbColor: AppColors.pointBlue,
         ),
         const SizedBox(height: AppSpacing.xs),
         const Icon(Icons.chevron_right, color: AppColors.pointGray, size: 20),

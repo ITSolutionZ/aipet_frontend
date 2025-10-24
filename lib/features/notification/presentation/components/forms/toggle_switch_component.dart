@@ -61,7 +61,7 @@ class ToggleSwitchUI extends StatelessWidget {
             child: Switch(
               value: value,
               onChanged: onChanged,
-              activeColor: Colors.white,
+              activeThumbColor: Colors.white,
               activeTrackColor: AppColors.pointBrown,
               inactiveThumbColor: Colors.white,
               inactiveTrackColor: AppColors.pointGray.withValues(alpha: 0.3),

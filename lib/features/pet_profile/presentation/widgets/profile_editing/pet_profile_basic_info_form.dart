@@ -231,7 +231,7 @@ class PetProfileBasicInfoForm extends ConsumerWidget {
         ),
         const SizedBox(height: AppSpacing.xs),
         DropdownButtonFormField<String>(
-          value: formState.editingType ?? pet.type,
+          initialValue: formState.editingType ?? pet.type,
           decoration: const InputDecoration(
             border: OutlineInputBorder(),
             prefixIcon: Icon(Icons.category),

@@ -23,8 +23,24 @@ class HomeRepositoryImpl implements HomeRepository {
       // 1단계: 초고속 캐시 확인 (즉시 반환 가능)
       final ultraFastCached = await _ultraFastCache.getUltraFastDashboard();
       if (ultraFastCached != null) {
-        LoggerService.debug('🚀 HomeRepositoryImpl: 초고속 캐시에서 즉시 반환');
-        return ultraFastCached;
+        LoggerService.debug('🚀 HomeRepositoryImpl: 초고속 캐시에서 기본 데이터 즉시 반환');
+
+        // ⚠️ 중요: 날씨 데이터만 실시간 GPS 위치로 업데이트
+        LoggerService.debug('🌤️ HomeRepositoryImpl: GPS 기반 실시간 날씨 데이터 취득 중...');
+        final freshWeather = await getCurrentWeather(userTriggered: true);
+
+        // 날씨 데이터만 업데이트된 대시보드 반환
+        final updatedDashboard = HomeDashboardEntity(
+          currentTime: ultraFastCached.currentTime,
+          weather: freshWeather ?? ultraFastCached.weather,
+          petProfiles: ultraFastCached.petProfiles,
+          upcomingAppointments: ultraFastCached.upcomingAppointments,
+          petHealthSummary: ultraFastCached.petHealthSummary,
+          walkSummary: ultraFastCached.walkSummary,
+        );
+
+        LoggerService.debug('✅ HomeRepositoryImpl: 실시간 날씨로 업데이트 완료');
+        return updatedDashboard;
       }
 
       // 2단계: 데이터 없음 - 새로 로딩
@@ -32,7 +48,7 @@ class HomeRepositoryImpl implements HomeRepository {
 
       // 개별 데이터 병렬 로딩
       final results = await Future.wait([
-        getCurrentWeather(),
+        getCurrentWeather(userTriggered: true), // GPS 기반 실시간 날씨
         getPetSummaries(),
         getUpcomingAppointments(),
         getPetHealthSummary(),
@@ -79,21 +95,14 @@ class HomeRepositoryImpl implements HomeRepository {
     bool userTriggered = false,
   }) async {
     try {
-      // 사용자가 직접 요청하지 않은 경우 캐시 확인
-      if (!userTriggered) {
-        final cachedWeather = _cacheService.getCache<WeatherEntity>(
-          CacheKeys.weather,
-        );
-        if (cachedWeather != null) {
-          LoggerService.debug('⚡ getCurrentWeather: 캐시에서 날씨 데이터 반환');
-          return cachedWeather;
-        }
-      }
-
-      // WeatherService를 사용하여 날씨 데이터 조회
+      // WeatherService를 사용하여 실시간 GPS 위치 기반 날씨 데이터 조회
+      // 캐시를 사용하지 않고 항상 사용자의 현재 위치로 날씨 조회
       WeatherLocation? weatherLocation;
       if (location != null) {
         weatherLocation = WeatherMapper.toDataLocation(location);
+        LoggerService.debug('📍 getCurrentWeather: 지정된 위치 사용 - ${location.name}');
+      } else {
+        LoggerService.debug('📍 getCurrentWeather: GPS 위치 자동 감지 사용');
       }
 
       final weatherData = await _weatherService.getCurrentWeather(
@@ -104,11 +113,18 @@ class HomeRepositoryImpl implements HomeRepository {
       if (weatherData != null) {
         final weatherEntity = WeatherMapper.toEntity(weatherData);
 
-        // 날씨 데이터 캐시 저장 (5분 TTL)
+        LoggerService.debug(
+          '✅ getCurrentWeather: 날씨 데이터 취득 성공 - ${weatherEntity.location}, ${weatherEntity.temperature}°C',
+        );
+
+        // 위치 기반 캐시 키 생성 (위도, 경도를 포함)
+        final cacheKey = '${CacheKeys.weather}_${weatherEntity.location}';
+
+        // 날씨 데이터 캐시 저장 (3분 TTL - GPS 위치 기반이므로 짧게 설정)
         await _cacheService.setCache(
-          CacheKeys.weather,
+          cacheKey,
           weatherEntity,
-          ttl: CacheTTL.short,
+          ttl: const Duration(minutes: 3),
         );
 
         return weatherEntity;
@@ -116,6 +132,7 @@ class HomeRepositoryImpl implements HomeRepository {
 
       return null;
     } catch (e) {
+      LoggerService.debug('❌ getCurrentWeather: 에러 발생 - $e');
       // 에러 발생시 null 반환
       return null;
     }

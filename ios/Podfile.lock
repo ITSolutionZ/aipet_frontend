@@ -11,37 +11,37 @@ PODS:
     - PromisesObjC (~> 2.4)
   - connectivity_plus (0.0.1):
     - Flutter
-  - Firebase/Auth (12.4.0):
+  - Firebase/Auth (11.5.0):
     - Firebase/CoreOnly
-    - FirebaseAuth (~> 12.4.0)
-  - Firebase/CoreOnly (12.4.0):
-    - FirebaseCore (~> 12.4.0)
-  - firebase_auth (6.1.1):
-    - Firebase/Auth (= 12.4.0)
+    - FirebaseAuth (~> 11.5.0)
+  - Firebase/CoreOnly (11.5.0):
+    - FirebaseCore (= 11.5.0)
+  - firebase_auth (5.3.1):
+    - Firebase/Auth (= 11.5.0)
     - firebase_core
     - Flutter
-  - firebase_core (4.2.0):
-    - Firebase/CoreOnly (= 12.4.0)
+  - firebase_core (3.6.0):
+    - Firebase/CoreOnly (= 11.5.0)
     - Flutter
-  - FirebaseAppCheckInterop (12.4.0)
-  - FirebaseAuth (12.4.0):
-    - FirebaseAppCheckInterop (~> 12.4.0)
-    - FirebaseAuthInterop (~> 12.4.0)
-    - FirebaseCore (~> 12.4.0)
-    - FirebaseCoreExtension (~> 12.4.0)
-    - GoogleUtilities/AppDelegateSwizzler (~> 8.1)
-    - GoogleUtilities/Environment (~> 8.1)
-    - GTMSessionFetcher/Core (< 6.0, >= 3.4)
-    - RecaptchaInterop (~> 101.0)
-  - FirebaseAuthInterop (12.4.0)
-  - FirebaseCore (12.4.0):
-    - FirebaseCoreInternal (~> 12.4.0)
-    - GoogleUtilities/Environment (~> 8.1)
-    - GoogleUtilities/Logger (~> 8.1)
-  - FirebaseCoreExtension (12.4.0):
-    - FirebaseCore (~> 12.4.0)
-  - FirebaseCoreInternal (12.4.0):
-    - "GoogleUtilities/NSData+zlib (~> 8.1)"
+  - FirebaseAppCheckInterop (11.15.0)
+  - FirebaseAuth (11.5.0):
+    - FirebaseAppCheckInterop (~> 11.0)
+    - FirebaseAuthInterop (~> 11.0)
+    - FirebaseCore (= 11.5)
+    - FirebaseCoreExtension (= 11.5)
+    - GoogleUtilities/AppDelegateSwizzler (~> 8.0)
+    - GoogleUtilities/Environment (~> 8.0)
+    - GTMSessionFetcher/Core (< 5.0, >= 3.4)
+    - RecaptchaInterop (~> 100.0)
+  - FirebaseAuthInterop (11.15.0)
+  - FirebaseCore (11.5.0):
+    - FirebaseCoreInternal (= 11.5)
+    - GoogleUtilities/Environment (~> 8.0)
+    - GoogleUtilities/Logger (~> 8.0)
+  - FirebaseCoreExtension (11.5.0):
+    - FirebaseCore (= 11.5)
+  - FirebaseCoreInternal (11.5.0):
+    - "GoogleUtilities/NSData+zlib (~> 8.0)"
   - Flutter (1.0.0)
   - flutter_local_notifications (0.0.1):
     - Flutter
@@ -125,7 +125,7 @@ PODS:
   - printing (1.0.0):
     - Flutter
   - PromisesObjC (2.4.0)
-  - RecaptchaInterop (101.0.0)
+  - RecaptchaInterop (100.0.0)
   - Sentry/HybridSDK (8.56.2)
   - sentry_flutter (9.7.0):
     - Flutter
@@ -248,47 +248,47 @@ SPEC CHECKSUMS:
   AppAuth: 1c1a8afa7e12f2ec3a294d9882dfa5ab7d3cb063
   AppCheckCore: cc8fd0a3a230ddd401f326489c99990b013f0c4f
   connectivity_plus: cb623214f4e1f6ef8fe7403d580fdad517d2f7dd
-  Firebase: f07b15ae5a6ec0f93713e30b923d9970d144af3e
-  firebase_auth: c2b8be95d602d4e8a9148fae72333ef78e69cc20
-  firebase_core: 744984dbbed8b3036abf34f0b98d80f130a7e464
-  FirebaseAppCheckInterop: f734c802f21fe1da0837708f0f9a27218c8a4ed0
-  FirebaseAuth: 4a2aed737c84114a9d9b33d11ae1b147d6b94889
-  FirebaseAuthInterop: 858e6b754966e70740a4370dd1503dfffe6dbb49
-  FirebaseCore: bb595f3114953664e3c1dc032f008a244147cfd3
-  FirebaseCoreExtension: 7e1f7118ee970e001a8013719fb90950ee5e0018
-  FirebaseCoreInternal: d7f5a043c2cd01a08103ab586587c1468047bca6
-  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  Firebase: 7a56fe4f56b5ab81b86a6822f5b8f909ae6fc7e2
+  firebase_auth: b0a89ef56f9b019551464d3f2b9ed8917d4ac65c
+  firebase_core: 89b577f5af5c7e6a90455b931361e2795a3a9323
+  FirebaseAppCheckInterop: 06fe5a3799278ae4667e6c432edd86b1030fa3df
+  FirebaseAuth: d8ad770642af39d1be932094be5f5230efb0ea74
+  FirebaseAuthInterop: 7087d7a4ee4bc4de019b2d0c240974ed5d89e2fd
+  FirebaseCore: 93abc05437f8064cd2bc0a53b768fb0bc5a1d006
+  FirebaseCoreExtension: ddb2eb987f736b714d30f6386795b52c4670439e
+  FirebaseCoreInternal: f47dd28ae7782e6a4738aad3106071a8fe0af604
+  Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   flutter_local_notifications: a5a732f069baa862e728d839dd2ebb904737effb
   flutter_native_splash: c32d145d68aeda5502d5f543ee38c192065986cf
   flutter_secure_storage: 1ed9476fba7e7a782b22888f956cce43e2c62f13
   geolocator_apple: ab36aa0e8b7d7a2d7639b3b4e48308394e8cef5e
   Google-Maps-iOS-Utils: 0a484b05ed21d88c9f9ebbacb007956edd508a96
   google_maps_flutter_ios: 0291eb2aa252298a769b04d075e4a9d747ff7264
-  google_sign_in_ios: 205742c688aea0e64db9da03c33121694a365109
+  google_sign_in_ios: 00dfa94252eb10278b64828c81bcb7158a81a53a
   GoogleMaps: 0608099d4870cac8754bdba9b6953db543432438
   GoogleSignIn: c7f09cfbc85a1abf69187be091997c317cc33b77
   GoogleUtilities: 00c88b9a86066ef77f0da2fab05f65d7768ed8e1
   GTMAppAuth: 217a876b249c3c585a54fd6f73e6b58c4f5c4238
   GTMSessionFetcher: 5aea5ba6bd522a239e236100971f10cb71b96ab6
-  image_picker_ios: 7fe1ff8e34c1790d6fff70a32484959f563a928a
-  local_auth_darwin: d2e8c53ef0c4f43c646462e3415432c4dab3ae19
+  image_picker_ios: e0ece4aa2a75771a7de3fa735d26d90817041326
+  local_auth_darwin: c3ee6cce0a8d56be34c8ccb66ba31f7f180aaebb
   location: 155caecf9da4f280ab5fe4a55f94ceccfab838f8
   mobile_scanner: 9157936403f5a0644ca3779a38ff8404c5434a93
   objective_c: 89e720c30d716b036faf9c9684022048eee1eee2
   package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
-  path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
+  path_provider_foundation: bb55f6dbba17d0dccd6737fe6f7f34fbd0376880
   permission_handler_apple: 4ed2196e43d0651e8ff7ca3483a069d469701f2d
   printing: 54ff03f28fe9ba3aa93358afb80a8595a071dd07
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
-  RecaptchaInterop: 11e0b637842dfb48308d242afc3f448062325aba
+  RecaptchaInterop: 7d1a4a01a6b2cb1610a47ef3f85f0c411434cb21
   Sentry: b53951377b78e21a734f5dc8318e333dbfc682d7
   sentry_flutter: 7f88e12d1882ec6e648644a7c0ff5b1466f07f99
   share_plus: 50da8cb520a8f0f65671c6c6a99b3617ed10a58a
-  shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
+  shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb
   sign_in_with_apple: c5dcc141574c8c54d5ac99dd2163c0c72ad22418
   sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
-  url_launcher_ios: 694010445543906933d732453a59da0a173ae33d
+  url_launcher_ios: 7a95fa5b60cc718a708b8f2966718e93db0cef1b
 
-PODFILE CHECKSUM: abcfe2374800bf39de61f363177c354a28aad442
+PODFILE CHECKSUM: 108b2bd74a2bc6e1019ad4e879b55844e09554ae
 
 COCOAPODS: 1.16.2

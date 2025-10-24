@@ -5,7 +5,7 @@ import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../pet_basic_info_tab.dart';
+import '../basic_info/controllers/pet_basic_info_controller.dart';
 
 /// Pet 이미지 처리 헬퍼
 class PetInfoImageHelper {
@@ -152,7 +152,7 @@ class PetInfoImageHelper {
     final imagePath = await ImageService.pickFromCamera(context);
     if (imagePath != null && context.mounted) {
       ref
-          .read(petBasicInfoTabControllerProvider(tabId).notifier)
+          .read(petBasicInfoControllerProvider(tabId).notifier)
           .updateSelectedImage(imagePath);
       SnackBarService.showSuccess(context, '写真が選択されました');
     }
@@ -174,7 +174,7 @@ class PetInfoImageHelper {
       LoggerService.debug('📸 File exists: $exists');
 
       ref
-          .read(petBasicInfoTabControllerProvider(tabId).notifier)
+          .read(petBasicInfoControllerProvider(tabId).notifier)
           .updateSelectedImage(imagePath);
       SnackBarService.showSuccess(context, '画像が選択されました');
     }

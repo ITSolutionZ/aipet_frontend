@@ -1,7 +1,6 @@
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
-import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
 import '../../domain/domain.dart';
 
 class AiFavoriteCardWidget extends StatelessWidget {
@@ -126,7 +125,7 @@ class AiFavoriteCardWidget extends StatelessWidget {
     final difference = now.difference(dateTime);
 
     if (difference.inDays == 0) {
-      return ('今日 ' + DateTimeUtils.formatTime(dateTime));
+      return ('今日 ${DateTimeUtils.formatTime(dateTime)}');
     } else if (difference.inDays == 1) {
       return '昨日';
     } else if (difference.inDays < 7) {

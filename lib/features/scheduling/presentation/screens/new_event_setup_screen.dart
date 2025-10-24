@@ -494,7 +494,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
             Switch(
               value: _excludeHolidays,
               onChanged: (value) => setState(() => _excludeHolidays = value),
-              activeColor: AppColors.pointPink,
+              activeThumbColor: AppColors.pointPink,
             ),
           ],
         ),
@@ -563,7 +563,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
           )
         else
           DropdownButtonFormField<PetProfileEntity>(
-            value: _selectedPet,
+            initialValue: _selectedPet,
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
               contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -750,7 +750,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
         Switch(
           value: _isAllDay,
           onChanged: (value) => setState(() => _isAllDay = value),
-          activeColor: AppColors.pointPink,
+          activeThumbColor: AppColors.pointPink,
         ),
       ],
     );

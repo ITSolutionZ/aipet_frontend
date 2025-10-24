@@ -1,7 +1,6 @@
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
 
 import '../../domain/domain.dart';
 
@@ -212,7 +211,7 @@ class AiMessageBubble extends ConsumerWidget {
     } else if (difference.inDays < 1) {
       return '${difference.inHours}時間前';
     } else {
-      return ('${dateTime.month}/${dateTime.day} ' + DateTimeUtils.formatTime(dateTime));
+      return ('${dateTime.month}/${dateTime.day} ${DateTimeUtils.formatTime(dateTime)}');
     }
   }
 }

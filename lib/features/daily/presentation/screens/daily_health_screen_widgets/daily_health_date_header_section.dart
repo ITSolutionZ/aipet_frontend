@@ -22,10 +22,57 @@ class DailyHealthDateHeaderSection extends ConsumerWidget {
 
     return petsAsync.when(
       data: (pets) {
+        // 펫이 없으면 주차별 안내 문구 없이 간단한 헤더만 표시
+        if (pets.isEmpty) {
+          return Container(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(AppSpacing.sm),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.05),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        formattedDate,
+                        style: AppFonts.titleLarge.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Text(
+                  weekday,
+                  style: AppFonts.bodyMedium.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        // 펫이 있을 때는 주차별 안내 문구 표시
         String petType = 'dog';
         int weekOfYear = _getWeekOfYear(today);
 
-        if (pets.isNotEmpty && screenData.selectedPetId != null) {
+        if (screenData.selectedPetId != null) {
           final selectedPet = pets.firstWhere(
             (pet) => pet.id == screenData.selectedPetId,
             orElse: () => pets.first,

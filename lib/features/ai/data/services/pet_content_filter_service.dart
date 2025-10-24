@@ -97,7 +97,7 @@ class PetContentFilterService {
     final response = await _httpClient.callOpenAI<Map<String, dynamic>>(
       '/chat/completions',
       data: {
-        'model': AiApiConstants.openaiModel,
+        'model': AppConfig.current.openaiModel,
         'messages': [
           {
             'role': 'system',

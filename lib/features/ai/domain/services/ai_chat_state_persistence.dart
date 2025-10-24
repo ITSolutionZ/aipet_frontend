@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:aipet_frontend/shared/services/cache_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

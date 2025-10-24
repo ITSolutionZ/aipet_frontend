@@ -1,9 +1,9 @@
 import 'package:aipet_frontend/app/controllers/base_controller.dart';
-import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:aipet_frontend/features/walk/data/data.dart';
 import 'package:aipet_frontend/features/walk/domain/domain.dart';
 import 'package:aipet_frontend/features/walk/domain/usecases/update_walk_record_usecase.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:aipet_frontend/shared/core/utils/geo_utils.dart';
 import 'package:flutter/foundation.dart';
 

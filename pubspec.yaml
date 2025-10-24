@@ -5,219 +5,217 @@ publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.8.1
+    sdk: ^3.8.1
 
 dependencies:
-  flutter:
-    sdk: flutter
-  cupertino_icons: ^1.0.8
-  firebase_core: ^4.2.0
-  firebase_auth: ^6.1.1
-  google_sign_in: ^7.2.0
-  sign_in_with_apple: ^7.0.1
-  # flutter_web_auth: ^0.4.3  # 네임스페이스 문제로 임시 비활성화
-  screenshot: ^3.0.0
-  google_fonts: ^6.3.2
-  flutter_riverpod: ^3.0.3
-  riverpod_annotation: ^3.0.3
-  go_router: ^16.2.5
-  shared_preferences: ^2.2.2
-  # webview_flutter: ^4.8.0  # iOS 시뮬레이터 호환성 문제로 임시 비활성화
-  flutter_svg: ^2.2.1
-  lottie: ^3.1.3
-  fl_chart: ^0.69.0
-  http: ^1.5.0
-  path_provider: ^2.1.4
-  crypto: ^3.0.3
-  flutter_local_notifications: ^19.4.2
-  url_launcher: ^6.2.4
-  share_plus: ^12.0.0
-  # youtube_player_flutter: ^9.0.3  # iOS 시뮬레이터 WebKit 호환성 문제로 임시 비활성화
-  # mobile_scanner: ^4.0.1  # 호환성 문제로 임시 비활성화
-  permission_handler: ^12.0.1
-  flutter_secure_storage: ^9.2.2
-  dio: ^5.4.3+1
-  package_info_plus: ^8.0.2
-  connectivity_plus: ^7.0.0
-  flutter_dotenv: ^6.0.0
-  geolocator: ^14.0.2
-  google_maps_flutter: ^2.13.1
-  location: ^8.0.1
-  image_picker: ^1.2.0
-  image: ^4.1.7
-  logger: ^2.6.2
-  sentry_flutter: ^9.7.0
-  sqflite: ^2.3.3
-  path: ^1.9.0
-  qr_flutter: ^4.1.0
-  table_calendar: ^3.2.0
-  # google_mlkit_text_recognition: ^0.10.0  # 호환성 문제로 임시 비활성화
-  pdf: ^3.11.1
-  printing: ^5.13.2
-  intl: ^0.20.2
-  googleapis: ^15.0.0
-  googleapis_auth: ^2.0.0
-  extension_google_sign_in_as_googleapis_auth: ^3.0.0
-  local_auth: ^2.3.0
+    flutter:
+        sdk: flutter
+    cupertino_icons: ^1.0.8
+    firebase_core: 3.6.0 # Firebase SDK 11.5.0と互換性のあるバージョン
+    firebase_auth: 5.3.1 # Firebase SDK 11.5.0と互換性のあるバージョン
+    google_sign_in: ^7.2.0
+    sign_in_with_apple: ^7.0.1
+    # flutter_web_auth: ^0.4.3  # 네임스페이스 문제로 임시 비활성화
+    screenshot: ^3.0.0
+    google_fonts: ^6.3.2
+    flutter_riverpod: ^3.0.3
+    riverpod_annotation: ^3.0.3
+    go_router: ^16.2.5
+    shared_preferences: ^2.2.2
+    # webview_flutter: ^4.8.0  # iOS 시뮬레이터 호환성 문제로 임시 비활성화
+    flutter_svg: ^2.2.1
+    lottie: ^3.1.3
+    fl_chart: ^0.69.0
+    http: ^1.5.0
+    path_provider: ^2.1.4
+    crypto: ^3.0.3
+    flutter_local_notifications: ^19.4.2
+    url_launcher: ^6.2.4
+    share_plus: ^10.1.2
+    # youtube_player_flutter: ^9.0.3  # iOS 시뮬레이터 WebKit 호환성 문제로 임시 비활성화
+    permission_handler: ^12.0.1
+    flutter_secure_storage: ^9.2.2
+    dio: ^5.4.3+1
+    package_info_plus: ^8.0.2
+    connectivity_plus: ^7.0.0
+    flutter_dotenv: ^6.0.0
+    geolocator: ^14.0.2
+    google_maps_flutter: ^2.13.1
+    location: ^8.0.1
+    image_picker: ^1.2.0
+    image: ^4.1.7
+    logger: ^2.6.2
+    sentry_flutter: ^9.7.0
+    sqflite: ^2.3.3
+    path: ^1.9.0
+    qr_flutter: ^4.1.0
+    table_calendar: ^3.2.0
+    # google_mlkit_text_recognition: ^0.10.0  # 호환성 문제로 임시 비활성화
+    pdf: ^3.11.1
+    printing: ^5.13.2
+    intl: ^0.20.2
+    googleapis: ^15.0.0
+    googleapis_auth: ^2.0.0
+    extension_google_sign_in_as_googleapis_auth: ^3.0.0
+    local_auth: ^2.3.0
 
-  mockito: ^5.4.4
-  freezed_annotation: ^3.1.0
-  json_annotation: ^4.9.0
-  meta: any
-  mobile_scanner: ^7.1.2
-  uuid: any
+    mockito: ^5.4.4
+    freezed_annotation: ^3.1.0
+    json_annotation: ^4.9.0
+    meta: any
+    mobile_scanner: ^7.1.2
+    uuid: any
 dev_dependencies:
-  sentry_dart_plugin: ^3.1.1
-  flutter_test:
-    sdk: flutter
-  flutter_lints: ^6.0.0
-  riverpod_generator: ^3.0.3
-  freezed: ^3.2.3
-  json_serializable: ^6.8.0
-  build_runner: ^2.4.13
-  test: ^1.25.2
-  sqflite_common_ffi: ^2.3.3
-  flutter_native_splash: ^2.4.1
-  flutter_launcher_icons: ^0.14.4
+    sentry_dart_plugin: ^3.1.1
+    flutter_test:
+        sdk: flutter
+    flutter_lints: ^6.0.0
+    riverpod_generator: ^3.0.3
+    freezed: ^3.2.3
+    json_serializable: ^6.8.0
+    build_runner: ^2.4.13
+    test: ^1.25.2
+    sqflite_common_ffi: ^2.3.3
+    flutter_native_splash: ^2.4.1
+    flutter_launcher_icons: ^0.14.4
 
-  riverpod: any
+    riverpod: any
 flutter:
-  uses-material-design: true
+    uses-material-design: true
 
-  fonts:
-    - family: NotoSansJP
-      fonts:
-        - asset: assets/fonts/NotoSansJP/NotoSansJP-Thin.ttf
-          weight: 100
-        - asset: assets/fonts/NotoSansJP/NotoSansJP-Light.ttf
-          weight: 300
-        - asset: assets/fonts/NotoSansJP/NotoSansJP-Regular.ttf
-          weight: 400
-        - asset: assets/fonts/NotoSansJP/NotoSansJP-Medium.ttf
-          weight: 500
-        - asset: assets/fonts/NotoSansJP/NotoSansJP-Bold.ttf
-          weight: 700
-        - asset: assets/fonts/NotoSansJP/NotoSansJP-Black.ttf
-          weight: 900
+    fonts:
+        - family: NotoSansJP
+          fonts:
+              - asset: assets/fonts/NotoSansJP/NotoSansJP-Thin.ttf
+                weight: 100
+              - asset: assets/fonts/NotoSansJP/NotoSansJP-Light.ttf
+                weight: 300
+              - asset: assets/fonts/NotoSansJP/NotoSansJP-Regular.ttf
+                weight: 400
+              - asset: assets/fonts/NotoSansJP/NotoSansJP-Medium.ttf
+                weight: 500
+              - asset: assets/fonts/NotoSansJP/NotoSansJP-Bold.ttf
+                weight: 700
+              - asset: assets/fonts/NotoSansJP/NotoSansJP-Black.ttf
+                weight: 900
 
-    - family: MPlusRounded1c
-      fonts:
-        - asset: assets/fonts/MPlusRounded1c/MPLUSRounded1c-Thin.ttf
-          weight: 100
-        - asset: assets/fonts/MPlusRounded1c/MPLUSRounded1c-Light.ttf
-          weight: 300
-        - asset: assets/fonts/MPlusRounded1c/MPLUSRounded1c-Regular.ttf
-          weight: 400
-        - asset: assets/fonts/MPlusRounded1c/MPLUSRounded1c-Medium.ttf
-          weight: 500
-        - asset: assets/fonts/MPlusRounded1c/MPLUSRounded1c-Bold.ttf
-          weight: 700
-        - asset: assets/fonts/MPlusRounded1c/MPLUSRounded1c-ExtraBold.ttf
-          weight: 800
-        - asset: assets/fonts/MPlusRounded1c/MPLUSRounded1c-Black.ttf
-          weight: 900
+        - family: MPlusRounded1c
+          fonts:
+              - asset: assets/fonts/MPlusRounded1c/MPLUSRounded1c-Thin.ttf
+                weight: 100
+              - asset: assets/fonts/MPlusRounded1c/MPLUSRounded1c-Light.ttf
+                weight: 300
+              - asset: assets/fonts/MPlusRounded1c/MPLUSRounded1c-Regular.ttf
+                weight: 400
+              - asset: assets/fonts/MPlusRounded1c/MPLUSRounded1c-Medium.ttf
+                weight: 500
+              - asset: assets/fonts/MPlusRounded1c/MPLUSRounded1c-Bold.ttf
+                weight: 700
+              - asset: assets/fonts/MPlusRounded1c/MPLUSRounded1c-ExtraBold.ttf
+                weight: 800
+              - asset: assets/fonts/MPlusRounded1c/MPLUSRounded1c-Black.ttf
+                weight: 900
 
-  assets:
-    # Environment and config files
-    - .env
+    assets:
+        # Environment and config files
+        - .env
 
-    # Meteocons (weather icons)
-    - assets/meteocons/
-    - assets/meteocons/design/fill/animation-ready/
-    - assets/meteocons/viewer.html
+        # Meteocons (weather icons)
+        - assets/meteocons/
+        - assets/meteocons/design/fill/animation-ready/
+        - assets/meteocons/viewer.html
 
-    # Policy documents
-    - assets/policies/
+        # Policy documents
+        - assets/policies/
 
-    # Images - General
-    - assets/images/
-    - assets/images/activities/
-    - assets/images/backgrounds/
-    - assets/images/brands/
-    - assets/images/cats/
-    - assets/images/dogs/
-    - assets/images/etc/
-    - assets/images/home_banner/
-    - assets/images/home_banner/appbar_banners/
-    - assets/images/home_banner/home_banners/
-    - assets/images/medications/
-    - assets/images/modal/
-    - assets/images/onboarding/
-    - assets/images/pet_selector/
-    - assets/images/pets/
-    - assets/images/textures/
-    - assets/images/walks/
+        # Images - General
+        - assets/images/
+        - assets/images/activities/
+        - assets/images/backgrounds/
+        - assets/images/cats/
+        - assets/images/dogs/
+        - assets/images/etc/
+        - assets/images/home_banner/
+        - assets/images/home_banner/appbar_banners/
+        - assets/images/home_banner/home_banners/
+        - assets/images/medications/
+        - assets/images/modal/
+        - assets/images/onboarding/
+        - assets/images/pet_selector/
+        - assets/images/pets/
+        - assets/images/textures/
+        - assets/images/walks/
 
-    # Individual image files
-    - assets/images/empty_image.png
-    - assets/images/placeholder.png
+        # Individual image files
+        - assets/images/empty_image.png
+        - assets/images/placeholder.png
 
-    # Icons - General
-    - assets/icons/
-    - assets/icons/navigation/
+        # Icons - General
+        - assets/icons/
+        - assets/icons/navigation/
 
-    - assets/icons/logos/
-    - assets/icons/common/
-    - assets/icons/pet_type/
-    - assets/icons/walk_logo/
+        - assets/icons/logos/
+        - assets/icons/common/
+        - assets/icons/pet_type/
+        - assets/icons/walk_logo/
 
-    # Icons - Home menu (individual files)
-    - assets/icons/home_menu/adopt.png
-    - assets/icons/home_menu/alregic.png
-    - assets/icons/home_menu/booking.png
-    - assets/icons/home_menu/community.png
-    - assets/icons/home_menu/daily.png
-    - assets/icons/home_menu/note.png
-    - assets/icons/home_menu/pharmacy.png
-    - assets/icons/home_menu/place.png
-    - assets/icons/home_menu/qr.png
-    - assets/icons/home_menu/shopping.png
+        # Icons - Home menu (individual files)
+        - assets/icons/home_menu/adopt.png
+        - assets/icons/home_menu/alregic.png
+        - assets/icons/home_menu/booking.png
+        - assets/icons/home_menu/community.png
+        - assets/icons/home_menu/daily.png
+        - assets/icons/home_menu/note.png
+        - assets/icons/home_menu/pharmacy.png
+        - assets/icons/home_menu/place.png
+        - assets/icons/home_menu/qr.png
+        - assets/icons/home_menu/shopping.png
 
-    # Icons - Walk status
-    - assets/icons/walk_logo/walk_good.png
-    - assets/icons/walk_logo/walk_warning.png
-    - assets/icons/walk_logo/walk_dont.png
-    - assets/icons/common/ranking-star.png
+        # Icons - Walk status
+        - assets/icons/walk_logo/walk_good.png
+        - assets/icons/walk_logo/walk_warning.png
+        - assets/icons/walk_logo/walk_dont.png
+        - assets/icons/common/ranking-star.png
 
-    # Animations
-    - assets/lottie/
+        # Animations
+        - assets/lottie/
 
 sentry:
-  upload_debug_symbols: true
-  upload_source_maps: true
-  project: flutter
-  org: itz-aipet
+    upload_debug_symbols: true
+    upload_source_maps: true
+    project: flutter
+    org: itz-aipet
 
 # アプリアイコン設定
 flutter_launcher_icons:
-  android: true
-  ios: true
-  image_path: "assets/icons/logos/aipet_logo.png"
-  min_sdk_android: 21
-  remove_alpha_ios: true
+    android: true
+    ios: true
+    image_path: "assets/icons/logos/aipet_logo.png"
+    min_sdk_android: 21
+    remove_alpha_ios: true
 
 # スプラッシュスクリーン設定
 flutter_native_splash:
-  # 背景色 (白色)
-  color: "#FFFFFF"
-
-  # スプラッシュ画像 - より小さなロゴ使用
-  image: assets/icons/logos/itz.png
-
-  # Android用設定
-  android: true
-  android_gravity: center
-  android_12:
-    # Android 12以降用の設定
-    image: assets/icons/logos/itz.png
+    # 背景色 (白色)
     color: "#FFFFFF"
 
-  # iOS用設定
-  ios: true
-  ios_content_mode: center
+    # スプラッシュ画像 - より小さなロゴ使用
+    image: assets/icons/logos/itz.png
 
-  # Web用設定 (必要に応じて)
-  web: false
+    # Android用設定
+    android: true
+    android_gravity: center
+    android_12:
+        # Android 12以降用の設定
+        image: assets/icons/logos/itz.png
+        color: "#FFFFFF"
 
-  # フルスクリーン設定
-  fullscreen: true
+    # iOS用設定
+    ios: true
+    ios_content_mode: center
+
+    # Web用設定 (必要に応じて)
+    web: false
+
+    # フルスクリーン設定
+    fullscreen: true
