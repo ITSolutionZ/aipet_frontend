@@ -303,42 +303,93 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
     );
   }
 
-  Widget _buildMedicalRecordsSection() {
+  Widget _buildMedicalRecordsSection(PetHealthState healthState) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          '診療記録',
-          style: AppFonts.titleMedium.copyWith(
-            fontWeight: FontWeight.bold,
-            color: AppColors.pointDark,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              '診療記録',
+              style: AppFonts.titleMedium.copyWith(
+                fontWeight: FontWeight.bold,
+                color: AppColors.pointDark,
+              ),
+            ),
+            if (widget.isEditMode)
+              TextButton.icon(
+                onPressed: () => _addMedicalRecord(),
+                icon: const Icon(Icons.add, size: 20),
+                label: const Text('追加'),
+                style: TextButton.styleFrom(
+                  foregroundColor: AppColors.pointBrown,
+                ),
+              ),
+          ],
         ),
         const SizedBox(height: AppSpacing.md),
-        GenericInfoCard.withIcon(
-          icon: Icons.local_hospital,
-          iconColor: AppColors.pointPink,
-          iconBackgroundColor: AppColors.pointPink.withValues(alpha: 0.1),
-          title: '定期健康診断',
-          subtitle: '2024年7月20日 • 田中動物病院',
-          badge: '正常',
-          badgeColor: AppColors.pointGreen,
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        GenericInfoCard.withIcon(
-          icon: Icons.cleaning_services,
-          iconColor: AppColors.pointBlue,
-          iconBackgroundColor: AppColors.pointBlue.withValues(alpha: 0.1),
-          title: 'デンタルケア',
-          subtitle: '2024年6月5日 • 田中動物病院',
-          badge: '完了',
-          badgeColor: AppColors.pointGreen,
-        ),
+        ...healthState.medicalRecords.map((record) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+            child: _buildMedicalRecordCard(record),
+          );
+        }),
       ],
     );
   }
 
-  Widget _buildWeightTrackingSection() {
+  /// 진료 기록 추가
+  void _addMedicalRecord() {
+    LoggerService.debug('📝 診療記録追加 (未実装)');
+  }
+
+  /// 진료 기록 카드 빌드
+  Widget _buildMedicalRecordCard(MedicalRecord record) {
+    final iconData = _getIconData(record.iconName);
+    final iconColor = _getColor(record.colorName);
+    final statusColor = _getColor(record.colorName);
+
+    final dateFormat = DateFormat('yyyy年M月d日');
+    final dateStr = dateFormat.format(record.date);
+
+    if (!widget.isEditMode) {
+      return GenericInfoCard.withIcon(
+        icon: iconData,
+        iconColor: iconColor,
+        iconBackgroundColor: iconColor.withValues(alpha: 0.1),
+        title: record.title,
+        subtitle: '$dateStr • ${record.hospital}',
+        badge: record.status,
+        badgeColor: statusColor,
+      );
+    }
+
+    // 편집 모드: 클릭 가능한 카드
+    return GestureDetector(
+      onTap: () => _editMedicalRecord(record),
+      child: GenericInfoCard.withIcon(
+        icon: iconData,
+        iconColor: iconColor,
+        iconBackgroundColor: iconColor.withValues(alpha: 0.1),
+        title: record.title,
+        subtitle: '$dateStr • ${record.hospital}',
+        badge: record.status,
+        badgeColor: statusColor,
+        trailing: const Icon(Icons.edit, size: 16, color: AppColors.pointGray),
+      ),
+    );
+  }
+
+  /// 진료 기록 편집
+  void _editMedicalRecord(MedicalRecord record) {
+    LoggerService.debug('✏️ 診療記録編集: ${record.title} (未実装)');
+  }
+
+  Widget _buildWeightTrackingSection(PetHealthState healthState) {
+    final currentWeight = healthState.currentWeight ?? widget.pet.weight;
+    final idealWeight = healthState.idealWeight ?? widget.pet.weight + 0.5;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -355,7 +406,7 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
           iconColor: AppColors.pointBrown,
           iconBackgroundColor: AppColors.pointBrown.withValues(alpha: 0.1),
           title: '現在の体重',
-          subtitle: '${widget.pet.weight}kg • 理想体重: ${widget.pet.weight + 0.5}kg',
+          subtitle: '${currentWeight}kg • 理想体重: ${idealWeight}kg',
           badge: '適正',
           badgeColor: AppColors.pointGreen,
         ),
@@ -385,202 +436,86 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
     );
   }
 
-  Widget _buildAppointmentsSection() {
+  Widget _buildAppointmentsSection(PetHealthState healthState) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          '予約・スケジュール',
-          style: AppFonts.titleMedium.copyWith(
-            fontWeight: FontWeight.bold,
-            color: AppColors.pointDark,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              '予約・スケジュール',
+              style: AppFonts.titleMedium.copyWith(
+                fontWeight: FontWeight.bold,
+                color: AppColors.pointDark,
+              ),
+            ),
+            if (widget.isEditMode)
+              TextButton.icon(
+                onPressed: () => _addAppointment(),
+                icon: const Icon(Icons.add, size: 20),
+                label: const Text('追加'),
+                style: TextButton.styleFrom(
+                  foregroundColor: AppColors.pointBrown,
+                ),
+              ),
+          ],
         ),
         const SizedBox(height: AppSpacing.md),
-        GenericInfoCard.withIcon(
-          icon: Icons.schedule,
-          iconColor: AppColors.pointBlue,
-          iconBackgroundColor: AppColors.pointBlue.withValues(alpha: 0.1),
-          title: '次回健康診断',
-          subtitle: '2025年1月20日 10:00 • 田中動物病院',
-          badge: '予約済み',
-          badgeColor: AppColors.pointBlue,
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        GenericInfoCard.withIcon(
-          icon: Icons.content_cut,
-          iconColor: AppColors.pointPink,
-          iconBackgroundColor: AppColors.pointPink.withValues(alpha: 0.1),
-          title: 'グルーミング',
-          subtitle: '2024年9月25日 14:00 • ペットサロン花',
-          badge: '予約済み',
-          badgeColor: AppColors.pointPink,
-        ),
+        ...healthState.appointments.map((record) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+            child: _buildAppointmentCard(record),
+          );
+        }),
       ],
     );
   }
 
-  Widget _buildHealthCard({
-    required IconData icon,
-    required String title,
-    required Color iconColor,
-    required String status,
-    required String lastDate,
-    required String nextDate,
-  }) {
-    Color statusColor = AppColors.pointGreen;
-    if (status == '期限切れ') {
-      statusColor = AppColors.pointPink;
-    } else if (status == '接種中') {
-      statusColor = AppColors.pointBlue;
-    }
+  /// 예약 추가
+  void _addAppointment() {
+    LoggerService.debug('📝 予約追加 (未実装)');
+  }
+
+  /// 예약 카드 빌드
+  Widget _buildAppointmentCard(AppointmentRecord record) {
+    final iconData = _getIconData(record.iconName);
+    final iconColor = _getColor(record.colorName);
+    final statusColor = _getColor(record.colorName);
+
+    final dateFormat = DateFormat('yyyy年M月d日 HH:mm');
+    final dateTimeStr = dateFormat.format(record.dateTime);
 
     if (!widget.isEditMode) {
       return GenericInfoCard.withIcon(
-        icon: icon,
+        icon: iconData,
         iconColor: iconColor,
         iconBackgroundColor: iconColor.withValues(alpha: 0.1),
-        title: title,
-        subtitle: '前回: $lastDate\n次回: $nextDate',
-        badge: status,
+        title: record.title,
+        subtitle: '$dateTimeStr • ${record.location}',
+        badge: record.status,
         badgeColor: statusColor,
       );
     }
 
-    // 편집 모드: 인라인 편집 가능
-    return _buildEditableHealthCard(
-      icon: icon,
-      title: title,
-      iconColor: iconColor,
-      status: status,
-      statusColor: statusColor,
-      lastDate: lastDate,
-      nextDate: nextDate,
-    );
-  }
-
-  Widget _buildEditableHealthCard({
-    required IconData icon,
-    required String title,
-    required Color iconColor,
-    required String status,
-    required Color statusColor,
-    required String lastDate,
-    required String nextDate,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: iconColor.withValues(alpha: 0.3), width: 2),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 헤더 행 (아이콘 + 제목 + 상태)
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(AppSpacing.sm),
-                decoration: BoxDecoration(
-                  color: iconColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(icon, color: iconColor, size: 20),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: Text(
-                  title,
-                  style: AppFonts.bodyMedium.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.pointDark,
-                  ),
-                ),
-              ),
-              // 상태 드롭다운
-              _buildStatusDropdown(status, statusColor),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.md),
-          // 전회 날짜
-          _buildDateField('前回', lastDate, iconColor),
-          const SizedBox(height: AppSpacing.sm),
-          // 다음 날짜
-          _buildDateField('次回', nextDate, iconColor),
-        ],
+    // 편집 모드: 클릭 가능한 카드
+    return GestureDetector(
+      onTap: () => _editAppointment(record),
+      child: GenericInfoCard.withIcon(
+        icon: iconData,
+        iconColor: iconColor,
+        iconBackgroundColor: iconColor.withValues(alpha: 0.1),
+        title: record.title,
+        subtitle: '$dateTimeStr • ${record.location}',
+        badge: record.status,
+        badgeColor: statusColor,
+        trailing: const Icon(Icons.edit, size: 16, color: AppColors.pointGray),
       ),
     );
   }
 
-  Widget _buildDateField(String label, String dateText, Color accentColor) {
-    return InkWell(
-      onTap: () => _selectDate(dateText),
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.sm,
-        ),
-        decoration: BoxDecoration(
-          color: AppColors.pointOffWhite,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: accentColor.withValues(alpha: 0.2)),
-        ),
-        child: Row(
-          children: [
-            Icon(Icons.calendar_today, size: 16, color: accentColor),
-            const SizedBox(width: AppSpacing.sm),
-            Text(
-              '$label:',
-              style: AppFonts.bodySmall.copyWith(
-                color: AppColors.pointGray,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const SizedBox(width: AppSpacing.sm),
-            Expanded(
-              child: Text(
-                dateText,
-                style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStatusDropdown(String currentStatus, Color statusColor) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.sm,
-        vertical: AppSpacing.xs,
-      ),
-      decoration: BoxDecoration(
-        color: statusColor.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: statusColor.withValues(alpha: 0.3)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            currentStatus,
-            style: AppFonts.bodySmall.copyWith(
-              color: statusColor,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(width: 4),
-          Icon(Icons.arrow_drop_down, size: 16, color: statusColor),
-        ],
-      ),
-    );
-  }
-
-  Future<void> _selectDate(String currentDateText) async {
-    // TODO: DatePicker 구현
-    LoggerService.debug('날짜 선택 다이얼로그 표시: $currentDateText');
+  /// 예약 편집
+  void _editAppointment(AppointmentRecord record) {
+    LoggerService.debug('✏️ 予約編集: ${record.title} (未実装)');
   }
 }
