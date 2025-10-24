@@ -70,12 +70,36 @@ class ImageStorageService {
     }
   }
 
-  /// 펫 이미지 저장 (절대 경로 반환)
+  /// 펫 이미지 저장 (상대 경로 반환)
   Future<String?> savePetImage(File imageFile) async {
     try {
+      debugPrint('🖼️ savePetImage 시작');
+      debugPrint('  - Source file: ${imageFile.path}');
+      debugPrint('  - File exists: ${await imageFile.exists()}');
+
+      // ImageStorageService 초기화 확인
+      if (_baseDirectory == null) {
+        debugPrint(
+          '⚠️ ImageStorageService not initialized, initializing now...',
+        );
+        await initialize();
+      }
+
       final fileName = 'pet_${DateTime.now().millisecondsSinceEpoch}.jpg';
       final relativePath = '$_petSubDir/$fileName';
-      return await _saveImage(imageFile, relativePath);
+
+      debugPrint('  - Target relative path: $relativePath');
+
+      final savedPath = await _saveImage(imageFile, relativePath);
+
+      if (savedPath != null) {
+        debugPrint('✅ Pet image saved successfully');
+        debugPrint('  - Saved path: $savedPath');
+      } else {
+        debugPrint('❌ Pet image save failed (null returned)');
+      }
+
+      return savedPath;
     } catch (e) {
       debugPrint('❌ Failed to save pet image: $e');
       return null;
@@ -94,33 +118,44 @@ class ImageStorageService {
     }
   }
 
-  /// 내부 이미지 저장 로직
+  /// 내부 이미지 저장 로직 (상대 경로 반환)
   Future<String?> _saveImage(File sourceFile, String relativePath) async {
     try {
+      debugPrint('💾 _saveImage 시작');
+      debugPrint('  - relativePath: $relativePath');
+
       if (_baseDirectory == null) {
         debugPrint('⚠️ ImageStorageService not initialized');
         return null;
       }
 
       final targetPath = '${_baseDirectory!.path}/$relativePath';
+      debugPrint('  - targetPath: $targetPath');
+
       final targetFile = File(targetPath);
 
       // 대상 디렉토리 생성
       final targetDir = targetFile.parent;
+      debugPrint('  - targetDir: ${targetDir.path}');
+
       if (!await targetDir.exists()) {
+        debugPrint('  - Creating target directory...');
         await targetDir.create(recursive: true);
       }
 
       // 파일 복사
+      debugPrint('  - Copying file...');
       final savedFile = await sourceFile.copy(targetPath);
 
       // 저장 확인
       if (await savedFile.exists()) {
         final fileSize = await savedFile.length();
         debugPrint('✅ Image saved successfully');
-        debugPrint('   Path: $targetPath');
+        debugPrint('   Absolute path: $targetPath');
+        debugPrint('   Relative path: $relativePath');
         debugPrint('   Size: ${(fileSize / 1024).toStringAsFixed(2)} KB');
-        // 상대 경로 반환 (앱 재시작 시에도 유효)
+
+        // ⚠️ 중요: 상대 경로 반환 (앱 재시작 시에도 유효)
         return relativePath;
       } else {
         debugPrint('❌ Failed to verify saved image');
@@ -128,20 +163,35 @@ class ImageStorageService {
       }
     } catch (e) {
       debugPrint('❌ Error saving image: $e');
+      debugPrint('   Stack trace: ${StackTrace.current}');
       return null;
     }
   }
 
   /// 상대 경로를 절대 경로로 변환
   String? getAbsolutePath(String? relativePath) {
-    if (relativePath == null || relativePath.isEmpty) return null;
-    if (_baseDirectory == null) return null;
+    if (relativePath == null || relativePath.isEmpty) {
+      debugPrint('⚠️ getAbsolutePath: relativePath is null or empty');
+      return null;
+    }
+
+    if (_baseDirectory == null) {
+      debugPrint('⚠️ getAbsolutePath: _baseDirectory is null');
+      return null;
+    }
 
     // 이미 절대 경로인 경우 그대로 반환
-    if (relativePath.startsWith('/')) return relativePath;
+    if (relativePath.startsWith('/')) {
+      debugPrint('ℹ️ getAbsolutePath: Already absolute path: $relativePath');
+      return relativePath;
+    }
 
     // 상대 경로를 절대 경로로 변환
-    return '${_baseDirectory!.path}/$relativePath';
+    final absolutePath = '${_baseDirectory!.path}/$relativePath';
+    debugPrint('🔄 getAbsolutePath:');
+    debugPrint('  - Relative: $relativePath');
+    debugPrint('  - Absolute: $absolutePath');
+    return absolutePath;
   }
 
   /// 이미지 존재 여부 확인

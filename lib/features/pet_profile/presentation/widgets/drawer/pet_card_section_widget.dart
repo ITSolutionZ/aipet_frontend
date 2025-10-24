@@ -106,66 +106,100 @@ class PetCardSectionWidget extends ConsumerWidget {
     // 年齢計算
     final age = _calculateAge(pet.birthDate);
 
-    return Container(
-      padding: const EdgeInsets.all(12), // 패딩 줄임
-      decoration: BoxDecoration(
-        color: const Color(0xFF7B68BE),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min, // 최소 크기로 제한
-        children: [
-          Row(
-            children: [
-              // 실제 펫 이미지 표시
-              Container(
-                width: 32, // 이미지 크기 줄임
-                height: 32,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white,
-                  image: _getPetImage(pet),
+    return GestureDetector(
+      onTap: () {
+        LoggerService.debug('🐾 펫 카드 전체 클릭');
+        LoggerService.debug('  - petId: ${pet.id}');
+        LoggerService.debug('  - petName: ${pet.name}');
+
+        final petId = pet.id;
+
+        // petId가 null이거나 비어있는 경우 에러 방지
+        if (petId.isEmpty) {
+          LoggerService.debug('❌ petId가 비어있습니다');
+          return;
+        }
+
+        // 네비게이션을 직접 실행 (GoRouter가 자동으로 드로워를 닫음)
+        try {
+          LoggerService.debug('🚀 Navigating to /home/pet-profile/$petId');
+          context.push('/home/pet-profile/$petId');
+          LoggerService.debug('✅ Navigation completed');
+        } catch (e) {
+          LoggerService.debug('❌ Navigation error: $e');
+          // 에러가 발생하면 드로워를 수동으로 닫기 시도
+          try {
+            Navigator.of(context, rootNavigator: true).pop();
+          } catch (_) {}
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.all(12), // 패딩 줄임
+        decoration: BoxDecoration(
+          color: const Color(0xFF7B68BE),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min, // 최소 크기로 제한
+          children: [
+            Row(
+              children: [
+                // 실제 펫 이미지 표시
+                Container(
+                  width: 32, // 이미지 크기 줄임
+                  height: 32,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white,
+                    image: _getPetImage(pet),
+                  ),
+                  child: _getPetImage(pet) == null
+                      ? const Icon(
+                          Icons.pets,
+                          color: Color(0xFF7B68BE),
+                          size: 20, // 아이콘 크기 줄임
+                        )
+                      : null,
                 ),
-                child: _getPetImage(pet) == null
-                    ? const Icon(
-                        Icons.pets,
-                        color: Color(0xFF7B68BE),
-                        size: 20, // 아이콘 크기 줄임
-                      )
-                    : null,
-              ),
-              const SizedBox(width: 8), // 간격 줄임
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      pet.name,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 14, // 폰트 크기 줄임
-                        fontWeight: FontWeight.bold,
+                const SizedBox(width: 8), // 간격 줄임
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        pet.name,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14, // 폰트 크기 줄임
+                          fontWeight: FontWeight.bold,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Text(
-                      _getPetBreedDisplay(pet),
-                      style: const TextStyle(color: Colors.white, fontSize: 10),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
+                      Text(
+                        _getPetBreedDisplay(pet),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8), // 간격 줄임
-          Flexible(
-            // Flexible로 변경하여 오버플로우 방지
-            child: Text(
+                // プロフィール確認アイコン
+                const Icon(
+                  Icons.arrow_forward_ios,
+                  color: Colors.white,
+                  size: 14,
+                ),
+              ],
+            ),
+            const SizedBox(height: 8), // 간격 줄임
+            Text(
               _buildPetInfo(pet, age),
               style: TextStyle(
                 color: Colors.white.withValues(alpha: 0.9),
@@ -174,39 +208,8 @@ class PetCardSectionWidget extends ConsumerWidget {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
-          ),
-          const SizedBox(height: 6), // 간격 줄임
-          Align(
-            alignment: Alignment.centerRight,
-            child: GestureDetector(
-              // TextButton 대신 GestureDetector 사용
-              onTap: () async {
-                final petId = pet.id;
-
-                // petId가 null이거나 비어있는 경우 에러 방지
-                if (petId.isEmpty) {
-                  return;
-                }
-
-                // Shell 라우트 내의 펫 프로필로 이동
-                await context.push('/home/pet-profile/$petId');
-                // 네비게이션 완료 후 drawer 자동으로 닫힘
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                child: const Text(
-                  'プロフィール確認',
-                  style: TextStyle(
-                    fontSize: 10, // 폰트 크기 줄임
-                    color: Colors.white,
-                    decoration: TextDecoration.underline,
-                    decorationColor: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -216,13 +219,17 @@ class PetCardSectionWidget extends ConsumerWidget {
     try {
       // pet.imagePath가 있는 경우 실제 이미지 사용
       if (pet.imagePath != null && pet.imagePath!.isNotEmpty) {
-        LoggerService.debug('🖼️ PetCardSectionWidget - imagePath: ${pet.imagePath}');
+        LoggerService.debug(
+          '🖼️ PetCardSectionWidget - imagePath: ${pet.imagePath}',
+        );
 
         // 상대 경로를 절대 경로로 변환
         final storageService = ImageStorageService();
         final absolutePath =
             storageService.getAbsolutePath(pet.imagePath!) ?? pet.imagePath!;
-        LoggerService.debug('🖼️ PetCardSectionWidget - absolutePath: $absolutePath');
+        LoggerService.debug(
+          '🖼️ PetCardSectionWidget - absolutePath: $absolutePath',
+        );
 
         final imageType = ImageService.getImageType(absolutePath);
         LoggerService.debug('🖼️ PetCardSectionWidget - imageType: $imageType');
@@ -231,7 +238,9 @@ class PetCardSectionWidget extends ConsumerWidget {
           case ImageType.file:
             final file = File(absolutePath);
             final fileExists = file.existsSync();
-            LoggerService.debug('🖼️ PetCardSectionWidget - File exists: $fileExists');
+            LoggerService.debug(
+              '🖼️ PetCardSectionWidget - File exists: $fileExists',
+            );
 
             if (!fileExists) {
               LoggerService.debug(

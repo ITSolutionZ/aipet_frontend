@@ -74,6 +74,14 @@ class HomeDashboardNotifier extends _$HomeDashboardNotifier {
 
   /// 실시간 GPS 위치로 날씨 새로고침
   Future<void> refreshWeatherWithGPS() async {
+    // Provider가 dispose된 경우 바로 종료
+    if (!ref.mounted) {
+      LoggerService.debug(
+        '⚠️ HomeDashboardNotifier: Provider disposed, skipping weather refresh',
+      );
+      return;
+    }
+
     try {
       LoggerService.debug('🌍 실시간 GPS 위치로 날씨 새로고침 시작');
       final repository = ref.read(homeRepositoryProvider);
@@ -81,11 +89,28 @@ class HomeDashboardNotifier extends _$HomeDashboardNotifier {
       // userTriggered=true로 캐시 무시하고 실제 GPS 위치 가져오기
       final weather = await repository.getCurrentWeather(userTriggered: true);
 
+      // API 호출 후 다시 mounted 확인
+      if (!ref.mounted) {
+        LoggerService.debug(
+          '⚠️ HomeDashboardNotifier: Provider disposed after API call',
+        );
+        return;
+      }
+
       if (weather != null) {
         LoggerService.debug('✅ GPS 날씨 업데이트 성공: ${weather.location}');
 
         // 현재 대시보드 데이터를 가져와서 날씨만 업데이트
         final currentDashboard = await future;
+
+        // 상태 업데이트 전 마지막 mounted 확인
+        if (!ref.mounted) {
+          LoggerService.debug(
+            '⚠️ HomeDashboardNotifier: Provider disposed before state update',
+          );
+          return;
+        }
+
         final updatedDashboard = HomeDashboardEntity(
           currentTime: currentDashboard.currentTime,
           weather: weather,

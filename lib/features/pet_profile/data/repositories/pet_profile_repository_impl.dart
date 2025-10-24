@@ -262,15 +262,22 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
   PetProfileEntity _safeCreatePetEntity(Map<String, dynamic> petData) {
     // 통일된 필드명으로 PetProfileEntity 생성
     LoggerService.debug('📋 === _safeCreatePetEntity 통일된 필드명 로그 ===');
-    LoggerService.debug('📋 펫 ID: ${petData['id']}');
+    LoggerService.debug('📋 펫 ID (id): ${petData['id']}');
+    LoggerService.debug('📋 펫 ID (petId): ${petData['petId']}');
     LoggerService.debug('📋 펫 이름: ${petData['name']}');
     LoggerService.debug('📋 펫 타입: ${petData['type']}');
     LoggerService.debug('📋 펫 품종: ${petData['breed']}');
     LoggerService.debug('📋 펫 성별: ${petData['gender']}');
     LoggerService.debug('📋 펫 체중: ${petData['weight']}');
-    LoggerService.debug('📋 펫 이미지: ${petData['imagePath']}');
+    LoggerService.debug('📋 펫 이미지 (imagePath): ${petData['imagePath']}');
+    LoggerService.debug(
+      '📋 펫 이미지 (profile_image): ${petData['profile_image']}',
+    );
+    LoggerService.debug('📋 펫 생일 (birthDate): ${petData['birthDate']}');
+    LoggerService.debug('📋 펫 생일 (birth_date): ${petData['birth_date']}');
     LoggerService.debug('📋 펫 상태: ${petData['petStatus']}');
-    LoggerService.debug('📋 중성화 여부: ${petData['neutered']}');
+    LoggerService.debug('📋 중성화 (neutered): ${petData['neutered']}');
+    LoggerService.debug('📋 중성화 (is_neutered): ${petData['is_neutered']}');
     LoggerService.debug('📋 추가 정보: ${petData['additionalInfo']}');
     LoggerService.debug('📋 ===========================================');
 
@@ -281,6 +288,9 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
     if (petData['additionalInfo'] is Map<String, dynamic>) {
       final info = petData['additionalInfo'] as Map<String, dynamic>;
       // 유효한 값만 추가
+      if (info['isNeutered'] != null) {
+        additionalInfo['isNeutered'] = info['isNeutered'];
+      }
       if (info['guardianName'] != null &&
           info['guardianName'].toString().isNotEmpty) {
         additionalInfo['guardianName'] = info['guardianName'];
@@ -319,22 +329,63 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
     // petStatus 파싱 (기본값: PetStatus.active)
     final petStatus = _parsePetStatus(petData['petStatus']);
 
+    // isActive 안전 파싱 (bool 또는 int)
+    bool isActive = true;
+    if (petData['isActive'] is bool) {
+      isActive = petData['isActive'] as bool;
+    } else if (petData['is_active'] is int) {
+      isActive = petData['is_active'] == 1;
+    } else if (petData['is_active'] is bool) {
+      isActive = petData['is_active'] as bool;
+    }
+
+    // neutered 안전 파싱 (bool 또는 int)
+    bool neutered = false;
+    if (petData['neutered'] is bool) {
+      neutered = petData['neutered'] as bool;
+    } else if (petData['is_neutered'] is int) {
+      neutered = petData['is_neutered'] == 1;
+    } else if (petData['is_neutered'] is bool) {
+      neutered = petData['is_neutered'] as bool;
+    }
+
+    // microchipNumber 파싱 (Entity 필드 또는 additionalInfo)
+    String? microchipNumber;
+    if (petData['microchipNumber'] != null) {
+      microchipNumber = petData['microchipNumber'].toString();
+    } else if (petData['microchip_number'] != null) {
+      microchipNumber = petData['microchip_number'].toString();
+    } else if (additionalInfo['microchipId'] != null) {
+      microchipNumber = additionalInfo['microchipId'].toString();
+    }
+
     return PetProfileEntity(
-      id: petData['id']?.toString() ?? '',
+      id: (petData['id'] ?? petData['petId'])?.toString() ?? '',
       name: petData['name']?.toString() ?? '',
       type: petData['type']?.toString() ?? 'dog',
       breed: petData['breed']?.toString(),
-      birthDate: _parseDate(petData['birthDate']) ?? DateTime.now(),
+      birthDate:
+          _parseDate(petData['birthDate'] ?? petData['birth_date']) ??
+          DateTime.now(),
       gender: petData['gender']?.toString() ?? 'unknown',
       weight: _parseDouble(petData['weight']) ?? 0.0,
-      imagePath: petData['imagePath']?.toString(),
+      microchipNumber: microchipNumber,
+      size: petData['size']?.toString(),
+      arrivalDate: _parseDate(
+        petData['arrivalDate'] ?? petData['arrival_date'],
+      ),
+      imagePath: (petData['imagePath'] ?? petData['profile_image'])?.toString(),
       ownerId: petData['ownerId']?.toString() ?? 'unknown',
-      createdAt: _parseDate(petData['createdAt']) ?? DateTime.now(),
-      updatedAt: _parseDate(petData['updatedAt']) ?? DateTime.now(),
-      isActive: petData['isActive'] as bool? ?? true,
+      createdAt:
+          _parseDate(petData['createdAt'] ?? petData['created_at']) ??
+          DateTime.now(),
+      updatedAt:
+          _parseDate(petData['updatedAt'] ?? petData['updated_at']) ??
+          DateTime.now(),
+      isActive: isActive,
       petStatus: petStatus,
       additionalInfo: additionalInfo,
-      neutered: petData['neutered'] as bool? ?? false,
+      neutered: neutered,
     );
   }
 
