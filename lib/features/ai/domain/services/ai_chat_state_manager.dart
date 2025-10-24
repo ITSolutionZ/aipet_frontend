@@ -47,14 +47,14 @@ class AiChatStateManager {
 
       final updatedState = currentState.copyWith(
         selectedPet: pet,
-        hasPetSelected: pet != null,
+        hasPetSelected: true, // ✅ 변경: 펫 선택 여부와 관계없이 선택 완료로 처리
         messages: updatedMessages,
         error: null, // 에러 클리어
       );
 
       if (kDebugMode) {
         LoggerService.debug(
-          '[$_tag] 🐕 Pet selected: ${pet?.name ?? 'None'} (messages: ${updatedMessages.length})',
+          '[$_tag] 🐕 Pet selected: ${pet?.name ?? '一般的なペット相談'} (messages: ${updatedMessages.length})',
         );
       }
 

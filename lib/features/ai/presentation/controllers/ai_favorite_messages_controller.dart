@@ -87,8 +87,6 @@ class AiFavoriteMessagesController {
 
 --- AI Pet アプリより ---''';
 
-    await SharePlus.instance.share(
-      ShareParams(text: shareText, subject: 'AI Pet アプリより'),
-    );
+    await Share.share(shareText, subject: 'AI Pet アプリより');
   }
 }

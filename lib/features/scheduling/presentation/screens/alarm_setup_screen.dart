@@ -364,7 +364,7 @@ class _AlarmSetupScreenState extends ConsumerState<AlarmSetupScreen> {
             Switch(
               value: _excludeHolidays,
               onChanged: (value) => setState(() => _excludeHolidays = value),
-              activeColor: AppColors.pointBlue,
+              activeThumbColor: AppColors.pointBlue,
             ),
           ],
         ),
@@ -433,7 +433,7 @@ class _AlarmSetupScreenState extends ConsumerState<AlarmSetupScreen> {
           )
         else
           DropdownButtonFormField<PetProfileEntity>(
-            value: _selectedPet,
+            initialValue: _selectedPet,
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
               contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -522,7 +522,7 @@ class _AlarmSetupScreenState extends ConsumerState<AlarmSetupScreen> {
             Switch(
               value: _snoozeEnabled,
               onChanged: (value) => setState(() => _snoozeEnabled = value),
-              activeColor: AppColors.pointBlue,
+              activeThumbColor: AppColors.pointBlue,
             ),
           ],
         ),
@@ -539,7 +539,7 @@ class _AlarmSetupScreenState extends ConsumerState<AlarmSetupScreen> {
                     vertical: AppSpacing.sm,
                   ),
                 ),
-                value: _snoozeMinutes,
+                initialValue: _snoozeMinutes,
                 items: [5, 10, 15, 30]
                     .map(
                       (minutes) => DropdownMenuItem(
@@ -568,7 +568,7 @@ class _AlarmSetupScreenState extends ConsumerState<AlarmSetupScreen> {
         Switch(
           value: _soundEnabled,
           onChanged: (value) => setState(() => _soundEnabled = value),
-          activeColor: AppColors.pointBlue,
+          activeThumbColor: AppColors.pointBlue,
         ),
       ],
     );
@@ -584,7 +584,7 @@ class _AlarmSetupScreenState extends ConsumerState<AlarmSetupScreen> {
         Switch(
           value: _vibrationEnabled,
           onChanged: (value) => setState(() => _vibrationEnabled = value),
-          activeColor: AppColors.pointBlue,
+          activeThumbColor: AppColors.pointBlue,
         ),
       ],
     );

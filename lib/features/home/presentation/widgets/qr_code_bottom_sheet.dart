@@ -1,14 +1,11 @@
 import 'dart:async';
 
 import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
-import 'package:aipet_frontend/shared/design/text_styles.dart';
-import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
-import '../../../../shared/design/tokens/tokens.dart';
 import '../../../../shared/shared.dart';
 import 'qr_code_scanner_screen.dart';
 

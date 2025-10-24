@@ -274,7 +274,7 @@ class _PetStatusSelectionDialogContentState
                               child: Column(
                                 children: [
                                   DropdownButtonFormField<String>(
-                                    value:
+                                    initialValue:
                                         state.statusValues[statusOption['id']],
                                     decoration: InputDecoration(
                                       labelText: '状態選択',

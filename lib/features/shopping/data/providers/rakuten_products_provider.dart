@@ -353,7 +353,8 @@ class RakutenProductsNotifier extends _$RakutenProductsNotifier {
     }
 
     try {
-      // タグIDをカンマ区切りで結合
+      // タグIDをカンマ区切りで結合 (将来的に使用予定)
+      // ignore: unused_local_variable
       final tagIdString = tagsToSearch.join(',');
       final products = await _apiService.searchPetProducts(
         keyword: state.currentKeyword,

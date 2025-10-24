@@ -477,7 +477,7 @@ class AiChatNotifier extends _$AiChatNotifier {
   String _getCurrentConversationId() {
     // 현재 날짜를 기준으로 대화 ID 생성 (일별 대화)
     final now = DateTime.now();
-    return ('conversation_' + DateTimeUtils.formatDateKey(now).replaceAll('-', '_'));
+    return ('conversation_${DateTimeUtils.formatDateKey(now).replaceAll('-', '_')}');
   }
 
   Future<void> clearChatHistory({bool saveBeforeClear = true}) async {

@@ -76,7 +76,7 @@ ${_translateReasonToJapanese(validationResult.reason)}
       final response = await _httpClient.callOpenAI<Map<String, dynamic>>(
         '/chat/completions',
         data: {
-          'model': AiApiConstants.openaiModel,
+          'model': AppConfig.current.openaiModel,
           'messages': [
             {
               'role': 'system',
@@ -108,7 +108,7 @@ ${_translateReasonToJapanese(validationResult.reason)}
         final usageResult = TokenUsageService.recordUsage(
           promptTokens: promptTokens,
           completionTokens: completionTokens,
-          model: AiApiConstants.openaiModel,
+          model: AppConfig.current.openaiModel,
           userId: petContext?.id, // 펫 ID를 사용자 식별자로 사용
         );
 

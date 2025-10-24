@@ -370,7 +370,7 @@ class _AddEventBottomSheetState extends ConsumerState<AddEventBottomSheet> {
                         _isAllDay = value;
                       });
                     },
-                    activeColor: AppColors.pointBlue,
+                    activeThumbColor: AppColors.pointBlue,
                   ),
                 ],
               ),
@@ -445,7 +445,7 @@ class _AddEventBottomSheetState extends ConsumerState<AddEventBottomSheet> {
                             }
                           });
                         },
-                        activeColor: AppColors.pointBlue,
+                        activeThumbColor: AppColors.pointBlue,
                       ),
                     ],
                   ),

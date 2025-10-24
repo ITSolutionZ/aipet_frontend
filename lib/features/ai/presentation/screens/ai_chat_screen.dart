@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../domain/entities/entities.dart'; // ✅ 추가
 import '../controllers/ai_chat_controller.dart';
 import '../widgets/ai_widgets.dart';
 
@@ -242,6 +243,16 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
           selectedCategory: chatState.selectedCategory,
           onCategorySelected: (category) {
             ref.read(aiChatProvider.notifier).selectCategory(category);
+          },
+          onSkip: () {
+            // ✅ 추가: Skip 시 일반 카테고리 선택으로 처리
+            final generalCategory = AiCategoryEntity(
+              id: 'general',
+              name: '一般',
+              icon: Icons.help_outline,
+              description: '一般的なペット相談',
+            );
+            ref.read(aiChatProvider.notifier).selectCategory(generalCategory);
           },
         );
       }

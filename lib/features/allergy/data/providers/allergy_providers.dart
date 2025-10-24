@@ -1,7 +1,7 @@
 import 'package:aipet_frontend/features/shopping/data/providers/rakuten_brands_provider.dart';
-import 'package:aipet_frontend/shared/core/services/logger_service.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/core/constants/app_texts.dart';
+import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

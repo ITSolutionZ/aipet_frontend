@@ -12,7 +12,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../features/pet_profile/data/providers/pet_profile_providers.dart';
-import '../../../../shared/domain/entities/pet_profile_entity.dart';
 import 'helpers/helpers.dart';
 
 class WalkListScreen extends ConsumerStatefulWidget {

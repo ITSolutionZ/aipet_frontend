@@ -1,6 +1,7 @@
 import 'dart:convert';
-import 'package:aipet_frontend/shared/core/services/logger_service.dart';
+
 import 'package:aipet_frontend/shared/core/domain/result.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:flutter/foundation.dart';
 
 /// 🔐 JWT 토큰 구조 검증 서비스

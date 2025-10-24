@@ -1,8 +1,7 @@
 import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/core/services/logger_service.dart';
-import 'package:flutter/foundation.dart';
-
 import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
+import 'package:flutter/foundation.dart';
 /// 🪙 OpenAI 토큰 사용량 추적 및 관리 서비스
 ///
 /// OpenAI API 사용량을 모니터링하고 비용을 추적하여 남용을 방지합니다.
@@ -209,7 +208,7 @@ class TokenUsageService {
   }
 
   static String _formatHourKey(DateTime dateTime) {
-    return (_formatDateKey(dateTime) + '-' + DateTimeUtils.formatTwoDigits(dateTime.hour));
+    return ('${_formatDateKey(dateTime)}-${DateTimeUtils.formatTwoDigits(dateTime.hour)}');
   }
 
   static int _getRequestCountForDate(DateTime date) {

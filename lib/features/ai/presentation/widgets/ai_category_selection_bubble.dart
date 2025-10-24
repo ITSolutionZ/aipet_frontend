@@ -7,11 +7,13 @@ import '../../domain/domain.dart';
 class AiCategorySelectionBubble extends StatelessWidget {
   final AiCategoryEntity? selectedCategory;
   final Function(AiCategoryEntity) onCategorySelected;
+  final VoidCallback? onSkip; // ✅ 추가: Skip 콜백
 
   const AiCategorySelectionBubble({
     super.key,
     this.selectedCategory,
     required this.onCategorySelected,
+    this.onSkip, // ✅ 추가
   });
 
   @override
@@ -81,6 +83,47 @@ class AiCategorySelectionBubble extends StatelessWidget {
 
                   // 카테고리 선택 위젯
                   _buildCategorySelection(),
+
+                  // ✅ 추가: Skip 버튼
+                  if (onSkip != null) ...[
+                    const SizedBox(height: AppSpacing.md),
+                    GestureDetector(
+                      onTap: onSkip,
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.md,
+                          vertical: AppSpacing.sm,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.circular(AppRadius.medium),
+                          border: Border.all(
+                            color: AppColors.pointGray.withValues(alpha: 0.5),
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.arrow_forward,
+                              size: 18,
+                              color: AppColors.pointGray,
+                            ),
+                            const SizedBox(width: AppSpacing.xs),
+                            Text(
+                              'スキップして自由に質問する',
+                              style: AppFonts.bodySmall.copyWith(
+                                color: AppColors.pointGray,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
 
                   const SizedBox(height: AppSpacing.sm),
 

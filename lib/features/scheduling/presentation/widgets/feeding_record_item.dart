@@ -1,7 +1,6 @@
+import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
 import 'package:aipet_frontend/shared/design/design.dart';
 import 'package:flutter/material.dart';
-
-import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
 class FeedingRecordItem extends StatelessWidget {
   final dynamic record;
 

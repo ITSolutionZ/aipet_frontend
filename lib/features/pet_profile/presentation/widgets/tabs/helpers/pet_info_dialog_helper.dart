@@ -2,7 +2,7 @@ import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../pet_basic_info_tab.dart';
+import '../basic_info/controllers/pet_basic_info_controller.dart';
 
 /// Pet 정보 편집 다이얼로그 헬퍼
 class PetInfoDialogHelper {
@@ -18,7 +18,7 @@ class PetInfoDialogHelper {
         title: const Text('名前編集'),
         content: TextField(
           controller: ref
-              .read(petBasicInfoTabControllerProvider(tabId))
+              .read(petBasicInfoControllerProvider(tabId).notifier)
               .nameController,
           decoration: const InputDecoration(
             labelText: 'ペットの名前',
@@ -58,11 +58,11 @@ class PetInfoDialogHelper {
               title: const Text('オス'),
               value: 'Male',
               groupValue: ref
-                  .watch(petBasicInfoTabControllerProvider(tabId))
+                  .watch(petBasicInfoControllerProvider(tabId))
                   .editingGender,
               onChanged: (value) {
                 ref
-                    .read(petBasicInfoTabControllerProvider(tabId).notifier)
+                    .read(petBasicInfoControllerProvider(tabId).notifier)
                     .updateGender(value);
               },
             ),
@@ -70,11 +70,11 @@ class PetInfoDialogHelper {
               title: const Text('メス'),
               value: 'Female',
               groupValue: ref
-                  .watch(petBasicInfoTabControllerProvider(tabId))
+                  .watch(petBasicInfoControllerProvider(tabId))
                   .editingGender,
               onChanged: (value) {
                 ref
-                    .read(petBasicInfoTabControllerProvider(tabId).notifier)
+                    .read(petBasicInfoControllerProvider(tabId).notifier)
                     .updateGender(value);
               },
             ),
@@ -102,7 +102,7 @@ class PetInfoDialogHelper {
     WidgetRef ref,
     String tabId,
   ) {
-    final tabState = ref.read(petBasicInfoTabControllerProvider(tabId));
+    final tabState = ref.read(petBasicInfoControllerProvider(tabId));
     final weightController = TextEditingController(
       text: tabState.editingWeight?.toString() ?? '',
     );
@@ -130,12 +130,12 @@ class PetInfoDialogHelper {
               final weight = double.tryParse(weightController.text);
               if (weight != null && weight > 0) {
                 ref
-                    .read(petBasicInfoTabControllerProvider(tabId).notifier)
+                    .read(petBasicInfoControllerProvider(tabId).notifier)
                     .updateWeight(weight);
                 ref
-                    .read(petBasicInfoTabControllerProvider(tabId))
+                    .read(petBasicInfoControllerProvider(tabId).notifier)
                     .weightController
-                    ?.text = weight
+                    .text = weight
                     .toString();
                 Navigator.pop(context);
               } else {
@@ -161,7 +161,7 @@ class PetInfoDialogHelper {
         title: const Text('外見編集'),
         content: TextField(
           controller: ref
-              .read(petBasicInfoTabControllerProvider(tabId))
+              .read(petBasicInfoControllerProvider(tabId).notifier)
               .appearanceController,
           maxLines: 3,
           decoration: const InputDecoration(
@@ -197,7 +197,7 @@ class PetInfoDialogHelper {
         title: const Text('マイクロチップ編集'),
         content: TextField(
           controller: ref
-              .read(petBasicInfoTabControllerProvider(tabId))
+              .read(petBasicInfoControllerProvider(tabId).notifier)
               .microchipController,
           decoration: const InputDecoration(
             labelText: 'マイクロチップID',

@@ -86,6 +86,9 @@ abstract class AppConfig {
   /// 날씨 API 키
   String get weatherApiKey;
 
+  /// Base API 키 (Fallback용)
+  String get baseApiKey;
+
   /// Google Cloud Map Platform API 키
   String get googleMapsApiKey;
 
@@ -268,10 +271,13 @@ class DevelopmentConfig extends AppConfig {
   String get openaiApiKey => _env('OPENAI_API_KEY'); // Changed
 
   @override
-  String get openaiModel => 'gpt-3.5-turbo';
+  String get openaiModel => 'gpt-5';
 
   @override
   String get weatherApiKey => _env('WEATHER_API_KEY'); // Changed
+
+  @override
+  String get baseApiKey => _env('BASE_API_KEY'); // Added
 
   @override
   String get googleMapsApiKey => _env('GOOGLE_MAPS_API_KEY'); // Changed
@@ -371,10 +377,13 @@ class StagingConfig extends AppConfig {
   String get openaiApiKey => _env('OPENAI_API_KEY'); // Changed
 
   @override
-  String get openaiModel => 'gpt-4';
+  String get openaiModel => 'gpt-5';
 
   @override
   String get weatherApiKey => _env('WEATHER_API_KEY'); // Changed
+
+  @override
+  String get baseApiKey => _env('BASE_API_KEY'); // Added
 
   @override
   String get googleMapsApiKey => _env('GOOGLE_MAPS_API_KEY'); // Changed
@@ -473,10 +482,13 @@ class ProductionConfig extends AppConfig {
   String get openaiApiKey => _env('OPENAI_API_KEY'); // Changed
 
   @override
-  String get openaiModel => 'gpt-4';
+  String get openaiModel => 'gpt-5';
 
   @override
   String get weatherApiKey => _env('WEATHER_API_KEY'); // Changed
+
+  @override
+  String get baseApiKey => _env('BASE_API_KEY'); // Added
 
   @override
   String get googleMapsApiKey => _env('GOOGLE_MAPS_API_KEY'); // Changed
@@ -575,10 +587,13 @@ class TestConfig extends AppConfig {
   String get openaiApiKey => '';
 
   @override
-  String get openaiModel => 'gpt-3.5-turbo';
+  String get openaiModel => 'gpt-5';
 
   @override
   String get weatherApiKey => '';
+
+  @override
+  String get baseApiKey => '';
 
   @override
   String get googleMapsApiKey => '';

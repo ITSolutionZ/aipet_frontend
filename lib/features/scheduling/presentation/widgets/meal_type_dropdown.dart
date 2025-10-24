@@ -33,7 +33,7 @@ class MealTypeDropdown extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.md),
             DropdownButtonFormField<String>(
-              value: selectedMealType,
+              initialValue: selectedMealType,
               decoration: InputDecoration(
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(AppRadius.medium),

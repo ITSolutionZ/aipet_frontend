@@ -4,6 +4,9 @@ platform :ios, '16.0'
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 
+# Firebase SDK バージョンを11.5.0に固定 (Swift 6の問題を回避)
+$FirebaseSDKVersion = '11.5.0'
+
 project 'Runner', {
   'Debug' => :debug,
   'Profile' => :release,
@@ -42,7 +45,19 @@ post_install do |installer|
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.0'
       config.build_settings['ENABLE_BITCODE'] = 'NO'
 
-      # Google Maps 관련 설정
+      # Swift言語バージョンをSwift 5に固定
+      # Firebase SDKはSwift 6の新機能を使用しているが、Xcode 16ではまだ完全にサポートされていない
+      config.build_settings['SWIFT_VERSION'] = '5.0'
+
+      # Firebase関連のターゲットに対して追加の設定
+      if target.name.start_with?('Firebase')
+        # Swift 6の実験的機能を無効化し、後方互換性を確保
+        config.build_settings['OTHER_SWIFT_FLAGS'] = '$(inherited) -no-verify-emitted-module-interface'
+        # 厳格な並行性チェックを無効化
+        config.build_settings['SWIFT_STRICT_CONCURRENCY'] = 'complete'
+      end
+
+      # Google Maps 関連設定
       if target.name == 'GoogleMaps'
         config.build_settings['CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER'] = 'NO'
       end

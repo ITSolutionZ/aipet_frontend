@@ -1,5 +1,5 @@
-import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/core/services/logger_service.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:flutter/foundation.dart';
 
 import 'pet_cache_clear_service.dart';

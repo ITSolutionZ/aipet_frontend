@@ -224,7 +224,7 @@ class ScheduledMealCard extends StatelessWidget {
           Switch(
             value: isEnabled,
             onChanged: onToggle,
-            activeColor: AppColors.pointBlue,
+            activeThumbColor: AppColors.pointBlue,
           ),
         ],
       ),

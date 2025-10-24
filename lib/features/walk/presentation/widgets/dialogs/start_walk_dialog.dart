@@ -85,7 +85,7 @@ class StartWalkDialog extends ConsumerWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           DropdownButtonFormField<String>(
-            value: formState.selectedPetId,
+            initialValue: formState.selectedPetId,
             decoration: const InputDecoration(
               labelText: 'ペット',
               border: OutlineInputBorder(),

@@ -81,7 +81,7 @@ class _WateringSettingsScreenState
                   _autoWateringEnabled = value;
                 });
               },
-              activeColor: AppColors.pointBlue,
+              activeThumbColor: AppColors.pointBlue,
             ),
           ],
         ),
@@ -152,7 +152,7 @@ class _WateringSettingsScreenState
                   _notificationsEnabled = value;
                 });
               },
-              activeColor: AppColors.pointBlue,
+              activeThumbColor: AppColors.pointBlue,
             ),
             SwitchListTile(
               title: const Text('水量不足アラート'),
@@ -163,7 +163,7 @@ class _WateringSettingsScreenState
                   _lowWaterAlertEnabled = value;
                 });
               },
-              activeColor: AppColors.pointBlue,
+              activeThumbColor: AppColors.pointBlue,
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(

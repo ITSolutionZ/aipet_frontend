@@ -2,7 +2,8 @@ import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../pet_basic_info_tab.dart';
+import '../basic_info/controllers/pet_basic_info_controller.dart';
+import '../basic_info/controllers/pet_basic_info_state.dart';
 
 /// Pet 정보 검증 및 저장 헬퍼
 class PetInfoValidationHelper {
@@ -14,10 +15,11 @@ class PetInfoValidationHelper {
     PetProfileEntity pet,
     VoidCallback onToggleEdit,
   ) {
-    final tabState = ref.read(petBasicInfoTabControllerProvider(tabId));
+    final controller = ref.read(petBasicInfoControllerProvider(tabId).notifier);
+    final tabState = ref.read(petBasicInfoControllerProvider(tabId));
 
     // バリデーション
-    if (tabState.nameController?.text.trim().isEmpty ?? true) {
+    if (controller.nameController.text.trim().isEmpty) {
       SnackBarService.showError(context, '名前を入力してください');
       return;
     }
@@ -28,7 +30,7 @@ class PetInfoValidationHelper {
     }
 
     // 変更を保存
-    final updatedPet = _createUpdatedPet(tabState, pet);
+    final updatedPet = _createUpdatedPet(controller, tabState, pet);
 
     // TODO: API 호출로 실제 저장
     // await ref.read(petRepositoryProvider).updatePet(updatedPet);
@@ -49,24 +51,25 @@ class PetInfoValidationHelper {
     VoidCallback onToggleEdit,
   ) {
     // Reset controllers to original values
-    ref.read(petBasicInfoTabControllerProvider(tabId).notifier).initialize(pet);
+    ref.read(petBasicInfoControllerProvider(tabId).notifier).initialize(pet);
     onToggleEdit();
   }
 
   /// 업데이트된 펫 엔티티 생성
   static PetProfileEntity _createUpdatedPet(
-    PetBasicInfoTabState tabState,
+    PetBasicInfoController controller,
+    PetBasicInfoState tabState,
     PetProfileEntity pet,
   ) {
     return pet.copyWith(
-      name: tabState.nameController?.text.trim() ?? pet.name,
+      name: controller.nameController.text.trim(),
       gender: tabState.editingGender ?? pet.gender,
       weight: tabState.editingWeight ?? pet.weight,
       additionalInfo: {
         ...pet.additionalInfo ?? {},
-        'appearance': tabState.appearanceController?.text.trim() ?? '',
-        'microchipId': tabState.microchipController?.text.trim() ?? '',
-        'healthConditions': tabState.editingHealthConditions ?? [],
+        'appearance': controller.appearanceController.text.trim(),
+        'microchipId': controller.microchipController.text.trim(),
+        'healthConditions': tabState.editingHealthConditions,
       },
     );
   }

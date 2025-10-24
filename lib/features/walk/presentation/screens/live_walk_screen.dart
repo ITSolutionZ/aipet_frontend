@@ -7,7 +7,6 @@ import 'package:go_router/go_router.dart';
 import '../widgets/live_walk/live_walk_widget.dart'
     show LiveWalkWidget, liveWalkControllerProvider, WalkTimerState;
 import 'helpers/live/helpers.dart';
-import 'helpers/live/live_walk_dialog_helper.dart';
 
 /// 실시간 산책 화면
 class LiveWalkScreen extends ConsumerStatefulWidget {
