@@ -283,17 +283,21 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
     PetProfileEntity pet,
   ) async {
     try {
-      LoggerService.debug('💾 Saving pet profile: ${pet.name}');
+      LoggerService.debug('💾 펫 프로필 저장 시작: ${pet.name}');
 
       final controller = ref.read(petProfileUnifiedControllerProvider.notifier);
       await controller.savePetProfile();
 
+      LoggerService.debug('✅ 펫 프로필 저장 완료');
+
       if (mounted) {
         SnackBarService.showSuccess(context, 'ペット情報を保存しました');
+        LoggerService.debug('🔄 편집 모드 종료 중...');
         _toggleEditMode(); // 편집 모드 종료
+        LoggerService.debug('✅ 편집 모드 종료 완료');
       }
     } catch (e) {
-      LoggerService.debug('❌ Failed to save pet profile: $e');
+      LoggerService.debug('❌ 펫 프로필 저장 실패: $e');
       if (mounted) {
         SnackBarService.showError(context, 'ペット情報の保存に失敗しました');
       }
