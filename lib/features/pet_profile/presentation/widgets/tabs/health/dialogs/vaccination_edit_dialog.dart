@@ -177,6 +177,23 @@ class _VaccinationEditDialogState extends State<VaccinationEditDialog> {
                 ),
               ),
               const SizedBox(height: AppSpacing.sm),
+
+              // 前回接種日からの期間選択ボタン
+              if (_lastDate != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                  child: Wrap(
+                    spacing: AppSpacing.sm,
+                    runSpacing: AppSpacing.sm,
+                    children: [
+                      _buildMonthButton(1),
+                      _buildMonthButton(3),
+                      _buildMonthButton(6),
+                      _buildMonthButton(12),
+                    ],
+                  ),
+                ),
+
               _buildDateSelector(
                 date: _nextDate,
                 onTap: () => _selectDate(context, isLastDate: false),
@@ -214,6 +231,44 @@ class _VaccinationEditDialogState extends State<VaccinationEditDialog> {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  /// ○ヶ月後ボタンを作成
+  Widget _buildMonthButton(int months) {
+    final label = months == 12 ? '1年後' : '$monthsヶ月後';
+
+    return OutlinedButton(
+      onPressed: () {
+        if (_lastDate != null) {
+          setState(() {
+            _nextDate = DateTime(
+              _lastDate!.year,
+              _lastDate!.month + months,
+              _lastDate!.day,
+            );
+          });
+        }
+      },
+      style: OutlinedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.xs,
+        ),
+        side: BorderSide(
+          color: AppColors.pointBrown.withValues(alpha: 0.5),
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.small),
+        ),
+      ),
+      child: Text(
+        label,
+        style: const TextStyle(
+          fontSize: 12,
+          color: AppColors.pointBrown,
         ),
       ),
     );
