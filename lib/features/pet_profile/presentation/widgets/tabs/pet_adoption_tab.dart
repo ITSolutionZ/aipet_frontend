@@ -1,4 +1,7 @@
+import 'package:aipet_frontend/features/pet_profile/domain/services/co_owner_qr_service.dart';
 import 'package:aipet_frontend/features/pet_profile/presentation/controllers/pet_profile_unified_controller.dart';
+import 'package:aipet_frontend/features/pet_profile/presentation/screens/co_owner_qr_scanner_screen.dart';
+import 'package:aipet_frontend/features/pet_profile/presentation/screens/co_owner_qr_screen.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -185,13 +188,43 @@ class _PetAdoptionTabState extends ConsumerState<PetAdoptionTab> {
               ),
             ),
             if (widget.isEditMode)
-              TextButton.icon(
-                onPressed: _showAddCoOwnerDialog,
-                icon: const Icon(Icons.add, size: 18),
-                label: const Text('追加'),
-                style: TextButton.styleFrom(
-                  foregroundColor: AppColors.pointBrown,
-                ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // QRコード表示ボタン
+                  IconButton(
+                    onPressed: _showQrCodeScreen,
+                    icon: const Icon(Icons.qr_code_2, size: 24),
+                    tooltip: 'QRコードを表示',
+                    style: IconButton.styleFrom(
+                      foregroundColor: AppColors.pointBrown,
+                      backgroundColor:
+                          AppColors.pointBrown.withValues(alpha: 0.1),
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  // QRコードスキャンボタン
+                  IconButton(
+                    onPressed: _scanQrCode,
+                    icon: const Icon(Icons.qr_code_scanner, size: 24),
+                    tooltip: 'QRコードで追加',
+                    style: IconButton.styleFrom(
+                      foregroundColor: AppColors.pointGreen,
+                      backgroundColor:
+                          AppColors.pointGreen.withValues(alpha: 0.1),
+                    ),
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  // 手動追加ボタン
+                  TextButton.icon(
+                    onPressed: _showAddCoOwnerDialog,
+                    icon: const Icon(Icons.person_add, size: 18),
+                    label: const Text('手動追加'),
+                    style: TextButton.styleFrom(
+                      foregroundColor: AppColors.pointBlue,
+                    ),
+                  ),
+                ],
               ),
           ],
         ),
@@ -220,7 +253,7 @@ class _PetAdoptionTabState extends ConsumerState<PetAdoptionTab> {
                 ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
-                  '編集モードで「追加」ボタンから養育者を追加できます',
+                  '編集モードで養育者を追加できます\n・QRコードで簡単に招待\n・手動で追加も可能',
                   style: AppFonts.bodySmall.copyWith(
                     color: AppColors.pointGray.withValues(alpha: 0.7),
                   ),
@@ -495,5 +528,105 @@ class _PetAdoptionTabState extends ConsumerState<PetAdoptionTab> {
         ],
       ),
     );
+  }
+
+  /// QRコード表示画面を開く
+  void _showQrCodeScreen() async {
+    // オーナー情報を取得（実際の実装ではログイン中のユーザー情報を使用）
+    const ownerId = 'current_user_id'; // TODO: 実際のユーザーIDに置き換え
+    const ownerName = '太郎'; // TODO: 実際のユーザー名に置き換え
+
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CoOwnerQrScreen(
+          pet: widget.pet,
+          ownerId: ownerId,
+          ownerName: ownerName,
+        ),
+      ),
+    );
+  }
+
+  /// QRコードスキャン画面を開く
+  void _scanQrCode() async {
+    final result = await Navigator.push<Map<String, dynamic>>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const CoOwnerQrScannerScreen(),
+      ),
+    );
+
+    if (result != null && mounted) {
+      _handleQrScanResult(result);
+    }
+  }
+
+  /// QRコードスキャン結果を処理
+  void _handleQrScanResult(Map<String, dynamic> qrData) {
+    try {
+      final ownerName = qrData['ownerName'] as String;
+      final petName = qrData['petName'] as String;
+      final petId = qrData['petId'] as String;
+      final ownerId = qrData['ownerId'] as String;
+
+      // ペットIDが一致するか確認
+      if (petId != widget.pet.id) {
+        SnackBarService.showError(
+          context,
+          '別のペット（$petName）の招待コードです',
+        );
+        return;
+      }
+
+      // すでに登録されているか確認（オーナーIDで）
+      final isDuplicate = _coOwners.any((co) => co.id == ownerId);
+      if (isDuplicate) {
+        SnackBarService.showWarning(
+          context,
+          '$ownerNameはすでに登録されています',
+        );
+        return;
+      }
+
+      // 有効期限の確認
+      final remainingMinutes = CoOwnerQrService.getRemainingMinutes(qrData);
+      if (remainingMinutes == null || remainingMinutes <= 0) {
+        SnackBarService.showError(
+          context,
+          'QRコードの有効期限が切れています',
+        );
+        return;
+      }
+
+      // 共同養育者を追加
+      final newCoOwner = CoOwner(
+        id: ownerId,
+        name: ownerName,
+        email: qrData['email'] as String? ?? '',
+        phone: qrData['phone'] as String?,
+        relationship: 'その他', // デフォルト値
+        addedDate: DateTime.now(),
+      );
+
+      setState(() {
+        _coOwners.add(newCoOwner);
+      });
+
+      _saveCoOwners();
+
+      SnackBarService.showSuccess(
+        context,
+        '$ownerNameを共同養育者として追加しました',
+      );
+
+      LoggerService.info('✅ QRコードから共同養育者を追加: $ownerName');
+    } catch (e) {
+      LoggerService.error('❌ QRコードスキャン結果処理エラー', error: e);
+      SnackBarService.showError(
+        context,
+        'QRコードの処理中にエラーが発生しました',
+      );
+    }
   }
 }
