@@ -656,8 +656,13 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
   }
 
   void _showAddVaccineDialog() {
-    // 아직 추가되지 않은 백신 목록
-    final availableVaccines = VaccineType.values
+    // コアワクチン5種が全て追加されているかチェック
+    final hasCoreVaccines = VaccineType.values
+        .where((type) => type.category == 'コアワクチン')
+        .every((type) => _vaccinationRecords.any((r) => r.type == type));
+
+    // 아직 추가되지 않은 추加ワクチン 목록
+    final availableAdditionalVaccines = VaccineType.values
         .where(
           (type) =>
               type.category == '追加ワクチン' &&
@@ -665,28 +670,69 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
         )
         .toList();
 
-    if (availableVaccines.isEmpty) {
+    if (hasCoreVaccines && availableAdditionalVaccines.isEmpty) {
       SnackBarService.showInfo(context, '追加可能なワクチンがありません');
       return;
     }
+
+    final List<Widget> menuItems = [];
+
+    // コアワクチン5種をまとめて追加するオプション（まだ追加されていない場合のみ）
+    if (!hasCoreVaccines) {
+      menuItems.add(
+        ListTile(
+          leading: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: AppColors.pointGreen.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Icon(Icons.vaccines, color: AppColors.pointGreen),
+          ),
+          title: const Text(
+            'コアワクチン (5種混合)',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          subtitle: const Text('ジステンパー、パルボ、肝炎など必須ワクチン'),
+          onTap: () {
+            Navigator.pop(context);
+            _addCoreVaccines();
+          },
+        ),
+      );
+    }
+
+    // 追加ワクチンのオプション
+    menuItems.addAll(
+      availableAdditionalVaccines.map(
+        (type) => ListTile(
+          leading: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: AppColors.pointBlue.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Icon(Icons.medical_services, color: AppColors.pointBlue),
+          ),
+          title: Text(type.label),
+          subtitle: const Text('任意接種'),
+          onTap: () {
+            Navigator.pop(context);
+            _addVaccination(type);
+          },
+        ),
+      ),
+    );
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('ワクチンを追加'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: availableVaccines
-              .map(
-                (type) => ListTile(
-                  title: Text(type.label),
-                  onTap: () {
-                    Navigator.pop(context);
-                    _addVaccination(type);
-                  },
-                ),
-              )
-              .toList(),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: menuItems,
+          ),
         ),
         actions: [
           TextButton(
@@ -696,6 +742,26 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
         ],
       ),
     );
+  }
+
+  void _addCoreVaccines() {
+    // コアワクチン5種を一括追加
+    final coreVaccineTypes = VaccineType.values
+        .where((type) => type.category == 'コアワクチン')
+        .toList();
+
+    setState(() {
+      for (final type in coreVaccineTypes) {
+        if (!_vaccinationRecords.any((r) => r.type == type)) {
+          _vaccinationRecords.add(
+            VaccinationRecord(type: type, status: VaccinationStatus.notStarted),
+          );
+        }
+      }
+    });
+
+    _saveVaccinationsToFormData();
+    SnackBarService.showSuccess(context, 'コアワクチン(5種)を追加しました');
   }
 
   void _addVaccination(VaccineType type) {
