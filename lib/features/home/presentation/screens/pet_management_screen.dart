@@ -775,9 +775,9 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
     );
   }
 
-  /// 編集画面に移動（ペット登録画面を編集モードで使用）
+  /// 編集画面に移動（ペットプロファイル画面を編集モードで開く）
   void _navigateToEditScreen(BuildContext context, PetProfileEntity pet) {
-    context.go('/daily-pet-registration?petId=${pet.id}');
+    context.go('/home/pet-profile/${pet.id}?isEditMode=true');
   }
 
   /// ペット画像ビルド - 強化されたローカル保存サポート
