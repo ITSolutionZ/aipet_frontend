@@ -1,6 +1,7 @@
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class PetNutritionTab extends ConsumerStatefulWidget {
   final PetProfileEntity pet;
@@ -131,101 +132,101 @@ class _PetNutritionTabState extends ConsumerState<PetNutritionTab> {
   }) {
     final hasValue = controller.text.isNotEmpty;
 
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: widget.isEditMode
-              ? iconColor.withValues(alpha: 0.3)
-              : AppColors.pointGray.withValues(alpha: 0.1),
-          width: widget.isEditMode ? 2 : 1,
-        ),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(AppSpacing.sm),
-            decoration: BoxDecoration(
-              color: iconColor.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(icon, color: iconColor, size: 20),
+    return InkWell(
+      onTap: widget.isEditMode ? () => _navigateToProductSearch(label) : null,
+      child: Container(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: widget.isEditMode
+                ? iconColor.withValues(alpha: 0.3)
+                : AppColors.pointGray.withValues(alpha: 0.1),
+            width: widget.isEditMode ? 2 : 1,
           ),
-          const SizedBox(width: AppSpacing.md),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: AppFonts.bodySmall.copyWith(
-                    color: AppColors.pointGray,
-                    fontWeight: FontWeight.w500,
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(AppSpacing.sm),
+              decoration: BoxDecoration(
+                color: iconColor.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(icon, color: iconColor, size: 20),
+            ),
+            const SizedBox(width: AppSpacing.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: AppFonts.bodySmall.copyWith(
+                      color: AppColors.pointGray,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                ),
-                const SizedBox(height: AppSpacing.xs),
-                if (widget.isEditMode)
-                  TextField(
-                    controller: controller,
-                    style: AppFonts.bodyMedium.copyWith(
-                      color: AppColors.pointDark,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    decoration: InputDecoration(
-                      hintText: hint,
-                      hintStyle: AppFonts.bodySmall.copyWith(
-                        color: AppColors.pointGray,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(
-                          color: iconColor.withValues(alpha: 0.3),
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(
-                          color: AppColors.pointGray.withValues(alpha: 0.3),
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(
-                          color: iconColor,
-                          width: 2,
-                        ),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.sm,
-                        vertical: AppSpacing.xs,
-                      ),
-                      isDense: true,
-                    ),
-                  )
-                else
+                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     hasValue ? controller.text : hint,
                     style: AppFonts.bodyMedium.copyWith(
                       color: hasValue
                           ? AppColors.pointDark
                           : AppColors.pointGray,
-                      fontWeight: hasValue ? FontWeight.w600 : FontWeight.normal,
+                      fontWeight: hasValue
+                          ? FontWeight.w600
+                          : FontWeight.normal,
                     ),
                   ),
-              ],
+                ],
+              ),
             ),
-          ),
-          if (hasValue && !widget.isEditMode)
-            const Icon(
-              Icons.check_circle,
-              color: AppColors.pointGreen,
-              size: 20,
-            ),
-        ],
+            if (widget.isEditMode)
+              const Icon(
+                Icons.chevron_right,
+                color: AppColors.pointGray,
+                size: 20,
+              )
+            else if (hasValue)
+              const Icon(
+                Icons.check_circle,
+                color: AppColors.pointGreen,
+                size: 20,
+              ),
+          ],
+        ),
       ),
     );
+  }
+
+  Future<void> _navigateToProductSearch(String label) async {
+    LoggerService.debug('🛒 상품 검색 화면으로 이동: $label');
+    
+    // 쇼핑 화면으로 이동
+    final selectedProduct = await context.push<String>('/pet-search');
+    
+    if (selectedProduct != null && selectedProduct.isNotEmpty) {
+      LoggerService.debug('✅ 선택된 상품: $selectedProduct');
+      
+      setState(() {
+        if (label.contains('餌')) {
+          _foodController.text = selectedProduct;
+          LoggerService.debug('📝 사료 업데이트: $selectedProduct');
+        } else if (label.contains('栄養剤')) {
+          _supplementController.text = selectedProduct;
+          LoggerService.debug('📝 영양제 업데이트: $selectedProduct');
+        } else if (label.contains('おやつ')) {
+          _treatController.text = selectedProduct;
+          LoggerService.debug('📝 간식 업데이트: $selectedProduct');
+        }
+      });
+      
+      SnackBarService.showSuccess(context, '商品を選択しました');
+    } else {
+      LoggerService.debug('ℹ️ 상품 선택 취소됨');
+    }
   }
 
   Widget _buildNutritionInfoSection() {
@@ -407,5 +408,4 @@ class _PetNutritionTabState extends ConsumerState<PetNutritionTab> {
       badgeColor: AppColors.pointBrown,
     );
   }
-
 }

@@ -1,6 +1,7 @@
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../data/models/favorite_product_model.dart';
@@ -963,37 +964,60 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
                   ],
 
                   // アクションボタン
-                  Row(
+                  Column(
                     children: [
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          onPressed: () {
-                            // 商品ページへ移動
-                            _openProductPage(product);
-                          },
-                          icon: const Icon(Icons.open_in_new, size: 16),
-                          label: const Text('商品ページ'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.pointBrown,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 8),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: ElevatedButton.icon(
+                              onPressed: () {
+                                // 商品を選択して戻る
+                                _selectProduct(product);
+                              },
+                              icon: const Icon(Icons.check, size: 16),
+                              label: const Text('この商品を選択'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.pointGreen,
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(vertical: 8),
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: OutlinedButton.icon(
-                          onPressed: () {
-                            // お気に入り追加
-                            _addToFavorites(product);
-                          },
-                          icon: const Icon(Icons.favorite_border, size: 16),
-                          label: const Text('お気に入り'),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: AppColors.pointBrown,
-                            padding: const EdgeInsets.symmetric(vertical: 8),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: OutlinedButton.icon(
+                              onPressed: () {
+                                // 商品ページへ移動
+                                _openProductPage(product);
+                              },
+                              icon: const Icon(Icons.open_in_new, size: 16),
+                              label: const Text('商品ページ'),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: AppColors.pointBrown,
+                                padding: const EdgeInsets.symmetric(vertical: 8),
+                              ),
+                            ),
                           ),
-                        ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: OutlinedButton.icon(
+                              onPressed: () {
+                                // お気に入り追加
+                                _addToFavorites(product);
+                              },
+                              icon: const Icon(Icons.favorite_border, size: 16),
+                              label: const Text('お気に入り'),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: AppColors.pointBrown,
+                                padding: const EdgeInsets.symmetric(vertical: 8),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -1297,6 +1321,12 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
         );
       }
     }
+  }
+
+  /// 商品を選択して戻る
+  void _selectProduct(RakutenPetProduct product) {
+    LoggerService.debug('✅ 상품 선택: ${product.itemName}');
+    context.pop(product.itemName);
   }
 
   /// お気に入りに追加
