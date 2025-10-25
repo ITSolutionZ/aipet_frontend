@@ -1,6 +1,7 @@
 import 'package:aipet_frontend/features/daily/data/datasources/pet_food_local_datasource.dart';
 import 'package:aipet_frontend/features/daily/presentation/widgets/searchable_dropdown.dart'
     as daily;
+import 'package:aipet_frontend/features/pet_profile/presentation/controllers/pet_profile_unified_controller.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -55,6 +56,36 @@ class _PetNutritionTabState extends ConsumerState<PetNutritionTab> {
   }
 
   @override
+  void didUpdateWidget(PetNutritionTab oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    
+    // pet이 변경되었거나 편집 모드가 종료되면 controller 업데이트
+    if (oldWidget.pet.id != widget.pet.id || 
+        (oldWidget.isEditMode && !widget.isEditMode)) {
+      final additionalInfo = widget.pet.additionalInfo ?? {};
+      final food = additionalInfo['food'] as String? ?? '';
+      final supplement = additionalInfo['supplement'] as String? ?? '';
+      final treat = additionalInfo['treat'] as String? ?? '';
+
+      LoggerService.debug('🔄 영양 탭 데이터 갱신:');
+      LoggerService.debug('   - food: "$food"');
+      LoggerService.debug('   - supplement: "$supplement"');
+      LoggerService.debug('   - treat: "$treat"');
+
+      _foodController.text = food;
+      _supplementController.text = supplement;
+      _treatController.text = treat;
+    }
+  }
+
+  void _updateAdditionalInfo(String key, String value) {
+    LoggerService.debug('📝 영양 정보 업데이트: $key = "$value"');
+    ref
+        .read(petProfileUnifiedControllerProvider.notifier)
+        .updateFormData(key, value);
+  }
+
+  @override
   void dispose() {
     _foodController.dispose();
     _supplementController.dispose();
@@ -100,6 +131,8 @@ class _PetNutritionTabState extends ConsumerState<PetNutritionTab> {
               setState(() {
                 _foodController.text = value;
               });
+              // editFormData에 반영
+              _updateAdditionalInfo('food', value);
             },
             icon: PetFoodLocalDatasource.getCategoryIcons()['food']!,
             hintText: '餌を検索または選択してください',
@@ -113,6 +146,8 @@ class _PetNutritionTabState extends ConsumerState<PetNutritionTab> {
               setState(() {
                 _supplementController.text = value;
               });
+              // editFormData에 반영
+              _updateAdditionalInfo('supplement', value);
             },
             icon: PetFoodLocalDatasource.getCategoryIcons()['supplement']!,
             hintText: '栄養剤を検索または選択してください',
@@ -126,6 +161,8 @@ class _PetNutritionTabState extends ConsumerState<PetNutritionTab> {
               setState(() {
                 _treatController.text = value;
               });
+              // editFormData에 반영
+              _updateAdditionalInfo('treat', value);
             },
             icon: PetFoodLocalDatasource.getCategoryIcons()['treat']!,
             hintText: 'おやつを検索または選択してください',
@@ -218,12 +255,8 @@ class _PetNutritionTabState extends ConsumerState<PetNutritionTab> {
                 Text(
                   hasValue ? controller.text : hint,
                   style: AppFonts.bodyMedium.copyWith(
-                    color: hasValue
-                        ? AppColors.pointDark
-                        : AppColors.pointGray,
-                    fontWeight: hasValue
-                        ? FontWeight.w600
-                        : FontWeight.normal,
+                    color: hasValue ? AppColors.pointDark : AppColors.pointGray,
+                    fontWeight: hasValue ? FontWeight.w600 : FontWeight.normal,
                   ),
                 ),
               ],

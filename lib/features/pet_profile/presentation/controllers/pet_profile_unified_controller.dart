@@ -344,8 +344,21 @@ class PetProfileUnifiedController extends _$PetProfileUnifiedController {
       }
     }
 
-    // 다른 List 필드들도 동일하게 처리
-    for (final key in ['food', 'supplement', 'medication', 'allergy']) {
+    // String 필드들 처리 (food, supplement, treat)
+    for (final key in ['food', 'supplement', 'treat']) {
+      if (formData.containsKey(key)) {
+        final value = formData[key];
+        if (value is String && value.isNotEmpty) {
+          updatedAdditionalInfo[key] = value;
+          LoggerService.debug('✅ $key updated: $value');
+        } else if (value == null || (value is String && value.isEmpty)) {
+          updatedAdditionalInfo.remove(key);
+        }
+      }
+    }
+
+    // List 필드들 처리 (medication, allergy)
+    for (final key in ['medication', 'allergy']) {
       if (formData.containsKey(key)) {
         final value = formData[key];
         if (value is List && value.isNotEmpty) {
