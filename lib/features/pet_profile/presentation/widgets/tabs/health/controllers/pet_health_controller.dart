@@ -180,7 +180,7 @@ class PetHealthController extends _$PetHealthController {
       VaccinationRecord(
         id: _uuid.v4(),
         name: 'コアワクチン',
-        status: '完了',
+        status: '接種中', // 次回接種日があるため「接種中」
         lastDate: DateTime(2024, 3, 15),
         nextDate: DateTime(2025, 3, 15),
         iconName: 'vaccines',
@@ -189,7 +189,7 @@ class PetHealthController extends _$PetHealthController {
       VaccinationRecord(
         id: _uuid.v4(),
         name: '狂犬病予防接種',
-        status: '完了',
+        status: '接種中', // 次回接種日があるため「接種中」
         lastDate: DateTime(2024, 4, 10),
         nextDate: DateTime(2025, 4, 10),
         iconName: 'healing',
@@ -198,7 +198,7 @@ class PetHealthController extends _$PetHealthController {
       VaccinationRecord(
         id: _uuid.v4(),
         name: 'フィラリア予防',
-        status: '接種中',
+        status: '接種中', // 次回接種日があるため「接種中」
         lastDate: DateTime(2024, 8, 1),
         nextDate: DateTime(2024, 9, 1),
         iconName: 'bug_report',
