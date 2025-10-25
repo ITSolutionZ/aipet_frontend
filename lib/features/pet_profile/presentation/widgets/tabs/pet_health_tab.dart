@@ -12,17 +12,25 @@ enum VaccineType {
   adenovirus('アデノウイルス2型', 'コアワクチン'),
   parainfluenza('パラインフルエンザ', 'コアワクチン'),
 
+  // 법적 의무
+  rabies('狂犬病', '法定接種'),
+
   // 추가 백신 (6-10종 - 선택)
   coronavirus('コロナウイルス', '追加ワクチン'),
   leptospira('レプトスピラ', '追加ワクチン'),
   lyme('ライム病', '追加ワクチン'),
   bordetella('ケンネルコフ', '追加ワクチン'),
 
-  // 법적 의무
-  rabies('狂犬病', '法定接種'),
-
   // 기생충 예방
-  heartworm('フィラリア予防', '予防薬');
+  heartworm('フィラリア予防', '予防薬'),
+  fleaTick('ノミ・ダニ予防', '予防薬'),
+
+  // 기타 추가 백신
+  influenza('犬インフルエンザ', '追加ワクチン'),
+  hepatitisB('犬B型肝炎', '追加ワクチン'),
+  giardia('ジアルジア症', '追加ワクチン'),
+  tetanus('破傷風', '追加ワクチン'),
+  other('その他', '追加ワクチン');
 
   const VaccineType(this.label, this.category);
   final String label;
