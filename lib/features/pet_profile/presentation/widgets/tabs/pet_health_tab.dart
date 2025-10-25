@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 
 import 'health/controllers/pet_health_controller.dart';
 import 'health/controllers/pet_health_state.dart';
+import 'health/dialogs/appointment_edit_dialog.dart';
+import 'health/dialogs/medical_record_edit_dialog.dart';
 import 'health/dialogs/vaccination_edit_dialog.dart';
 
 class PetHealthTab extends ConsumerStatefulWidget {
@@ -280,6 +282,10 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
         return Icons.local_hospital;
       case 'cleaning_services':
         return Icons.cleaning_services;
+      case 'medication':
+        return Icons.medication;
+      case 'emergency':
+        return Icons.emergency;
       case 'schedule':
         return Icons.schedule;
       case 'content_cut':
@@ -391,7 +397,16 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
 
   /// 진료 기록 추가
   void _addMedicalRecord() {
-    LoggerService.debug('📝 診療記録追加 (未実装)');
+    showDialog(
+      context: context,
+      builder: (context) => MedicalRecordEditDialog(
+        onSave: (record) {
+          final controller = ref.read(petHealthControllerProvider(tabId).notifier);
+          controller.addMedicalRecord(record);
+          LoggerService.debug('✅ 診療記録追加: ${record.title}');
+        },
+      ),
+    );
   }
 
   /// 진료 기록 카드 빌드
@@ -418,6 +433,7 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
     // 편집 모드: 클릭 가능한 카드
     return GestureDetector(
       onTap: () => _editMedicalRecord(record),
+      onLongPress: () => _deleteMedicalRecord(record),
       child: GenericInfoCard.withIcon(
         icon: iconData,
         iconColor: iconColor,
@@ -433,7 +449,48 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
 
   /// 진료 기록 편집
   void _editMedicalRecord(MedicalRecord record) {
-    LoggerService.debug('✏️ 診療記録編集: ${record.title} (未実装)');
+    showDialog(
+      context: context,
+      builder: (context) => MedicalRecordEditDialog(
+        record: record,
+        onSave: (updatedRecord) {
+          final controller = ref.read(petHealthControllerProvider(tabId).notifier);
+          controller.updateMedicalRecord(record.id, updatedRecord);
+          LoggerService.debug('✅ 診療記録更新: ${updatedRecord.title}');
+        },
+      ),
+    );
+  }
+
+  /// 진료 기록 삭제
+  void _deleteMedicalRecord(MedicalRecord record) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('削除確認'),
+        content: Text('「${record.title}」を削除してもよろしいですか？'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('キャンセル'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              final controller = ref.read(petHealthControllerProvider(tabId).notifier);
+              controller.deleteMedicalRecord(record.id);
+              Navigator.pop(context);
+              LoggerService.debug('✅ 診療記録削除: ${record.title}');
+              SnackBarService.showSuccess(context, '削除しました');
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.pointRed,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('削除'),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildWeightTrackingSection(PetHealthState healthState) {
@@ -524,7 +581,16 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
 
   /// 예약 추가
   void _addAppointment() {
-    LoggerService.debug('📝 予約追加 (未実装)');
+    showDialog(
+      context: context,
+      builder: (context) => AppointmentEditDialog(
+        onSave: (record) {
+          final controller = ref.read(petHealthControllerProvider(tabId).notifier);
+          controller.addAppointment(record);
+          LoggerService.debug('✅ 予約追加: ${record.title}');
+        },
+      ),
+    );
   }
 
   /// 예약 카드 빌드
@@ -551,6 +617,7 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
     // 편집 모드: 클릭 가능한 카드
     return GestureDetector(
       onTap: () => _editAppointment(record),
+      onLongPress: () => _deleteAppointment(record),
       child: GenericInfoCard.withIcon(
         icon: iconData,
         iconColor: iconColor,
@@ -566,6 +633,47 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
 
   /// 예약 편집
   void _editAppointment(AppointmentRecord record) {
-    LoggerService.debug('✏️ 予約編集: ${record.title} (未実装)');
+    showDialog(
+      context: context,
+      builder: (context) => AppointmentEditDialog(
+        record: record,
+        onSave: (updatedRecord) {
+          final controller = ref.read(petHealthControllerProvider(tabId).notifier);
+          controller.updateAppointment(record.id, updatedRecord);
+          LoggerService.debug('✅ 予約更新: ${updatedRecord.title}');
+        },
+      ),
+    );
+  }
+
+  /// 예약 삭제
+  void _deleteAppointment(AppointmentRecord record) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('削除確認'),
+        content: Text('「${record.title}」を削除してもよろしいですか？'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('キャンセル'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              final controller = ref.read(petHealthControllerProvider(tabId).notifier);
+              controller.deleteAppointment(record.id);
+              Navigator.pop(context);
+              LoggerService.debug('✅ 予約削除: ${record.title}');
+              SnackBarService.showSuccess(context, '削除しました');
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.pointRed,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('削除'),
+          ),
+        ],
+      ),
+    );
   }
 }
