@@ -25,9 +25,13 @@ class PetNutritionTab extends ConsumerWidget {
         [];
 
     LoggerService.debug('🍽️ PetNutritionTab - 保存された食事情報:');
-    LoggerService.debug('   - food: $food');
-    LoggerService.debug('   - supplement: $supplement');
-    LoggerService.debug('   - treat: $treat');
+    LoggerService.debug('   - pet.name: ${pet.name}');
+    LoggerService.debug('   - pet.id: ${pet.id}');
+    LoggerService.debug('   - additionalInfo (전체): $additionalInfo');
+    LoggerService.debug('   - additionalInfo.keys: ${additionalInfo.keys.toList()}');
+    LoggerService.debug('   - food: "$food" (길이: ${food.length})');
+    LoggerService.debug('   - supplement: "$supplement" (길이: ${supplement.length})');
+    LoggerService.debug('   - treat: "$treat" (길이: ${treat.length})');
     LoggerService.debug('   - forbiddenIngredients: $forbiddenIngredients');
 
     return SingleChildScrollView(
