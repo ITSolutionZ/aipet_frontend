@@ -58,9 +58,9 @@ class _PetNutritionTabState extends ConsumerState<PetNutritionTab> {
   @override
   void didUpdateWidget(PetNutritionTab oldWidget) {
     super.didUpdateWidget(oldWidget);
-    
+
     // pet이 변경되었거나 편집 모드가 종료되면 controller 업데이트
-    if (oldWidget.pet.id != widget.pet.id || 
+    if (oldWidget.pet.id != widget.pet.id ||
         (oldWidget.isEditMode && !widget.isEditMode)) {
       final additionalInfo = widget.pet.additionalInfo ?? {};
       final food = additionalInfo['food'] as String? ?? '';

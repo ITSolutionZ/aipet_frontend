@@ -175,12 +175,16 @@ class PetHealthController extends _$PetHealthController {
   // ==================== 기본 데이터 ====================
 
   /// 기본 예방접종 기록 (저장된 데이터가 없을 때)
+  /// 일본 표준 예방접종: 코어 백신(5종) + 광견병 + 추가 접종 5종
   List<VaccinationRecord> _getDefaultVaccinationRecords() {
     return [
+      // 1. コアワクチン (5種混合)
+      // ジステンパー、パルボウイルス、アデノウイルス1型(肝炎)、
+      // アデノウイルス2型(呼吸器)、パラインフルエンザ
       VaccinationRecord(
         id: _uuid.v4(),
-        name: 'コアワクチン',
-        status: '接種中', // 次回接種日があるため「接種中」
+        name: 'コアワクチン(5種混合)',
+        status: '接種中',
         lastDate: DateTime(2024, 3, 15),
         nextDate: DateTime(2025, 3, 15),
         iconName: 'vaccines',
@@ -200,10 +204,12 @@ class PetHealthController extends _$PetHealthController {
           ),
         ],
       ),
+
+      // 2. 狂犬病予防接種 (法定義務)
       VaccinationRecord(
         id: _uuid.v4(),
         name: '狂犬病予防接種',
-        status: '接種中', // 次回接種日があるため「接種中」
+        status: '接種中',
         lastDate: DateTime(2024, 4, 10),
         nextDate: DateTime(2025, 4, 10),
         iconName: 'healing',
@@ -219,13 +225,85 @@ class PetHealthController extends _$PetHealthController {
             id: _uuid.v4(),
             round: 2,
             date: DateTime(2024, 4, 10),
+            memo: '年次接種完了',
           ),
         ],
       ),
+
+      // 3. レプトスピラ (追加接種)
+      VaccinationRecord(
+        id: _uuid.v4(),
+        name: 'レプトスピラ症予防',
+        status: '接種中',
+        lastDate: DateTime(2024, 3, 20),
+        nextDate: DateTime(2025, 3, 20),
+        iconName: 'water_drop',
+        colorName: 'blue',
+        history: [
+          VaccinationHistory(
+            id: _uuid.v4(),
+            round: 1,
+            date: DateTime(2023, 3, 20),
+            memo: '初回接種',
+          ),
+          VaccinationHistory(
+            id: _uuid.v4(),
+            round: 2,
+            date: DateTime(2024, 3, 20),
+            memo: '追加接種',
+          ),
+        ],
+      ),
+
+      // 4. コロナウイルス (追加接種)
+      VaccinationRecord(
+        id: _uuid.v4(),
+        name: 'コロナウイルス感染症予防',
+        status: '接種完了',
+        lastDate: DateTime(2024, 3, 22),
+        nextDate: null,
+        iconName: 'coronavirus',
+        colorName: 'pink',
+        history: [
+          VaccinationHistory(
+            id: _uuid.v4(),
+            round: 1,
+            date: DateTime(2023, 3, 22),
+            memo: '初回接種',
+          ),
+          VaccinationHistory(
+            id: _uuid.v4(),
+            round: 2,
+            date: DateTime(2024, 3, 22),
+            memo: '追加接種完了',
+          ),
+        ],
+      ),
+
+      // 5. ケンネルコフ (ボルデテラ) (追加接種)
+      VaccinationRecord(
+        id: _uuid.v4(),
+        name: 'ケンネルコフ予防',
+        status: '接種中',
+        lastDate: DateTime(2024, 5, 15),
+        nextDate: DateTime(2025, 5, 15),
+        iconName: 'pets',
+        colorName: 'green',
+        history: [
+          VaccinationHistory(
+            id: _uuid.v4(),
+            round: 1,
+            date: DateTime(2024, 5, 15),
+            memo: '初回接種完了',
+          ),
+        ],
+      ),
+
+      // 6. フィラリア予防 (月次投薬)
       VaccinationRecord(
         id: _uuid.v4(),
         name: 'フィラリア予防',
-        status: '接種中', // 次回接種日があるため「接種中」
+        status: '接種中',
         lastDate: DateTime(2024, 8, 1),
         nextDate: DateTime(2024, 9, 1),
         iconName: 'bug_report',
@@ -250,6 +328,45 @@ class PetHealthController extends _$PetHealthController {
           VaccinationHistory(
             id: _uuid.v4(),
             round: 4,
+            date: DateTime(2024, 8, 1),
+          ),
+        ],
+      ),
+
+      // 7. ノミ・ダニ予防 (月次投薬)
+      VaccinationRecord(
+        id: _uuid.v4(),
+        name: 'ノミ・ダニ予防',
+        status: '接種中',
+        lastDate: DateTime(2024, 8, 1),
+        nextDate: DateTime(2024, 9, 1),
+        iconName: 'pest_control',
+        colorName: 'green',
+        history: [
+          VaccinationHistory(
+            id: _uuid.v4(),
+            round: 1,
+            date: DateTime(2024, 4, 1),
+            memo: '春季開始',
+          ),
+          VaccinationHistory(
+            id: _uuid.v4(),
+            round: 2,
+            date: DateTime(2024, 5, 1),
+          ),
+          VaccinationHistory(
+            id: _uuid.v4(),
+            round: 3,
+            date: DateTime(2024, 6, 1),
+          ),
+          VaccinationHistory(
+            id: _uuid.v4(),
+            round: 4,
+            date: DateTime(2024, 7, 1),
+          ),
+          VaccinationHistory(
+            id: _uuid.v4(),
+            round: 5,
             date: DateTime(2024, 8, 1),
           ),
         ],
