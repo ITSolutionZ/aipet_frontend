@@ -182,7 +182,7 @@ class _VaccinationEditDialogState extends State<VaccinationEditDialog> {
               ),
               const SizedBox(height: AppSpacing.sm),
 
-              // 前回接種日からの期間選択ボタン
+              // 前回接種日からの期間選択ボタン + 接種完了ボタン
               if (_lastDate != null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: AppSpacing.sm),
@@ -194,6 +194,7 @@ class _VaccinationEditDialogState extends State<VaccinationEditDialog> {
                       _buildMonthButton(3),
                       _buildMonthButton(6),
                       _buildMonthButton(12),
+                      _buildCompletedButton(),
                     ],
                   ),
                 ),
@@ -273,6 +274,37 @@ class _VaccinationEditDialogState extends State<VaccinationEditDialog> {
         style: const TextStyle(
           fontSize: 12,
           color: AppColors.pointBrown,
+        ),
+      ),
+    );
+  }
+
+  /// 接種完了ボタンを作成（次回接種日を削除）
+  Widget _buildCompletedButton() {
+    return OutlinedButton(
+      onPressed: () {
+        setState(() {
+          _nextDate = null;
+          _selectedStatus = '接種完了';
+        });
+      },
+      style: OutlinedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.xs,
+        ),
+        side: BorderSide(
+          color: AppColors.pointGreen.withValues(alpha: 0.5),
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.small),
+        ),
+      ),
+      child: const Text(
+        '接種完了',
+        style: TextStyle(
+          fontSize: 12,
+          color: AppColors.pointGreen,
         ),
       ),
     );
