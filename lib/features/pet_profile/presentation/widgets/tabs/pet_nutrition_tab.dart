@@ -1,7 +1,9 @@
+import 'package:aipet_frontend/features/daily/data/datasources/pet_food_local_datasource.dart';
+import 'package:aipet_frontend/features/daily/presentation/widgets/searchable_dropdown.dart'
+    as daily;
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 class PetNutritionTab extends ConsumerStatefulWidget {
   final PetProfileEntity pet;
@@ -85,6 +87,54 @@ class _PetNutritionTabState extends ConsumerState<PetNutritionTab> {
   }
 
   Widget _buildFoodPreferencesSection() {
+    if (widget.isEditMode) {
+      // 편집 모드: SearchableDropdown 사용
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          daily.SearchableDropdown(
+            title: '食べる餌',
+            selectedValue: _foodController.text,
+            options: PetFoodLocalDatasource.foods,
+            onChanged: (value) {
+              setState(() {
+                _foodController.text = value;
+              });
+            },
+            icon: PetFoodLocalDatasource.getCategoryIcons()['food']!,
+            hintText: '餌を検索または選択してください',
+          ),
+          const SizedBox(height: AppSpacing.md),
+          daily.SearchableDropdown(
+            title: '食べる栄養剤',
+            selectedValue: _supplementController.text,
+            options: PetFoodLocalDatasource.supplements,
+            onChanged: (value) {
+              setState(() {
+                _supplementController.text = value;
+              });
+            },
+            icon: PetFoodLocalDatasource.getCategoryIcons()['supplement']!,
+            hintText: '栄養剤を検索または選択してください',
+          ),
+          const SizedBox(height: AppSpacing.md),
+          daily.SearchableDropdown(
+            title: '食べるおやつ',
+            selectedValue: _treatController.text,
+            options: PetFoodLocalDatasource.treats,
+            onChanged: (value) {
+              setState(() {
+                _treatController.text = value;
+              });
+            },
+            icon: PetFoodLocalDatasource.getCategoryIcons()['treat']!,
+            hintText: 'おやつを検索または選択してください',
+          ),
+        ],
+      );
+    }
+
+    // 보기 모드: 읽기 전용 카드 표시
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -96,7 +146,7 @@ class _PetNutritionTabState extends ConsumerState<PetNutritionTab> {
           ),
         ),
         const SizedBox(height: AppSpacing.md),
-        _buildEditableFoodField(
+        _buildReadOnlyFoodField(
           controller: _foodController,
           icon: Icons.restaurant,
           label: '食べる餌',
@@ -104,7 +154,7 @@ class _PetNutritionTabState extends ConsumerState<PetNutritionTab> {
           iconColor: AppColors.pointBrown,
         ),
         const SizedBox(height: AppSpacing.md),
-        _buildEditableFoodField(
+        _buildReadOnlyFoodField(
           controller: _supplementController,
           icon: Icons.medical_services,
           label: '食べる栄養剤',
@@ -112,7 +162,7 @@ class _PetNutritionTabState extends ConsumerState<PetNutritionTab> {
           iconColor: AppColors.pointBlue,
         ),
         const SizedBox(height: AppSpacing.md),
-        _buildEditableFoodField(
+        _buildReadOnlyFoodField(
           controller: _treatController,
           icon: Icons.cake,
           label: '食べるおやつ',
@@ -123,7 +173,7 @@ class _PetNutritionTabState extends ConsumerState<PetNutritionTab> {
     );
   }
 
-  Widget _buildEditableFoodField({
+  Widget _buildReadOnlyFoodField({
     required TextEditingController controller,
     required IconData icon,
     required String label,
@@ -132,101 +182,62 @@ class _PetNutritionTabState extends ConsumerState<PetNutritionTab> {
   }) {
     final hasValue = controller.text.isNotEmpty;
 
-    return InkWell(
-      onTap: widget.isEditMode ? () => _navigateToProductSearch(label) : null,
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: widget.isEditMode
-                ? iconColor.withValues(alpha: 0.3)
-                : AppColors.pointGray.withValues(alpha: 0.1),
-            width: widget.isEditMode ? 2 : 1,
-          ),
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.sm),
-              decoration: BoxDecoration(
-                color: iconColor.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Icon(icon, color: iconColor, size: 20),
-            ),
-            const SizedBox(width: AppSpacing.md),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    label,
-                    style: AppFonts.bodySmall.copyWith(
-                      color: AppColors.pointGray,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.xs),
-                  Text(
-                    hasValue ? controller.text : hint,
-                    style: AppFonts.bodyMedium.copyWith(
-                      color: hasValue
-                          ? AppColors.pointDark
-                          : AppColors.pointGray,
-                      fontWeight: hasValue
-                          ? FontWeight.w600
-                          : FontWeight.normal,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            if (widget.isEditMode)
-              const Icon(
-                Icons.chevron_right,
-                color: AppColors.pointGray,
-                size: 20,
-              )
-            else if (hasValue)
-              const Icon(
-                Icons.check_circle,
-                color: AppColors.pointGreen,
-                size: 20,
-              ),
-          ],
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppColors.pointGray.withValues(alpha: 0.1),
+          width: 1,
         ),
       ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(AppSpacing.sm),
+            decoration: BoxDecoration(
+              color: iconColor.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon, color: iconColor, size: 20),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: AppFonts.bodySmall.copyWith(
+                    color: AppColors.pointGray,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  hasValue ? controller.text : hint,
+                  style: AppFonts.bodyMedium.copyWith(
+                    color: hasValue
+                        ? AppColors.pointDark
+                        : AppColors.pointGray,
+                    fontWeight: hasValue
+                        ? FontWeight.w600
+                        : FontWeight.normal,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (hasValue)
+            const Icon(
+              Icons.check_circle,
+              color: AppColors.pointGreen,
+              size: 20,
+            ),
+        ],
+      ),
     );
-  }
-
-  Future<void> _navigateToProductSearch(String label) async {
-    LoggerService.debug('🛒 상품 검색 화면으로 이동: $label');
-    
-    // 쇼핑 화면으로 이동
-    final selectedProduct = await context.push<String>('/pet-search');
-    
-    if (selectedProduct != null && selectedProduct.isNotEmpty) {
-      LoggerService.debug('✅ 선택된 상품: $selectedProduct');
-      
-      setState(() {
-        if (label.contains('餌')) {
-          _foodController.text = selectedProduct;
-          LoggerService.debug('📝 사료 업데이트: $selectedProduct');
-        } else if (label.contains('栄養剤')) {
-          _supplementController.text = selectedProduct;
-          LoggerService.debug('📝 영양제 업데이트: $selectedProduct');
-        } else if (label.contains('おやつ')) {
-          _treatController.text = selectedProduct;
-          LoggerService.debug('📝 간식 업데이트: $selectedProduct');
-        }
-      });
-      
-      SnackBarService.showSuccess(context, '商品を選択しました');
-    } else {
-      LoggerService.debug('ℹ️ 상품 선택 취소됨');
-    }
   }
 
   Widget _buildNutritionInfoSection() {
