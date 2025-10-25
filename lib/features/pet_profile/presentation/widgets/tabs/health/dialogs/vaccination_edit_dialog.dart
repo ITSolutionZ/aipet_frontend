@@ -27,7 +27,7 @@ class _VaccinationEditDialogState extends State<VaccinationEditDialog> {
   String _selectedIconName = 'vaccines';
   String _selectedColorName = 'green';
 
-  final List<String> _statusOptions = ['完了', '接種中', '期限切れ'];
+  final List<String> _statusOptions = ['接種中', '接種完了', '期限切れ'];
   final List<Map<String, dynamic>> _iconOptions = [
     {'name': 'vaccines', 'icon': Icons.vaccines, 'label': 'ワクチン'},
     {'name': 'healing', 'icon': Icons.healing, 'label': '治療'},
@@ -43,9 +43,13 @@ class _VaccinationEditDialogState extends State<VaccinationEditDialog> {
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.record?.name ?? '');
-    _selectedStatus = widget.record?.status ?? '完了';
     _lastDate = widget.record?.lastDate;
     _nextDate = widget.record?.nextDate;
+
+    // 状態の自動判定: 次回接種日があれば「接種中」、なければ「接種完了」
+    _selectedStatus = widget.record?.status ??
+        (_nextDate != null ? '接種中' : '接種完了');
+
     _selectedIconName = widget.record?.iconName ?? 'vaccines';
     _selectedColorName = widget.record?.colorName ?? 'green';
   }
@@ -355,11 +359,14 @@ class _VaccinationEditDialogState extends State<VaccinationEditDialog> {
       return;
     }
 
+    // 状態の自動判定: 次回接種日があれば「接種中」、なければ「接種完了」
+    final autoStatus = _nextDate != null ? '接種中' : '接種完了';
+
     // 새 레코드 생성
     final newRecord = VaccinationRecord(
       id: widget.record?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
       name: _nameController.text.trim(),
-      status: _selectedStatus,
+      status: autoStatus,
       lastDate: _lastDate,
       nextDate: _nextDate,
       iconName: _selectedIconName,

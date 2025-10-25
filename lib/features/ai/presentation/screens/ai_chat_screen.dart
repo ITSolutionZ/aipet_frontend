@@ -250,6 +250,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
               id: 'general',
               name: '一般',
               icon: Icons.help_outline,
+
               description: '一般的なペット相談',
               color: AppColors.pointBlue,
             );
