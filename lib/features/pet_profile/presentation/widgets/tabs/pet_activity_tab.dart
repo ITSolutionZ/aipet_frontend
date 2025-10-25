@@ -1,6 +1,9 @@
+import 'package:aipet_frontend/features/walk/data/providers/walk_providers.dart';
+import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 class PetActivityTab extends ConsumerWidget {
   final PetProfileEntity pet;
@@ -10,50 +13,72 @@ class PetActivityTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Mock data for tricks since allTricksProvider is not available
-    const tricksState = AsyncValue.data(<dynamic>[]);
+    final walkRecords = ref.watch(walkRecordsNotifierProvider);
 
-    return tricksState.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stackTrace) => Center(child: Text('エラー: $error')),
-      data: (tricks) => _buildActivityContent(tricks),
-    );
+    return _buildActivityContent(context, ref, walkRecords);
   }
 
-  Widget _buildActivityContent(List<dynamic> tricks) {
-    final learnedTricks = tricks
-        .where((trick) => trick.progress != null)
-        .toList();
-    final availableTricks = tricks
-        .where((trick) => trick.progress == null)
-        .toList();
+  Widget _buildActivityContent(
+    BuildContext context,
+    WidgetRef ref,
+    List<WalkRecordEntity> walkRecords,
+  ) {
+    // 펫별 산책 기록 필터링
+    final petWalkRecords = walkRecords
+        .where((record) => record.petIds.contains(pet.id))
+        .toList()
+      ..sort((a, b) => b.startTime.compareTo(a.startTime));
+
+    // 이번 주 산책 기록
+    final now = DateTime.now();
+    final weekStart = now.subtract(Duration(days: now.weekday - 1));
+    final thisWeekWalks = petWalkRecords.where((record) {
+      return record.startTime.isAfter(weekStart);
+    }).toList();
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         children: [
-          _buildActivityStatsSection(learnedTricks.length, tricks.length),
+          _buildWalkStatsSection(thisWeekWalks),
           const SizedBox(height: AppSpacing.lg),
-          _buildLearnedTricksSection(learnedTricks),
+          _buildRecentWalksSection(context, petWalkRecords),
           const SizedBox(height: AppSpacing.lg),
-          _buildAvailableTricksSection(availableTricks),
-          const SizedBox(height: AppSpacing.lg),
-          _buildExerciseLogSection(),
+          _buildWeeklyGoalSection(thisWeekWalks),
         ],
       ),
     );
   }
 
-  Widget _buildActivityStatsSection(int learnedCount, int totalCount) {
-    final progressPercentage = totalCount > 0
-        ? (learnedCount / totalCount) * 100
-        : 0;
+  /// 이번 주 산책 통계 섹션
+  Widget _buildWalkStatsSection(List<WalkRecordEntity> thisWeekWalks) {
+    // 이번 주 통계 계산
+    final totalWalks = thisWeekWalks.length;
+    final totalDistance = thisWeekWalks.fold<double>(
+      0.0,
+      (sum, walk) => sum + (walk.distance ?? 0),
+    );
+    final totalDuration = thisWeekWalks.fold<Duration>(
+      Duration.zero,
+      (sum, walk) => sum + (walk.duration ?? Duration.zero),
+    );
+
+    // 활동 레벨 판단
+    String activityLevel = '低活動';
+    Color activityColor = AppColors.pointGray;
+    if (totalWalks >= 5) {
+      activityLevel = '活発';
+      activityColor = AppColors.pointGreen;
+    } else if (totalWalks >= 3) {
+      activityLevel = '適度';
+      activityColor = AppColors.pointBlue;
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '活動統計',
+          '散歩統計',
           style: AppFonts.titleMedium.copyWith(
             fontWeight: FontWeight.bold,
             color: AppColors.pointDark,
@@ -61,41 +86,47 @@ class PetActivityTab extends ConsumerWidget {
         ),
         const SizedBox(height: AppSpacing.md),
         GenericInfoCard.withIcon(
-          icon: Icons.psychology,
+          icon: Icons.directions_walk,
           iconColor: AppColors.pointBlue,
           iconBackgroundColor: AppColors.pointBlue.withValues(alpha: 0.1),
-          title: '学習済みトリック',
-          subtitle: '$learnedCount / $totalCount トリック',
-          badge: '${progressPercentage.toStringAsFixed(0)}%',
-          badgeColor: AppColors.pointBlue,
+          title: '今週の散歩',
+          subtitle: '$totalWalks回 • 総距離: ${totalDistance.toStringAsFixed(1)}km',
+          badge: activityLevel,
+          badgeColor: activityColor,
         ),
         const SizedBox(height: AppSpacing.sm),
         GenericInfoCard.withIcon(
-          icon: Icons.directions_walk,
+          icon: Icons.timer,
           iconColor: AppColors.pointGreen,
           iconBackgroundColor: AppColors.pointGreen.withValues(alpha: 0.1),
-          title: '今週の散歩',
-          subtitle: '5回 • 総距離: 12.5km',
-          badge: '活発',
+          title: '総運動時間',
+          subtitle: '${totalDuration.inHours}時間${totalDuration.inMinutes % 60}分',
+          badge: '${(totalDuration.inMinutes / 7).toStringAsFixed(0)}分/日',
           badgeColor: AppColors.pointGreen,
         ),
       ],
     );
   }
 
-  Widget _buildLearnedTricksSection(List<dynamic> learnedTricks) {
+  /// 최근 산책 기록 섹션
+  Widget _buildRecentWalksSection(
+    BuildContext context,
+    List<WalkRecordEntity> walkRecords,
+  ) {
+    final recentWalks = walkRecords.take(5).toList();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '学習済みトリック',
+          '最近の散歩',
           style: AppFonts.titleMedium.copyWith(
             fontWeight: FontWeight.bold,
             color: AppColors.pointDark,
           ),
         ),
         const SizedBox(height: AppSpacing.md),
-        if (learnedTricks.isEmpty)
+        if (recentWalks.isEmpty)
           Container(
             padding: const EdgeInsets.all(AppSpacing.lg),
             decoration: BoxDecoration(
@@ -111,126 +142,78 @@ class PetActivityTab extends ConsumerWidget {
             ),
             child: const Center(
               child: Text(
-                'まだ学習したトリックがありません',
+                'まだ散歩記録がありません',
                 style: TextStyle(color: AppColors.pointGray),
               ),
             ),
           )
         else
-          ...learnedTricks.map(
-            (trick) => Padding(
+          ...recentWalks.map(
+            (walk) => Padding(
               padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-              child: _buildTrickCard(trick, isLearned: true),
+              child: _buildWalkCard(context, walk),
             ),
           ),
       ],
     );
   }
 
-  Widget _buildAvailableTricksSection(List<dynamic> availableTricks) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '利用可能なトリック',
-          style: AppFonts.titleMedium.copyWith(
-            fontWeight: FontWeight.bold,
-            color: AppColors.pointDark,
-          ),
-        ),
-        const SizedBox(height: AppSpacing.md),
-        ...availableTricks
-            .take(3)
-            .map(
-              (trick) => Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                child: _buildTrickCard(trick, isLearned: false),
-              ),
-            ),
-        if (availableTricks.length > 3)
-          Center(
-            child: TextButton(
-              onPressed: () {
-                // Navigate to all tricks screen
-              },
-              child: Text(
-                'さらに${availableTricks.length - 3}個のトリックを見る',
-                style: AppFonts.bodyMedium.copyWith(color: AppColors.pointBlue),
-              ),
-            ),
-          ),
-      ],
-    );
-  }
+  /// 주간 목표 섹션
+  Widget _buildWeeklyGoalSection(List<WalkRecordEntity> thisWeekWalks) {
+    final totalDays = thisWeekWalks
+        .map((walk) => DateFormat('yyyy-MM-dd').format(walk.startTime))
+        .toSet()
+        .length;
+    const goalDays = 7;
+    final progressPercentage = (totalDays / goalDays * 100).toInt();
 
-  Widget _buildExerciseLogSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '運動記録',
+          '週間目標',
           style: AppFonts.titleMedium.copyWith(
             fontWeight: FontWeight.bold,
             color: AppColors.pointDark,
           ),
         ),
         const SizedBox(height: AppSpacing.md),
-        GenericInfoCard.withIcon(
-          icon: Icons.today,
-          iconColor: AppColors.pointBrown,
-          iconBackgroundColor: AppColors.pointBrown.withValues(alpha: 0.1),
-          title: '今日の運動',
-          subtitle: '朝の散歩 30分 • 公園での遊び 15分',
-          badge: '完了',
-          badgeColor: AppColors.pointGreen,
-        ),
-        const SizedBox(height: AppSpacing.sm),
         GenericInfoCard.withIcon(
           icon: Icons.timeline,
           iconColor: AppColors.pointPink,
           iconBackgroundColor: AppColors.pointPink.withValues(alpha: 0.1),
-          title: '週間目標',
-          subtitle: '1日60分の運動 • 進捗: 5/7日',
-          badge: '71%',
+          title: '散歩目標',
+          subtitle: '毎日散歩 • 進捗: $totalDays/$goalDays日',
+          badge: '$progressPercentage%',
           badgeColor: AppColors.pointPink,
         ),
       ],
     );
   }
 
-  Widget _buildTrickCard(dynamic trick, {required bool isLearned}) {
+  /// 산책 카드
+  Widget _buildWalkCard(BuildContext context, WalkRecordEntity walk) {
+    final dateFormat = DateFormat('M月d日(E)', 'ja_JP');
+    final timeFormat = DateFormat('HH:mm');
+    final duration = walk.duration ?? Duration.zero;
+    final durationText =
+        '${duration.inHours > 0 ? '${duration.inHours}時間' : ''}${duration.inMinutes % 60}分';
+
     return GenericInfoCard.withIcon(
-      icon: isLearned ? Icons.check_circle : Icons.play_circle_outline,
-      iconColor: isLearned ? AppColors.pointGreen : AppColors.pointGray,
-      iconBackgroundColor: isLearned
-          ? AppColors.pointGreen.withValues(alpha: 0.1)
-          : AppColors.pointGray.withValues(alpha: 0.1),
-      title: trick.name,
-      subtitle: trick.description?.toString() ?? '説明なし',
-      badge: isLearned ? '習得済み' : (trick.difficulty?.toString() ?? 'easy'),
-      badgeColor: isLearned
+      icon: Icons.place,
+      iconColor: AppColors.pointBrown,
+      iconBackgroundColor: AppColors.pointBrown.withValues(alpha: 0.1),
+      title: dateFormat.format(walk.startTime),
+      subtitle:
+          '${timeFormat.format(walk.startTime)} • ${walk.distance?.toStringAsFixed(1) ?? 0}km • $durationText',
+      badge: walk.status == WalkStatus.completed ? '完了' : '進行中',
+      badgeColor: walk.status == WalkStatus.completed
           ? AppColors.pointGreen
-          : _getDifficultyColor(trick.difficulty?.toString() ?? 'easy'),
+          : AppColors.pointBlue,
       onTap: () {
-        // Navigate to trick detail or start learning
+        // 산책 상세 화면으로 이동
       },
       showChevron: true,
     );
-  }
-
-  Color _getDifficultyColor(String difficulty) {
-    switch (difficulty.toLowerCase()) {
-      case '簡単':
-      case 'easy':
-        return AppColors.pointGreen;
-      case '普通':
-      case 'medium':
-        return AppColors.pointBlue;
-      case '難しい':
-      case 'hard':
-        return AppColors.pointPink;
-      default:
-        return AppColors.pointGray;
-    }
   }
 }
