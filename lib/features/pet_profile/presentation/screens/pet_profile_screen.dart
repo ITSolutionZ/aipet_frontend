@@ -136,15 +136,7 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
 
   Widget _buildTabBar() {
     return Container(
-      decoration: BoxDecoration(
-        color: AppColors.pointOffWhite,
-        border: Border(
-          bottom: BorderSide(
-            color: AppColors.pointGray.withValues(alpha: 0.2),
-            width: 1,
-          ),
-        ),
-      ),
+      color: AppColors.pointOffWhite,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: TabBar(
@@ -158,6 +150,7 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
           unselectedLabelStyle: AppFonts.bodyMedium,
           labelPadding: const EdgeInsets.symmetric(horizontal: 4.0),
           tabAlignment: TabAlignment.fill,
+          dividerColor: Colors.transparent,
           tabs: PetProfileConstants.tabTitles
               .map((title) => Tab(text: title))
               .toList(),
