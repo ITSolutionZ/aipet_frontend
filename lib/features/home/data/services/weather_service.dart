@@ -88,13 +88,17 @@ class WeatherService {
       final data = json.decode(response.body) as Map<String, dynamic>;
 
       LoggerService.debug('📊 基本 API 응답 데이터:');
-      LoggerService.debug('  - 위치: ${weatherLocation.name} (${weatherLocation.latitude}, ${weatherLocation.longitude})');
+      LoggerService.debug(
+        '  - 위치: ${weatherLocation.name} (${weatherLocation.latitude}, ${weatherLocation.longitude})',
+      );
       LoggerService.debug('  - 현재 온도: ${data['main']?['temp']}°C');
       LoggerService.debug('  - 날씨: ${data['weather']?[0]?['description']}');
 
       final weatherData = WeatherData.fromJson(data, weatherLocation.name);
 
-      LoggerService.debug('✅ 基本 API 날씨 데이터 생성 완료: ${weatherData.location}, ${weatherData.temperature}°C');
+      LoggerService.debug(
+        '✅ 基本 API 날씨 데이터 생성 완료: ${weatherData.location}, ${weatherData.temperature}°C',
+      );
       // _lastRequestTime = DateTime.now();
       return weatherData;
     } else if (response.statusCode == 401) {
@@ -125,7 +129,9 @@ class WeatherService {
       LoggerService.debug('📍 ユーザーの実際のGPS位置取得を試行中...');
       final realLocation = await _getRealLocation();
       if (realLocation != null) {
-        LoggerService.debug('✅ GPS位置取得成功: ${realLocation.name} (${realLocation.latitude}, ${realLocation.longitude})');
+        LoggerService.debug(
+          '✅ GPS位置取得成功: ${realLocation.name} (${realLocation.latitude}, ${realLocation.longitude})',
+        );
         return realLocation;
       }
     } catch (e) {
@@ -170,31 +176,32 @@ class WeatherService {
 
       // 3. GPS로 실제 사용자 위치 취득
       LoggerService.debug('📱 ユーザーのGPS位置を取得中... (精度: high, タイムアウト: 10秒)');
-      final position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.high, // 높은 정확도로 변경
-          timeLimit: Duration(seconds: 10),
-        ),
-      ).timeout(
-        const Duration(seconds: 10),
-        onTimeout: () {
-          LoggerService.debug('❌ GPS位置取得タイムアウト - デフォルト位置を使用');
-          return Future.value(
-            Position(
-              latitude: 35.6092,
-              longitude: 139.7301,
-              timestamp: DateTime.now(),
-              accuracy: 0.0,
-              altitude: 0.0,
-              altitudeAccuracy: 0.0,
-              heading: 0.0,
-              headingAccuracy: 0.0,
-              speed: 0.0,
-              speedAccuracy: 0.0,
+      final position =
+          await Geolocator.getCurrentPosition(
+            locationSettings: const LocationSettings(
+              accuracy: LocationAccuracy.high, // 높은 정확도로 변경
+              timeLimit: Duration(seconds: 10),
             ),
+          ).timeout(
+            const Duration(seconds: 10),
+            onTimeout: () {
+              LoggerService.debug('❌ GPS位置取得タイムアウト - デフォルト位置を使用');
+              return Future.value(
+                Position(
+                  latitude: 35.6092,
+                  longitude: 139.7301,
+                  timestamp: DateTime.now(),
+                  accuracy: 0.0,
+                  altitude: 0.0,
+                  altitudeAccuracy: 0.0,
+                  heading: 0.0,
+                  headingAccuracy: 0.0,
+                  speed: 0.0,
+                  speedAccuracy: 0.0,
+                ),
+              );
+            },
           );
-        },
-      );
 
       // 4. 역지오코딩으로 위치명 가져오기
       LoggerService.debug(
@@ -236,13 +243,15 @@ class WeatherService {
         '$_geocodingUrl/reverse?lat=$lat&lon=$lon&limit=1&appid=$apiKey&lang=ja',
       );
 
-      final response = await http.get(url).timeout(
-        const Duration(seconds: 5),
-        onTimeout: () {
-          LoggerService.debug('❌ Geocoding APIタイムアウト - 座標を使用');
-          return http.Response('timeout', 408);
-        },
-      );
+      final response = await http
+          .get(url)
+          .timeout(
+            const Duration(seconds: 5),
+            onTimeout: () {
+              LoggerService.debug('❌ Geocoding APIタイムアウト - 座標を使用');
+              return http.Response('timeout', 408);
+            },
+          );
 
       LoggerService.debug('🌐 Geocoding API 応答: ${response.statusCode}');
 
@@ -256,9 +265,7 @@ class WeatherService {
           final state = location['state'] as String? ?? '';
           final country = location['country'] as String? ?? '';
 
-          LoggerService.debug(
-            '📍 取得した位置情報: 国=$country, 州/県=$state, 市=$city',
-          );
+          LoggerService.debug('📍 取得した位置情報: 国=$country, 州/県=$state, 市=$city');
 
           // 위치명 생성 (모든 국가 지원)
           String locationName;
@@ -285,7 +292,9 @@ class WeatherService {
         LoggerService.debug('❌ Geocoding API認証エラー (401) - 座標を使用');
         return _formatCoordinatesAsLocation(lat, lon);
       } else {
-        LoggerService.debug('❌ Geocoding APIエラー: ${response.statusCode} - 座標を使用');
+        LoggerService.debug(
+          '❌ Geocoding APIエラー: ${response.statusCode} - 座標を使用',
+        );
         return _formatCoordinatesAsLocation(lat, lon);
       }
     } catch (e) {

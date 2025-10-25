@@ -101,9 +101,9 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
   @override
   void didUpdateWidget(PetHealthTab oldWidget) {
     super.didUpdateWidget(oldWidget);
-    
+
     // pet이 변경되거나 편집 모드가 종료되면 데이터 갱신
-    if (oldWidget.pet.id != widget.pet.id || 
+    if (oldWidget.pet.id != widget.pet.id ||
         (oldWidget.isEditMode && !widget.isEditMode)) {
       LoggerService.debug('🔄 건강 탭 데이터 갱신');
       _loadHealthData();
@@ -112,18 +112,22 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
 
   void _loadHealthData() {
     final additionalInfo = widget.pet.additionalInfo ?? {};
-    
+
     // 백신 접종 기록 로드
     final vaccinationsData = additionalInfo['vaccinations'] as List<dynamic>?;
-    if (vaccinationsData != null) {
+    if (vaccinationsData != null && vaccinationsData.isNotEmpty) {
       _vaccinationRecords = vaccinationsData.map((v) {
         return VaccinationRecord(
           type: VaccineType.values.firstWhere(
             (t) => t.label == v['type'],
             orElse: () => VaccineType.distemper,
           ),
-          lastDate: v['lastDate'] != null ? DateTime.parse(v['lastDate']) : null,
-          nextDate: v['nextDate'] != null ? DateTime.parse(v['nextDate']) : null,
+          lastDate: v['lastDate'] != null
+              ? DateTime.parse(v['lastDate'])
+              : null,
+          nextDate: v['nextDate'] != null
+              ? DateTime.parse(v['nextDate'])
+              : null,
           status: VaccinationStatus.values.firstWhere(
             (s) => s.label == v['status'],
             orElse: () => VaccinationStatus.notStarted,
@@ -133,75 +137,26 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
       }).toList();
       LoggerService.debug('✅ 백신 접종 기록 ${_vaccinationRecords.length}건 로드');
     } else {
-      // 기본 백신 기록 생성
-      _initializeDefaultVaccinations();
+      // 데이터가 없으면 빈 리스트
+      _vaccinationRecords = [];
+      LoggerService.debug('ℹ️  백신 접종 기록 없음');
     }
 
     // 진료 기록 로드
-    _medicalRecords = (additionalInfo['medicalRecords'] as List<dynamic>?)
+    _medicalRecords =
+        (additionalInfo['medicalRecords'] as List<dynamic>?)
             ?.cast<Map<String, dynamic>>() ??
         [];
     LoggerService.debug('✅ 진료 기록 ${_medicalRecords.length}건 로드');
 
     // 예약 로드
-    _appointments = (additionalInfo['appointments'] as List<dynamic>?)
+    _appointments =
+        (additionalInfo['appointments'] as List<dynamic>?)
             ?.cast<Map<String, dynamic>>() ??
         [];
     LoggerService.debug('✅ 예약 ${_appointments.length}건 로드');
   }
 
-  void _initializeDefaultVaccinations() {
-    // 기본 백신 기록 생성
-    _vaccinationRecords = [
-      // 코어백신 5종 (기본)
-      VaccinationRecord(
-        type: VaccineType.distemper,
-        lastDate: DateTime(2024, 3, 15),
-        nextDate: DateTime(2025, 3, 15),
-        status: VaccinationStatus.completed,
-      ),
-      VaccinationRecord(
-        type: VaccineType.parvovirus,
-        lastDate: DateTime(2024, 3, 15),
-        nextDate: DateTime(2025, 3, 15),
-        status: VaccinationStatus.completed,
-      ),
-      VaccinationRecord(
-        type: VaccineType.hepatitis,
-        lastDate: DateTime(2024, 3, 15),
-        nextDate: DateTime(2025, 3, 15),
-        status: VaccinationStatus.completed,
-      ),
-      VaccinationRecord(
-        type: VaccineType.adenovirus,
-        lastDate: DateTime(2024, 3, 15),
-        nextDate: DateTime(2025, 3, 15),
-        status: VaccinationStatus.completed,
-      ),
-      VaccinationRecord(
-        type: VaccineType.parainfluenza,
-        lastDate: DateTime(2024, 3, 15),
-        nextDate: DateTime(2025, 3, 15),
-        status: VaccinationStatus.completed,
-      ),
-
-      // 법정 접종
-      VaccinationRecord(
-        type: VaccineType.rabies,
-        lastDate: DateTime(2024, 4, 10),
-        nextDate: DateTime(2025, 4, 10),
-        status: VaccinationStatus.completed,
-      ),
-
-      // 기생충 예방
-      VaccinationRecord(
-        type: VaccineType.heartworm,
-        lastDate: DateTime(2024, 8, 1),
-        nextDate: DateTime(2024, 9, 1),
-        status: VaccinationStatus.inProgress,
-      ),
-    ];
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -241,14 +196,14 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          '予防接種記録',
-          style: AppFonts.titleMedium.copyWith(
-            fontWeight: FontWeight.bold,
-            color: AppColors.pointDark,
-          ),
-        ),
+          children: [
+            Text(
+              '予防接種記録',
+              style: AppFonts.titleMedium.copyWith(
+                fontWeight: FontWeight.bold,
+                color: AppColors.pointDark,
+              ),
+            ),
             if (widget.isEditMode)
               TextButton.icon(
                 onPressed: _showAddVaccineDialog,
@@ -261,6 +216,41 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
           ],
         ),
         const SizedBox(height: AppSpacing.sm),
+
+        // 백신 기록이 전혀 없을 때
+        if (_vaccinationRecords.isEmpty)
+          Container(
+            padding: const EdgeInsets.all(AppSpacing.xl),
+            decoration: BoxDecoration(
+              color: AppColors.pointOffWhite,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              children: [
+                Icon(
+                  Icons.vaccines,
+                  size: 48,
+                  color: AppColors.pointGray.withValues(alpha: 0.5),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                Text(
+                  '予防接種記録がありません',
+                  style: AppFonts.bodyMedium.copyWith(
+                    color: AppColors.pointGray,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  '編集モードで「追加」ボタンからワクチンを追加してください',
+                  style: AppFonts.bodySmall.copyWith(
+                    color: AppColors.pointGray.withValues(alpha: 0.7),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
 
         // 코어백신 5종 (필수)
         if (coreVaccines.isNotEmpty) ...[
@@ -319,8 +309,8 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
             '追加ワクチン (任意)',
             Icons.add_circle_outline,
             AppColors.pointBlue,
-        ),
-        const SizedBox(height: AppSpacing.sm),
+          ),
+          const SizedBox(height: AppSpacing.sm),
           ...additionalVaccines.map(
             (record) => Padding(
               padding: const EdgeInsets.only(bottom: AppSpacing.sm),
@@ -732,7 +722,7 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
     ref
         .read(petProfileUnifiedControllerProvider.notifier)
         .updateFormData('vaccinations', vaccinationsData);
-    
+
     LoggerService.debug('💾 백신 접종 기록 저장: ${vaccinationsData.length}건');
   }
 
@@ -740,7 +730,7 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
     ref
         .read(petProfileUnifiedControllerProvider.notifier)
         .updateFormData('medicalRecords', _medicalRecords);
-    
+
     LoggerService.debug('💾 진료 기록 저장: ${_medicalRecords.length}건');
   }
 
@@ -748,7 +738,7 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
     ref
         .read(petProfileUnifiedControllerProvider.notifier)
         .updateFormData('appointments', _appointments);
-    
+
     LoggerService.debug('💾 예약 저장: ${_appointments.length}건');
   }
 
@@ -864,9 +854,7 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
             child: Center(
               child: Text(
                 '診療記録がありません',
-                style: AppFonts.bodyMedium.copyWith(
-                  color: AppColors.pointGray,
-                ),
+                style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
               ),
             ),
           )
@@ -1000,10 +988,7 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
               onPressed: () {
                 if (titleController.text.isEmpty ||
                     hospitalController.text.isEmpty) {
-                  SnackBarService.showWarning(
-                    context,
-                    '診療内容と病院名を入力してください',
-                  );
+                  SnackBarService.showWarning(context, '診療内容と病院名を入力してください');
                   return;
                 }
 
@@ -1017,12 +1002,9 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
                 });
 
                 _saveMedicalRecordsToFormData();
-                
+
                 Navigator.pop(context);
-                SnackBarService.showSuccess(
-                  context,
-                  '診療記録を追加しました',
-                );
+                SnackBarService.showSuccess(context, '診療記録を追加しました');
               },
               child: const Text('追加'),
             ),
@@ -1094,9 +1076,7 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
             child: Center(
               child: Text(
                 '予約がありません',
-                style: AppFonts.bodyMedium.copyWith(
-                  color: AppColors.pointGray,
-                ),
+                style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
               ),
             ),
           )
@@ -1125,7 +1105,7 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
     try {
       final dateTime = DateTime.parse(date.toString());
       final dateStr = '${dateTime.year}年${dateTime.month}月${dateTime.day}日';
-      
+
       if (time != null) {
         return '$dateStr $time';
       }
@@ -1218,10 +1198,7 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
               onPressed: () {
                 if (titleController.text.isEmpty ||
                     hospitalController.text.isEmpty) {
-                  SnackBarService.showWarning(
-                    context,
-                    '予約内容と病院名を入力してください',
-                  );
+                  SnackBarService.showWarning(context, '予約内容と病院名を入力してください');
                   return;
                 }
 
@@ -1240,10 +1217,7 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
                 _saveAppointmentsToFormData();
 
                 Navigator.pop(context);
-                SnackBarService.showSuccess(
-                  context,
-                  '予約を追加しました',
-                );
+                SnackBarService.showSuccess(context, '予約を追加しました');
               },
               child: const Text('追加'),
             ),
