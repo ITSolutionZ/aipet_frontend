@@ -80,6 +80,20 @@ class PetProfileUnifiedController extends _$PetProfileUnifiedController {
     state = state.copyWith(editFormData: updatedData);
   }
 
+  /// 건강 데이터 일괄 업데이트 (PetHealthController에서 변경된 내용을 반영)
+  void updateHealthData(Map<String, dynamic> healthChanges) {
+    final updatedData = Map<String, dynamic>.from(state.editFormData);
+
+    // 건강 데이터를 editFormData에 병합
+    healthChanges.forEach((key, value) {
+      updatedData[key] = value;
+    });
+
+    state = state.copyWith(editFormData: updatedData);
+
+    LoggerService.debug('✅ 健康データ更新完了: ${healthChanges.keys.toList()}');
+  }
+
   /// 펫 프로필 로드
   Future<void> loadPetProfile(String petId) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
@@ -133,9 +147,9 @@ class PetProfileUnifiedController extends _$PetProfileUnifiedController {
       final result = await _logic.updatePetProfile(updatedPet);
 
       if (result.isSuccess) {
+        // ✅ isEditMode는 호출하는 쪽에서 관리하도록 제거
         state = state.copyWith(
           selectedPet: result.dataOrNull,
-          isEditMode: false,
           isLoading: false,
           errorMessage: null,
         );
@@ -300,7 +314,9 @@ class PetProfileUnifiedController extends _$PetProfileUnifiedController {
 
     LoggerService.debug('🔄 Building updated pet from form data');
     LoggerService.debug('📋 Form data keys: ${formData.keys.toList()}');
-    LoggerService.debug('📋 forbiddenIngredients: ${formData['forbiddenIngredients']}');
+    LoggerService.debug(
+      '📋 forbiddenIngredients: ${formData['forbiddenIngredients']}',
+    );
 
     // 기존 additionalInfo의 모든 필드를 보존
     final updatedAdditionalInfo = Map<String, dynamic>.from(
@@ -330,8 +346,21 @@ class PetProfileUnifiedController extends _$PetProfileUnifiedController {
       }
     }
 
-    // 다른 List 필드들도 동일하게 처리
-    for (final key in ['food', 'supplement', 'medication', 'allergy']) {
+    // String 필드들 처리 (food, supplement, treat)
+    for (final key in ['food', 'supplement', 'treat']) {
+      if (formData.containsKey(key)) {
+        final value = formData[key];
+        if (value is String && value.isNotEmpty) {
+          updatedAdditionalInfo[key] = value;
+          LoggerService.debug('✅ $key updated: $value');
+        } else if (value == null || (value is String && value.isEmpty)) {
+          updatedAdditionalInfo.remove(key);
+        }
+      }
+    }
+
+    // List 필드들 처리 (medication, allergy)
+    for (final key in ['medication', 'allergy']) {
       if (formData.containsKey(key)) {
         final value = formData[key];
         if (value is List && value.isNotEmpty) {
@@ -339,6 +368,21 @@ class PetProfileUnifiedController extends _$PetProfileUnifiedController {
             value.whereType<String>(),
           );
         } else if (value == null || value is! List) {
+          updatedAdditionalInfo.remove(key);
+        }
+      }
+    }
+
+    // 건강 관련 복합 데이터 처리 (vaccinations, medicalRecords, appointments)
+    for (final key in ['vaccinations', 'medicalRecords', 'appointments']) {
+      if (formData.containsKey(key)) {
+        final value = formData[key];
+        if (value is List && value.isNotEmpty) {
+          updatedAdditionalInfo[key] = List<Map<String, dynamic>>.from(
+            value.whereType<Map<String, dynamic>>(),
+          );
+          LoggerService.debug('✅ $key updated: ${value.length}건');
+        } else if (value == null || (value is List && value.isEmpty)) {
           updatedAdditionalInfo.remove(key);
         }
       }

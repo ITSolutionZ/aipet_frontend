@@ -246,11 +246,13 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
           },
           onSkip: () {
             // ✅ 추가: Skip 시 일반 카테고리 선택으로 처리
-            final generalCategory = AiCategoryEntity(
+            const generalCategory = AiCategoryEntity(
               id: 'general',
               name: '一般',
               icon: Icons.help_outline,
+
               description: '一般的なペット相談',
+              color: AppColors.pointBlue,
             );
             ref.read(aiChatProvider.notifier).selectCategory(generalCategory);
           },
@@ -302,10 +304,14 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
     // 디버그 로그
     LoggerService.debug('🐾 AI Chat Debug:');
     LoggerService.debug('  - hasPetSelected: ${chatState.hasPetSelected}');
-    LoggerService.debug('  - hasCategorySelected: ${chatState.hasCategorySelected}');
+    LoggerService.debug(
+      '  - hasCategorySelected: ${chatState.hasCategorySelected}',
+    );
     LoggerService.debug('  - messages count: ${chatState.messages.length}');
     LoggerService.debug('  - selectedPet: ${chatState.selectedPet?.name}');
-    LoggerService.debug('  - selectedCategory: ${chatState.selectedCategory?.name}');
+    LoggerService.debug(
+      '  - selectedCategory: ${chatState.selectedCategory?.name}',
+    );
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),

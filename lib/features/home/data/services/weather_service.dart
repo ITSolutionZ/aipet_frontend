@@ -8,8 +8,6 @@ import 'package:http/http.dart' as http;
 import '../models/weather_model.dart';
 
 class WeatherService {
-  static const String _oneCallUrl =
-      'https://api.openweathermap.org/data/3.0/onecall';
   static const String _geocodingUrl = 'https://api.openweathermap.org/geo/1.0';
 
   Future<WeatherData?> getCurrentWeather({
@@ -50,54 +48,16 @@ class WeatherService {
       }
 
       LoggerService.debug('🔑 Weather API 키 상태: 설정됨');
-      LoggerService.debug('🎯 One Call API 3.0 호출 시작...');
+      LoggerService.debug('🎯 기본 API 호출 시작...');
 
-      // One Call 3.0 API 사용
-      final url = Uri.parse(
-        '$_oneCallUrl?lat=${weatherLocation.latitude}&lon=${weatherLocation.longitude}&appid=$apiKey&units=metric&lang=ja&exclude=minutely,alerts',
-      );
-
-      LoggerService.debug('🌐 One Call API 3.0 호출 요청');
-      final response = await http.get(url).timeout(const Duration(seconds: 10));
-      LoggerService.debug('📡 One Call API 3.0 응답: ${response.statusCode}');
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body) as Map<String, dynamic>;
-
-        LoggerService.debug('📊 One Call API 3.0 응답 데이터:');
-        LoggerService.debug('  - 위치: ${weatherLocation.name} (${weatherLocation.latitude}, ${weatherLocation.longitude})');
-        LoggerService.debug('  - 현재 온도: ${data['current']?['temp']}°C');
-        LoggerService.debug('  - 날씨: ${data['current']?['weather']?[0]?['description']}');
-
-        final weatherData = WeatherData.fromOneCallJson(
-          data,
-          weatherLocation.name,
-        );
-
-        LoggerService.debug('✅ One Call API 날씨 데이터 생성 완료: ${weatherData.location}, ${weatherData.temperature}°C');
-        // _lastRequestTime = DateTime.now();
-        return weatherData;
-      } else {
-        // 에러 발생 시 기본 API로 폴백 (One Call API 권한 없는 경우)
-        LoggerService.debug(
-          '❌ One Call API 에러: ${response.statusCode} - 기본 API로 폴백',
-        );
-        return await _getCurrentWeatherFallback(weatherLocation);
-      }
+      // 기본 API 직접 사용 (One Call API 3.0 스킵)
+      return await _getCurrentWeatherFallback(weatherLocation);
     } catch (e) {
-      // One Call API 실패시 기본 API로 폴백 또는 목업 데이터 사용
-      try {
-        final weatherLocation = location ?? await _getCurrentLocation();
-        if (weatherLocation != null) {
-          return await _getCurrentWeatherFallback(weatherLocation);
-        }
-      } catch (fallbackError) {
-        // 모든 API 실패시 목업 데이터 사용
-        LoggerService.debug('❌ 모든 API 호출 실패 - 목업 데이터 사용');
-        final weatherLocation = location ?? _getDefaultLocation();
-        return _getMockWeatherData(weatherLocation.name);
-      }
-      throw Exception('Weather API error: $e');
+      // 기본 API 실패시 목업 데이터 사용
+      LoggerService.debug('❌ 날씨 API 호출 실패: $e');
+      LoggerService.debug('🔄 목업 데이터 사용');
+      final weatherLocation = location ?? _getDefaultLocation();
+      return _getMockWeatherData(weatherLocation.name);
     }
   }
 
@@ -128,13 +88,17 @@ class WeatherService {
       final data = json.decode(response.body) as Map<String, dynamic>;
 
       LoggerService.debug('📊 基本 API 응답 데이터:');
-      LoggerService.debug('  - 위치: ${weatherLocation.name} (${weatherLocation.latitude}, ${weatherLocation.longitude})');
+      LoggerService.debug(
+        '  - 위치: ${weatherLocation.name} (${weatherLocation.latitude}, ${weatherLocation.longitude})',
+      );
       LoggerService.debug('  - 현재 온도: ${data['main']?['temp']}°C');
       LoggerService.debug('  - 날씨: ${data['weather']?[0]?['description']}');
 
       final weatherData = WeatherData.fromJson(data, weatherLocation.name);
 
-      LoggerService.debug('✅ 基本 API 날씨 데이터 생성 완료: ${weatherData.location}, ${weatherData.temperature}°C');
+      LoggerService.debug(
+        '✅ 基本 API 날씨 데이터 생성 완료: ${weatherData.location}, ${weatherData.temperature}°C',
+      );
       // _lastRequestTime = DateTime.now();
       return weatherData;
     } else if (response.statusCode == 401) {
@@ -165,7 +129,9 @@ class WeatherService {
       LoggerService.debug('📍 ユーザーの実際のGPS位置取得を試行中...');
       final realLocation = await _getRealLocation();
       if (realLocation != null) {
-        LoggerService.debug('✅ GPS位置取得成功: ${realLocation.name} (${realLocation.latitude}, ${realLocation.longitude})');
+        LoggerService.debug(
+          '✅ GPS位置取得成功: ${realLocation.name} (${realLocation.latitude}, ${realLocation.longitude})',
+        );
         return realLocation;
       }
     } catch (e) {
@@ -210,31 +176,32 @@ class WeatherService {
 
       // 3. GPS로 실제 사용자 위치 취득
       LoggerService.debug('📱 ユーザーのGPS位置を取得中... (精度: high, タイムアウト: 10秒)');
-      final position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.high, // 높은 정확도로 변경
-          timeLimit: Duration(seconds: 10),
-        ),
-      ).timeout(
-        const Duration(seconds: 10),
-        onTimeout: () {
-          LoggerService.debug('❌ GPS位置取得タイムアウト - デフォルト位置を使用');
-          return Future.value(
-            Position(
-              latitude: 35.6092,
-              longitude: 139.7301,
-              timestamp: DateTime.now(),
-              accuracy: 0.0,
-              altitude: 0.0,
-              altitudeAccuracy: 0.0,
-              heading: 0.0,
-              headingAccuracy: 0.0,
-              speed: 0.0,
-              speedAccuracy: 0.0,
+      final position =
+          await Geolocator.getCurrentPosition(
+            locationSettings: const LocationSettings(
+              accuracy: LocationAccuracy.high, // 높은 정확도로 변경
+              timeLimit: Duration(seconds: 10),
             ),
+          ).timeout(
+            const Duration(seconds: 10),
+            onTimeout: () {
+              LoggerService.debug('❌ GPS位置取得タイムアウト - デフォルト位置を使用');
+              return Future.value(
+                Position(
+                  latitude: 35.6092,
+                  longitude: 139.7301,
+                  timestamp: DateTime.now(),
+                  accuracy: 0.0,
+                  altitude: 0.0,
+                  altitudeAccuracy: 0.0,
+                  heading: 0.0,
+                  headingAccuracy: 0.0,
+                  speed: 0.0,
+                  speedAccuracy: 0.0,
+                ),
+              );
+            },
           );
-        },
-      );
 
       // 4. 역지오코딩으로 위치명 가져오기
       LoggerService.debug(
@@ -276,13 +243,15 @@ class WeatherService {
         '$_geocodingUrl/reverse?lat=$lat&lon=$lon&limit=1&appid=$apiKey&lang=ja',
       );
 
-      final response = await http.get(url).timeout(
-        const Duration(seconds: 5),
-        onTimeout: () {
-          LoggerService.debug('❌ Geocoding APIタイムアウト - 座標を使用');
-          return http.Response('timeout', 408);
-        },
-      );
+      final response = await http
+          .get(url)
+          .timeout(
+            const Duration(seconds: 5),
+            onTimeout: () {
+              LoggerService.debug('❌ Geocoding APIタイムアウト - 座標を使用');
+              return http.Response('timeout', 408);
+            },
+          );
 
       LoggerService.debug('🌐 Geocoding API 応答: ${response.statusCode}');
 
@@ -296,9 +265,7 @@ class WeatherService {
           final state = location['state'] as String? ?? '';
           final country = location['country'] as String? ?? '';
 
-          LoggerService.debug(
-            '📍 取得した位置情報: 国=$country, 州/県=$state, 市=$city',
-          );
+          LoggerService.debug('📍 取得した位置情報: 国=$country, 州/県=$state, 市=$city');
 
           // 위치명 생성 (모든 국가 지원)
           String locationName;
@@ -325,7 +292,9 @@ class WeatherService {
         LoggerService.debug('❌ Geocoding API認証エラー (401) - 座標を使用');
         return _formatCoordinatesAsLocation(lat, lon);
       } else {
-        LoggerService.debug('❌ Geocoding APIエラー: ${response.statusCode} - 座標を使用');
+        LoggerService.debug(
+          '❌ Geocoding APIエラー: ${response.statusCode} - 座標を使用',
+        );
         return _formatCoordinatesAsLocation(lat, lon);
       }
     } catch (e) {
