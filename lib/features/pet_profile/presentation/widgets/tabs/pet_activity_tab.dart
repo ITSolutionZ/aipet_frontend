@@ -13,7 +13,7 @@ class PetActivityTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final walkRecords = ref.watch(walkRecordsNotifierProvider);
+    final walkRecords = ref.watch(walkRecordsProvider);
 
     return _buildActivityContent(context, ref, walkRecords);
   }
@@ -25,7 +25,7 @@ class PetActivityTab extends ConsumerWidget {
   ) {
     // 펫별 산책 기록 필터링
     final petWalkRecords = walkRecords
-        .where((record) => record.petIds.contains(pet.id))
+        .where((record) => record.petId == pet.id)
         .toList()
       ..sort((a, b) => b.startTime.compareTo(a.startTime));
 
