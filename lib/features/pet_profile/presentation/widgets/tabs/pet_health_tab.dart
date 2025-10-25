@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 
 import 'health/controllers/pet_health_controller.dart';
 import 'health/controllers/pet_health_state.dart';
+import 'health/dialogs/vaccination_edit_dialog.dart';
 
 class PetHealthTab extends ConsumerStatefulWidget {
   final PetProfileEntity pet;
@@ -114,10 +115,18 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
     }
   }
 
-  /// 예방접종 기록 추가 (TODO: 다이얼로그로 구현)
+  /// 예방접종 기록 추가
   void _addVaccinationRecord() {
-    // TODO: 예방접종 기록 추가 다이얼로그 표시
-    LoggerService.debug('📝 予防接種記録追加 (未実装)');
+    showDialog(
+      context: context,
+      builder: (context) => VaccinationEditDialog(
+        onSave: (record) {
+          final controller = ref.read(petHealthControllerProvider(tabId).notifier);
+          controller.addVaccinationRecord(record);
+          LoggerService.debug('✅ 予防接種記録追加: ${record.name}');
+        },
+      ),
+    );
   }
 
   /// 예방접종 카드 빌드
@@ -142,9 +151,10 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
       );
     }
 
-    // 편집 모드: 클릭 가능한 카드
+    // 편집 모드: 클릭 가능한 카드 (길게 누르면 삭제)
     return GestureDetector(
       onTap: () => _editVaccinationRecord(record),
+      onLongPress: () => _deleteVaccinationRecord(record),
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.md),
         decoration: BoxDecoration(
@@ -211,10 +221,50 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
     );
   }
 
-  /// 예방접종 기록 편집 (TODO: 다이얼로그로 구현)
+  /// 예방접종 기록 편집
   void _editVaccinationRecord(VaccinationRecord record) {
-    // TODO: 예방접종 기록 편집 다이얼로그 표시
-    LoggerService.debug('✏️ 予防接種記録編集: ${record.name} (未実装)');
+    showDialog(
+      context: context,
+      builder: (context) => VaccinationEditDialog(
+        record: record,
+        onSave: (updatedRecord) {
+          final controller = ref.read(petHealthControllerProvider(tabId).notifier);
+          controller.updateVaccinationRecord(record.id, updatedRecord);
+          LoggerService.debug('✅ 予防接種記録更新: ${updatedRecord.name}');
+        },
+      ),
+    );
+  }
+
+  /// 예방접종 기록 삭제
+  void _deleteVaccinationRecord(VaccinationRecord record) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('削除確認'),
+        content: Text('「${record.name}」を削除してもよろしいですか？'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('キャンセル'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              final controller = ref.read(petHealthControllerProvider(tabId).notifier);
+              controller.deleteVaccinationRecord(record.id);
+              Navigator.pop(context);
+              LoggerService.debug('✅ 予防接種記録削除: ${record.name}');
+              SnackBarService.showSuccess(context, '削除しました');
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.pointRed,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('削除'),
+          ),
+        ],
+      ),
+    );
   }
 
   /// 아이콘 이름을 IconData로 변환
