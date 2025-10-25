@@ -10,6 +10,8 @@ environment:
 dependencies:
     flutter:
         sdk: flutter
+    flutter_localizations:
+        sdk: flutter
     cupertino_icons: ^1.0.8
     firebase_core: ^3.6.0 # Firebase SDK 11.x (Swift 5 호환)
     firebase_auth: ^5.3.0 # Firebase SDK 11.x (Swift 5 호환)
