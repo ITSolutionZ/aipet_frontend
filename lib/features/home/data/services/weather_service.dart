@@ -8,8 +8,6 @@ import 'package:http/http.dart' as http;
 import '../models/weather_model.dart';
 
 class WeatherService {
-  static const String _oneCallUrl =
-      'https://api.openweathermap.org/data/3.0/onecall';
   static const String _geocodingUrl = 'https://api.openweathermap.org/geo/1.0';
 
   Future<WeatherData?> getCurrentWeather({
@@ -50,54 +48,16 @@ class WeatherService {
       }
 
       LoggerService.debug('🔑 Weather API 키 상태: 설정됨');
-      LoggerService.debug('🎯 One Call API 3.0 호출 시작...');
+      LoggerService.debug('🎯 기본 API 호출 시작...');
 
-      // One Call 3.0 API 사용
-      final url = Uri.parse(
-        '$_oneCallUrl?lat=${weatherLocation.latitude}&lon=${weatherLocation.longitude}&appid=$apiKey&units=metric&lang=ja&exclude=minutely,alerts',
-      );
-
-      LoggerService.debug('🌐 One Call API 3.0 호출 요청');
-      final response = await http.get(url).timeout(const Duration(seconds: 10));
-      LoggerService.debug('📡 One Call API 3.0 응답: ${response.statusCode}');
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body) as Map<String, dynamic>;
-
-        LoggerService.debug('📊 One Call API 3.0 응답 데이터:');
-        LoggerService.debug('  - 위치: ${weatherLocation.name} (${weatherLocation.latitude}, ${weatherLocation.longitude})');
-        LoggerService.debug('  - 현재 온도: ${data['current']?['temp']}°C');
-        LoggerService.debug('  - 날씨: ${data['current']?['weather']?[0]?['description']}');
-
-        final weatherData = WeatherData.fromOneCallJson(
-          data,
-          weatherLocation.name,
-        );
-
-        LoggerService.debug('✅ One Call API 날씨 데이터 생성 완료: ${weatherData.location}, ${weatherData.temperature}°C');
-        // _lastRequestTime = DateTime.now();
-        return weatherData;
-      } else {
-        // 에러 발생 시 기본 API로 폴백 (One Call API 권한 없는 경우)
-        LoggerService.debug(
-          '❌ One Call API 에러: ${response.statusCode} - 기본 API로 폴백',
-        );
-        return await _getCurrentWeatherFallback(weatherLocation);
-      }
+      // 기본 API 직접 사용 (One Call API 3.0 스킵)
+      return await _getCurrentWeatherFallback(weatherLocation);
     } catch (e) {
-      // One Call API 실패시 기본 API로 폴백 또는 목업 데이터 사용
-      try {
-        final weatherLocation = location ?? await _getCurrentLocation();
-        if (weatherLocation != null) {
-          return await _getCurrentWeatherFallback(weatherLocation);
-        }
-      } catch (fallbackError) {
-        // 모든 API 실패시 목업 데이터 사용
-        LoggerService.debug('❌ 모든 API 호출 실패 - 목업 데이터 사용');
-        final weatherLocation = location ?? _getDefaultLocation();
-        return _getMockWeatherData(weatherLocation.name);
-      }
-      throw Exception('Weather API error: $e');
+      // 기본 API 실패시 목업 데이터 사용
+      LoggerService.debug('❌ 날씨 API 호출 실패: $e');
+      LoggerService.debug('🔄 목업 데이터 사용');
+      final weatherLocation = location ?? _getDefaultLocation();
+      return _getMockWeatherData(weatherLocation.name);
     }
   }
 
