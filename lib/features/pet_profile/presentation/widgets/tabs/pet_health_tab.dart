@@ -10,16 +10,16 @@ enum VaccineType {
   hepatitis('伝染性肝炎', 'コアワクチン'),
   adenovirus('アデノウイルス2型', 'コアワクチン'),
   parainfluenza('パラインフルエンザ', 'コアワクチン'),
-  
+
   // 추가 백신 (6-10종 - 선택)
   coronavirus('コロナウイルス', '追加ワクチン'),
   leptospira('レプトスピラ', '追加ワクチン'),
   lyme('ライム病', '追加ワクチン'),
   bordetella('ケンネルコフ', '追加ワクチン'),
-  
+
   // 법적 의무
   rabies('狂犬病', '法定接種'),
-  
+
   // 기생충 예방
   heartworm('フィラリア予防', '予防薬');
 
@@ -86,7 +86,7 @@ class PetHealthTab extends ConsumerStatefulWidget {
 class _PetHealthTabState extends ConsumerState<PetHealthTab> {
   // 백신 접종 기록 (실제로는 데이터베이스에서 로드)
   late List<VaccinationRecord> _vaccinationRecords;
-  
+
   @override
   void initState() {
     super.initState();
@@ -127,7 +127,7 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
         nextDate: DateTime(2025, 3, 15),
         status: VaccinationStatus.completed,
       ),
-      
+
       // 법정 접종
       VaccinationRecord(
         type: VaccineType.rabies,
@@ -135,7 +135,7 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
         nextDate: DateTime(2025, 4, 10),
         status: VaccinationStatus.completed,
       ),
-      
+
       // 기생충 예방
       VaccinationRecord(
         type: VaccineType.heartworm,
@@ -204,48 +204,72 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
           ],
         ),
         const SizedBox(height: AppSpacing.sm),
-        
+
         // 코어백신 5종 (필수)
         if (coreVaccines.isNotEmpty) ...[
-          _buildVaccineCategoryHeader('コアワクチン (5種)', Icons.shield, AppColors.pointGreen),
+          _buildVaccineCategoryHeader(
+            'コアワクチン (5種)',
+            Icons.shield,
+            AppColors.pointGreen,
+          ),
           const SizedBox(height: AppSpacing.sm),
-          ...coreVaccines.map((record) => Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                child: _buildVaccinationCard(record),
-              )),
+          ...coreVaccines.map(
+            (record) => Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+              child: _buildVaccinationCard(record),
+            ),
+          ),
         ],
-        
+
         // 법정 접종
         if (mandatoryVaccines.isNotEmpty) ...[
           const SizedBox(height: AppSpacing.md),
-          _buildVaccineCategoryHeader('法定接種 (必須)', Icons.gavel, AppColors.pointRed),
+          _buildVaccineCategoryHeader(
+            '法定接種 (必須)',
+            Icons.gavel,
+            AppColors.pointRed,
+          ),
           const SizedBox(height: AppSpacing.sm),
-          ...mandatoryVaccines.map((record) => Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                child: _buildVaccinationCard(record),
-              )),
+          ...mandatoryVaccines.map(
+            (record) => Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+              child: _buildVaccinationCard(record),
+            ),
+          ),
         ],
-        
+
         // 기생충 예방
         if (preventiveMeds.isNotEmpty) ...[
           const SizedBox(height: AppSpacing.md),
-          _buildVaccineCategoryHeader('寄生虫予防', Icons.bug_report, AppColors.pointPink),
+          _buildVaccineCategoryHeader(
+            '寄生虫予防',
+            Icons.bug_report,
+            AppColors.pointPink,
+          ),
           const SizedBox(height: AppSpacing.sm),
-          ...preventiveMeds.map((record) => Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                child: _buildVaccinationCard(record),
-              )),
+          ...preventiveMeds.map(
+            (record) => Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+              child: _buildVaccinationCard(record),
+            ),
+          ),
         ],
-        
+
         // 추가 백신 (선택)
         if (additionalVaccines.isNotEmpty) ...[
           const SizedBox(height: AppSpacing.md),
-          _buildVaccineCategoryHeader('追加ワクチン (任意)', Icons.add_circle_outline, AppColors.pointBlue),
+          _buildVaccineCategoryHeader(
+            '追加ワクチン (任意)',
+            Icons.add_circle_outline,
+            AppColors.pointBlue,
+          ),
           const SizedBox(height: AppSpacing.sm),
-          ...additionalVaccines.map((record) => Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                child: _buildVaccinationCard(record),
-              )),
+          ...additionalVaccines.map(
+            (record) => Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+              child: _buildVaccinationCard(record),
+            ),
+          ),
         ],
       ],
     );
@@ -269,25 +293,140 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
 
   Widget _buildVaccinationCard(VaccinationRecord record) {
     final iconColor = _getVaccineIconColor(record.type);
-    
+
     if (!widget.isEditMode) {
       // 보기 모드
-      return GenericInfoCard.withIcon(
-        icon: _getVaccineIcon(record.type),
-        iconColor: iconColor,
-        iconBackgroundColor: iconColor.withValues(alpha: 0.1),
-        title: record.type.label,
-        subtitle: _formatVaccineDates(record),
-        badge: record.status.label,
-        badgeColor: record.status.color,
-      );
+      return _buildReadOnlyVaccinationCard(record, iconColor);
     }
 
     // 편집 모드
     return _buildEditableVaccinationCard(record, iconColor);
   }
 
-  Widget _buildEditableVaccinationCard(VaccinationRecord record, Color iconColor) {
+  Widget _buildReadOnlyVaccinationCard(
+    VaccinationRecord record,
+    Color iconColor,
+  ) {
+    final lastDateText = record.lastDate != null
+        ? '${record.lastDate!.year}年${record.lastDate!.month}月${record.lastDate!.day}日'
+        : '未設定';
+    final nextDateText = record.nextDate != null
+        ? '${record.nextDate!.year}年${record.nextDate!.month}月${record.nextDate!.day}日'
+        : '未設定';
+
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 헤더 행
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.sm),
+                decoration: BoxDecoration(
+                  color: iconColor.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  _getVaccineIcon(record.type),
+                  color: iconColor,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Text(
+                  record.type.label,
+                  style: AppFonts.bodyMedium.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.pointDark,
+                  ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.sm,
+                  vertical: AppSpacing.xs,
+                ),
+                decoration: BoxDecoration(
+                  color: record.status.color.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  record.status.label,
+                  style: AppFonts.bodySmall.copyWith(
+                    color: record.status.color,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+          // 날짜 표시 (2컬럼)
+          Row(
+            children: [
+              Expanded(
+                child: _buildDateDisplay('前回', lastDateText, iconColor),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: _buildDateDisplay('次回', nextDateText, iconColor),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDateDisplay(String label, String dateText, Color accentColor) {
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.sm),
+      decoration: BoxDecoration(
+        color: AppColors.pointOffWhite,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: accentColor.withValues(alpha: 0.2)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: AppFonts.bodySmall.copyWith(
+              color: AppColors.pointGray,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            dateText,
+            style: AppFonts.bodySmall.copyWith(
+              color: AppColors.pointDark,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEditableVaccinationCard(
+    VaccinationRecord record,
+    Color iconColor,
+  ) {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
@@ -307,7 +446,11 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
                   color: iconColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Icon(_getVaccineIcon(record.type), color: iconColor, size: 20),
+                child: Icon(
+                  _getVaccineIcon(record.type),
+                  color: iconColor,
+                  size: 20,
+                ),
               ),
               const SizedBox(width: AppSpacing.md),
               Expanded(
@@ -323,7 +466,11 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
               if (record.type.category == '追加ワクチン') ...[
                 const SizedBox(width: AppSpacing.sm),
                 IconButton(
-                  icon: const Icon(Icons.delete, size: 20, color: AppColors.pointRed),
+                  icon: const Icon(
+                    Icons.delete,
+                    size: 20,
+                    color: AppColors.pointRed,
+                  ),
                   onPressed: () => _deleteVaccination(record),
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),
@@ -332,10 +479,28 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
             ],
           ),
           const SizedBox(height: AppSpacing.md),
-          // 날짜 필드
-          _buildDateField('前回接種', record.lastDate, iconColor, () => _selectLastDate(record)),
-          const SizedBox(height: AppSpacing.sm),
-          _buildDateField('次回接種', record.nextDate, iconColor, () => _selectNextDate(record)),
+          // 날짜 필드 (2컬럼)
+          Row(
+            children: [
+              Expanded(
+                child: _buildDateField(
+                  '前回',
+                  record.lastDate,
+                  iconColor,
+                  () => _selectLastDate(record),
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: _buildDateField(
+                  '次回',
+                  record.nextDate,
+                  iconColor,
+                  () => _selectNextDate(record),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
@@ -367,17 +532,12 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
     }
   }
 
-  String _formatVaccineDates(VaccinationRecord record) {
-    final lastDate = record.lastDate != null
-        ? '${record.lastDate!.year}年${record.lastDate!.month}月${record.lastDate!.day}日'
-        : '未設定';
-    final nextDate = record.nextDate != null
-        ? '${record.nextDate!.year}年${record.nextDate!.month}月${record.nextDate!.day}日'
-        : '未設定';
-    return '前回: $lastDate\n次回: $nextDate';
-  }
-
-  Widget _buildDateField(String label, DateTime? date, Color accentColor, VoidCallback onTap) {
+  Widget _buildDateField(
+    String label,
+    DateTime? date,
+    Color accentColor,
+    VoidCallback onTap,
+  ) {
     final dateText = date != null
         ? '${date.year}年${date.month}月${date.day}日'
         : '未設定';
@@ -385,31 +545,34 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
     return InkWell(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.sm,
-        ),
+        padding: const EdgeInsets.all(AppSpacing.sm),
         decoration: BoxDecoration(
           color: AppColors.pointOffWhite,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: accentColor.withValues(alpha: 0.2)),
         ),
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(Icons.calendar_today, size: 16, color: accentColor),
-            const SizedBox(width: AppSpacing.sm),
-            Text(
-              '$label:',
-              style: AppFonts.bodySmall.copyWith(
-                color: AppColors.pointGray,
-                fontWeight: FontWeight.w500,
-              ),
+            Row(
+              children: [
+                Icon(Icons.calendar_today, size: 14, color: accentColor),
+                const SizedBox(width: 4),
+                Text(
+                  label,
+                  style: AppFonts.bodySmall.copyWith(
+                    color: AppColors.pointGray,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(width: AppSpacing.sm),
-            Expanded(
-              child: Text(
-                dateText,
-                style: AppFonts.bodyMedium.copyWith(color: AppColors.pointDark),
+            const SizedBox(height: 4),
+            Text(
+              dateText,
+              style: AppFonts.bodySmall.copyWith(
+                color: AppColors.pointDark,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ],
@@ -448,10 +611,9 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
         ),
       ),
       itemBuilder: (context) => VaccinationStatus.values
-          .map((status) => PopupMenuItem(
-                value: status,
-                child: Text(status.label),
-              ))
+          .map(
+            (status) => PopupMenuItem(value: status, child: Text(status.label)),
+          )
           .toList(),
     );
   }
@@ -459,9 +621,11 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
   void _showAddVaccineDialog() {
     // 아직 추가되지 않은 백신 목록
     final availableVaccines = VaccineType.values
-        .where((type) =>
-            type.category == '追加ワクチン' &&
-            !_vaccinationRecords.any((r) => r.type == type))
+        .where(
+          (type) =>
+              type.category == '追加ワクチン' &&
+              !_vaccinationRecords.any((r) => r.type == type),
+        )
         .toList();
 
     if (availableVaccines.isEmpty) {
@@ -476,13 +640,15 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: availableVaccines
-              .map((type) => ListTile(
-                    title: Text(type.label),
-                    onTap: () {
-                      Navigator.pop(context);
-                      _addVaccination(type);
-                    },
-                  ))
+              .map(
+                (type) => ListTile(
+                  title: Text(type.label),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _addVaccination(type);
+                  },
+                ),
+              )
               .toList(),
         ),
         actions: [
@@ -498,10 +664,7 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
   void _addVaccination(VaccineType type) {
     setState(() {
       _vaccinationRecords.add(
-        VaccinationRecord(
-          type: type,
-          status: VaccinationStatus.notStarted,
-        ),
+        VaccinationRecord(type: type, status: VaccinationStatus.notStarted),
       );
     });
     SnackBarService.showSuccess(context, '${type.label}を追加しました');
@@ -534,7 +697,10 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
     );
   }
 
-  void _updateVaccinationStatus(VaccinationRecord record, VaccinationStatus status) {
+  void _updateVaccinationStatus(
+    VaccinationRecord record,
+    VaccinationStatus status,
+  ) {
     setState(() {
       final index = _vaccinationRecords.indexOf(record);
       _vaccinationRecords[index] = record.copyWith(status: status);
@@ -561,7 +727,8 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
   Future<void> _selectNextDate(VaccinationRecord record) async {
     final picked = await showDatePicker(
       context: context,
-      initialDate: record.nextDate ?? DateTime.now().add(const Duration(days: 365)),
+      initialDate:
+          record.nextDate ?? DateTime.now().add(const Duration(days: 365)),
       firstDate: DateTime.now(),
       lastDate: DateTime(2030),
       locale: const Locale('ja', 'JP'),
@@ -627,7 +794,8 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
           iconColor: AppColors.pointBrown,
           iconBackgroundColor: AppColors.pointBrown.withValues(alpha: 0.1),
           title: '現在の体重',
-          subtitle: '${widget.pet.weight}kg • 理想体重: ${widget.pet.weight + 0.5}kg',
+          subtitle:
+              '${widget.pet.weight}kg • 理想体重: ${widget.pet.weight + 0.5}kg',
           badge: '適正',
           badgeColor: AppColors.pointGreen,
         ),
