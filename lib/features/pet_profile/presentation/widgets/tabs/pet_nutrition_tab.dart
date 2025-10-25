@@ -1,3 +1,5 @@
+import 'dart:math' show pow;
+
 import 'package:aipet_frontend/features/daily/data/datasources/pet_food_local_datasource.dart';
 import 'package:aipet_frontend/features/daily/presentation/widgets/searchable_dropdown.dart'
     as daily;
@@ -274,6 +276,18 @@ class _PetNutritionTabState extends ConsumerState<PetNutritionTab> {
   }
 
   Widget _buildNutritionInfoSection() {
+    final additionalInfo = widget.pet.additionalInfo ?? {};
+
+    // 1일 필요 칼로리 계산 또는 로드
+    final dailyCalories = _calculateDailyCalories(additionalInfo);
+
+    // 단백질 비율 로드 (기본값: 25%)
+    final proteinPercentage =
+        additionalInfo['proteinPercentage'] as num? ?? 25;
+
+    // 1일 필요 수분량 계산 또는 로드
+    final dailyWater = _calculateDailyWater(additionalInfo);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -288,25 +302,76 @@ class _PetNutritionTabState extends ConsumerState<PetNutritionTab> {
         _buildNutritionItem(
           icon: Icons.speed,
           title: '1日の必要カロリー',
-          value: '800 kcal',
+          value: '$dailyCalories kcal',
           iconColor: AppColors.pointBrown,
         ),
         const SizedBox(height: AppSpacing.sm),
         _buildNutritionItem(
           icon: Icons.fitness_center,
           title: 'タンパク質',
-          value: '25%',
+          value: '$proteinPercentage%',
           iconColor: AppColors.pointBlue,
         ),
         const SizedBox(height: AppSpacing.sm),
         _buildNutritionItem(
           icon: Icons.water,
           title: '水分',
-          value: '1.2L/日',
+          value: '$dailyWater L/日',
           iconColor: AppColors.pointBlue,
         ),
       ],
     );
+  }
+
+  /// 1일 필요 칼로리 계산
+  /// additionalInfo에 저장된 값이 있으면 사용, 없으면 체중 기반으로 자동 계산
+  int _calculateDailyCalories(Map<String, dynamic> additionalInfo) {
+    // 저장된 값이 있으면 우선 사용
+    if (additionalInfo.containsKey('dailyCalories')) {
+      final savedCalories = additionalInfo['dailyCalories'];
+      if (savedCalories is num) {
+        return savedCalories.toInt();
+      }
+    }
+
+    // 체중 기반 자동 계산
+    final weightInKg = widget.pet.weight > 0 ? widget.pet.weight : 5.0;
+
+    // RER (Resting Energy Requirement) = 70 × (체중kg)^0.75
+    // 일반 성견의 경우: RER × 1.6
+    final rer = 70 * pow(weightInKg, 0.75);
+    final dailyCalories = (rer * 1.6).round();
+
+    LoggerService.debug(
+      '📊 칼로리 자동 계산: 체중 ${weightInKg}kg → ${dailyCalories}kcal',
+    );
+
+    return dailyCalories;
+  }
+
+  /// 1일 필요 수분량 계산
+  /// additionalInfo에 저장된 값이 있으면 사용, 없으면 체중 기반으로 자동 계산
+  String _calculateDailyWater(Map<String, dynamic> additionalInfo) {
+    // 저장된 값이 있으면 우선 사용
+    if (additionalInfo.containsKey('dailyWater')) {
+      final savedWater = additionalInfo['dailyWater'];
+      if (savedWater is num) {
+        return savedWater.toStringAsFixed(1);
+      }
+      if (savedWater is String) {
+        return savedWater;
+      }
+    }
+
+    // 체중 기반 자동 계산: 일반적으로 체중 1kg당 50-60ml
+    final weightInKg = widget.pet.weight > 0 ? widget.pet.weight : 5.0;
+    final waterInLiters = (weightInKg * 55 / 1000); // 55ml/kg → L로 변환
+
+    LoggerService.debug(
+      '💧 수분량 자동 계산: 체중 ${weightInKg}kg → ${waterInLiters.toStringAsFixed(1)}L',
+    );
+
+    return waterInLiters.toStringAsFixed(1);
   }
 
   Widget _buildFeedingScheduleSection() {
