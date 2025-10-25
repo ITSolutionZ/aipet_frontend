@@ -314,7 +314,9 @@ class PetProfileUnifiedController extends _$PetProfileUnifiedController {
 
     LoggerService.debug('🔄 Building updated pet from form data');
     LoggerService.debug('📋 Form data keys: ${formData.keys.toList()}');
-    LoggerService.debug('📋 forbiddenIngredients: ${formData['forbiddenIngredients']}');
+    LoggerService.debug(
+      '📋 forbiddenIngredients: ${formData['forbiddenIngredients']}',
+    );
 
     // 기존 additionalInfo의 모든 필드를 보존
     final updatedAdditionalInfo = Map<String, dynamic>.from(
@@ -366,6 +368,21 @@ class PetProfileUnifiedController extends _$PetProfileUnifiedController {
             value.whereType<String>(),
           );
         } else if (value == null || value is! List) {
+          updatedAdditionalInfo.remove(key);
+        }
+      }
+    }
+
+    // 건강 관련 복합 데이터 처리 (vaccinations, medicalRecords, appointments)
+    for (final key in ['vaccinations', 'medicalRecords', 'appointments']) {
+      if (formData.containsKey(key)) {
+        final value = formData[key];
+        if (value is List && value.isNotEmpty) {
+          updatedAdditionalInfo[key] = List<Map<String, dynamic>>.from(
+            value.whereType<Map<String, dynamic>>(),
+          );
+          LoggerService.debug('✅ $key updated: ${value.length}건');
+        } else if (value == null || (value is List && value.isEmpty)) {
           updatedAdditionalInfo.remove(key);
         }
       }
