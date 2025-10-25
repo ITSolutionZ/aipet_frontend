@@ -683,72 +683,68 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
       return;
     }
 
-    final List<Widget> menuItems = [];
-
-    // コアワクチン5種をまとめて追加するオプション（まだ追加されていない場合のみ）
-    if (!hasCoreVaccines) {
-      menuItems.add(
-        ListTile(
-          leading: Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: AppColors.pointGreen.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: const Icon(Icons.vaccines, color: AppColors.pointGreen),
-          ),
-          title: const Text(
-            'コアワクチン (5種混合)',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          subtitle: const Text('ジステンパー、パルボ、肝炎など必須ワクチン'),
-          onTap: () {
-            Navigator.pop(context);
-            _addCoreVaccines();
-          },
-        ),
-      );
-    }
-
-    // 追加ワクチンのオプション
-    menuItems.addAll(
-      availableAdditionalVaccines.map(
-        (type) => ListTile(
-          leading: Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: AppColors.pointBlue.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: const Icon(Icons.medical_services, color: AppColors.pointBlue),
-          ),
-          title: Text(type.label),
-          subtitle: const Text('任意接種'),
-          onTap: () {
-            Navigator.pop(context);
-            _addVaccination(type);
-          },
-        ),
-      ),
-    );
-
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('ワクチンを追加'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: menuItems,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('ワクチンを追加'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // コアワクチン5種をまとめて追加するオプション（まだ追加されていない場合のみ）
+                if (!hasCoreVaccines)
+                  ListTile(
+                    leading: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: AppColors.pointGreen.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child:
+                          const Icon(Icons.vaccines, color: AppColors.pointGreen),
+                    ),
+                    title: const Text(
+                      'コアワクチン (5種混合)',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: const Text('ジステンパー、パルボ、肝炎など必須ワクチン'),
+                    onTap: () {
+                      Navigator.pop(dialogContext);
+                      _addCoreVaccines();
+                    },
+                  ),
+                // 追加ワクチンのオプション
+                ...availableAdditionalVaccines.map(
+                  (type) => ListTile(
+                    leading: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: AppColors.pointBlue.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(Icons.medical_services,
+                          color: AppColors.pointBlue),
+                    ),
+                    title: Text(type.label),
+                    subtitle: const Text('任意接種'),
+                    onTap: () {
+                      Navigator.pop(dialogContext);
+                      _addVaccination(type);
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('キャンセル'),
-          ),
-        ],
-      ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: const Text('キャンセル'),
+            ),
+          ],
+        );
+      },
     );
   }
 
