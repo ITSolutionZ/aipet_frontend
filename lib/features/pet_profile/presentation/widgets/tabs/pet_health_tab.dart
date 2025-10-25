@@ -736,14 +736,29 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          '診療記録',
-          style: AppFonts.titleMedium.copyWith(
-            fontWeight: FontWeight.bold,
-            color: AppColors.pointDark,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              '診療記録',
+              style: AppFonts.titleMedium.copyWith(
+                fontWeight: FontWeight.bold,
+                color: AppColors.pointDark,
+              ),
+            ),
+            if (widget.isEditMode)
+              TextButton.icon(
+                onPressed: _showAddMedicalRecordDialog,
+                icon: const Icon(Icons.add, size: 18),
+                label: const Text('追加'),
+                style: TextButton.styleFrom(
+                  foregroundColor: AppColors.pointBrown,
+                ),
+              ),
+          ],
         ),
         const SizedBox(height: AppSpacing.md),
+        // TODO: 실제 진료 기록은 데이터베이스에서 로드
         GenericInfoCard.withIcon(
           icon: Icons.local_hospital,
           iconColor: AppColors.pointPink,
@@ -764,6 +779,109 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
           badgeColor: AppColors.pointGreen,
         ),
       ],
+    );
+  }
+
+  void _showAddMedicalRecordDialog() {
+    final titleController = TextEditingController();
+    final hospitalController = TextEditingController();
+    DateTime selectedDate = DateTime.now();
+    String selectedStatus = '正常';
+
+    showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: const Text('診療記録を追加'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: titleController,
+                  decoration: const InputDecoration(
+                    labelText: '診療内容',
+                    hintText: '例: 定期健康診断',
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                TextField(
+                  controller: hospitalController,
+                  decoration: const InputDecoration(
+                    labelText: '病院名',
+                    hintText: '例: 田中動物病院',
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                ListTile(
+                  title: const Text('診療日'),
+                  subtitle: Text(
+                    '${selectedDate.year}年${selectedDate.month}月${selectedDate.day}日',
+                  ),
+                  trailing: const Icon(Icons.calendar_today),
+                  onTap: () async {
+                    final picked = await showDatePicker(
+                      context: context,
+                      initialDate: selectedDate,
+                      firstDate: DateTime(2020),
+                      lastDate: DateTime.now(),
+                      locale: const Locale('ja', 'JP'),
+                    );
+                    if (picked != null) {
+                      setDialogState(() {
+                        selectedDate = picked;
+                      });
+                    }
+                  },
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                DropdownButtonFormField<String>(
+                  value: selectedStatus,
+                  decoration: const InputDecoration(
+                    labelText: '診療結果',
+                  ),
+                  items: ['正常', '要観察', '要治療', '完了']
+                      .map((status) => DropdownMenuItem(
+                            value: status,
+                            child: Text(status),
+                          ))
+                      .toList(),
+                  onChanged: (value) {
+                    if (value != null) {
+                      setDialogState(() {
+                        selectedStatus = value;
+                      });
+                    }
+                  },
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('キャンセル'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                // TODO: 진료 기록 저장
+                LoggerService.debug('📝 진료 기록 추가:');
+                LoggerService.debug('   - 제목: ${titleController.text}');
+                LoggerService.debug('   - 병원: ${hospitalController.text}');
+                LoggerService.debug('   - 날짜: $selectedDate');
+                LoggerService.debug('   - 상태: $selectedStatus');
+                
+                Navigator.pop(context);
+                SnackBarService.showSuccess(
+                  context,
+                  '診療記録を追加しました (保存ボタンを押してください)',
+                );
+              },
+              child: const Text('追加'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -797,14 +915,29 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          '予約・スケジュール',
-          style: AppFonts.titleMedium.copyWith(
-            fontWeight: FontWeight.bold,
-            color: AppColors.pointDark,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              '予約・スケジュール',
+              style: AppFonts.titleMedium.copyWith(
+                fontWeight: FontWeight.bold,
+                color: AppColors.pointDark,
+              ),
+            ),
+            if (widget.isEditMode)
+              TextButton.icon(
+                onPressed: _showAddAppointmentDialog,
+                icon: const Icon(Icons.add, size: 18),
+                label: const Text('追加'),
+                style: TextButton.styleFrom(
+                  foregroundColor: AppColors.pointBrown,
+                ),
+              ),
+          ],
         ),
         const SizedBox(height: AppSpacing.md),
+        // TODO: 실제 예약은 데이터베이스에서 로드
         GenericInfoCard.withIcon(
           icon: Icons.schedule,
           iconColor: AppColors.pointBlue,
@@ -815,6 +948,110 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
           badgeColor: AppColors.pointBlue,
         ),
       ],
+    );
+  }
+
+  void _showAddAppointmentDialog() {
+    final titleController = TextEditingController();
+    final hospitalController = TextEditingController();
+    DateTime selectedDate = DateTime.now();
+    TimeOfDay selectedTime = TimeOfDay.now();
+
+    showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: const Text('予約を追加'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: titleController,
+                  decoration: const InputDecoration(
+                    labelText: '予約内容',
+                    hintText: '例: 定期健康診断',
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                TextField(
+                  controller: hospitalController,
+                  decoration: const InputDecoration(
+                    labelText: '病院名',
+                    hintText: '例: 田中動物病院',
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                ListTile(
+                  title: const Text('予約日'),
+                  subtitle: Text(
+                    '${selectedDate.year}年${selectedDate.month}月${selectedDate.day}日',
+                  ),
+                  trailing: const Icon(Icons.calendar_today),
+                  onTap: () async {
+                    final picked = await showDatePicker(
+                      context: context,
+                      initialDate: selectedDate,
+                      firstDate: DateTime.now(),
+                      lastDate: DateTime(2030),
+                      locale: const Locale('ja', 'JP'),
+                    );
+                    if (picked != null) {
+                      setDialogState(() {
+                        selectedDate = picked;
+                      });
+                    }
+                  },
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                ListTile(
+                  title: const Text('予約時刻'),
+                  subtitle: Text(
+                    '${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}',
+                  ),
+                  trailing: const Icon(Icons.access_time),
+                  onTap: () async {
+                    final picked = await showTimePicker(
+                      context: context,
+                      initialTime: selectedTime,
+                    );
+                    if (picked != null) {
+                      setDialogState(() {
+                        selectedTime = picked;
+                      });
+                    }
+                  },
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('キャンセル'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                // TODO: 예약 저장
+                LoggerService.debug('📝 예약 추가:');
+                LoggerService.debug('   - 제목: ${titleController.text}');
+                LoggerService.debug('   - 병원: ${hospitalController.text}');
+                LoggerService.debug('   - 날짜: $selectedDate');
+                LoggerService.debug(
+                  '   - 시간: ${selectedTime.hour}:${selectedTime.minute}',
+                );
+                
+                Navigator.pop(context);
+                SnackBarService.showSuccess(
+                  context,
+                  '予約を追加しました (保存ボタンを押してください)',
+                );
+              },
+              child: const Text('追加'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
