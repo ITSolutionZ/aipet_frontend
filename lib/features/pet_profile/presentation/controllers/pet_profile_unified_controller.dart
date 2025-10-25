@@ -80,6 +80,20 @@ class PetProfileUnifiedController extends _$PetProfileUnifiedController {
     state = state.copyWith(editFormData: updatedData);
   }
 
+  /// 건강 데이터 일괄 업데이트 (PetHealthController에서 변경된 내용을 반영)
+  void updateHealthData(Map<String, dynamic> healthChanges) {
+    final updatedData = Map<String, dynamic>.from(state.editFormData);
+
+    // 건강 데이터를 editFormData에 병합
+    healthChanges.forEach((key, value) {
+      updatedData[key] = value;
+    });
+
+    state = state.copyWith(editFormData: updatedData);
+
+    LoggerService.debug('✅ 健康データ更新完了: ${healthChanges.keys.toList()}');
+  }
+
   /// 펫 프로필 로드
   Future<void> loadPetProfile(String petId) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
