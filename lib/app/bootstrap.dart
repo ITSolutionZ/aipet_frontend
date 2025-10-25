@@ -14,6 +14,7 @@ import 'package:aipet_frontend/shared/services/local_data_manager.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
@@ -354,6 +355,12 @@ class _AIPetAppState extends ConsumerState<AIPetApp> {
       debugShowCheckedModeBanner: false,
       routerConfig: router,
       locale: const Locale('ja', 'JP'),
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [Locale('ja', 'JP')],
       theme: AppTheme.light.copyWith(
         primaryColor: AppColors.pointBrown,
         scaffoldBackgroundColor: AppColors.pointOffWhite,

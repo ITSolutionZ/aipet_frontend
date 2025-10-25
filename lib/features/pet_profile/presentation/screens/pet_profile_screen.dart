@@ -16,8 +16,13 @@ import 'package:go_router/go_router.dart';
 /// 재사용 가능한 컴포넌트들을 사용하여 유지보수성을 높였습니다.
 class PetProfileScreen extends ConsumerStatefulWidget {
   final String petId;
+  final bool initialEditMode;
 
-  const PetProfileScreen({super.key, required this.petId});
+  const PetProfileScreen({
+    super.key,
+    required this.petId,
+    this.initialEditMode = false,
+  });
 
   @override
   ConsumerState<PetProfileScreen> createState() => _PetProfileScreenState();
@@ -56,9 +61,18 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
 
   void _loadPetProfile() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref
-          .read(petProfileUnifiedControllerProvider.notifier)
-          .loadPetProfile(widget.petId);
+      final controller = ref.read(petProfileUnifiedControllerProvider.notifier);
+      controller.loadPetProfile(widget.petId);
+
+      // 初期編集モードフラグがtrueの場合、編集モードを有効にする
+      if (widget.initialEditMode) {
+        // ペット読み込み完了を待ってから編集モードを有効にする
+        Future.delayed(const Duration(milliseconds: 100), () {
+          if (mounted) {
+            controller.toggleEditMode();
+          }
+        });
+      }
     });
   }
 
@@ -122,15 +136,7 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
 
   Widget _buildTabBar() {
     return Container(
-      decoration: BoxDecoration(
-        color: AppColors.pointOffWhite,
-        border: Border(
-          bottom: BorderSide(
-            color: AppColors.pointGray.withValues(alpha: 0.2),
-            width: 1,
-          ),
-        ),
-      ),
+      color: AppColors.pointOffWhite,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: TabBar(
@@ -144,6 +150,7 @@ class _PetProfileScreenState extends ConsumerState<PetProfileScreen>
           unselectedLabelStyle: AppFonts.bodyMedium,
           labelPadding: const EdgeInsets.symmetric(horizontal: 4.0),
           tabAlignment: TabAlignment.fill,
+          dividerColor: Colors.transparent,
           tabs: PetProfileConstants.tabTitles
               .map((title) => Tab(text: title))
               .toList(),
