@@ -79,7 +79,9 @@ class ShellRoutes {
             builder: (context, state) {
               // 경로 파라미터에서 petId 추출
               final petId = state.pathParameters['petId'] ?? 'default';
-              return PetProfileScreen(petId: petId);
+              // クエリパラメータから編集モードフラグを取得
+              final isEditMode = state.uri.queryParameters['isEditMode'] == 'true';
+              return PetProfileScreen(petId: petId, initialEditMode: isEditMode);
             },
           ),
           GoRoute(

@@ -67,7 +67,9 @@ class StandaloneRoutes {
       name: 'pet-profile-standalone',
       builder: (context, state) {
         final petId = state.pathParameters['petId'] ?? 'default';
-        return PetProfileScreen(petId: petId);
+        // クエリパラメータから編集モードフラグを取得
+        final isEditMode = state.uri.queryParameters['isEditMode'] == 'true';
+        return PetProfileScreen(petId: petId, initialEditMode: isEditMode);
       },
     ),
     // Daily Health Pet Registration
