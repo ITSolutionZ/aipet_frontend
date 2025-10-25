@@ -35,6 +35,7 @@ export 'mixins/mixins.dart';
 export 'services/base_logging_service.dart';
 export 'services/weather_icon_service.dart';
 export 'utils/id_generator.dart';
+export 'utils/responsive_helper.dart';
 export 'utils/summary_card_utils.dart';
 
 // Feature-specific files have been moved:
