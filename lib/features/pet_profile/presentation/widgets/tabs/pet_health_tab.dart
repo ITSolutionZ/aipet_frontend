@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../controllers/pet_profile_unified_controller.dart';
 import 'health/controllers/pet_health_controller.dart';
 import 'health/controllers/pet_health_state.dart';
 import 'health/dialogs/appointment_edit_dialog.dart';
@@ -101,12 +102,16 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
 
   /// 저장 처리
   void _handleSave(BuildContext context) {
-    // TODO: PetProfileUnifiedController와 연동하여 실제 저장
-    final controller = ref.read(petHealthControllerProvider(tabId).notifier);
-    final changes = controller.getChanges();
+    final healthController = ref.read(petHealthControllerProvider(tabId).notifier);
+    final changes = healthController.getChanges();
 
     LoggerService.debug('💾 健康タブ: 保存ボタン押下');
     LoggerService.debug('💾 変更内容: $changes');
+
+    // PetProfileUnifiedController에 건강 데이터 업데이트
+    ref.read(petProfileUnifiedControllerProvider.notifier).updateHealthData(changes);
+
+    LoggerService.debug('✅ 健康データをPetProfileUnifiedControllerに統合完了');
 
     SnackBarService.showSaved(context, itemName: '健康情報');
 
