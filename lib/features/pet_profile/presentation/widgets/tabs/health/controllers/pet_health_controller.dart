@@ -185,6 +185,20 @@ class PetHealthController extends _$PetHealthController {
         nextDate: DateTime(2025, 3, 15),
         iconName: 'vaccines',
         colorName: 'green',
+        history: [
+          VaccinationHistory(
+            id: _uuid.v4(),
+            round: 1,
+            date: DateTime(2023, 3, 15),
+            memo: '初回接種完了',
+          ),
+          VaccinationHistory(
+            id: _uuid.v4(),
+            round: 2,
+            date: DateTime(2024, 3, 15),
+            memo: '2回目接種完了',
+          ),
+        ],
       ),
       VaccinationRecord(
         id: _uuid.v4(),
@@ -194,6 +208,19 @@ class PetHealthController extends _$PetHealthController {
         nextDate: DateTime(2025, 4, 10),
         iconName: 'healing',
         colorName: 'blue',
+        history: [
+          VaccinationHistory(
+            id: _uuid.v4(),
+            round: 1,
+            date: DateTime(2023, 4, 10),
+            memo: '初回接種完了',
+          ),
+          VaccinationHistory(
+            id: _uuid.v4(),
+            round: 2,
+            date: DateTime(2024, 4, 10),
+          ),
+        ],
       ),
       VaccinationRecord(
         id: _uuid.v4(),
@@ -203,6 +230,29 @@ class PetHealthController extends _$PetHealthController {
         nextDate: DateTime(2024, 9, 1),
         iconName: 'bug_report',
         colorName: 'pink',
+        history: [
+          VaccinationHistory(
+            id: _uuid.v4(),
+            round: 1,
+            date: DateTime(2024, 5, 1),
+            memo: '5月開始',
+          ),
+          VaccinationHistory(
+            id: _uuid.v4(),
+            round: 2,
+            date: DateTime(2024, 6, 1),
+          ),
+          VaccinationHistory(
+            id: _uuid.v4(),
+            round: 3,
+            date: DateTime(2024, 7, 1),
+          ),
+          VaccinationHistory(
+            id: _uuid.v4(),
+            round: 4,
+            date: DateTime(2024, 8, 1),
+          ),
+        ],
       ),
     ];
   }

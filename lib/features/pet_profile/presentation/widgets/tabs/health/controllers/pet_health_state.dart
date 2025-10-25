@@ -40,6 +40,55 @@ class PetHealthState {
   }
 }
 
+/// 예방접종 히스토리 (각 접종 회차 기록)
+class VaccinationHistory {
+  final String id;
+  final int round; // 회차 (1차, 2차 등)
+  final DateTime date; // 접종일
+  final String? memo; // 메모
+
+  const VaccinationHistory({
+    required this.id,
+    required this.round,
+    required this.date,
+    this.memo,
+  });
+
+  VaccinationHistory copyWith({
+    String? id,
+    int? round,
+    DateTime? date,
+    String? memo,
+  }) {
+    return VaccinationHistory(
+      id: id ?? this.id,
+      round: round ?? this.round,
+      date: date ?? this.date,
+      memo: memo ?? this.memo,
+    );
+  }
+
+  /// Map으로 변환
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'round': round,
+      'date': date.toIso8601String(),
+      'memo': memo,
+    };
+  }
+
+  /// Map에서 생성
+  factory VaccinationHistory.fromMap(Map<String, dynamic> map) {
+    return VaccinationHistory(
+      id: map['id'] as String? ?? '',
+      round: map['round'] as int? ?? 1,
+      date: DateTime.tryParse(map['date'] as String? ?? '') ?? DateTime.now(),
+      memo: map['memo'] as String?,
+    );
+  }
+}
+
 /// 예방접종 기록
 class VaccinationRecord {
   final String id;
@@ -49,6 +98,7 @@ class VaccinationRecord {
   final DateTime? nextDate;
   final String iconName; // vaccines, healing, bug_report
   final String colorName; // green, blue, pink
+  final List<VaccinationHistory> history; // 접종 히스토리
 
   const VaccinationRecord({
     required this.id,
@@ -58,6 +108,7 @@ class VaccinationRecord {
     this.nextDate,
     required this.iconName,
     required this.colorName,
+    this.history = const [],
   });
 
   VaccinationRecord copyWith({
@@ -68,6 +119,7 @@ class VaccinationRecord {
     DateTime? nextDate,
     String? iconName,
     String? colorName,
+    List<VaccinationHistory>? history,
   }) {
     return VaccinationRecord(
       id: id ?? this.id,
@@ -77,6 +129,7 @@ class VaccinationRecord {
       nextDate: nextDate ?? this.nextDate,
       iconName: iconName ?? this.iconName,
       colorName: colorName ?? this.colorName,
+      history: history ?? this.history,
     );
   }
 
@@ -90,11 +143,18 @@ class VaccinationRecord {
       'nextDate': nextDate?.toIso8601String(),
       'iconName': iconName,
       'colorName': colorName,
+      'history': history.map((h) => h.toMap()).toList(),
     };
   }
 
   /// Map에서 생성
   factory VaccinationRecord.fromMap(Map<String, dynamic> map) {
+    final historyData = map['history'] as List<dynamic>?;
+    final historyList = historyData
+            ?.map((e) => VaccinationHistory.fromMap(e as Map<String, dynamic>))
+            .toList() ??
+        [];
+
     return VaccinationRecord(
       id: map['id'] as String? ?? '',
       name: map['name'] as String? ?? '',
@@ -107,6 +167,7 @@ class VaccinationRecord {
           : null,
       iconName: map['iconName'] as String? ?? 'vaccines',
       colorName: map['colorName'] as String? ?? 'green',
+      history: historyList,
     );
   }
 }
