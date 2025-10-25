@@ -375,18 +375,10 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
             ],
           ),
           const SizedBox(height: AppSpacing.md),
-          // 날짜 표시 (2컬럼)
-          Row(
-            children: [
-              Expanded(
-                child: _buildDateDisplay('前回', lastDateText, iconColor),
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              Expanded(
-                child: _buildDateDisplay('次回', nextDateText, iconColor),
-              ),
-            ],
-          ),
+          // 날짜 표시 (세로 배치)
+          _buildDateDisplay('前回', lastDateText, iconColor),
+          const SizedBox(height: AppSpacing.sm),
+          _buildDateDisplay('次回', nextDateText, iconColor),
         ],
       ),
     );
@@ -394,28 +386,34 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
 
   Widget _buildDateDisplay(String label, String dateText, Color accentColor) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.sm),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.sm,
+      ),
       decoration: BoxDecoration(
         color: AppColors.pointOffWhite,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: accentColor.withValues(alpha: 0.2)),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
+          Icon(Icons.calendar_today, size: 16, color: accentColor),
+          const SizedBox(width: AppSpacing.sm),
           Text(
-            label,
+            '$label:',
             style: AppFonts.bodySmall.copyWith(
               color: AppColors.pointGray,
               fontWeight: FontWeight.w500,
             ),
           ),
-          const SizedBox(height: 2),
-          Text(
-            dateText,
-            style: AppFonts.bodySmall.copyWith(
-              color: AppColors.pointDark,
-              fontWeight: FontWeight.w600,
+          const SizedBox(width: AppSpacing.sm),
+          Expanded(
+            child: Text(
+              dateText,
+              style: AppFonts.bodyMedium.copyWith(
+                color: AppColors.pointDark,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],
@@ -479,27 +477,19 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
             ],
           ),
           const SizedBox(height: AppSpacing.md),
-          // 날짜 필드 (2컬럼)
-          Row(
-            children: [
-              Expanded(
-                child: _buildDateField(
-                  '前回',
-                  record.lastDate,
-                  iconColor,
-                  () => _selectLastDate(record),
-                ),
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              Expanded(
-                child: _buildDateField(
-                  '次回',
-                  record.nextDate,
-                  iconColor,
-                  () => _selectNextDate(record),
-                ),
-              ),
-            ],
+          // 날짜 필드 (세로 배치)
+          _buildDateField(
+            '前回接種',
+            record.lastDate,
+            iconColor,
+            () => _selectLastDate(record),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          _buildDateField(
+            '次回接種',
+            record.nextDate,
+            iconColor,
+            () => _selectNextDate(record),
           ),
         ],
       ),
@@ -545,34 +535,34 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
     return InkWell(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(AppSpacing.sm),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm,
+        ),
         decoration: BoxDecoration(
           color: AppColors.pointOffWhite,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: accentColor.withValues(alpha: 0.2)),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
           children: [
-            Row(
-              children: [
-                Icon(Icons.calendar_today, size: 14, color: accentColor),
-                const SizedBox(width: 4),
-                Text(
-                  label,
-                  style: AppFonts.bodySmall.copyWith(
-                    color: AppColors.pointGray,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 4),
+            Icon(Icons.calendar_today, size: 16, color: accentColor),
+            const SizedBox(width: AppSpacing.sm),
             Text(
-              dateText,
+              '$label:',
               style: AppFonts.bodySmall.copyWith(
-                color: AppColors.pointDark,
-                fontWeight: FontWeight.w600,
+                color: AppColors.pointGray,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            Expanded(
+              child: Text(
+                dateText,
+                style: AppFonts.bodyMedium.copyWith(
+                  color: AppColors.pointDark,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ],
