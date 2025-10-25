@@ -1,3 +1,4 @@
+import 'package:aipet_frontend/features/pet_profile/presentation/controllers/pet_profile_unified_controller.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -84,17 +85,73 @@ class PetHealthTab extends ConsumerStatefulWidget {
 }
 
 class _PetHealthTabState extends ConsumerState<PetHealthTab> {
-  // 백신 접종 기록 (실제로는 데이터베이스에서 로드)
+  // 백신 접종 기록
   late List<VaccinationRecord> _vaccinationRecords;
+  // 진료 기록
+  late List<Map<String, dynamic>> _medicalRecords;
+  // 예약 스케줄
+  late List<Map<String, dynamic>> _appointments;
 
   @override
   void initState() {
     super.initState();
-    _initializeVaccinationRecords();
+    _loadHealthData();
   }
 
-  void _initializeVaccinationRecords() {
-    // TODO: 실제 데이터는 pet.additionalInfo나 별도 DB에서 로드
+  @override
+  void didUpdateWidget(PetHealthTab oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    
+    // pet이 변경되거나 편집 모드가 종료되면 데이터 갱신
+    if (oldWidget.pet.id != widget.pet.id || 
+        (oldWidget.isEditMode && !widget.isEditMode)) {
+      LoggerService.debug('🔄 건강 탭 데이터 갱신');
+      _loadHealthData();
+    }
+  }
+
+  void _loadHealthData() {
+    final additionalInfo = widget.pet.additionalInfo ?? {};
+    
+    // 백신 접종 기록 로드
+    final vaccinationsData = additionalInfo['vaccinations'] as List<dynamic>?;
+    if (vaccinationsData != null) {
+      _vaccinationRecords = vaccinationsData.map((v) {
+        return VaccinationRecord(
+          type: VaccineType.values.firstWhere(
+            (t) => t.label == v['type'],
+            orElse: () => VaccineType.distemper,
+          ),
+          lastDate: v['lastDate'] != null ? DateTime.parse(v['lastDate']) : null,
+          nextDate: v['nextDate'] != null ? DateTime.parse(v['nextDate']) : null,
+          status: VaccinationStatus.values.firstWhere(
+            (s) => s.label == v['status'],
+            orElse: () => VaccinationStatus.notStarted,
+          ),
+          memo: v['memo'],
+        );
+      }).toList();
+      LoggerService.debug('✅ 백신 접종 기록 ${_vaccinationRecords.length}건 로드');
+    } else {
+      // 기본 백신 기록 생성
+      _initializeDefaultVaccinations();
+    }
+
+    // 진료 기록 로드
+    _medicalRecords = (additionalInfo['medicalRecords'] as List<dynamic>?)
+            ?.cast<Map<String, dynamic>>() ??
+        [];
+    LoggerService.debug('✅ 진료 기록 ${_medicalRecords.length}건 로드');
+
+    // 예약 로드
+    _appointments = (additionalInfo['appointments'] as List<dynamic>?)
+            ?.cast<Map<String, dynamic>>() ??
+        [];
+    LoggerService.debug('✅ 예약 ${_appointments.length}건 로드');
+  }
+
+  void _initializeDefaultVaccinations() {
+    // 기본 백신 기록 생성
     _vaccinationRecords = [
       // 코어백신 5종 (기본)
       VaccinationRecord(
@@ -184,14 +241,14 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              '予防接種記録',
-              style: AppFonts.titleMedium.copyWith(
-                fontWeight: FontWeight.bold,
-                color: AppColors.pointDark,
-              ),
-            ),
+      children: [
+        Text(
+          '予防接種記録',
+          style: AppFonts.titleMedium.copyWith(
+            fontWeight: FontWeight.bold,
+            color: AppColors.pointDark,
+          ),
+        ),
             if (widget.isEditMode)
               TextButton.icon(
                 onPressed: _showAddVaccineDialog,
@@ -262,8 +319,8 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
             '追加ワクチン (任意)',
             Icons.add_circle_outline,
             AppColors.pointBlue,
-          ),
-          const SizedBox(height: AppSpacing.sm),
+        ),
+        const SizedBox(height: AppSpacing.sm),
           ...additionalVaccines.map(
             (record) => Padding(
               padding: const EdgeInsets.only(bottom: AppSpacing.sm),
@@ -657,7 +714,42 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
         VaccinationRecord(type: type, status: VaccinationStatus.notStarted),
       );
     });
+    _saveVaccinationsToFormData();
     SnackBarService.showSuccess(context, '${type.label}を追加しました');
+  }
+
+  void _saveVaccinationsToFormData() {
+    final vaccinationsData = _vaccinationRecords.map((record) {
+      return {
+        'type': record.type.label,
+        'lastDate': record.lastDate?.toIso8601String(),
+        'nextDate': record.nextDate?.toIso8601String(),
+        'status': record.status.label,
+        'memo': record.memo,
+      };
+    }).toList();
+
+    ref
+        .read(petProfileUnifiedControllerProvider.notifier)
+        .updateFormData('vaccinations', vaccinationsData);
+    
+    LoggerService.debug('💾 백신 접종 기록 저장: ${vaccinationsData.length}건');
+  }
+
+  void _saveMedicalRecordsToFormData() {
+    ref
+        .read(petProfileUnifiedControllerProvider.notifier)
+        .updateFormData('medicalRecords', _medicalRecords);
+    
+    LoggerService.debug('💾 진료 기록 저장: ${_medicalRecords.length}건');
+  }
+
+  void _saveAppointmentsToFormData() {
+    ref
+        .read(petProfileUnifiedControllerProvider.notifier)
+        .updateFormData('appointments', _appointments);
+    
+    LoggerService.debug('💾 예약 저장: ${_appointments.length}건');
   }
 
   void _deleteVaccination(VaccinationRecord record) {
@@ -676,6 +768,7 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
               setState(() {
                 _vaccinationRecords.remove(record);
               });
+              _saveVaccinationsToFormData();
               Navigator.pop(context);
               SnackBarService.showSuccess(context, '削除しました');
             },
@@ -695,6 +788,7 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
       final index = _vaccinationRecords.indexOf(record);
       _vaccinationRecords[index] = record.copyWith(status: status);
     });
+    _saveVaccinationsToFormData();
   }
 
   Future<void> _selectLastDate(VaccinationRecord record) async {
@@ -711,6 +805,7 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
         final index = _vaccinationRecords.indexOf(record);
         _vaccinationRecords[index] = record.copyWith(lastDate: picked);
       });
+      _saveVaccinationsToFormData();
     }
   }
 
@@ -729,6 +824,7 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
         final index = _vaccinationRecords.indexOf(record);
         _vaccinationRecords[index] = record.copyWith(nextDate: picked);
       });
+      _saveVaccinationsToFormData();
     }
   }
 
@@ -758,28 +854,66 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
           ],
         ),
         const SizedBox(height: AppSpacing.md),
-        // TODO: 실제 진료 기록은 데이터베이스에서 로드
-        GenericInfoCard.withIcon(
-          icon: Icons.local_hospital,
-          iconColor: AppColors.pointPink,
-          iconBackgroundColor: AppColors.pointPink.withValues(alpha: 0.1),
-          title: '定期健康診断',
-          subtitle: '2024年7月20日 • 田中動物病院',
-          badge: '正常',
-          badgeColor: AppColors.pointGreen,
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        GenericInfoCard.withIcon(
-          icon: Icons.cleaning_services,
-          iconColor: AppColors.pointBlue,
-          iconBackgroundColor: AppColors.pointBlue.withValues(alpha: 0.1),
-          title: 'デンタルケア',
-          subtitle: '2024年6月5日 • 田中動物病院',
-          badge: '完了',
-          badgeColor: AppColors.pointGreen,
-        ),
+        if (_medicalRecords.isEmpty)
+          Container(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            decoration: BoxDecoration(
+              color: AppColors.pointOffWhite,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Center(
+              child: Text(
+                '診療記録がありません',
+                style: AppFonts.bodyMedium.copyWith(
+                  color: AppColors.pointGray,
+                ),
+              ),
+            ),
+          )
+        else
+          ..._medicalRecords.map((record) {
+            final statusColor = _getMedicalStatusColor(record['status']);
+            return Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+              child: GenericInfoCard.withIcon(
+                icon: Icons.local_hospital,
+                iconColor: AppColors.pointPink,
+                iconBackgroundColor: AppColors.pointPink.withValues(alpha: 0.1),
+                title: record['title'] ?? '',
+                subtitle:
+                    '${_formatDate(record['date'])} • ${record['hospital'] ?? ''}',
+                badge: record['status'] ?? '',
+                badgeColor: statusColor,
+              ),
+            );
+          }),
       ],
     );
+  }
+
+  Color _getMedicalStatusColor(String? status) {
+    switch (status) {
+      case '正常':
+        return AppColors.pointGreen;
+      case '要観察':
+        return AppColors.pointBlue;
+      case '要治療':
+        return AppColors.pointRed;
+      case '完了':
+        return AppColors.pointGreen;
+      default:
+        return AppColors.pointGray;
+    }
+  }
+
+  String _formatDate(dynamic date) {
+    if (date == null) return '';
+    try {
+      final dateTime = DateTime.parse(date.toString());
+      return '${dateTime.year}年${dateTime.month}月${dateTime.day}日';
+    } catch (e) {
+      return '';
+    }
   }
 
   void _showAddMedicalRecordDialog() {
@@ -836,15 +970,15 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 DropdownButtonFormField<String>(
-                  value: selectedStatus,
-                  decoration: const InputDecoration(
-                    labelText: '診療結果',
-                  ),
+                  initialValue: selectedStatus,
+                  decoration: const InputDecoration(labelText: '診療結果'),
                   items: ['正常', '要観察', '要治療', '完了']
-                      .map((status) => DropdownMenuItem(
-                            value: status,
-                            child: Text(status),
-                          ))
+                      .map(
+                        (status) => DropdownMenuItem(
+                          value: status,
+                          child: Text(status),
+                        ),
+                      )
                       .toList(),
                   onChanged: (value) {
                     if (value != null) {
@@ -864,17 +998,30 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
             ),
             ElevatedButton(
               onPressed: () {
-                // TODO: 진료 기록 저장
-                LoggerService.debug('📝 진료 기록 추가:');
-                LoggerService.debug('   - 제목: ${titleController.text}');
-                LoggerService.debug('   - 병원: ${hospitalController.text}');
-                LoggerService.debug('   - 날짜: $selectedDate');
-                LoggerService.debug('   - 상태: $selectedStatus');
+                if (titleController.text.isEmpty ||
+                    hospitalController.text.isEmpty) {
+                  SnackBarService.showWarning(
+                    context,
+                    '診療内容と病院名を入力してください',
+                  );
+                  return;
+                }
+
+                setState(() {
+                  _medicalRecords.add({
+                    'title': titleController.text,
+                    'hospital': hospitalController.text,
+                    'date': selectedDate.toIso8601String(),
+                    'status': selectedStatus,
+                  });
+                });
+
+                _saveMedicalRecordsToFormData();
                 
                 Navigator.pop(context);
                 SnackBarService.showSuccess(
                   context,
-                  '診療記録を追加しました (保存ボタンを押してください)',
+                  '診療記録を追加しました',
                 );
               },
               child: const Text('追加'),
@@ -937,18 +1084,55 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
           ],
         ),
         const SizedBox(height: AppSpacing.md),
-        // TODO: 실제 예약은 데이터베이스에서 로드
-        GenericInfoCard.withIcon(
-          icon: Icons.schedule,
-          iconColor: AppColors.pointBlue,
-          iconBackgroundColor: AppColors.pointBlue.withValues(alpha: 0.1),
-          title: '次回健康診断',
-          subtitle: '2025年1月20日 10:00 • 田中動物病院',
-          badge: '予約済み',
-          badgeColor: AppColors.pointBlue,
-        ),
+        if (_appointments.isEmpty)
+          Container(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            decoration: BoxDecoration(
+              color: AppColors.pointOffWhite,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Center(
+              child: Text(
+                '予約がありません',
+                style: AppFonts.bodyMedium.copyWith(
+                  color: AppColors.pointGray,
+                ),
+              ),
+            ),
+          )
+        else
+          ..._appointments.map((appointment) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+              child: GenericInfoCard.withIcon(
+                icon: Icons.schedule,
+                iconColor: AppColors.pointBlue,
+                iconBackgroundColor: AppColors.pointBlue.withValues(alpha: 0.1),
+                title: appointment['title'] ?? '',
+                subtitle:
+                    '${_formatDateTime(appointment['date'], appointment['time'])} • ${appointment['hospital'] ?? ''}',
+                badge: '予約済み',
+                badgeColor: AppColors.pointBlue,
+              ),
+            );
+          }),
       ],
     );
+  }
+
+  String _formatDateTime(dynamic date, dynamic time) {
+    if (date == null) return '';
+    try {
+      final dateTime = DateTime.parse(date.toString());
+      final dateStr = '${dateTime.year}年${dateTime.month}月${dateTime.day}日';
+      
+      if (time != null) {
+        return '$dateStr $time';
+      }
+      return dateStr;
+    } catch (e) {
+      return '';
+    }
   }
 
   void _showAddAppointmentDialog() {
@@ -1032,19 +1216,33 @@ class _PetHealthTabState extends ConsumerState<PetHealthTab> {
             ),
             ElevatedButton(
               onPressed: () {
-                // TODO: 예약 저장
-                LoggerService.debug('📝 예약 추가:');
-                LoggerService.debug('   - 제목: ${titleController.text}');
-                LoggerService.debug('   - 병원: ${hospitalController.text}');
-                LoggerService.debug('   - 날짜: $selectedDate');
-                LoggerService.debug(
-                  '   - 시간: ${selectedTime.hour}:${selectedTime.minute}',
-                );
-                
+                if (titleController.text.isEmpty ||
+                    hospitalController.text.isEmpty) {
+                  SnackBarService.showWarning(
+                    context,
+                    '予約内容と病院名を入力してください',
+                  );
+                  return;
+                }
+
+                final timeStr =
+                    '${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}';
+
+                setState(() {
+                  _appointments.add({
+                    'title': titleController.text,
+                    'hospital': hospitalController.text,
+                    'date': selectedDate.toIso8601String(),
+                    'time': timeStr,
+                  });
+                });
+
+                _saveAppointmentsToFormData();
+
                 Navigator.pop(context);
                 SnackBarService.showSuccess(
                   context,
-                  '予約を追加しました (保存ボタンを押してください)',
+                  '予約を追加しました',
                 );
               },
               child: const Text('追加'),
