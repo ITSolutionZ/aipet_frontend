@@ -2,7 +2,7 @@ import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class PetNutritionTab extends ConsumerWidget {
+class PetNutritionTab extends ConsumerStatefulWidget {
   final PetProfileEntity pet;
   final bool isEditMode;
 
@@ -13,32 +13,65 @@ class PetNutritionTab extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // 保存された食事情報を取得
-    final additionalInfo = pet.additionalInfo ?? {};
+  ConsumerState<PetNutritionTab> createState() => _PetNutritionTabState();
+}
+
+class _PetNutritionTabState extends ConsumerState<PetNutritionTab> {
+  late TextEditingController _foodController;
+  late TextEditingController _supplementController;
+  late TextEditingController _treatController;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeControllers();
+  }
+
+  void _initializeControllers() {
+    final additionalInfo = widget.pet.additionalInfo ?? {};
     final food = additionalInfo['food'] as String? ?? '';
     final supplement = additionalInfo['supplement'] as String? ?? '';
     final treat = additionalInfo['treat'] as String? ?? '';
+
+    _foodController = TextEditingController(text: food);
+    _supplementController = TextEditingController(text: supplement);
+    _treatController = TextEditingController(text: treat);
+
+    LoggerService.debug('🍽️ PetNutritionTab - 保存された食事情報:');
+    LoggerService.debug('   - pet.name: ${widget.pet.name}');
+    LoggerService.debug('   - pet.id: ${widget.pet.id}');
+    LoggerService.debug('   - additionalInfo (전체): $additionalInfo');
+    LoggerService.debug(
+      '   - additionalInfo.keys: ${additionalInfo.keys.toList()}',
+    );
+    LoggerService.debug('   - food: "$food" (길이: ${food.length})');
+    LoggerService.debug(
+      '   - supplement: "$supplement" (길이: ${supplement.length})',
+    );
+    LoggerService.debug('   - treat: "$treat" (길이: ${treat.length})');
+  }
+
+  @override
+  void dispose() {
+    _foodController.dispose();
+    _supplementController.dispose();
+    _treatController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final additionalInfo = widget.pet.additionalInfo ?? {};
     final forbiddenIngredients =
         (additionalInfo['forbiddenIngredients'] as List<dynamic>?)
             ?.cast<String>() ??
         [];
 
-    LoggerService.debug('🍽️ PetNutritionTab - 保存された食事情報:');
-    LoggerService.debug('   - pet.name: ${pet.name}');
-    LoggerService.debug('   - pet.id: ${pet.id}');
-    LoggerService.debug('   - additionalInfo (전체): $additionalInfo');
-    LoggerService.debug('   - additionalInfo.keys: ${additionalInfo.keys.toList()}');
-    LoggerService.debug('   - food: "$food" (길이: ${food.length})');
-    LoggerService.debug('   - supplement: "$supplement" (길이: ${supplement.length})');
-    LoggerService.debug('   - treat: "$treat" (길이: ${treat.length})');
-    LoggerService.debug('   - forbiddenIngredients: $forbiddenIngredients');
-
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         children: [
-          _buildFoodPreferencesSection(food, supplement, treat),
+          _buildFoodPreferencesSection(),
           const SizedBox(height: AppSpacing.lg),
           _buildNutritionInfoSection(),
           const SizedBox(height: AppSpacing.lg),
@@ -50,43 +83,148 @@ class PetNutritionTab extends ConsumerWidget {
     );
   }
 
-  Widget _buildFoodPreferencesSection(
-    String food,
-    String supplement,
-    String treat,
-  ) {
+  Widget _buildFoodPreferencesSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '食べる餌',
+          '食事情報',
           style: AppFonts.titleMedium.copyWith(
             fontWeight: FontWeight.bold,
             color: AppColors.pointDark,
           ),
         ),
         const SizedBox(height: AppSpacing.md),
-        _buildFoodItem(
+        _buildEditableFoodField(
+          controller: _foodController,
           icon: Icons.restaurant,
-          title: '食べる餌',
-          value: food.isEmpty ? '餌を検索または選択してください' : food,
-          isEmpty: food.isEmpty,
+          label: '食べる餌',
+          hint: '餌を検索または選択してください',
+          iconColor: AppColors.pointBrown,
         ),
         const SizedBox(height: AppSpacing.md),
-        _buildFoodItem(
+        _buildEditableFoodField(
+          controller: _supplementController,
           icon: Icons.medical_services,
-          title: '食べる栄養剤',
-          value: supplement.isEmpty ? '栄養剤を検索または選択してください' : supplement,
-          isEmpty: supplement.isEmpty,
+          label: '食べる栄養剤',
+          hint: '栄養剤を検索または選択してください',
+          iconColor: AppColors.pointBlue,
         ),
         const SizedBox(height: AppSpacing.md),
-        _buildFoodItem(
+        _buildEditableFoodField(
+          controller: _treatController,
           icon: Icons.cake,
-          title: '食べるおやつ',
-          value: treat.isEmpty ? 'おやつを検索または選択してください' : treat,
-          isEmpty: treat.isEmpty,
+          label: '食べるおやつ',
+          hint: 'おやつを検索または選択してください',
+          iconColor: AppColors.pointPink,
         ),
       ],
+    );
+  }
+
+  Widget _buildEditableFoodField({
+    required TextEditingController controller,
+    required IconData icon,
+    required String label,
+    required String hint,
+    required Color iconColor,
+  }) {
+    final hasValue = controller.text.isNotEmpty;
+
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: widget.isEditMode
+              ? iconColor.withValues(alpha: 0.3)
+              : AppColors.pointGray.withValues(alpha: 0.1),
+          width: widget.isEditMode ? 2 : 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(AppSpacing.sm),
+            decoration: BoxDecoration(
+              color: iconColor.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon, color: iconColor, size: 20),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: AppFonts.bodySmall.copyWith(
+                    color: AppColors.pointGray,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                if (widget.isEditMode)
+                  TextField(
+                    controller: controller,
+                    style: AppFonts.bodyMedium.copyWith(
+                      color: AppColors.pointDark,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: hint,
+                      hintStyle: AppFonts.bodySmall.copyWith(
+                        color: AppColors.pointGray,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(
+                          color: iconColor.withValues(alpha: 0.3),
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(
+                          color: AppColors.pointGray.withValues(alpha: 0.3),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(
+                          color: iconColor,
+                          width: 2,
+                        ),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.sm,
+                        vertical: AppSpacing.xs,
+                      ),
+                      isDense: true,
+                    ),
+                  )
+                else
+                  Text(
+                    hasValue ? controller.text : hint,
+                    style: AppFonts.bodyMedium.copyWith(
+                      color: hasValue
+                          ? AppColors.pointDark
+                          : AppColors.pointGray,
+                      fontWeight: hasValue ? FontWeight.w600 : FontWeight.normal,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          if (hasValue && !widget.isEditMode)
+            const Icon(
+              Icons.check_circle,
+              color: AppColors.pointGreen,
+              size: 20,
+            ),
+        ],
+      ),
     );
   }
 
@@ -270,62 +408,4 @@ class PetNutritionTab extends ConsumerWidget {
     );
   }
 
-  Widget _buildFoodItem({
-    required IconData icon,
-    required String title,
-    required String value,
-    required bool isEmpty,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: isEmpty ? AppColors.pointOffWhite : Colors.white,
-        borderRadius: BorderRadius.circular(AppRadius.medium),
-        border: Border.all(
-          color: isEmpty
-              ? AppColors.pointGray.withValues(alpha: 0.3)
-              : AppColors.pointBrown.withValues(alpha: 0.3),
-          width: 1,
-        ),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            icon,
-            color: isEmpty ? AppColors.pointGray : AppColors.pointBrown,
-            size: 24,
-          ),
-          const SizedBox(width: AppSpacing.md),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: AppFonts.bodySmall.copyWith(
-                    color: AppColors.pointGray,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.xs),
-                Text(
-                  value,
-                  style: AppFonts.bodyMedium.copyWith(
-                    color: isEmpty ? AppColors.pointGray : AppColors.pointDark,
-                    fontWeight: isEmpty ? FontWeight.normal : FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          if (!isEmpty)
-            const Icon(
-              Icons.check_circle,
-              color: AppColors.pointGreen,
-              size: 20,
-            ),
-        ],
-      ),
-    );
-  }
 }
