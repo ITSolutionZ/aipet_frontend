@@ -360,9 +360,7 @@ class _AIPetAppState extends ConsumerState<AIPetApp> {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: const [
-        Locale('ja', 'JP'),
-      ],
+      supportedLocales: const [Locale('ja', 'JP')],
       theme: AppTheme.light.copyWith(
         primaryColor: AppColors.pointBrown,
         scaffoldBackgroundColor: AppColors.pointOffWhite,
