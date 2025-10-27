@@ -63,29 +63,23 @@ class _WalkDetailMapWidgetState extends State<WalkDetailMapWidget> {
     );
 
     if (widget.walkRecord.route.isEmpty) {
-      final recordStr = widget.walkRecord.toString();
-      final preview = recordStr.length > 100
-          ? recordStr.substring(0, 100)
-          : recordStr;
-      LoggerService.debug('❌ 경로 데이터가 없습니다. 산책 기록: $preview...');
-      return Container(
-        height: 300,
-        decoration: BoxDecoration(
-          color: Colors.grey[300],
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: const Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.map, size: 48, color: Colors.grey),
-              SizedBox(height: 8),
-              Text(
-                'ルート情報がありません',
-                style: TextStyle(color: Colors.grey, fontSize: 16),
-              ),
-            ],
+      LoggerService.debug('❌ 경로 데이터가 없습니다 - 기본 위치로 지도 표시');
+
+      // route가 없어도 기본 위치로 지도 표시
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: GoogleMap(
+          onMapCreated: (controller) {
+            mapController = controller;
+          },
+          initialCameraPosition: const CameraPosition(
+            target: LatLng(35.6762, 139.6503), // 도쿄 기본 위치
+            zoom: 14,
           ),
+          myLocationEnabled: true, // 현재 위치 표시
+          myLocationButtonEnabled: true,
+          zoomControlsEnabled: true,
+          mapToolbarEnabled: true,
         ),
       );
     }

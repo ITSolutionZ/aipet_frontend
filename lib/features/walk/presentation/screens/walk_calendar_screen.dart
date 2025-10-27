@@ -89,9 +89,25 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
             onSelected: (value) {
               if (value == 'clean') {
                 _showCleanOldRecordsDialog();
+              } else if (value == 'clean_no_route') {
+                _showCleanNoRouteRecordsDialog();
               }
             },
             itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 'clean_no_route',
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.route,
+                      size: 20,
+                      color: AppColors.pointRed,
+                    ),
+                    SizedBox(width: 8),
+                    Text('ルートなし記録を削除'),
+                  ],
+                ),
+              ),
               const PopupMenuItem(
                 value: 'clean',
                 child: Row(
@@ -654,6 +670,89 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
   //     ),
   //   );
   // }
+
+  /// route가 없는 산책 기록 삭제 다이얼로그 표시
+  Future<void> _showCleanNoRouteRecordsDialog() async {
+    final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('ルートなし記録を削除'),
+        content: const Text(
+          'ルート情報がない散歩記録を削除しますか？\n'
+          'これらの記録は位置追跡なしで保存されたものです。',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('キャンセル'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: TextButton.styleFrom(
+              foregroundColor: AppColors.pointRed,
+            ),
+            child: const Text('削除'),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldDelete == true) {
+      await _cleanNoRouteRecords();
+    }
+  }
+
+  /// route가 없는 산책 기록 삭제
+  Future<void> _cleanNoRouteRecords() async {
+    try {
+      final walkRecords = ref.read(walkRecordsProvider);
+      
+      // route가 있는 기록만 필터링
+      final recordsWithRoute = walkRecords.where((record) {
+        return record.route.isNotEmpty;
+      }).toList();
+
+      final deletedCount = walkRecords.length - recordsWithRoute.length;
+
+      if (deletedCount > 0) {
+        // 1. 로컬 스토리지에 저장
+        await LocalWalkStorageService.saveWalkRecords(recordsWithRoute);
+
+        // 2. 상태 업데이트
+        ref.read(walkRecordsProvider.notifier).setWalkRecords(recordsWithRoute);
+
+        LoggerService.debug(
+          '🗑️ WalkCalendar: ルートなし記録 ${deletedCount}件を削除しました',
+        );
+
+        if (mounted) {
+          SnackBarService.showSuccess(
+            context,
+            'ルートなし記録を${deletedCount}件削除しました',
+          );
+        }
+      } else {
+        LoggerService.debug('ℹ️ WalkCalendar: 削除するルートなし記録はありません');
+
+        if (mounted) {
+          SnackBarService.showInfo(
+            context,
+            '削除する記録がありません',
+          );
+        }
+      }
+    } catch (e, stackTrace) {
+      LoggerService.debug('❌ WalkCalendar: ルートなし記録削除エラー - $e');
+      LoggerService.debug('StackTrace: $stackTrace');
+
+      if (mounted) {
+        SnackBarService.showError(
+          context,
+          '記録の削除に失敗しました',
+        );
+      }
+    }
+  }
 
   /// 오늘로 이동
   void _goToToday() {
