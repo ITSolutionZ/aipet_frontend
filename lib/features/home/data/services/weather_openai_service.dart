@@ -36,7 +36,7 @@ class WeatherOpenAIService extends BaseLoggingService {
             },
             {'role': 'user', 'content': prompt},
           ],
-          'max_tokens': 50, // 토큰 수를 최소화하여 응답 속도 향상
+          'max_completion_tokens': 50, // ✅ max_tokens → max_completion_tokens
           'temperature': 0.7,
         },
       );

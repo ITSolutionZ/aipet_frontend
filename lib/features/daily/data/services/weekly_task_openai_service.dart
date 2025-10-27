@@ -49,7 +49,7 @@ class WeeklyTaskOpenAIService extends BaseLoggingService {
             },
             {'role': 'user', 'content': prompt},
           ],
-          'max_tokens': 60, // 1행 응답을 위해 토큰 수 조정
+          'max_completion_tokens': 60, // ✅ max_tokens → max_completion_tokens
           'temperature': 0.7,
         },
       );
