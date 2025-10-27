@@ -23,7 +23,7 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
   late final WalkController _controller;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
-  CalendarFormat _calendarFormat = CalendarFormat.twoWeeks; // 2週間表示
+  CalendarFormat _calendarFormat = CalendarFormat.month; // 기본: 1개월 표시
   String? _selectedPetFilter; // 펫 필터
 
   // 스크롤 관련 변수
@@ -91,18 +91,26 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
                 _showCleanOldRecordsDialog();
               } else if (value == 'clean_no_route') {
                 _showCleanNoRouteRecordsDialog();
+              } else if (value == 'clean_in_progress') {
+                _showCleanInProgressRecordsDialog();
               }
             },
             itemBuilder: (context) => [
               const PopupMenuItem(
+                value: 'clean_in_progress',
+                child: Row(
+                  children: [
+                    Icon(Icons.pause_circle, size: 20, color: AppColors.pointBlue),
+                    SizedBox(width: 8),
+                    Text('進行中記録を削除'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem(
                 value: 'clean_no_route',
                 child: Row(
                   children: [
-                    Icon(
-                      Icons.route,
-                      size: 20,
-                      color: AppColors.pointRed,
-                    ),
+                    Icon(Icons.route, size: 20, color: AppColors.pointRed),
                     SizedBox(width: 8),
                     Text('ルートなし記録を削除'),
                   ],
@@ -369,6 +377,13 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
     List<WalkRecordEntity> recordsForDay,
     DateTime selectedDate,
   ) {
+    // 바텀시트 열릴 때 캘린더를 2주 포맷으로 변경
+    if (_calendarFormat != CalendarFormat.twoWeeks) {
+      setState(() {
+        _calendarFormat = CalendarFormat.twoWeeks;
+      });
+    }
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -450,7 +465,14 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
           );
         },
       ),
-    );
+    ).then((_) {
+      // 바텀시트가 닫힐 때 캘린더를 1개월 포맷으로 변경
+      if (mounted && _calendarFormat != CalendarFormat.month) {
+        setState(() {
+          _calendarFormat = CalendarFormat.month;
+        });
+      }
+    });
   }
 
   /// 커스텀 헤더 빌드
@@ -470,11 +492,11 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
       onToday: _goToToday,
       onFormatToggle: () {
         setState(() {
-          _calendarFormat = _calendarFormat == CalendarFormat.twoWeeks
+          _calendarFormat = _calendarFormat == CalendarFormat.month
+              ? CalendarFormat.twoWeeks
+              : _calendarFormat == CalendarFormat.twoWeeks
               ? CalendarFormat.week
-              : _calendarFormat == CalendarFormat.week
-              ? CalendarFormat.month
-              : CalendarFormat.twoWeeks;
+              : CalendarFormat.month;
         });
       },
       calendarFormat: _calendarFormat,
@@ -671,6 +693,80 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
   //   );
   // }
 
+  /// 진행중인 산책 기록 삭제 다이얼로그 표시
+  Future<void> _showCleanInProgressRecordsDialog() async {
+    final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('進行中記録を削除'),
+        content: const Text(
+          '完了されていない進行中の散歩記録を削除しますか？\n'
+          'これらの記録は正常に終了されなかったものです。',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('キャンセル'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: TextButton.styleFrom(foregroundColor: AppColors.pointRed),
+            child: const Text('削除'),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldDelete == true) {
+      await _cleanInProgressRecords();
+    }
+  }
+
+  /// 진행중인 산책 기록 삭제
+  Future<void> _cleanInProgressRecords() async {
+    try {
+      final walkRecords = ref.read(walkRecordsProvider);
+
+      // 완료된 기록만 필터링
+      final completedRecords = walkRecords.where((record) {
+        return record.status == WalkStatus.completed;
+      }).toList();
+
+      final deletedCount = walkRecords.length - completedRecords.length;
+
+      if (deletedCount > 0) {
+        // 1. 로컬 스토리지에 저장
+        await LocalWalkStorageService.saveWalkRecords(completedRecords);
+
+        // 2. 현재 산책도 정리
+        await LocalWalkStorageService.saveCurrentWalk(null);
+
+        // 3. 상태 업데이트
+        ref.read(walkRecordsProvider.notifier).setWalkRecords(completedRecords);
+        ref.read(currentWalkProvider.notifier).endWalk(); // 현재 산책 종료
+
+        LoggerService.debug('🗑️ WalkCalendar: 進行中記録 $deletedCount件を削除しました');
+
+        if (mounted) {
+          SnackBarService.showSuccess(context, '進行中記録を$deletedCount件削除しました');
+        }
+      } else {
+        LoggerService.debug('ℹ️ WalkCalendar: 削除する進行中記録はありません');
+
+        if (mounted) {
+          SnackBarService.showInfo(context, '削除する記録がありません');
+        }
+      }
+    } catch (e, stackTrace) {
+      LoggerService.debug('❌ WalkCalendar: 進行中記録削除エラー - $e');
+      LoggerService.debug('StackTrace: $stackTrace');
+
+      if (mounted) {
+        SnackBarService.showError(context, '記録の削除に失敗しました');
+      }
+    }
+  }
+
   /// route가 없는 산책 기록 삭제 다이얼로그 표시
   Future<void> _showCleanNoRouteRecordsDialog() async {
     final shouldDelete = await showDialog<bool>(
@@ -688,9 +784,7 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            style: TextButton.styleFrom(
-              foregroundColor: AppColors.pointRed,
-            ),
+            style: TextButton.styleFrom(foregroundColor: AppColors.pointRed),
             child: const Text('削除'),
           ),
         ],
@@ -706,7 +800,7 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
   Future<void> _cleanNoRouteRecords() async {
     try {
       final walkRecords = ref.read(walkRecordsProvider);
-      
+
       // route가 있는 기록만 필터링
       final recordsWithRoute = walkRecords.where((record) {
         return record.route.isNotEmpty;
@@ -721,24 +815,16 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
         // 2. 상태 업데이트
         ref.read(walkRecordsProvider.notifier).setWalkRecords(recordsWithRoute);
 
-        LoggerService.debug(
-          '🗑️ WalkCalendar: ルートなし記録 ${deletedCount}件を削除しました',
-        );
+        LoggerService.debug('🗑️ WalkCalendar: ルートなし記録 $deletedCount件を削除しました');
 
         if (mounted) {
-          SnackBarService.showSuccess(
-            context,
-            'ルートなし記録を${deletedCount}件削除しました',
-          );
+          SnackBarService.showSuccess(context, 'ルートなし記録を$deletedCount件削除しました');
         }
       } else {
         LoggerService.debug('ℹ️ WalkCalendar: 削除するルートなし記録はありません');
 
         if (mounted) {
-          SnackBarService.showInfo(
-            context,
-            '削除する記録がありません',
-          );
+          SnackBarService.showInfo(context, '削除する記録がありません');
         }
       }
     } catch (e, stackTrace) {
@@ -746,10 +832,7 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
       LoggerService.debug('StackTrace: $stackTrace');
 
       if (mounted) {
-        SnackBarService.showError(
-          context,
-          '記録の削除に失敗しました',
-        );
+        SnackBarService.showError(context, '記録の削除に失敗しました');
       }
     }
   }
