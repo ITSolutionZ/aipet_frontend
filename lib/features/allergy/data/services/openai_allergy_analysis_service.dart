@@ -46,7 +46,8 @@ class OpenAIAllergyAnalysisService implements AllergyAnalysisService {
                 {'role': 'user', 'content': prompt},
               ],
               'temperature': AllergyConstants.openAiTemperature,
-              'max_tokens': AllergyConstants.openAiMaxTokens,
+              'max_completion_tokens': AllergyConstants
+                  .openAiMaxTokens, // ✅ max_tokens → max_completion_tokens
             }),
           )
           .timeout(
