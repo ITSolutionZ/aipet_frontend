@@ -112,7 +112,8 @@ class PetContentFilterService {
           },
           {'role': 'user', 'content': message},
         ],
-        'max_completion_tokens': AiApiConstants.contentFilterMaxTokens, // ✅ max_tokens → max_completion_tokens
+        'max_completion_tokens': AiApiConstants
+            .contentFilterMaxTokens, // ✅ max_tokens → max_completion_tokens
         'temperature': AiApiConstants.contentFilterTemperature,
       },
     );

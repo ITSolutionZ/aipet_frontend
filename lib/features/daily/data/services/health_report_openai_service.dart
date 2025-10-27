@@ -87,7 +87,8 @@ class HealthReportOpenAIService extends BaseLoggingService {
                 },
                 {'role': 'user', 'content': prompt},
               ],
-              'max_completion_tokens': 1500, // ✅ max_tokens → max_completion_tokens
+              'max_completion_tokens':
+                  1500, // ✅ max_tokens → max_completion_tokens
               'temperature': 0.7,
             },
           )
