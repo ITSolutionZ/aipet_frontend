@@ -96,6 +96,8 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
 
   // 펫이 1마리일 때 자동 선택 또는 편집 모드에서 펫 선택
   void _autoSelectPetIfOnlyOne(List<PetProfileEntity> pets) {
+    if (!mounted) return; // mounted 체크 추가
+
     // 편집 모드에서 petId가 있으면 해당 펫 선택
     if (widget.initialEvent != null &&
         widget.initialEvent!.petId != null &&
@@ -104,14 +106,16 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
         (p) => p.id == widget.initialEvent!.petId,
         orElse: () => pets.isNotEmpty ? pets.first : pets.first,
       );
-      setState(() {
-        _selectedPet = pet;
-      });
+      if (mounted) {
+        setState(() {
+          _selectedPet = pet;
+        });
+      }
       return;
     }
 
     // 펫이 1마리일 때 자동 선택
-    if (pets.length == 1 && _selectedPet == null) {
+    if (pets.length == 1 && _selectedPet == null && mounted) {
       setState(() {
         _selectedPet = pets.first;
         _updateTitleIfEmpty();
@@ -237,9 +241,11 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
     final petsAsync = ref.watch(petProfilesProvider);
     final pets = petsAsync.when(
       data: (data) {
-        // 펫이 1마리일 때 자동 선택
+        // 펫이 1마리일 때 자동 선택 (mounted 체크 추가)
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          _autoSelectPetIfOnlyOne(data);
+          if (mounted) {
+            _autoSelectPetIfOnlyOne(data);
+          }
         });
         return data;
       },
@@ -629,7 +635,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
           )
         else
           DropdownButtonFormField<PetProfileEntity>(
-            initialValue: _selectedPet,
+            value: _selectedPet,
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
               contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -639,10 +645,12 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
               return DropdownMenuItem(value: pet, child: Text(pet.name));
             }).toList(),
             onChanged: (pet) {
-              setState(() {
-                _selectedPet = pet;
-                _updateTitleIfEmpty();
-              });
+              if (mounted) {
+                setState(() {
+                  _selectedPet = pet;
+                  _updateTitleIfEmpty();
+                });
+              }
             },
           ),
       ],
@@ -884,7 +892,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
       lastDate: DateTime.now().add(const Duration(days: 365)),
     );
 
-    if (date != null) {
+    if (date != null && mounted) {
       setState(() {
         _selectedDate = date;
         _selectedTime = DateTime(
