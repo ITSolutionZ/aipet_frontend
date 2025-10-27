@@ -23,9 +23,9 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
   late final WalkController _controller;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
-  CalendarFormat _calendarFormat = CalendarFormat.month;
+  CalendarFormat _calendarFormat = CalendarFormat.month; // 기본: 1개월 표시
   String? _selectedPetFilter; // 펫 필터
-  
+
   // 스크롤 관련 변수
   late ScrollController _scrollController;
   double _calendarFlex = 2.0; // 캘린더의 flex 값
@@ -55,14 +55,14 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
   void _onScroll() {
     final scrollOffset = _scrollController.offset;
     final maxScrollExtent = _scrollController.position.maxScrollExtent;
-    
+
     if (maxScrollExtent > 0) {
       // 스크롤 진행률 계산 (0.0 ~ 1.0)
       final scrollProgress = (scrollOffset / maxScrollExtent).clamp(0.0, 1.0);
-      
+
       // 스크롤에 따라 캘린더 flex 값 조절 (2.0 ~ 0.5)
       final newFlex = 2.0 - (scrollProgress * 1.5);
-      
+
       if ((_calendarFlex - newFlex).abs() > 0.1) {
         setState(() {
           _calendarFlex = newFlex.clamp(0.5, 2.0);
@@ -89,9 +89,33 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
             onSelected: (value) {
               if (value == 'clean') {
                 _showCleanOldRecordsDialog();
+              } else if (value == 'clean_no_route') {
+                _showCleanNoRouteRecordsDialog();
+              } else if (value == 'clean_in_progress') {
+                _showCleanInProgressRecordsDialog();
               }
             },
             itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 'clean_in_progress',
+                child: Row(
+                  children: [
+                    Icon(Icons.pause_circle, size: 20, color: AppColors.pointBlue),
+                    SizedBox(width: 8),
+                    Text('進行中記録を削除'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'clean_no_route',
+                child: Row(
+                  children: [
+                    Icon(Icons.route, size: 20, color: AppColors.pointRed),
+                    SizedBox(width: 8),
+                    Text('ルートなし記録を削除'),
+                  ],
+                ),
+              ),
               const PopupMenuItem(
                 value: 'clean',
                 child: Row(
@@ -145,6 +169,7 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
                       selectedDayPredicate: (day) =>
                           isSameDay(_selectedDay, day),
                       calendarFormat: _calendarFormat,
+                      startingDayOfWeek: StartingDayOfWeek.sunday, // 日曜日始まり
                       eventLoader: (day) {
                         final events = WalkCalendarDataHelper.getEventsForDay(
                           day,
@@ -180,21 +205,39 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
                         dowBuilder: (context, day) {
                           const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
                           final weekdayText = weekdays[day.weekday % 7];
-                          final isWeekend =
-                              day.weekday == DateTime.sunday ||
-                              day.weekday == DateTime.saturday;
+
+                          // 日曜日は赤色、土曜日は青色
+                          Color textColor = AppColors.textPrimary;
+                          if (day.weekday == DateTime.sunday) {
+                            textColor = AppColors.pointRed;
+                          } else if (day.weekday == DateTime.saturday) {
+                            textColor = AppColors.pointBlue;
+                          }
 
                           return Center(
                             child: Text(
                               weekdayText,
                               style: AppTextStyles.bodySmall.copyWith(
                                 fontWeight: FontWeight.w600,
-                                color: isWeekend
-                                    ? AppColors.pointPink
-                                    : AppColors.textPrimary,
+                                color: textColor,
                               ),
                             ),
                           );
+                        },
+                        // 土曜日の日付を青色に設定
+                        defaultBuilder: (context, day, focusedDay) {
+                          if (day.weekday == DateTime.saturday) {
+                            return Center(
+                              child: Text(
+                                '${day.day}',
+                                style: const TextStyle(
+                                  color: AppColors.pointBlue,
+                                  fontSize: 13, // 날짜 폰트 크기 축소
+                                ),
+                              ),
+                            );
+                          }
+                          return null;
                         },
                         markerBuilder: (context, date, events) {
                           if (events.isEmpty) return null;
@@ -219,8 +262,19 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
                           color: AppColors.pointBrown,
                           shape: BoxShape.circle,
                         ),
+                        defaultTextStyle: const TextStyle(
+                          fontSize: 13, // 날짜 폰트 크기 축소
+                        ),
                         weekendTextStyle: const TextStyle(
-                          color: AppColors.pointPink,
+                          color: AppColors.pointRed, // 日曜日は赤色
+                          fontSize: 13, // 날짜 폰트 크기 축소
+                        ),
+                        todayTextStyle: const TextStyle(
+                          fontSize: 13, // 오늘 날짜 폰트 크기 축소
+                        ),
+                        selectedTextStyle: const TextStyle(
+                          fontSize: 13, // 선택된 날짜 폰트 크기 축소
+                          color: Colors.white,
                         ),
                         outsideDaysVisible: false,
                       ),
@@ -230,7 +284,7 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
                         ),
                         weekendStyle: AppTextStyles.bodySmall.copyWith(
                           fontWeight: FontWeight.w600,
-                          color: AppColors.pointPink,
+                          color: AppColors.pointRed, // 日曜日は赤色
                         ),
                       ),
                     ),
@@ -242,11 +296,183 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
 
           const SizedBox(height: AppSpacing.xs),
 
-          // 통계 및 산책 기록 리스트 (데이터 없으면 empty 위젯)
-          Expanded(child: _buildStatisticsAndRecords(walkRecords)),
+          // 통계 요약만 표시 (탭하면 바텀시트 표시)
+          _buildStatisticsSection(walkRecords),
         ],
       ),
     );
+  }
+
+  /// 통계 섹션 빌드 (탭하면 바텀시트 표시)
+  Widget _buildStatisticsSection(List<WalkRecordEntity> walkRecords) {
+    final selectedDate = _selectedDay ?? DateTime.now();
+    var recordsForDay = WalkCalendarDataHelper.getEventsForDay(
+      selectedDate,
+      walkRecords,
+    );
+
+    // 펫 필터 적용
+    recordsForDay = WalkCalendarDataHelper.applyPetFilter(
+      recordsForDay,
+      _selectedPetFilter,
+    );
+
+    // 데이터가 없으면 empty 위젯 표시
+    if (recordsForDay.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: WalkCalendarUiHelper.buildEmptyState(selectedDate),
+      );
+    }
+
+    // 통계만 표시
+    return GestureDetector(
+      onTap: () => _showWalkRecordsBottomSheet(recordsForDay, selectedDate),
+      child: Container(
+        margin: const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(AppSpacing.md),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            _buildStatisticsSummary(recordsForDay),
+            const SizedBox(height: AppSpacing.sm),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  isSameDay(selectedDate, DateTime.now())
+                      ? '今日の散歩記録 (${recordsForDay.length}件)'
+                      : '${selectedDate.month}月${selectedDate.day}日の散歩記録 (${recordsForDay.length}件)',
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.xs),
+                const Icon(
+                  Icons.keyboard_arrow_up,
+                  color: AppColors.pointBrown,
+                  size: 20,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// 산책 기록 바텀시트 표시
+  void _showWalkRecordsBottomSheet(
+    List<WalkRecordEntity> recordsForDay,
+    DateTime selectedDate,
+  ) {
+    // 바텀시트 열릴 때 캘린더를 2주 포맷으로 변경
+    if (_calendarFormat != CalendarFormat.twoWeeks) {
+      setState(() {
+        _calendarFormat = CalendarFormat.twoWeeks;
+      });
+    }
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.6,
+        minChildSize: 0.3,
+        maxChildSize: 0.9,
+        builder: (context, scrollController) {
+          return Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(AppSpacing.lg),
+              ),
+            ),
+            child: Column(
+              children: [
+                // 드래그 핸들
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: AppColors.pointGray.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                // 헤더
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                    vertical: AppSpacing.sm,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        isSameDay(selectedDate, DateTime.now())
+                            ? '今日の散歩記録 (${recordsForDay.length}件)'
+                            : '${selectedDate.month}月${selectedDate.day}日の散歩記録 (${recordsForDay.length}件)',
+                        style: AppTextStyles.titleMedium.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () => Navigator.pop(context),
+                        icon: const Icon(Icons.close),
+                        color: AppColors.pointGray,
+                      ),
+                    ],
+                  ),
+                ),
+                const Divider(height: 1),
+                // 산책 기록 리스트
+                Expanded(
+                  child: ListView.builder(
+                    controller: scrollController,
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    itemCount: recordsForDay.length,
+                    itemBuilder: (context, index) {
+                      final walkRecord = recordsForDay[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                        child: WalkRecordCardWidget(
+                          walkRecord: walkRecord,
+                          onTap: () {
+                            Navigator.pop(context);
+                            _showWalkDetails(walkRecord);
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    ).then((_) {
+      // 바텀시트가 닫힐 때 캘린더를 1개월 포맷으로 변경
+      if (mounted && _calendarFormat != CalendarFormat.month) {
+        setState(() {
+          _calendarFormat = CalendarFormat.month;
+        });
+      }
+    });
   }
 
   /// 커스텀 헤더 빌드
@@ -274,46 +500,6 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
         });
       },
       calendarFormat: _calendarFormat,
-    );
-  }
-
-  /// 통계 및 산책 기록 빌드 (데이터 없으면 empty 위젯)
-  Widget _buildStatisticsAndRecords(List<WalkRecordEntity> walkRecords) {
-    final selectedDate = _selectedDay ?? DateTime.now();
-    LoggerService.debug(
-      '📅 캘린더: 선택 날짜=${selectedDate.year}-${selectedDate.month}-${selectedDate.day}, 전체 산책=${walkRecords.length}개',
-    );
-
-    var recordsForDay = WalkCalendarDataHelper.getEventsForDay(
-      selectedDate,
-      walkRecords,
-    );
-    LoggerService.debug('📅 캘린더: 선택 날짜의 산책 기록=${recordsForDay.length}개');
-
-    // 펫 필터 적용
-    recordsForDay = WalkCalendarDataHelper.applyPetFilter(
-      recordsForDay,
-      _selectedPetFilter,
-    );
-    LoggerService.debug('📅 캘린더: 필터 후 산책 기록=${recordsForDay.length}개');
-
-    // 데이터가 없으면 empty 위젯 표시
-    if (recordsForDay.isEmpty) {
-      LoggerService.debug('❌ 캘린더: 선택된 날짜에 산책 기록이 없습니다');
-      return WalkCalendarUiHelper.buildEmptyState(selectedDate);
-    }
-
-    // 데이터가 있으면 통계 + 리스트 표시
-    return Column(
-      children: [
-        // 통계 요약
-        _buildStatisticsSummary(recordsForDay),
-
-        const SizedBox(height: AppSpacing.sm),
-
-        // 산책 기록 리스트
-        Expanded(child: _buildWalkRecordsList(recordsForDay, selectedDate)),
-      ],
     );
   }
 
@@ -369,55 +555,6 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
               '$achievementRate%',
               Icons.emoji_events,
               color: WalkCalendarUiHelper.getAchievementColor(achievementRate),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// 산책 기록 리스트 빌드
-  Widget _buildWalkRecordsList(
-    List<WalkRecordEntity> recordsForDay,
-    DateTime selectedDate,
-  ) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 선택된 날짜 표시
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.sm,
-              vertical: AppSpacing.xs,
-            ),
-            child: Text(
-              isSameDay(selectedDate, DateTime.now())
-                  ? '今日の散歩記録 (${recordsForDay.length}件)'
-                  : '${selectedDate.month}月${selectedDate.day}日の散歩記録 (${recordsForDay.length}件)',
-              style: AppTextStyles.bodyMedium.copyWith(
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
-              ),
-            ),
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          // 산책 기록 리스트
-          Expanded(
-            child: ListView.builder(
-              physics: const AlwaysScrollableScrollPhysics(),
-              itemCount: recordsForDay.length,
-              itemBuilder: (context, index) {
-                final walkRecord = recordsForDay[index];
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                  child: WalkRecordCardWidget(
-                    walkRecord: walkRecord,
-                    onTap: () => _showWalkDetails(walkRecord),
-                  ),
-                );
-              },
             ),
           ),
         ],
@@ -555,6 +692,150 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
   //     ),
   //   );
   // }
+
+  /// 진행중인 산책 기록 삭제 다이얼로그 표시
+  Future<void> _showCleanInProgressRecordsDialog() async {
+    final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('進行中記録を削除'),
+        content: const Text(
+          '完了されていない進行中の散歩記録を削除しますか？\n'
+          'これらの記録は正常に終了されなかったものです。',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('キャンセル'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: TextButton.styleFrom(foregroundColor: AppColors.pointRed),
+            child: const Text('削除'),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldDelete == true) {
+      await _cleanInProgressRecords();
+    }
+  }
+
+  /// 진행중인 산책 기록 삭제
+  Future<void> _cleanInProgressRecords() async {
+    try {
+      final walkRecords = ref.read(walkRecordsProvider);
+
+      // 완료된 기록만 필터링
+      final completedRecords = walkRecords.where((record) {
+        return record.status == WalkStatus.completed;
+      }).toList();
+
+      final deletedCount = walkRecords.length - completedRecords.length;
+
+      if (deletedCount > 0) {
+        // 1. 로컬 스토리지에 저장
+        await LocalWalkStorageService.saveWalkRecords(completedRecords);
+
+        // 2. 현재 산책도 정리
+        await LocalWalkStorageService.saveCurrentWalk(null);
+
+        // 3. 상태 업데이트
+        ref.read(walkRecordsProvider.notifier).setWalkRecords(completedRecords);
+        ref.read(currentWalkProvider.notifier).endWalk(); // 현재 산책 종료
+
+        LoggerService.debug('🗑️ WalkCalendar: 進行中記録 $deletedCount件を削除しました');
+
+        if (mounted) {
+          SnackBarService.showSuccess(context, '進行中記録を$deletedCount件削除しました');
+        }
+      } else {
+        LoggerService.debug('ℹ️ WalkCalendar: 削除する進行中記録はありません');
+
+        if (mounted) {
+          SnackBarService.showInfo(context, '削除する記録がありません');
+        }
+      }
+    } catch (e, stackTrace) {
+      LoggerService.debug('❌ WalkCalendar: 進行中記録削除エラー - $e');
+      LoggerService.debug('StackTrace: $stackTrace');
+
+      if (mounted) {
+        SnackBarService.showError(context, '記録の削除に失敗しました');
+      }
+    }
+  }
+
+  /// route가 없는 산책 기록 삭제 다이얼로그 표시
+  Future<void> _showCleanNoRouteRecordsDialog() async {
+    final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('ルートなし記録を削除'),
+        content: const Text(
+          'ルート情報がない散歩記録を削除しますか？\n'
+          'これらの記録は位置追跡なしで保存されたものです。',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('キャンセル'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: TextButton.styleFrom(foregroundColor: AppColors.pointRed),
+            child: const Text('削除'),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldDelete == true) {
+      await _cleanNoRouteRecords();
+    }
+  }
+
+  /// route가 없는 산책 기록 삭제
+  Future<void> _cleanNoRouteRecords() async {
+    try {
+      final walkRecords = ref.read(walkRecordsProvider);
+
+      // route가 있는 기록만 필터링
+      final recordsWithRoute = walkRecords.where((record) {
+        return record.route.isNotEmpty;
+      }).toList();
+
+      final deletedCount = walkRecords.length - recordsWithRoute.length;
+
+      if (deletedCount > 0) {
+        // 1. 로컬 스토리지에 저장
+        await LocalWalkStorageService.saveWalkRecords(recordsWithRoute);
+
+        // 2. 상태 업데이트
+        ref.read(walkRecordsProvider.notifier).setWalkRecords(recordsWithRoute);
+
+        LoggerService.debug('🗑️ WalkCalendar: ルートなし記録 $deletedCount件を削除しました');
+
+        if (mounted) {
+          SnackBarService.showSuccess(context, 'ルートなし記録を$deletedCount件削除しました');
+        }
+      } else {
+        LoggerService.debug('ℹ️ WalkCalendar: 削除するルートなし記録はありません');
+
+        if (mounted) {
+          SnackBarService.showInfo(context, '削除する記録がありません');
+        }
+      }
+    } catch (e, stackTrace) {
+      LoggerService.debug('❌ WalkCalendar: ルートなし記録削除エラー - $e');
+      LoggerService.debug('StackTrace: $stackTrace');
+
+      if (mounted) {
+        SnackBarService.showError(context, '記録の削除に失敗しました');
+      }
+    }
+  }
 
   /// 오늘로 이동
   void _goToToday() {

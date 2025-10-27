@@ -2,6 +2,7 @@ import 'package:aipet_frontend/features/walk/data/services/local_walk_storage_se
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_statistics_entity.dart';
 import 'package:aipet_frontend/features/walk/domain/repositories/walk_repository.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
 /// 산책 리포지토리 구현체
 class WalkRepositoryImpl implements WalkRepository {
@@ -118,14 +119,21 @@ class WalkRepositoryImpl implements WalkRepository {
     final currentRecord = walkRecords[currentRecordIndex];
     final endTime = DateTime.now();
 
-    // 산책 기록 업데이트
+    LoggerService.debug('🏁 산책 종료: ID=${walkId}');
+    LoggerService.debug('   - 현재 route 포인트: ${currentRecord.route.length}개');
+    LoggerService.debug('   - 거리: ${distance ?? 0.0}km');
+
+    // 산책 기록 업데이트 (route 데이터 유지)
     final updatedRecord = currentRecord.copyWith(
       endTime: endTime,
       duration: endTime.difference(currentRecord.startTime),
       distance: distance ?? 0.0,
       status: WalkStatus.completed,
       notes: notes ?? currentRecord.notes,
+      route: currentRecord.route, // ✅ route 데이터 명시적으로 유지
     );
+
+    LoggerService.debug('✅ 업데이트된 route 포인트: ${updatedRecord.route.length}개');
 
     // 업데이트된 기록을 리스트에 반영
     walkRecords[currentRecordIndex] = updatedRecord;
