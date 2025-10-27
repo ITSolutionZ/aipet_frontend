@@ -10,8 +10,14 @@ import 'package:intl/intl.dart';
 class NewEventSetupScreen extends ConsumerStatefulWidget {
   final DateTime? initialDate;
   final CalendarEventType? eventType;
+  final CalendarEventEntity? initialEvent; // 編集モード用
 
-  const NewEventSetupScreen({super.key, this.initialDate, this.eventType});
+  const NewEventSetupScreen({
+    super.key,
+    this.initialDate,
+    this.eventType,
+    this.initialEvent,
+  });
 
   @override
   ConsumerState<NewEventSetupScreen> createState() =>
@@ -30,6 +36,10 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
   String _eventDescription = '';
   String _eventLocation = '';
   bool _isAllDay = false;
+  DateTime? _endTime; // 終了時間
+
+  // TextEditingController for title field
+  final TextEditingController _titleController = TextEditingController();
 
   // 인라인 입력 상태
   bool _isEditingHour = false;
@@ -44,35 +54,93 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.initialDate != null) {
-      _selectedDate = widget.initialDate!;
+
+    // 編集モードの場合、既存データをロード
+    if (widget.initialEvent != null) {
+      final event = widget.initialEvent!;
+      _selectedDate = event.startTime;
+      _selectedTime = event.startTime;
+      _endTime = event.endTime;
+      _selectedEventType = event.type;
+      _eventName = event.title;
+      _titleController.text = event.title;
+      _eventDescription = event.description;
+      _eventLocation = event.location ?? '';
+      _isAllDay = event.isAllDay ?? false;
+
+      // 繰り返し設定
+      if (event.recurrence != null) {
+        _isRepeating = true;
+        _selectedDays.addAll(event.recurrence!.daysOfWeek ?? []);
+      }
+    } else {
+      // 新規作成モード
+      if (widget.initialDate != null) {
+        _selectedDate = widget.initialDate!;
+      }
+      if (widget.eventType != null) {
+        _selectedEventType = widget.eventType!;
+      }
+      _selectedTime = DateTime(
+        _selectedDate.year,
+        _selectedDate.month,
+        _selectedDate.day,
+        _selectedTime.hour,
+        _selectedTime.minute,
+      );
     }
-    if (widget.eventType != null) {
-      _selectedEventType = widget.eventType!;
-    }
-    _selectedTime = DateTime(
-      _selectedDate.year,
-      _selectedDate.month,
-      _selectedDate.day,
-      _selectedTime.hour,
-      _selectedTime.minute,
-    );
 
     _hourFocusNode.addListener(_onHourFocusChange);
     _minuteFocusNode.addListener(_onMinuteFocusChange);
   }
 
-  // 펫이 1마리일 때 자동 선택
+  // 펫이 1마리일 때 자동 선택 또는 편집 모드에서 펫 선택
   void _autoSelectPetIfOnlyOne(List<PetProfileEntity> pets) {
-    if (pets.length == 1 && _selectedPet == null) {
+    if (!mounted) return; // mounted 체크 추가
+
+    // 편집 모드에서 petId가 있으면 해당 펫 선택
+    if (widget.initialEvent != null &&
+        widget.initialEvent!.petId != null &&
+        _selectedPet == null) {
+      final pet = pets.firstWhere(
+        (p) => p.id == widget.initialEvent!.petId,
+        orElse: () => pets.isNotEmpty ? pets.first : pets.first,
+      );
+      if (mounted) {
+        setState(() {
+          _selectedPet = pet;
+        });
+      }
+      return;
+    }
+
+    // 펫이 1마리일 때 자동 선택
+    if (pets.length == 1 && _selectedPet == null && mounted) {
       setState(() {
         _selectedPet = pets.first;
+        _updateTitleIfEmpty();
       });
+    }
+  }
+
+  // タイトルが空の場合、ペット名 + カテゴリで自動生成
+  void _updateTitleIfEmpty() {
+    // ユーザーがタイトルを手動で入力している場合は更新しない
+    if (_titleController.text.isNotEmpty && _eventName.isNotEmpty) {
+      return;
+    }
+
+    if (_selectedPet != null) {
+      final newTitle =
+          '${_selectedPet!.name}の${_selectedEventType.displayName}';
+      _titleController.text = newTitle;
+      _eventName = newTitle;
     }
   }
 
   @override
   void dispose() {
+    _titleController.dispose();
     _hourController.dispose();
     _minuteController.dispose();
     _hourFocusNode.removeListener(_onHourFocusChange);
@@ -173,9 +241,11 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
     final petsAsync = ref.watch(petProfilesProvider);
     final pets = petsAsync.when(
       data: (data) {
-        // 펫이 1마리일 때 자동 선택
+        // 펫이 1마리일 때 자동 선택 (mounted 체크 추가)
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          _autoSelectPetIfOnlyOne(data);
+          if (mounted) {
+            _autoSelectPetIfOnlyOne(data);
+          }
         });
         return data;
       },
@@ -185,8 +255,10 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.pointGray.withValues(alpha: 0.1),
-      appBar: SoftGradientAppBar(
-        title: '',
+      appBar: AppBar(
+        title: const Text(''),
+        backgroundColor: AppColors.pureWhite,
+        elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.close, color: AppColors.pointDark),
           onPressed: () => context.pop(),
@@ -563,7 +635,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
           )
         else
           DropdownButtonFormField<PetProfileEntity>(
-            initialValue: _selectedPet,
+            value: _selectedPet,
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
               contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -572,7 +644,14 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
             items: pets.map((pet) {
               return DropdownMenuItem(value: pet, child: Text(pet.name));
             }).toList(),
-            onChanged: (pet) => setState(() => _selectedPet = pet),
+            onChanged: (pet) {
+              if (mounted) {
+                setState(() {
+                  _selectedPet = pet;
+                  _updateTitleIfEmpty();
+                });
+              }
+            },
           ),
       ],
     );
@@ -614,7 +693,12 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
                 child: Material(
                   color: AppColors.pureWhite.withValues(alpha: 0),
                   child: InkWell(
-                    onTap: () => setState(() => _selectedEventType = type),
+                    onTap: () {
+                      setState(() {
+                        _selectedEventType = type;
+                        _updateTitleIfEmpty();
+                      });
+                    },
                     borderRadius: isLast
                         ? const BorderRadius.only(
                             bottomLeft: Radius.circular(AppRadius.medium),
@@ -665,11 +749,12 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'イベント名',
+          '제목',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
         ),
         const SizedBox(height: AppSpacing.sm),
         TextField(
+          controller: _titleController,
           decoration: InputDecoration(
             hintText: 'イベント名を入力してください',
             border: OutlineInputBorder(
@@ -680,7 +765,11 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
               vertical: AppSpacing.sm,
             ),
           ),
-          onChanged: (value) => _eventName = value,
+          onChanged: (value) {
+            setState(() {
+              _eventName = value;
+            });
+          },
         ),
       ],
     );
@@ -803,7 +892,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
       lastDate: DateTime.now().add(const Duration(days: 365)),
     );
 
-    if (date != null) {
+    if (date != null && mounted) {
       setState(() {
         _selectedDate = date;
         _selectedTime = DateTime(
@@ -818,14 +907,17 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
   }
 
   Future<void> _saveEvent() async {
+    // BuildContext를 미리 저장 (비동기 작업 전)
+    if (!mounted) return;
+    final navigator = Navigator.of(context);
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
     if (_selectedPet == null) {
-      // ✅ Shared SnackBarService 사용
       SnackBarService.showWarning(context, 'ペットを選択してください');
       return;
     }
 
     if (_eventName.isEmpty) {
-      // ✅ Shared SnackBarService 사용
       SnackBarService.showWarning(context, 'イベント名を入力してください');
       return;
     }
@@ -833,7 +925,9 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
     try {
       // 종료 시간 설정
       DateTime endTime;
-      if (_isAllDay) {
+      if (_endTime != null) {
+        endTime = _endTime!;
+      } else if (_isAllDay) {
         endTime = DateTime(
           _selectedTime.year,
           _selectedTime.month,
@@ -845,9 +939,11 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
         endTime = _selectedTime.add(const Duration(hours: 1));
       }
 
-      // 캘린더 이벤트 생성
+      // 캘린더 이벤트 생성 또는 업데이트
       final event = CalendarEventEntity(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        id:
+            widget.initialEvent?.id ??
+            DateTime.now().millisecondsSinceEpoch.toString(),
         title: _eventName,
         description: _eventDescription.isNotEmpty ? _eventDescription : '일정',
         startTime: _selectedTime,
@@ -857,8 +953,8 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
         petId: _selectedPet!.id,
         petName: _selectedPet!.name,
         location: _eventLocation.isNotEmpty ? _eventLocation : null,
-        hasAlarm: false,
-        alarmSettings: [],
+        hasAlarm: widget.initialEvent?.hasAlarm ?? false,
+        alarmSettings: widget.initialEvent?.alarmSettings ?? [],
         recurrence: _isRepeating && _selectedDays.isNotEmpty
             ? CalendarEventRecurrence(
                 type: CalendarRecurrenceType.weekly,
@@ -866,23 +962,48 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
                 endDate: _selectedDate.add(const Duration(days: 365)),
               )
             : null,
-        createdAt: DateTime.now(),
+        createdAt: widget.initialEvent?.createdAt ?? DateTime.now(),
         updatedAt: DateTime.now(),
       );
 
-      // 데이터베이스에 저장
-      await CalendarEventService.instance.saveCalendarEvent(event);
+      // 데이터베이스에 저장 또는 업데이트
+      if (widget.initialEvent != null) {
+        await CalendarEventService.instance.updateCalendarEvent(event);
+      } else {
+        await CalendarEventService.instance.saveCalendarEvent(event);
+      }
 
       if (mounted) {
-        // ✅ Shared SnackBarService 사용
-        SnackBarService.showSuccess(context, 'イベントが保存されました');
-        // 캘린더 화면으로 돌아가면서 이벤트 새로고침을 위한 결과 전달
-        context.pop(true);
+        // 먼저 화면을 닫고 (SnackBar 애니메이션 충돌 방지)
+        navigator.pop(event);
+        
+        // 화면이 닫힌 후 SnackBar 표시 (부모 화면에서)
+        Future.microtask(() {
+          if (mounted) {
+            scaffoldMessenger.showSnackBar(
+              SnackBar(
+                content: Text(
+                  widget.initialEvent != null ? 'イベントが更新されました' : 'イベントが保存されました',
+                ),
+                backgroundColor: AppColors.pointGreen,
+                behavior: SnackBarBehavior.floating,
+                duration: const Duration(seconds: 2),
+              ),
+            );
+          }
+        });
       }
     } catch (e) {
+      LoggerService.debug('❌ イベント保存エラー: $e');
       if (mounted) {
-        // ✅ Shared SnackBarService 사용
-        SnackBarService.showError(context, 'イベントの保存に失敗しました: $e');
+        // 미리 저장한 scaffoldMessenger 사용
+        scaffoldMessenger.showSnackBar(
+          SnackBar(
+            content: Text('イベントの保存に失敗しました: $e'),
+            backgroundColor: AppColors.pointRed,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
       }
     }
   }
