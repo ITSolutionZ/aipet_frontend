@@ -31,7 +31,9 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
   bool _isPaused = false; // 일시정지 상태
   Timer? _timer; // 타이머
   Timer? _locationTimer; // 위치 추적 타이머
-  final ValueNotifier<int> _elapsedSecondsNotifier = ValueNotifier<int>(0); // ✅ ValueNotifier로 변경
+  final ValueNotifier<int> _elapsedSecondsNotifier = ValueNotifier<int>(
+    0,
+  ); // ✅ ValueNotifier로 변경
   final List<Map<String, dynamic>> _petActivities = []; // 펫 활동 기록 (똥, 오줌)
 
   @override
@@ -87,9 +89,8 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
 
     // 산책 시작 시 타이머 및 위치 추적 시작
     if (currentWalk != null && _timer == null) {
-      _elapsedSecondsNotifier.value = WalkListTimerHelper.calculateElapsedSeconds(
-        currentWalk.startTime,
-      );
+      _elapsedSecondsNotifier.value =
+          WalkListTimerHelper.calculateElapsedSeconds(currentWalk.startTime);
       _startTimer();
       _startLocationTracking(); // ✅ 위치 추적 시작
     }

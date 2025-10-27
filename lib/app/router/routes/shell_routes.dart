@@ -392,6 +392,9 @@ class ShellRoutes {
               final dateStr = state.uri.queryParameters['date'];
               final eventTypeStr = state.uri.queryParameters['eventType'];
 
+              // 編集モード: extraでCalendarEventEntityを受け取る
+              final initialEvent = state.extra as CalendarEventEntity?;
+
               DateTime? initialDate;
               if (dateStr != null) {
                 initialDate = DateTime.tryParse(dateStr);
@@ -408,6 +411,7 @@ class ShellRoutes {
               return NewEventSetupScreen(
                 initialDate: initialDate,
                 eventType: eventType,
+                initialEvent: initialEvent,
               );
             },
           ),

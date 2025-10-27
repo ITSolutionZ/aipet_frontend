@@ -100,7 +100,11 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
                 value: 'clean_in_progress',
                 child: Row(
                   children: [
-                    Icon(Icons.pause_circle, size: 20, color: AppColors.pointBlue),
+                    Icon(
+                      Icons.pause_circle,
+                      size: 20,
+                      color: AppColors.pointBlue,
+                    ),
                     SizedBox(width: 8),
                     Text('進行中記録を削除'),
                   ],

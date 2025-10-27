@@ -37,7 +37,9 @@ class CalendarEventService {
           event.alarmSettings.map((e) => e.toJson()).toList(),
         ),
         'is_recurring': event.recurrence != null ? 1 : 0,
-        'recurrence_rule': event.recurrence?.toJson().toString(),
+        'recurrence_rule': event.recurrence != null
+            ? jsonEncode(event.recurrence!.toJson()) // ✅ JSON으로 올바르게 인코딩
+            : null,
         'created_at': DateTime.now().toIso8601String(),
         'updated_at': DateTime.now().toIso8601String(),
       }, conflictAlgorithm: ConflictAlgorithm.replace);
@@ -59,7 +61,19 @@ class CalendarEventService {
         orderBy: 'start_time ASC',
       );
 
-      final events = maps.map((map) => _mapToEntity(map)).toList();
+      // ✅ 각 이벤트를 개별적으로 파싱하여 에러가 있는 것만 제외
+      final events = <CalendarEventEntity>[];
+      for (final map in maps) {
+        try {
+          events.add(_mapToEntity(map));
+        } catch (e) {
+          LoggerService.debug('⚠️ イベントパース失敗 (ID: ${map['id']}): $e');
+          // 잘못된 형식의 데이터 삭제
+          await db.delete('calendar_events', where: 'id = ?', whereArgs: [map['id']]);
+          LoggerService.debug('🗑️ 破損したイベント削除: ${map['id']}');
+        }
+      }
+
       LoggerService.debug('✅ イベント取得成功: ${events.length}件');
       return events;
     } catch (e) {
@@ -107,7 +121,9 @@ class CalendarEventService {
           event.alarmSettings.map((e) => e.toJson()).toList(),
         ),
         'is_recurring': event.recurrence != null ? 1 : 0,
-        'recurrence_rule': event.recurrence?.toJson().toString(),
+        'recurrence_rule': event.recurrence != null
+            ? jsonEncode(event.recurrence!.toJson()) // ✅ JSON으로 올바르게 인코딩
+            : null,
         'updated_at': DateTime.now().toIso8601String(),
       },
       where: 'id = ?',

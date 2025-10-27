@@ -13,7 +13,7 @@ class ProfileAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: AppColors.pointBrown,
       foregroundColor: Colors.white,
       title: Text(
-        pet.name,
+        pet.name ?? '',
         style: AppFonts.titleLarge.copyWith(
           color: Colors.white,
           fontWeight: FontWeight.bold,

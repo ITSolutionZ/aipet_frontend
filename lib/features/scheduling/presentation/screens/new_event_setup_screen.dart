@@ -635,7 +635,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
           )
         else
           DropdownButtonFormField<PetProfileEntity>(
-            value: _selectedPet,
+            initialValue: _selectedPet,
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
               contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -976,7 +976,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
       if (mounted) {
         // 먼저 화면을 닫고 (SnackBar 애니메이션 충돌 방지)
         navigator.pop(event);
-        
+
         // 화면이 닫힌 후 SnackBar 표시 (부모 화면에서)
         Future.microtask(() {
           if (mounted) {
