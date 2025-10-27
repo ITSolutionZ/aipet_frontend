@@ -208,6 +208,7 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
                                 '${day.day}',
                                 style: const TextStyle(
                                   color: AppColors.pointBlue,
+                                  fontSize: 13, // 날짜 폰트 크기 축소
                                 ),
                               ),
                             );
@@ -237,8 +238,19 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
                           color: AppColors.pointBrown,
                           shape: BoxShape.circle,
                         ),
+                        defaultTextStyle: const TextStyle(
+                          fontSize: 13, // 날짜 폰트 크기 축소
+                        ),
                         weekendTextStyle: const TextStyle(
                           color: AppColors.pointRed, // 日曜日は赤色
+                          fontSize: 13, // 날짜 폰트 크기 축소
+                        ),
+                        todayTextStyle: const TextStyle(
+                          fontSize: 13, // 오늘 날짜 폰트 크기 축소
+                        ),
+                        selectedTextStyle: const TextStyle(
+                          fontSize: 13, // 선택된 날짜 폰트 크기 축소
+                          color: Colors.white,
                         ),
                         outsideDaysVisible: false,
                       ),
