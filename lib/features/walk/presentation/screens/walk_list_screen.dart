@@ -28,7 +28,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
   final PageController _pageController = PageController();
   bool _isPaused = false; // 일시정지 상태
   Timer? _timer; // 타이머
-  int _elapsedSeconds = 0; // 경과 시간 (초)
+  final ValueNotifier<int> _elapsedSecondsNotifier = ValueNotifier<int>(0); // ✅ ValueNotifier로 변경
   final List<Map<String, dynamic>> _petActivities = []; // 펫 활동 기록 (똥, 오줌)
 
   @override
@@ -42,6 +42,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
   void dispose() {
     _timer?.cancel();
     _pageController.dispose();
+    _elapsedSecondsNotifier.dispose(); // ✅ ValueNotifier dispose
     super.dispose();
   }
 
@@ -82,7 +83,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
 
     // 산책 시작 시 타이머 시작
     if (currentWalk != null && _timer == null) {
-      _elapsedSeconds = WalkListTimerHelper.calculateElapsedSeconds(
+      _elapsedSecondsNotifier.value = WalkListTimerHelper.calculateElapsedSeconds(
         currentWalk.startTime,
       );
       _startTimer();
@@ -92,7 +93,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
     if (currentWalk == null && _timer != null) {
       WalkListTimerHelper.stopTimer(_timer);
       _timer = null;
-      _elapsedSeconds = 0;
+      _elapsedSecondsNotifier.value = 0;
       _isPaused = false;
     }
 
@@ -260,9 +261,8 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
     _timer = WalkListTimerHelper.startTimer(
       onTick: () {
         if (mounted) {
-          setState(() {
-            _elapsedSeconds++;
-          });
+          // ✅ setState() 대신 ValueNotifier 업데이트 (화면 전체 rebuild 방지)
+          _elapsedSecondsNotifier.value++;
         }
       },
       shouldTick: () => !_isPaused && mounted,
@@ -312,10 +312,16 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
       selectedPets: selectedPets,
     );
 
-    return WalkListUiHelper.buildWalkInfoCard(
-      elapsedSeconds: _elapsedSeconds,
-      distance: distance,
-      recommendedTime: recommendedTime,
+    // ✅ ValueListenableBuilder로 타이머만 독립적으로 rebuild
+    return ValueListenableBuilder<int>(
+      valueListenable: _elapsedSecondsNotifier,
+      builder: (context, elapsedSeconds, child) {
+        return WalkListUiHelper.buildWalkInfoCard(
+          elapsedSeconds: elapsedSeconds,
+          distance: distance,
+          recommendedTime: recommendedTime,
+        );
+      },
     );
   }
 
@@ -327,7 +333,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
     WalkListDialogHelper.showEndWalkDialog(
       context: context,
       currentWalk: currentWalk,
-      elapsedSeconds: _elapsedSeconds,
+      elapsedSeconds: _elapsedSecondsNotifier.value,
       controller: _controller,
       petActivities: _petActivities,
       onEndSuccess: () {
@@ -335,8 +341,8 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
           setState(() {
             _petActivities.clear();
             _isPaused = false;
-            _elapsedSeconds = 0;
           });
+          _elapsedSecondsNotifier.value = 0; // ✅ ValueNotifier 업데이트
         }
       },
     );
