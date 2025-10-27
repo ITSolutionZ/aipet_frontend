@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 
+import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
 import 'package:aipet_frontend/features/scheduling/data/services/calendar_event_service.dart';
 import 'package:aipet_frontend/features/scheduling/domain/entities/calendar_event_entity.dart';
+import 'package:aipet_frontend/shared/services/image_storage_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,7 +28,13 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
   late ScrollController _scrollController;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
-  CalendarFormat _calendarFormat = CalendarFormat.month;
+  CalendarFormat _calendarFormat = CalendarFormat.twoWeeks; // 2週間表示
+
+  // ビューモード: true = カテゴリ別, false = 日付別
+  bool _isCategoryView = true;
+
+  // 選択されたペットID (null = 全てのペット)
+  String? _selectedPetId;
 
   // Mock data for testing - will be replaced with real data from controller
   final Map<DateTime, List<CalendarEventEntity>> _events = {};
@@ -53,6 +62,19 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
       appBar: SoftGradientAppBar(
         title: '',
         actions: [
+          // ビュー切り替えボタン
+          IconButton(
+            onPressed: () {
+              setState(() {
+                _isCategoryView = !_isCategoryView;
+              });
+            },
+            icon: Icon(
+              _isCategoryView ? Icons.calendar_today : Icons.category,
+              color: Colors.white,
+            ),
+            tooltip: _isCategoryView ? '日付別表示' : 'カテゴリ別表示',
+          ),
           IconButton(
             onPressed: _openAlarmSetup,
             icon: const Icon(Icons.alarm_add, color: Colors.white),
@@ -75,11 +97,11 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
               },
               calendarFormat: _calendarFormat,
               eventLoader: _getEventsForDay,
-              startingDayOfWeek: StartingDayOfWeek.monday,
+              startingDayOfWeek: StartingDayOfWeek.sunday, // 日曜日始まり
               locale: 'ja_JP',
               calendarStyle: CalendarStyle(
                 outsideDaysVisible: false,
-                weekendTextStyle: const TextStyle(color: AppColors.pointRed),
+                weekendTextStyle: const TextStyle(color: AppColors.pointRed), // 日曜日は赤色
                 holidayTextStyle: const TextStyle(color: AppColors.pointRed),
                 defaultTextStyle: const TextStyle(color: AppColors.pointDark),
                 selectedDecoration: const BoxDecoration(
@@ -95,6 +117,32 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
                   shape: BoxShape.circle,
                 ),
                 markersMaxCount: 3,
+              ),
+              calendarBuilders: CalendarBuilders(
+                // 土曜日を青色に設定
+                dowBuilder: (context, day) {
+                  if (day.weekday == DateTime.saturday) {
+                    return Center(
+                      child: Text(
+                        DateFormat.E('ja_JP').format(day),
+                        style: const TextStyle(color: AppColors.pointBlue),
+                      ),
+                    );
+                  }
+                  return null;
+                },
+                // 土曜日の日付を青色に設定
+                defaultBuilder: (context, day, focusedDay) {
+                  if (day.weekday == DateTime.saturday) {
+                    return Center(
+                      child: Text(
+                        '${day.day}',
+                        style: const TextStyle(color: AppColors.pointBlue),
+                      ),
+                    );
+                  }
+                  return null;
+                },
               ),
               headerStyle: const HeaderStyle(
                 formatButtonVisible: true,
@@ -139,13 +187,18 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
           ),
           const SizedBox(height: 8.0),
 
+          // ペットタブ (カテゴリビュー時のみ表示)
+          if (_isCategoryView) _buildPetTabs(),
+
           // イベントリスト
           Expanded(
             child: Container(
               color: AppColors.pointOffWhite,
-              child: _selectedDay == null
-                  ? _buildEmptyState()
-                  : _buildEventsList(),
+              child: _isCategoryView
+                  ? _buildCategoryView()
+                  : (_selectedDay == null
+                      ? _buildEmptyState()
+                      : _buildEventsList()),
             ),
           ),
         ],
@@ -174,6 +227,11 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
       final events = await CalendarEventService.instance.getCalendarEvents();
       LoggerService.debug('📥 読み込まれたイベント数: ${events.length}');
 
+      // ✅ 각 이벤트 상세 로그
+      for (final event in events) {
+        LoggerService.debug('  - ${event.title}: ${event.startTime.toString().substring(0, 10)}');
+      }
+
       setState(() {
         _events.clear();
         for (final event in events) {
@@ -190,8 +248,9 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
         }
         LoggerService.debug('📥 イベントキャッシュ更新完了: ${_events.length}日分');
       });
-    } catch (e) {
+    } catch (e, stackTrace) {
       LoggerService.debug('❌ イベント読み込み失敗: $e');
+      LoggerService.debug('❌ スタックトレース: $stackTrace');
     }
   }
 
@@ -322,7 +381,394 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
     );
   }
 
-  /// 새 이벤트 추가 바텀시트 표시
+  /// ペットタブ
+  Widget _buildPetTabs() {
+    final petsAsync = ref.watch(petProfilesProvider);
+
+    return petsAsync.when(
+      data: (pets) {
+        if (pets.isEmpty) return const SizedBox.shrink();
+
+        // ペットが1匹の場合はタブを表示しない
+        if (pets.length == 1) return const SizedBox.shrink();
+
+        return Container(
+          margin: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.md,
+            vertical: AppSpacing.sm,
+          ),
+          padding: const EdgeInsets.all(AppSpacing.md),
+          decoration: BoxDecoration(
+            color: AppColors.pureWhite,
+            borderRadius: BorderRadius.circular(AppRadius.large),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.08),
+                blurRadius: 12,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // 「全て」タブ
+                _buildPetTab(
+                  label: '全て',
+                  petId: null,
+                  isSelected: _selectedPetId == null,
+                ),
+                const SizedBox(width: AppSpacing.md),
+
+                // 各ペットのタブ
+                ...pets.asMap().entries.map((entry) {
+                  final pet = entry.value;
+                  return Padding(
+                    padding: const EdgeInsets.only(right: AppSpacing.md),
+                    child: _buildPetTab(
+                      label: pet.name,
+                      petId: pet.id,
+                      isSelected: _selectedPetId == pet.id,
+                    ),
+                  );
+                }),
+              ],
+            ),
+          ),
+        );
+      },
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
+    );
+  }
+
+  /// ペットタブボタン (アイコン版)
+  Widget _buildPetTab({
+    required String label,
+    required String? petId,
+    required bool isSelected,
+  }) {
+    // 全てタブかペットタブかを判定
+    final isAllTab = petId == null;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              _selectedPetId = petId;
+            });
+          },
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeInOut,
+            width: isSelected ? 68 : 60,
+            height: isSelected ? 68 : 60,
+            decoration: BoxDecoration(
+              gradient: isSelected
+                  ? LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        AppColors.pointBrown,
+                        AppColors.pointBrown.withValues(alpha: 0.8),
+                      ],
+                    )
+                  : null,
+              color: isSelected ? null : AppColors.pointGray.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: isSelected
+                    ? AppColors.pointBrown
+                    : AppColors.pointGray.withValues(alpha: 0.2),
+                width: isSelected ? 3 : 2,
+              ),
+              boxShadow: isSelected
+                  ? [
+                      BoxShadow(
+                        color: AppColors.pointBrown.withValues(alpha: 0.4),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                        spreadRadius: 1,
+                      ),
+                    ]
+                  : [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.08),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+            ),
+            child: Container(
+              padding: EdgeInsets.all(isSelected ? 3 : 2),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isSelected ? AppColors.pureWhite : Colors.transparent,
+              ),
+              child: isAllTab
+                  ? Icon(
+                      Icons.pets,
+                      size: isSelected ? 32 : 28,
+                      color: isSelected
+                          ? AppColors.pointBrown
+                          : AppColors.pointGray,
+                    )
+                  : ClipOval(
+                      child: Container(
+                        color: AppColors.pureWhite,
+                        child: _buildPetImage(petId, isSelected),
+                      ),
+                    ),
+            ),
+          ),
+        ),
+        if (isSelected) ...[
+          const SizedBox(height: 4),
+          Container(
+            width: 6,
+            height: 6,
+            decoration: const BoxDecoration(
+              color: AppColors.pointBrown,
+              shape: BoxShape.circle,
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  /// ペット画像を表示
+  Widget _buildPetImage(String petId, bool isSelected) {
+    final petsAsync = ref.watch(petProfilesProvider);
+
+    return petsAsync.when(
+      data: (pets) {
+        final pet = pets.firstWhere(
+          (p) => p.id == petId,
+          orElse: () => pets.first,
+        );
+
+        if (pet.imagePath != null && pet.imagePath!.isNotEmpty) {
+          final storageService = ImageStorageService();
+          final absolutePath =
+              storageService.getAbsolutePath(pet.imagePath!) ?? pet.imagePath!;
+
+          return ClipOval(
+            child: Image.file(
+              File(absolutePath),
+              width: 54,
+              height: 54,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Icon(
+                  pet.type == 'dog' ? Icons.pets : Icons.pets_outlined,
+                  size: 32,
+                  color:
+                      isSelected ? AppColors.pointBrown : AppColors.pointGray,
+                );
+              },
+            ),
+          );
+        } else {
+          return Icon(
+            pet.type == 'dog' ? Icons.pets : Icons.pets_outlined,
+            size: 32,
+            color: isSelected ? AppColors.pointBrown : AppColors.pointGray,
+          );
+        }
+      },
+      loading: () => Icon(
+        Icons.pets,
+        size: 32,
+        color: isSelected ? AppColors.pointBrown : AppColors.pointGray,
+      ),
+      error: (_, __) => Icon(
+        Icons.pets,
+        size: 32,
+        color: isSelected ? AppColors.pointBrown : AppColors.pointGray,
+      ),
+    );
+  }
+
+  /// カテゴリ別ビュー
+  Widget _buildCategoryView() {
+    // すべてのイベントを取得
+    final allEvents = <CalendarEventEntity>[];
+    for (final eventList in _events.values) {
+      allEvents.addAll(eventList);
+    }
+
+    // ペットフィルタリング
+    final filteredEvents = _selectedPetId == null
+        ? allEvents
+        : allEvents.where((event) => event.petId == _selectedPetId).toList();
+
+    if (filteredEvents.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.event_note,
+              size: 64,
+              color: AppColors.pointGray.withValues(alpha: 0.5),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              '予定がありません',
+              style: AppFonts.titleMedium.copyWith(color: AppColors.pointGray),
+            ),
+            const SizedBox(height: 16),
+            Container(
+              decoration: BoxDecoration(
+                color: AppColors.pointBrown,
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: _openAlarmSetup,
+                  borderRadius: BorderRadius.circular(16.0),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 8.0,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.add,
+                          color: AppColors.pureWhite,
+                          size: 16,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '予定追加',
+                          style: AppFonts.bodySmall.copyWith(
+                            color: AppColors.pureWhite,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // カテゴリ別にグループ化
+    final categoryGroups = <AlarmCategory, List<CalendarEventEntity>>{};
+    for (final event in filteredEvents) {
+      final category = event.type.alarmCategory;
+      if (!categoryGroups.containsKey(category)) {
+        categoryGroups[category] = [];
+      }
+      categoryGroups[category]!.add(event);
+    }
+
+    // 各カテゴリ内で時間順にソート
+    for (final events in categoryGroups.values) {
+      events.sort((a, b) => a.startTime.compareTo(b.startTime));
+    }
+
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        // 食事アラーム
+        if (categoryGroups.containsKey(AlarmCategory.meal))
+          _buildCategorySection(
+            '食事アラーム',
+            Icons.restaurant,
+            categoryGroups[AlarmCategory.meal]!,
+          ),
+
+        // 散歩アラーム
+        if (categoryGroups.containsKey(AlarmCategory.walk))
+          _buildCategorySection(
+            '散歩アラーム',
+            Icons.pets,
+            categoryGroups[AlarmCategory.walk]!,
+          ),
+
+        // 予約・システムアラーム
+        if (categoryGroups.containsKey(AlarmCategory.system))
+          _buildCategorySection(
+            '予約・システムアラーム',
+            Icons.notifications,
+            categoryGroups[AlarmCategory.system]!,
+          ),
+      ],
+    );
+  }
+
+  /// カテゴリセクションを構築
+  Widget _buildCategorySection(
+    String title,
+    IconData icon,
+    List<CalendarEventEntity> events,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // セクションヘッダー
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Row(
+            children: [
+              Icon(icon, color: AppColors.pointBrown, size: 20),
+              const SizedBox(width: 8),
+              Text(
+                title,
+                style: AppFonts.titleMedium.copyWith(
+                  color: AppColors.pointDark,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 2,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.pointBrown.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  '${events.length}件',
+                  style: AppFonts.bodySmall.copyWith(
+                    color: AppColors.pointBrown,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        // イベントリスト
+        ...events.map((event) => CalendarEventItem(
+              event: event,
+              onTap: () => _showEventDetail(event),
+              onEdit: () => _showEditEventDialog(event),
+              onDelete: () => _showDeleteEventDialog(event),
+            )),
+
+        const SizedBox(height: 16),
+      ],
+    );
+  }
+
+  /// 新 이벤트 추가 바텀시트 표시
   void _showAddEventDialog() async {
     final selectedDate = _selectedDay ?? DateTime.now();
     final result = await showModalBottomSheet<CalendarEventEntity>(
@@ -400,21 +846,23 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
     );
   }
 
-  /// 이벤트 편집 바텀시트 표시
+  /// 이벤트 편집 화면 표시
   void _showEditEventDialog(CalendarEventEntity event) async {
-    final result = await showModalBottomSheet<CalendarEventEntity>(
-      context: context,
-      isScrollControlled: true, // 100% 높이를 위해 필요
-      backgroundColor: Colors.transparent, // 투명 배경으로 설정
-      builder: (context) => AddEventBottomSheet(
-        selectedDate: event.startTime,
-        initialEvent: event,
-      ),
+    final result = await context.push<CalendarEventEntity>(
+      '/scheduling/new-event',
+      extra: event, // 편집モード用にイベントを渡す
     );
 
     // 결과가 CalendarEventEntity인 경우 이벤트 업데이트
-    if (result is CalendarEventEntity) {
-      _updateEvent(event, result);
+    if (result is CalendarEventEntity && mounted) {
+      await _loadEventsFromDatabase();
+      // TableCalendar의 마커 업데이트를 강제하기 위해 선택된 날짜 다시 선택
+      if (_selectedDay != null) {
+        setState(() {
+          // 달력 재렌더링
+          _focusedDay = _selectedDay!;
+        });
+      }
     }
   }
 
