@@ -23,7 +23,7 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
   late final WalkController _controller;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
-  CalendarFormat _calendarFormat = CalendarFormat.month;
+  CalendarFormat _calendarFormat = CalendarFormat.twoWeeks; // 2週間表示
   String? _selectedPetFilter; // 펫 필터
   
   // 스크롤 관련 변수
@@ -145,6 +145,7 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
                       selectedDayPredicate: (day) =>
                           isSameDay(_selectedDay, day),
                       calendarFormat: _calendarFormat,
+                      startingDayOfWeek: StartingDayOfWeek.sunday, // 日曜日始まり
                       eventLoader: (day) {
                         final events = WalkCalendarDataHelper.getEventsForDay(
                           day,
@@ -180,21 +181,36 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
                         dowBuilder: (context, day) {
                           const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
                           final weekdayText = weekdays[day.weekday % 7];
-                          final isWeekend =
-                              day.weekday == DateTime.sunday ||
-                              day.weekday == DateTime.saturday;
+                          
+                          // 日曜日は赤色、土曜日は青色
+                          Color textColor = AppColors.textPrimary;
+                          if (day.weekday == DateTime.sunday) {
+                            textColor = AppColors.pointRed;
+                          } else if (day.weekday == DateTime.saturday) {
+                            textColor = AppColors.pointBlue;
+                          }
 
                           return Center(
                             child: Text(
                               weekdayText,
                               style: AppTextStyles.bodySmall.copyWith(
                                 fontWeight: FontWeight.w600,
-                                color: isWeekend
-                                    ? AppColors.pointPink
-                                    : AppColors.textPrimary,
+                                color: textColor,
                               ),
                             ),
                           );
+                        },
+                        // 土曜日の日付を青色に設定
+                        defaultBuilder: (context, day, focusedDay) {
+                          if (day.weekday == DateTime.saturday) {
+                            return Center(
+                              child: Text(
+                                '${day.day}',
+                                style: const TextStyle(color: AppColors.pointBlue),
+                              ),
+                            );
+                          }
+                          return null;
                         },
                         markerBuilder: (context, date, events) {
                           if (events.isEmpty) return null;
@@ -220,7 +236,7 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
                           shape: BoxShape.circle,
                         ),
                         weekendTextStyle: const TextStyle(
-                          color: AppColors.pointPink,
+                          color: AppColors.pointRed, // 日曜日は赤色
                         ),
                         outsideDaysVisible: false,
                       ),
@@ -230,7 +246,7 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
                         ),
                         weekendStyle: AppTextStyles.bodySmall.copyWith(
                           fontWeight: FontWeight.w600,
-                          color: AppColors.pointPink,
+                          color: AppColors.pointRed, // 日曜日は赤色
                         ),
                       ),
                     ),
@@ -266,11 +282,11 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
       onToday: _goToToday,
       onFormatToggle: () {
         setState(() {
-          _calendarFormat = _calendarFormat == CalendarFormat.month
-              ? CalendarFormat.twoWeeks
-              : _calendarFormat == CalendarFormat.twoWeeks
+          _calendarFormat = _calendarFormat == CalendarFormat.twoWeeks
               ? CalendarFormat.week
-              : CalendarFormat.month;
+              : _calendarFormat == CalendarFormat.week
+              ? CalendarFormat.month
+              : CalendarFormat.twoWeeks;
         });
       },
       calendarFormat: _calendarFormat,
@@ -650,3 +666,4 @@ class _WalkCalendarScreenState extends ConsumerState<WalkCalendarScreen> {
     context.push('/walk/detail', extra: walkRecord);
   }
 }
+
