@@ -307,13 +307,26 @@ class AiChatNotifier extends _$AiChatNotifier {
   Future<void> sendMessage(String content) async {
     if (content.trim().isEmpty) return;
 
-    LoggerService.debug('📤 メッセージ送信開始: "$content"');
-    LoggerService.debug(
-      '   - selectedPet: ${state.selectedPet?.name ?? "一般相談"}',
-    );
-    LoggerService.debug(
-      '   - selectedCategory: ${state.selectedCategory?.name ?? "未選択"}',
-    );
+    LoggerService.debug('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    LoggerService.debug('📤 [AI Chat] ユーザーメッセージ送信開始');
+    LoggerService.debug('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    LoggerService.debug('👤 ユーザー質問: "$content"');
+
+    // ✅ 펫이 선택되지 않은 상태에서 메시지를 보내면 자동으로 일반 상담으로 처리
+    if (!state.hasPetSelected) {
+      LoggerService.debug('🔄 ペット未選択 → 自動的に一般相談モードに切り替え');
+      selectPet(null); // 일반 상담 선택
+
+      // selectPet이 state를 업데이트할 시간을 주기 위해 짧은 지연 추가
+      await Future.delayed(const Duration(milliseconds: 100));
+      LoggerService.debug('✅ 一般相談モードに設定完了');
+    }
+
+    LoggerService.debug('📊 現在の状態:');
+    LoggerService.debug('   - ペット: ${state.selectedPet?.name ?? "一般相談"}');
+    LoggerService.debug('   - カテゴリ: ${state.selectedCategory?.name ?? "未選択"}');
+    LoggerService.debug('   - hasPetSelected: ${state.hasPetSelected}');
+    LoggerService.debug('   - hasCategorySelected: ${state.hasCategorySelected}');
 
     final useCase = ref.read(sendMessageUseCaseProvider);
 
@@ -326,10 +339,16 @@ class AiChatNotifier extends _$AiChatNotifier {
       petName: state.selectedPet?.name,
     );
 
-    LoggerService.debug('👤 ユーザーメッセージ作成: ID=${userMessage.id}');
+    LoggerService.debug('');
+    LoggerService.debug('🔨 ユーザーメッセージエンティティ作成:');
+    LoggerService.debug('   - ID: ${userMessage.id}');
+    LoggerService.debug('   - 内容: "${userMessage.content}"');
+    LoggerService.debug('   - ペットID: ${userMessage.petId ?? "なし"}');
 
     // 사용자 메시지를 데이터베이스에 저장
     try {
+      LoggerService.debug('');
+      LoggerService.debug('💾 データベースに保存中...');
       await LocalStorageService.instance.ai.saveChatMessage(
         conversationId: _getCurrentConversationId(),
         message: content.trim(),
@@ -341,12 +360,14 @@ class AiChatNotifier extends _$AiChatNotifier {
           'categoryName': state.selectedCategory?.name,
         },
       );
+      LoggerService.debug('✅ データベース保存成功');
     } catch (e) {
-      LoggerService.debug('사용자 메시지 저장 실패: $e');
+      LoggerService.debug('❌ データベース保存失敗: $e');
     }
 
     // 사용자 메시지 추가
-    LoggerService.debug('💬 ユーザーメッセージをstateに追加中...');
+    LoggerService.debug('');
+    LoggerService.debug('📝 UI状態に追加中...');
     final userMessageResult = AiChatStateManager.updateMessageExchange(
       currentState: state,
       userMessage: userMessage,
@@ -355,9 +376,10 @@ class AiChatNotifier extends _$AiChatNotifier {
 
     if (userMessageResult.isSuccess) {
       state = userMessageResult.dataOrNull!;
-      LoggerService.debug('✅ ユーザーメッセージ追加完了、isTyping=true');
+      LoggerService.debug('✅ UI状態更新成功 (メッセージ数: ${state.messages.length}件)');
+      LoggerService.debug('✅ タイピングインジケーター表示開始');
     } else {
-      LoggerService.debug('❌ ユーザーメッセージ追加失敗: ${userMessageResult.error}');
+      LoggerService.debug('❌ UI状態更新失敗: ${userMessageResult.error}');
     }
 
     // 날씨 및 산책 정보 가져오기
@@ -365,6 +387,8 @@ class AiChatNotifier extends _$AiChatNotifier {
     String? walkGuide;
 
     try {
+      LoggerService.debug('');
+      LoggerService.debug('🌤️ コンテキスト情報収集中...');
       final dashboardAsync = ref.read(homeDashboardProvider);
       if (dashboardAsync.hasValue && dashboardAsync.value != null) {
         final dashboard = dashboardAsync.value!;
@@ -374,10 +398,10 @@ class AiChatNotifier extends _$AiChatNotifier {
         weatherAdvice = weather.dogWalkingRecommendation;
         if (weatherAdvice.length > 50) {
           LoggerService.debug(
-            '🌤️ 天気アドバイス取得: ${weatherAdvice.substring(0, 50)}...',
+            '   ✓ 天気アドバイス: ${weatherAdvice.substring(0, 50)}...',
           );
         } else {
-          LoggerService.debug('🌤️ 天気アドバイス取得: $weatherAdvice');
+          LoggerService.debug('   ✓ 天気アドバイス: $weatherAdvice');
         }
 
         // 산책 가이드 (펫이 선택되어 있을 때만)
@@ -391,35 +415,60 @@ class AiChatNotifier extends _$AiChatNotifier {
 
           walkGuide = recommendationService.generateShortGuide(recommendation);
           if (walkGuide.length > 50) {
-            LoggerService.debug('🐕 散歩ガイド生成: ${walkGuide.substring(0, 50)}...');
+            LoggerService.debug('   ✓ 散歩ガイド: ${walkGuide.substring(0, 50)}...');
           } else {
-            LoggerService.debug('🐕 散歩ガイド生成: $walkGuide');
+            LoggerService.debug('   ✓ 散歩ガイド: $walkGuide');
           }
         }
+      } else {
+        LoggerService.debug('   ⚠️ 天気情報なし');
       }
     } catch (e) {
-      LoggerService.debug('❌ 날씨/산책 정보 가져오기 실패: $e');
+      LoggerService.debug('   ❌ コンテキスト情報収集失敗: $e');
     }
 
+    LoggerService.debug('');
     LoggerService.debug('🤖 AI API呼び出し開始...');
+    LoggerService.debug('   - エンドポイント: callWithPetContext');
+    LoggerService.debug('   - 質問内容: "${content.trim()}"');
+    LoggerService.debug('   - ペットコンテキスト: ${state.selectedPet != null ? "あり (${state.selectedPet!.name})" : "なし"}');
+    LoggerService.debug('   - 天気情報: ${weatherAdvice != null ? "あり" : "なし"}');
+    LoggerService.debug('   - 散歩ガイド: ${walkGuide != null ? "あり" : "なし"}');
+
     final result = await useCase.callWithPetContext(
       content.trim(),
       petContext: state.selectedPet,
       weatherAdvice: weatherAdvice,
       walkGuide: walkGuide,
     );
-    LoggerService.debug('🤖 AI API呼び出し完了: ${result.isSuccess ? "成功" : "失敗"}');
+
+    LoggerService.debug('');
+    LoggerService.debug('🤖 AI API呼び出し結果: ${result.isSuccess ? "✅ 成功" : "❌ 失敗"}');
+    if (!result.isSuccess) {
+      LoggerService.debug('   エラー: ${result.error}');
+    }
 
     if (result.isSuccess && result.dataOrNull != null) {
-      LoggerService.debug(
-        '🤖 AI応答受信: ${result.dataOrNull!.content.substring(0, 50)}...',
-      );
+      final aiResponse = result.dataOrNull!;
+      final responsePreview = aiResponse.content.length > 100
+          ? '${aiResponse.content.substring(0, 100)}...'
+          : aiResponse.content;
+
+      LoggerService.debug('');
+      LoggerService.debug('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      LoggerService.debug('🤖 [AI Chat] AI応答受信完了');
+      LoggerService.debug('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      LoggerService.debug('🤖 AI応答内容: "$responsePreview"');
+      LoggerService.debug('   - 応答ID: ${aiResponse.id}');
+      LoggerService.debug('   - 応答長さ: ${aiResponse.content.length}文字');
 
       // AI 응답을 데이터베이스에 저장
       try {
+        LoggerService.debug('');
+        LoggerService.debug('💾 AI応答をデータベースに保存中...');
         await LocalStorageService.instance.ai.saveChatMessage(
           conversationId: _getCurrentConversationId(),
-          message: result.dataOrNull!.content,
+          message: aiResponse.content,
           isUser: false,
           metadata: {
             'petId': state.selectedPet?.id,
@@ -430,25 +479,34 @@ class AiChatNotifier extends _$AiChatNotifier {
             'walkGuide': walkGuide,
           },
         );
-        LoggerService.debug('💾 AI応答をDBに保存完了');
+        LoggerService.debug('✅ データベース保存成功');
       } catch (e) {
-        LoggerService.debug('❌ AI応答保存失敗: $e');
+        LoggerService.debug('❌ データベース保存失敗: $e');
       }
 
       // AI 응답 추가
-      LoggerService.debug('💬 AI応答をstateに追加中...');
+      LoggerService.debug('');
+      LoggerService.debug('📝 UI状態に追加中...');
       final assistantMessageResult = AiChatStateManager.updateMessageExchange(
         currentState: state,
-        assistantMessage: result.dataOrNull!,
+        assistantMessage: aiResponse,
         isTyping: false,
       );
 
       if (assistantMessageResult.isSuccess) {
         state = assistantMessageResult.dataOrNull!;
-        LoggerService.debug('✅ AI応答追加完了、isTyping=false');
-        LoggerService.debug('📊 現在のメッセージ総数: ${state.messages.length}件');
+        LoggerService.debug('✅ UI状態更新成功 (メッセージ数: ${state.messages.length}件)');
+        LoggerService.debug('✅ タイピングインジケーター非表示');
+        LoggerService.debug('');
+        LoggerService.debug('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        LoggerService.debug('✅ [AI Chat] メッセージ送受信完了');
+        LoggerService.debug('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
       } else {
-        LoggerService.debug('❌ AI応答追加失敗: ${assistantMessageResult.error}');
+        LoggerService.debug('❌ UI状態更新失敗: ${assistantMessageResult.error}');
+        LoggerService.debug('');
+        LoggerService.debug('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        LoggerService.debug('❌ [AI Chat] メッセージ送信失敗 (UI更新エラー)');
+        LoggerService.debug('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
         state =
             AiChatStateManager.setErrorState(
               currentState: state,
@@ -460,7 +518,12 @@ class AiChatNotifier extends _$AiChatNotifier {
             state;
       }
     } else {
-      LoggerService.debug('❌ AI API呼び出し失敗: ${result.error}');
+      LoggerService.debug('');
+      LoggerService.debug('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      LoggerService.debug('❌ [AI Chat] AI API呼び出し失敗');
+      LoggerService.debug('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      LoggerService.debug('❌ エラー詳細: ${result.error}');
+      LoggerService.debug('');
       state =
           AiChatStateManager.setErrorState(
             currentState: state,

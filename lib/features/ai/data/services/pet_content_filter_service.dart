@@ -114,7 +114,7 @@ class PetContentFilterService {
         ],
         'max_completion_tokens': AiApiConstants
             .contentFilterMaxTokens, // ✅ max_tokens → max_completion_tokens
-        'temperature': AiApiConstants.contentFilterTemperature,
+        // ✅ temperature는 모델 기본값(1.0) 사용 - 명시적으로 설정하지 않음
       },
     );
 

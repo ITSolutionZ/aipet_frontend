@@ -8,7 +8,7 @@ library;
 class AiApiConstants {
   // OpenAI API 설정
   static const String openaiBaseUrl = 'https://api.openai.com/v1';
-  static const String openaiModel = 'gpt-5';
+  static const String openaiModel = 'gpt-4o'; // ✅ gpt-4o 모델로 변경
   static const int openaiMaxTokens = 1000;
   static const double openaiTemperature = 0.7;
 

@@ -1,13 +1,10 @@
 import 'package:aipet_frontend/app/config/app_config.dart';
-import 'package:aipet_frontend/app/services/unified_error_handler.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 
 import '../../domain/domain.dart';
-import 'pet_content_filter_service.dart';
 
 /// OpenAI API와 통신하는 서비스
 class OpenAIService extends BaseLoggingService {
-  final PetContentFilterService _contentFilter = PetContentFilterService();
   final AiHttpClientService _httpClient;
 
   OpenAIService({AiHttpClientService? httpClient})
@@ -27,40 +24,10 @@ class OpenAIService extends BaseLoggingService {
       return Result.failure('OpenAI API 키가 설정되지 않았습니다');
     }
 
-    // ペット関連コンテンツ検証 (펫 컨텍스트가 있으면 스킵)
-    if (petContext == null) {
-      try {
-        final validationResult = await _contentFilter.validatePetContent(
-          message,
-        );
-        if (!validationResult.isValid) {
-          logInfo(
-            'Non-pet related content detected: ${validationResult.reason}',
-          );
-          return Result.success('''こんにちは！私はペット専門のAIアシスタントです。🐶🐱
-
-${_translateReasonToJapanese(validationResult.reason)}
-
-以下のような内容についてご質問ください：
-• ペットの健康と病気について
-• フードと栄養管理
-• 行動矯正とトレーニング
-• グルーミングとケア
-• ペット用品と環境
-• 保護と譲渡相談
-
-具体的な状況を教えていただければ、より正確なサポートを提供できます！😊''');
-        }
-      } catch (e) {
-        logError('Content filter validation failed: $e');
-        // 통합 에러 핸들러로 에러 처리
-        await UnifiedErrorHandler.handleUnifiedError(
-          e,
-          context: {'operation': 'content_filter_validation'},
-        );
-        // 컨텐츠 필터링 실패 시에도 계속 진행
-      }
-    }
+    // ✅ Content Filter 비활성화: AI 채팅 화면에 접근한 사용자는 펫 관련 질문 의도가 있음
+    // ペット関連コンテンツ検証은 사용자 경험을 위해 비활성화
+    // 만약 펫 관련 없는 질문이 들어오면 AI가 시스템 프롬프트에 따라 적절히 응답함
+    logInfo('Content filter skipped for better user experience');
 
     return _httpClient.executeWithRetry(() async {
       // 🪙 토큰 사용량 사전 체크
@@ -90,12 +57,13 @@ ${_translateReasonToJapanese(validationResult.reason)}
           ],
           'max_completion_tokens': AiApiConstants
               .openaiMaxTokens, // ✅ max_tokens → max_completion_tokens
-          'temperature': AiApiConstants.openaiTemperature,
+          // ✅ temperature는 모델 기본값(1.0) 사용 - gpt-4o-mini는 기본값만 지원
         },
       );
 
       if (!response.isSuccess) {
-        return Result.failure(response.message);
+        logError('OpenAI API call failed: ${response.message}');
+        return Result.failure(response.message ?? 'Unknown error');
       }
 
       final responseData = response.dataOrNull!;
@@ -145,26 +113,6 @@ ${_translateReasonToJapanese(validationResult.reason)}
           : '';
       return Result.failure('No valid response from OpenAI API$errorInfo');
     });
-  }
-
-  /// 検証理由を日本語に翻訳 (필터 서비스와 동일한 메시지)
-  String _translateReasonToJapanese(String reason) {
-    switch (reason) {
-      case 'ペットと関連していない話題です':
-        return 'ペットと関連していない話題です';
-      case 'ペットに関連する内容を含めてご質問ください':
-        return 'ペットに関連する内容を含めてご質問ください';
-      case 'ペットに関連していないご質問です':
-        return 'ペットに関連していないご質問です';
-      case 'ペットに関連する内容をより具体的にご質問ください':
-        return 'ペットに関連する内容をより具体的にご質問ください';
-      case 'ペット関連のご質問です':
-        return 'ペット関連のご質問です';
-      case '内容が短すぎます。ペット関連の具体的な質問を入力してください':
-        return '内容が短すぎます。ペット関連の具体的な質問を入力してください';
-      default:
-        return 'ペットに関連する内容を含めてご質問ください';
-    }
   }
 
   /// システムプロンプトを構築
