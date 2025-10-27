@@ -30,8 +30,7 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
   DateTime? _selectedDay;
   CalendarFormat _calendarFormat = CalendarFormat.month; // 기본: 1개월 표시
 
-  // ビューモード: true = カテゴリ別, false = 日付別
-  bool _isCategoryView = true;
+  // ビューモード削除 (常にボトムシート方式)
 
   // 選択されたペットID (null = 全てのペット)
   String? _selectedPetId;
@@ -62,23 +61,10 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
       appBar: SoftGradientAppBar(
         title: '',
         actions: [
-          // ビュー切り替えボタン
-          IconButton(
-            onPressed: () {
-              setState(() {
-                _isCategoryView = !_isCategoryView;
-              });
-            },
-            icon: Icon(
-              _isCategoryView ? Icons.calendar_today : Icons.category,
-              color: Colors.white,
-            ),
-            tooltip: _isCategoryView ? '日付別表示' : 'カテゴリ別表示',
-          ),
           IconButton(
             onPressed: _openAlarmSetup,
             icon: const Icon(Icons.alarm_add, color: Colors.white),
-            tooltip: '알람 설정',
+            tooltip: '予定を追加',
           ),
         ],
       ),
@@ -209,8 +195,8 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
           ),
           const SizedBox(height: 8.0),
 
-          // ペットタブ (カテゴリビュー時のみ表示)
-          if (_isCategoryView) _buildPetTabs(),
+          // ペットタブ (常に表示)
+          _buildPetTabs(),
 
           // イベント統計サマリー (タップでボトムシート表示)
           _buildEventsSummarySection(),
@@ -269,15 +255,27 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
     }
   }
 
-  /// 특정 날짜의 이벤트 가져오기
+  /// 특정 날짜의 이벤트 가져오기 (펫 필터링 적용)
   List<CalendarEventEntity> _getEventsForDay(DateTime day) {
-    return _events[DateTime(day.year, day.month, day.day)] ?? [];
+    final allEvents = _events[DateTime(day.year, day.month, day.day)] ?? [];
+    
+    // 펫 필터링 적용
+    if (_selectedPetId == null) {
+      return allEvents; // 전체 보기
+    } else {
+      return allEvents.where((event) => event.petId == _selectedPetId).toList();
+    }
   }
 
   /// イベント統計サマリーセクション (タップでボトムシート表示)
   Widget _buildEventsSummarySection() {
     final selectedDate = _selectedDay ?? DateTime.now();
     final eventsForDay = _getEventsForDay(selectedDate);
+
+    LoggerService.debug(
+      '📅 Scheduling: 選択日付=${selectedDate.month}月${selectedDate.day}日, '
+      '選択ペット=$_selectedPetId, イベント数=${eventsForDay.length}件',
+    );
 
     // 데이터가 없으면 empty 위젯 표시
     if (eventsForDay.isEmpty) {
@@ -295,7 +293,9 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
               const SizedBox(height: 16),
               Text(
                 '予定がありません',
-                style: AppFonts.titleMedium.copyWith(color: AppColors.pointGray),
+                style: AppFonts.titleMedium.copyWith(
+                  color: AppColors.pointGray,
+                ),
               ),
             ],
           ),
@@ -351,7 +351,7 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
   /// イベントボトムシート表示
   void _showEventsBottomSheet(DateTime selectedDate) {
     final eventsForDay = _getEventsForDay(selectedDate);
-    
+
     if (eventsForDay.isEmpty) return;
 
     // 바텀시트 열릴 때 캘린더를 2주 포맷으로 변경
@@ -595,8 +595,8 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
       data: (pets) {
         if (pets.isEmpty) return const SizedBox.shrink();
 
-        // ペットが1匹の場合はタブを表示しない
-        if (pets.length == 1) return const SizedBox.shrink();
+        // ペットが1匹でも「全て」タブは表示
+        LoggerService.debug('🐾 ペットタブ: ${pets.length}匹のペット');
 
         return Container(
           margin: const EdgeInsets.symmetric(
@@ -664,6 +664,9 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
       children: [
         GestureDetector(
           onTap: () {
+            LoggerService.debug(
+              '🐾 ペット選択: ${petId == null ? "全て" : "ID=$petId (${label})"}',
+            );
             setState(() {
               _selectedPetId = petId;
             });
