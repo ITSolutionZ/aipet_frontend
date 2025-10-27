@@ -974,18 +974,24 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
       }
 
       if (mounted) {
-        // 미리 저장한 scaffoldMessenger 사용
-        scaffoldMessenger.showSnackBar(
-          SnackBar(
-            content: Text(
-              widget.initialEvent != null ? 'イベントが更新されました' : 'イベントが保存されました',
-            ),
-            backgroundColor: AppColors.pointGreen,
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-        // 미리 저장한 navigator 사용
+        // 먼저 화면을 닫고 (SnackBar 애니메이션 충돌 방지)
         navigator.pop(event);
+        
+        // 화면이 닫힌 후 SnackBar 표시 (부모 화면에서)
+        Future.microtask(() {
+          if (mounted) {
+            scaffoldMessenger.showSnackBar(
+              SnackBar(
+                content: Text(
+                  widget.initialEvent != null ? 'イベントが更新されました' : 'イベントが保存されました',
+                ),
+                backgroundColor: AppColors.pointGreen,
+                behavior: SnackBarBehavior.floating,
+                duration: const Duration(seconds: 2),
+              ),
+            );
+          }
+        });
       }
     } catch (e) {
       LoggerService.debug('❌ イベント保存エラー: $e');
