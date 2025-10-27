@@ -158,15 +158,19 @@ class AiChatNotifier extends _$AiChatNotifier {
     final useCase = ref.read(selectPetUseCaseProvider);
     final result = useCase(pet);
 
-    if (result.isSuccess && result.dataOrNull != null && pet != null) {
+    if (result.isSuccess && result.dataOrNull != null) {
+      // pet이 null이어도 (일반 상담) 메시지 생성
       final updateResult = AiChatStateManager.updatePetSelection(
         currentState: state,
-        pet: pet,
+        pet: pet, // null 허용
         newMessages: result.dataOrNull!,
       );
 
       if (updateResult.isSuccess) {
         state = updateResult.dataOrNull!;
+        LoggerService.debug(
+          '✅ ペット選択完了: ${pet == null ? "一般相談" : pet.name}',
+        );
         // 상태 검증 및 정리
         final validationResult = AiChatStateManager.validateAndCleanState(
           state,
