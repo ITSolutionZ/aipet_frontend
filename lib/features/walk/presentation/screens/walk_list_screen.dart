@@ -3,12 +3,14 @@ import 'dart:async';
 import 'package:aipet_frontend/app/widgets/widgets.dart';
 import 'package:aipet_frontend/features/walk/data/providers/walk_providers.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/pet_info.dart';
+import 'package:aipet_frontend/features/walk/domain/entities/walk_location_entity.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/walk_record_entity.dart';
 import 'package:aipet_frontend/features/walk/presentation/controllers/walk_controller.dart';
 import 'package:aipet_frontend/features/walk/presentation/widgets/walk_widgets.dart';
 import 'package:aipet_frontend/shared/shared.dart' hide MapWidget;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../features/pet_profile/data/providers/pet_profile_providers.dart';
@@ -28,6 +30,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
   final PageController _pageController = PageController();
   bool _isPaused = false; // 일시정지 상태
   Timer? _timer; // 타이머
+  Timer? _locationTimer; // 위치 추적 타이머
   final ValueNotifier<int> _elapsedSecondsNotifier = ValueNotifier<int>(0); // ✅ ValueNotifier로 변경
   final List<Map<String, dynamic>> _petActivities = []; // 펫 활동 기록 (똥, 오줌)
 
@@ -41,6 +44,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
   @override
   void dispose() {
     _timer?.cancel();
+    _locationTimer?.cancel(); // 위치 추적 타이머 정리
     _pageController.dispose();
     _elapsedSecondsNotifier.dispose(); // ✅ ValueNotifier dispose
     super.dispose();
@@ -81,18 +85,21 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
     final walkRecords = ref.watch(walkRecordsProvider);
     final currentWalk = ref.watch(currentWalkProvider);
 
-    // 산책 시작 시 타이머 시작
+    // 산책 시작 시 타이머 및 위치 추적 시작
     if (currentWalk != null && _timer == null) {
       _elapsedSecondsNotifier.value = WalkListTimerHelper.calculateElapsedSeconds(
         currentWalk.startTime,
       );
       _startTimer();
+      _startLocationTracking(); // ✅ 위치 추적 시작
     }
 
-    // 산책 종료 시 타이머 정지
+    // 산책 종료 시 타이머 및 위치 추적 정지
     if (currentWalk == null && _timer != null) {
       WalkListTimerHelper.stopTimer(_timer);
       _timer = null;
+      _locationTimer?.cancel(); // ✅ 위치 추적 중지
+      _locationTimer = null;
       _elapsedSecondsNotifier.value = 0;
       _isPaused = false;
     }
@@ -269,6 +276,46 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
     );
   }
 
+  /// 위치 추적 시작
+  void _startLocationTracking() {
+    LoggerService.debug('📍 위치 추적 시작');
+    _locationTimer = Timer.periodic(const Duration(seconds: 10), (timer) async {
+      if (!mounted || _isPaused) return;
+
+      final currentWalk = ref.read(currentWalkProvider);
+      if (currentWalk == null) {
+        timer.cancel();
+        return;
+      }
+
+      try {
+        // 현재 위치 가져오기
+        final position = await Geolocator.getCurrentPosition(
+          locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.high,
+            distanceFilter: 5, // 5m 이상 이동 시에만 업데이트
+          ),
+        ).timeout(const Duration(seconds: 5));
+
+        final location = WalkLocation(
+          latitude: position.latitude,
+          longitude: position.longitude,
+          timestamp: DateTime.now(),
+          accuracy: position.accuracy,
+        );
+
+        LoggerService.debug(
+          '📍 위치 추가: lat=${location.latitude.toStringAsFixed(6)}, lng=${location.longitude.toStringAsFixed(6)}',
+        );
+
+        // route에 위치 추가
+        _controller.addLocationToCurrentWalk(location);
+      } catch (e) {
+        LoggerService.debug('❌ 위치 가져오기 실패: $e');
+      }
+    });
+  }
+
   /// 산책 일시정지/재시작
   void _pauseWalk() {
     setState(() {
@@ -277,9 +324,12 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
 
     if (_isPaused) {
       // 위치 추적 중지
+      _locationTimer?.cancel();
+      _locationTimer = null;
       ref.read(locationTrackingProvider.notifier).stopTracking();
     } else {
       // 위치 추적 재개
+      _startLocationTracking();
       ref.read(locationTrackingProvider.notifier).startTracking();
     }
   }
