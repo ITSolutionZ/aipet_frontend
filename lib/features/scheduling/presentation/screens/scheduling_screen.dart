@@ -28,7 +28,7 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
   late ScrollController _scrollController;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
-  CalendarFormat _calendarFormat = CalendarFormat.twoWeeks; // 2週間表示
+  CalendarFormat _calendarFormat = CalendarFormat.month; // 기본: 1개월 표시
 
   // ビューモード: true = カテゴリ別, false = 日付別
   bool _isCategoryView = true;
@@ -191,6 +191,8 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
                     _selectedDay = selectedDay;
                     _focusedDay = focusedDay;
                   });
+                  // 날짜 선택 시 바텀시트 표시
+                  _showEventsBottomSheet(selectedDay);
                 }
               },
               onFormatChanged: (format) {
@@ -210,17 +212,8 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
           // ペットタブ (カテゴリビュー時のみ表示)
           if (_isCategoryView) _buildPetTabs(),
 
-          // イベントリスト
-          Expanded(
-            child: Container(
-              color: AppColors.pointOffWhite,
-              child: _isCategoryView
-                  ? _buildCategoryView()
-                  : (_selectedDay == null
-                        ? _buildEmptyState()
-                        : _buildEventsList()),
-            ),
-          ),
+          // イベント統計サマリー (タップでボトムシート表示)
+          _buildEventsSummarySection(),
         ],
       ),
       floatingActionButton: IconButton(
@@ -279,6 +272,197 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
   /// 특정 날짜의 이벤트 가져오기
   List<CalendarEventEntity> _getEventsForDay(DateTime day) {
     return _events[DateTime(day.year, day.month, day.day)] ?? [];
+  }
+
+  /// イベント統計サマリーセクション (タップでボトムシート表示)
+  Widget _buildEventsSummarySection() {
+    final selectedDate = _selectedDay ?? DateTime.now();
+    final eventsForDay = _getEventsForDay(selectedDate);
+
+    // 데이터가 없으면 empty 위젯 표시
+    if (eventsForDay.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.event_note,
+                size: 64,
+                color: AppColors.pointGray.withValues(alpha: 0.5),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                '予定がありません',
+                style: AppFonts.titleMedium.copyWith(color: AppColors.pointGray),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    // 통계만 표시
+    return GestureDetector(
+      onTap: () => _showEventsBottomSheet(selectedDate),
+      child: Container(
+        margin: const EdgeInsets.all(AppSpacing.md),
+        padding: const EdgeInsets.all(AppSpacing.md),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(AppSpacing.md),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  isSameDay(selectedDate, DateTime.now())
+                      ? '今日の予定 (${eventsForDay.length}件)'
+                      : '${selectedDate.month}月${selectedDate.day}日の予定 (${eventsForDay.length}件)',
+                  style: AppTextStyles.titleMedium.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.xs),
+                const Icon(
+                  Icons.keyboard_arrow_up,
+                  color: AppColors.pointBrown,
+                  size: 20,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// イベントボトムシート表示
+  void _showEventsBottomSheet(DateTime selectedDate) {
+    final eventsForDay = _getEventsForDay(selectedDate);
+    
+    if (eventsForDay.isEmpty) return;
+
+    // 바텀시트 열릴 때 캘린더를 2주 포맷으로 변경
+    if (_calendarFormat != CalendarFormat.twoWeeks) {
+      setState(() {
+        _calendarFormat = CalendarFormat.twoWeeks;
+      });
+    }
+
+    // 시간순으로 정렬
+    final sortedEvents = [...eventsForDay]
+      ..sort((a, b) {
+        if (a.isAllDay == true && b.isAllDay != true) return -1;
+        if (a.isAllDay != true && b.isAllDay == true) return 1;
+        return a.startTime.compareTo(b.startTime);
+      });
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.6,
+        minChildSize: 0.3,
+        maxChildSize: 0.9,
+        builder: (context, scrollController) {
+          return Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(AppSpacing.lg),
+              ),
+            ),
+            child: Column(
+              children: [
+                // ドラッグハンドル
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: AppColors.pointGray.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                // ヘッダー
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                    vertical: AppSpacing.sm,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        isSameDay(selectedDate, DateTime.now())
+                            ? '今日の予定 (${sortedEvents.length}件)'
+                            : '${selectedDate.month}月${selectedDate.day}日の予定 (${sortedEvents.length}件)',
+                        style: AppTextStyles.titleMedium.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () => Navigator.pop(context),
+                        icon: const Icon(Icons.close),
+                        color: AppColors.pointGray,
+                      ),
+                    ],
+                  ),
+                ),
+                const Divider(height: 1),
+                // イベントリスト
+                Expanded(
+                  child: ListView.builder(
+                    controller: scrollController,
+                    padding: const EdgeInsets.all(16),
+                    itemCount: sortedEvents.length,
+                    itemBuilder: (context, index) {
+                      final event = sortedEvents[index];
+                      return CalendarEventItem(
+                        event: event,
+                        onTap: () {
+                          Navigator.pop(context);
+                          _showEventDetail(event);
+                        },
+                        onEdit: () {
+                          Navigator.pop(context);
+                          _showEditEventDialog(event);
+                        },
+                        onDelete: () {
+                          Navigator.pop(context);
+                          _showDeleteEventDialog(event);
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    ).then((_) {
+      // 바텀시트가 닫힐 때 캘린더를 1개월 포맷으로 변경
+      if (mounted && _calendarFormat != CalendarFormat.month) {
+        setState(() {
+          _calendarFormat = CalendarFormat.month;
+        });
+      }
+    });
   }
 
   /// 선택된 날짜가 없을 때 빈 상태 표시
