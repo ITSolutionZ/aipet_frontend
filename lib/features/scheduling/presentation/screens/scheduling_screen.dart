@@ -101,9 +101,26 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
               locale: 'ja_JP',
               calendarStyle: CalendarStyle(
                 outsideDaysVisible: false,
-                weekendTextStyle: const TextStyle(color: AppColors.pointRed), // 日曜日は赤色
-                holidayTextStyle: const TextStyle(color: AppColors.pointRed),
-                defaultTextStyle: const TextStyle(color: AppColors.pointDark),
+                weekendTextStyle: const TextStyle(
+                  color: AppColors.pointRed,
+                  fontSize: 13, // 날짜 폰트 크기 축소
+                ), // 日曜日は赤色
+                holidayTextStyle: const TextStyle(
+                  color: AppColors.pointRed,
+                  fontSize: 13, // 날짜 폰트 크기 축소
+                ),
+                defaultTextStyle: const TextStyle(
+                  color: AppColors.pointDark,
+                  fontSize: 13, // 날짜 폰트 크기 축소
+                ),
+                todayTextStyle: const TextStyle(
+                  fontSize: 13, // 오늘 날짜 폰트 크기 축소
+                  color: Colors.white,
+                ),
+                selectedTextStyle: const TextStyle(
+                  fontSize: 13, // 선택된 날짜 폰트 크기 축소
+                  color: Colors.white,
+                ),
                 selectedDecoration: const BoxDecoration(
                   color: AppColors.pointBrown,
                   shape: BoxShape.circle,
@@ -137,7 +154,10 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
                     return Center(
                       child: Text(
                         '${day.day}',
-                        style: const TextStyle(color: AppColors.pointBlue),
+                        style: const TextStyle(
+                          color: AppColors.pointBlue,
+                          fontSize: 13, // 날짜 폰트 크기 축소
+                        ),
                       ),
                     );
                   }
@@ -197,8 +217,8 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
               child: _isCategoryView
                   ? _buildCategoryView()
                   : (_selectedDay == null
-                      ? _buildEmptyState()
-                      : _buildEventsList()),
+                        ? _buildEmptyState()
+                        : _buildEventsList()),
             ),
           ),
         ],
@@ -229,7 +249,9 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
 
       // ✅ 각 이벤트 상세 로그
       for (final event in events) {
-        LoggerService.debug('  - ${event.title}: ${event.startTime.toString().substring(0, 10)}');
+        LoggerService.debug(
+          '  - ${event.title}: ${event.startTime.toString().substring(0, 10)}',
+        );
       }
 
       setState(() {
@@ -478,7 +500,9 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
                       ],
                     )
                   : null,
-              color: isSelected ? null : AppColors.pointGray.withValues(alpha: 0.1),
+              color: isSelected
+                  ? null
+                  : AppColors.pointGray.withValues(alpha: 0.1),
               shape: BoxShape.circle,
               border: Border.all(
                 color: isSelected
@@ -567,8 +591,9 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
                 return Icon(
                   pet.type == 'dog' ? Icons.pets : Icons.pets_outlined,
                   size: 32,
-                  color:
-                      isSelected ? AppColors.pointBrown : AppColors.pointGray,
+                  color: isSelected
+                      ? AppColors.pointBrown
+                      : AppColors.pointGray,
                 );
               },
             ),
@@ -735,10 +760,7 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
               ),
               const SizedBox(width: 8),
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 2,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
                   color: AppColors.pointBrown.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(12),
@@ -756,12 +778,14 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
         ),
 
         // イベントリスト
-        ...events.map((event) => CalendarEventItem(
-              event: event,
-              onTap: () => _showEventDetail(event),
-              onEdit: () => _showEditEventDialog(event),
-              onDelete: () => _showDeleteEventDialog(event),
-            )),
+        ...events.map(
+          (event) => CalendarEventItem(
+            event: event,
+            onTap: () => _showEventDetail(event),
+            onEdit: () => _showEditEventDialog(event),
+            onDelete: () => _showDeleteEventDialog(event),
+          ),
+        ),
 
         const SizedBox(height: 16),
       ],
