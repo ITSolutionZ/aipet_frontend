@@ -88,7 +88,8 @@ ${_translateReasonToJapanese(validationResult.reason)}
             },
             {'role': 'user', 'content': message},
           ],
-          'max_completion_tokens': AiApiConstants.openaiMaxTokens, // ✅ max_tokens → max_completion_tokens
+          'max_completion_tokens': AiApiConstants
+              .openaiMaxTokens, // ✅ max_tokens → max_completion_tokens
           'temperature': AiApiConstants.openaiTemperature,
         },
       );
