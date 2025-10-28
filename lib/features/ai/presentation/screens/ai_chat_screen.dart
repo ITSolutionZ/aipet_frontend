@@ -1,8 +1,10 @@
-import 'package:aipet_frontend/app/router/app_router.dart';
+// ✅ 사용하지 않는 import 제거
+// import 'package:aipet_frontend/app/router/app_router.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
+
+// import 'package:go_router/go_router.dart';
 
 import '../../domain/entities/entities.dart'; // ✅ 추가
 import '../controllers/ai_chat_controller.dart';
@@ -15,15 +17,16 @@ class AiChatScreen extends ConsumerStatefulWidget {
   ConsumerState<AiChatScreen> createState() => _AiChatScreenState();
 }
 
-class _AiChatScreenState extends ConsumerState<AiChatScreen>
-    with WidgetsBindingObserver {
+class _AiChatScreenState extends ConsumerState<AiChatScreen> {
+  // ✅ WidgetsBindingObserver 제거 (백그라운드 저장 비활성화)
   final _messageController = TextEditingController();
   final _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+    // ✅ Observer 등록 제거
+    // WidgetsBinding.instance.addObserver(this);
 
     // 초기 데이터 로드
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -33,34 +36,36 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
+    // ✅ Observer 제거 코드도 삭제
+    // WidgetsBinding.instance.removeObserver(this);
     _messageController.dispose();
     _scrollController.dispose();
     super.dispose();
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
-    // 앱이 백그라운드로 갈 때 현재 채팅 저장
-    if (state == AppLifecycleState.paused) {
-      _saveCurrentChatBeforeExit();
-    }
-  }
+  // ✅ 백그라운드 자동 저장 기능 비활성화
+  // @override
+  // void didChangeAppLifecycleState(AppLifecycleState state) {
+  //   super.didChangeAppLifecycleState(state);
+  //   // 앱이 백그라운드로 갈 때 현재 채팅 저장
+  //   if (state == AppLifecycleState.paused) {
+  //     _saveCurrentChatBeforeExit();
+  //   }
+  // }
 
-  Future<void> _saveCurrentChatBeforeExit() async {
-    final chatState = ref.read(aiChatProvider);
-    if (chatState.messages.isNotEmpty) {
-      try {
-        await ref
-            .read(aiChatProvider.notifier)
-            .saveCurrentChatToHistory(isManualSave: false);
-      } catch (error) {
-        // 백그라운드 저장 실패는 로그만 남기고 UI에는 표시하지 않음
-        LoggerService.debug('백그라운드 채팅 저장 실패: $error');
-      }
-    }
-  }
+  // Future<void> _saveCurrentChatBeforeExit() async {
+  //   final chatState = ref.read(aiChatProvider);
+  //   if (chatState.messages.isNotEmpty) {
+  //     try {
+  //       await ref
+  //           .read(aiChatProvider.notifier)
+  //           .saveCurrentChatToHistory(isManualSave: false);
+  //     } catch (error) {
+  //       // 백그라운드 저장 실패는 로그만 남기고 UI에는 표시하지 않음
+  //       LoggerService.debug('백그라운드 채팅 저장 실패: $error');
+  //     }
+  //   }
+  // }
 
   void _sendMessage(String content) async {
     if (content.trim().isEmpty) return;
@@ -93,42 +98,45 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
     await ref.read(aiChatProvider.notifier).clearChatHistory();
   }
 
-  Future<void> _saveCurrentChat() async {
-    final chatState = ref.read(aiChatProvider);
-    if (chatState.messages.isEmpty) {
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('保存する会話がありません')));
-      }
-      return;
-    }
+  // ✅ 저장 기능 비활성화
+  // Future<void> _saveCurrentChat() async {
+  //   final chatState = ref.read(aiChatProvider);
+  //   if (chatState.messages.isEmpty) {
+  //     if (mounted) {
+  //       ScaffoldMessenger.of(
+  //         context,
+  //       ).showSnackBar(const SnackBar(content: Text('保存する会話がありません')));
+  //     }
+  //     return;
+  //   }
 
-    try {
-      await ref
-          .read(aiChatProvider.notifier)
-          .saveCurrentChatToHistory(isManualSave: true);
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('会話を保存しました')));
-      }
-    } catch (error) {
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('保存に失敗しました: $error')));
-      }
-    }
-  }
+  //   try {
+  //     await ref
+  //         .read(aiChatProvider.notifier)
+  //         .saveCurrentChatToHistory(isManualSave: true);
+  //     if (mounted) {
+  //       ScaffoldMessenger.of(
+  //         context,
+  //       ).showSnackBar(const SnackBar(content: Text('会話を保存しました')));
+  //     }
+  //   } catch (error) {
+  //     if (mounted) {
+  //       ScaffoldMessenger.of(
+  //         context,
+  //       ).showSnackBar(SnackBar(content: Text('保存に失敗しました: $error')));
+  //     }
+  //   }
+  // }
 
-  void _navigateToFavoriteMessages() {
-    context.push(AppRouter.aiFavoriteMessagesRoute);
-  }
+  // ✅ 즐겨찾기 화면 네비게이션 비활성화
+  // void _navigateToFavoriteMessages() {
+  //   context.push(AppRouter.aiFavoriteMessagesRoute);
+  // }
 
-  void _navigateToChatHistory() {
-    context.push(AppRouter.aiChatHistoryRoute);
-  }
+  // ✅ 히스토리 화면 네비게이션 비활성화
+  // void _navigateToChatHistory() {
+  //   context.push(AppRouter.aiChatHistoryRoute);
+  // }
 
   Widget _buildDateSeparator(DateTime date) {
     return DateSeparatorWidget(date: date);
@@ -225,7 +233,8 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
           AiMessageBubble(
             message: message,
             // ✅ 즐겨찾기 기능 비활성화
-            isFavorite: false, // chatState.favoriteMessageIds.contains(message.id),
+            isFavorite:
+                false, // chatState.favoriteMessageIds.contains(message.id),
             onFavoriteToggle: null, // (msg) async {
             //   await ref.read(aiChatProvider.notifier).toggleFavorite(msg);
             // },

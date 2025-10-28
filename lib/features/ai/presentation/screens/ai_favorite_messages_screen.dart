@@ -21,23 +21,10 @@ class _AiFavoriteMessagesScreenState
   @override
   void initState() {
     super.initState();
-    // ✅ 화면 진입 시 즐겨찾기 데이터 새로고침
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _refreshFavorites();
-    });
-  }
-
-  Future<void> _refreshFavorites() async {
-    try {
-      LoggerService.debug('⭐ 즐겨찾기 데이터 새로고침 시작...');
-
-      // ✅ Notifier의 loadFavoritesFromStorage 메서드 사용
-      await ref.read(aiChatProvider.notifier).loadFavoritesFromStorage();
-
-      LoggerService.debug('⭐ 즐겨찾기 상태 업데이트 완료');
-    } catch (e) {
-      LoggerService.debug('⭐ 즐겨찾기 새로고침 실패: $e');
-    }
+    // ✅ 즐겨찾기 새로고침 기능 비활성화
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   _refreshFavorites();
+    // });
   }
 
   @override
@@ -72,14 +59,15 @@ class _AiFavoriteMessagesScreenState
         foregroundColor: AppColors.pointBrown,
         elevation: 0,
         title: null,
-        actions: [
-          if (favoriteQAs.isNotEmpty)
-            IconButton(
-              onPressed: () => _showClearAllDialog(context, ref),
-              icon: const Icon(Icons.clear_all, color: AppColors.pointDark),
-              tooltip: '全てクリア',
-            ),
-        ],
+        // ✅ 전체 삭제 버튼 비활성화
+        // actions: [
+        //   if (favoriteQAs.isNotEmpty)
+        //     IconButton(
+        //       onPressed: () => _showClearAllDialog(context, ref),
+        //       icon: const Icon(Icons.clear_all, color: AppColors.pointDark),
+        //       tooltip: '全てクリア',
+        //     ),
+        // ],
       ),
       body: SafeArea(
         child: favoriteQAs.isEmpty
@@ -112,7 +100,7 @@ class _AiFavoriteMessagesScreenState
           buildQAAccordion: (favorite, isLast) => QAAccordionCard(
             favorite: favorite,
             isLast: isLast,
-            onDelete: () => _showDeleteDialog(favorite, ref),
+            onDelete: () {}, // ✅ 삭제 기능 비활성화
             onCopy: () => controller.copyToClipboard(favorite.answer),
             onShare: () => controller.shareQA(favorite),
           ),
@@ -121,67 +109,68 @@ class _AiFavoriteMessagesScreenState
     );
   }
 
-  void _showDeleteDialog(AiFavoriteQaEntity favorite, WidgetRef ref) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Row(
-          children: [
-            const Icon(Icons.delete, color: Colors.red),
-            const SizedBox(width: AppSpacing.sm),
-            Text(
-              'お気に入りを削除',
-              style: AppFonts.titleMedium.copyWith(color: AppColors.pointDark),
-            ),
-          ],
-        ),
-        content: Text(
-          'このお気に入りを削除しますか?',
-          style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(
-              'キャンセル',
-              style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              _deleteFavorite(favorite, ref);
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
-            ),
-            child: Text(
-              '削除する',
-              style: AppFonts.bodyMedium.copyWith(fontWeight: FontWeight.bold),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // ✅ 삭제 관련 다이얼로그 및 메서드 모두 비활성화
+  // void _showDeleteDialog(AiFavoriteQaEntity favorite, WidgetRef ref) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) => AlertDialog(
+  //       title: Row(
+  //         children: [
+  //           const Icon(Icons.delete, color: Colors.red),
+  //           const SizedBox(width: AppSpacing.sm),
+  //           Text(
+  //             'お気に入りを削除',
+  //             style: AppFonts.titleMedium.copyWith(color: AppColors.pointDark),
+  //           ),
+  //         ],
+  //       ),
+  //       content: Text(
+  //         'このお気に入りを削除しますか?',
+  //         style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
+  //       ),
+  //       actions: [
+  //         TextButton(
+  //           onPressed: () => Navigator.of(context).pop(),
+  //           child: Text(
+  //             'キャンセル',
+  //             style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
+  //           ),
+  //         ),
+  //         ElevatedButton(
+  //           onPressed: () {
+  //             Navigator.of(context).pop();
+  //             _deleteFavorite(favorite, ref);
+  //           },
+  //           style: ElevatedButton.styleFrom(
+  //             backgroundColor: Colors.red,
+  //             foregroundColor: Colors.white,
+  //           ),
+  //           child: Text(
+  //             '削除する',
+  //             style: AppFonts.bodyMedium.copyWith(fontWeight: FontWeight.bold),
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
-  void _showClearAllDialog(BuildContext context, WidgetRef ref) {
-    ConfirmationDialogComponent.showClear(
-      context: context,
-      title: 'お気に入りクリア',
-      message: '全てのお気に入りを削除しますか?\nこの操作は取り消せません。',
-      onConfirm: () => _clearAllFavorites(ref),
-    );
-  }
+  // void _showClearAllDialog(BuildContext context, WidgetRef ref) {
+  //   ConfirmationDialogComponent.showClear(
+  //     context: context,
+  //     title: 'お気に入りクリア',
+  //     message: '全てのお気に入りを削除しますか?\nこの操作は取り消せません。',
+  //     onConfirm: () => _clearAllFavorites(ref),
+  //   );
+  // }
 
-  void _deleteFavorite(AiFavoriteQaEntity favorite, WidgetRef ref) {
-    final notifier = ref.read(aiChatProvider.notifier);
-    notifier.removeFavorite(favorite.id);
-  }
+  // void _deleteFavorite(AiFavoriteQaEntity favorite, WidgetRef ref) {
+  //   final notifier = ref.read(aiChatProvider.notifier);
+  //   notifier.removeFavorite(favorite.id);
+  // }
 
-  void _clearAllFavorites(WidgetRef ref) {
-    final notifier = ref.read(aiChatProvider.notifier);
-    notifier.clearAllFavorites();
-  }
+  // void _clearAllFavorites(WidgetRef ref) {
+  //   final notifier = ref.read(aiChatProvider.notifier);
+  //   notifier.clearAllFavorites();
+  // }
 }
