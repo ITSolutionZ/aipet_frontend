@@ -1,15 +1,12 @@
 import 'package:aipet_frontend/app/config/app_config.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
-import 'package:aipet_frontend/shared/core/services/ai_http_client_service.dart';
-import 'package:aipet_frontend/shared/core/services/logger_service.dart';
-import 'package:aipet_frontend/shared/services/base_logging_service.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 
 /// 날씨 어드바이스 전용 OpenAI API 서비스
 class WeatherOpenAIService extends BaseLoggingService {
-  final AiHttpClientService _httpClient;
+  final OpenAiHttpClient _httpClient;
 
-  WeatherOpenAIService({AiHttpClientService? httpClient})
-    : _httpClient = httpClient ?? AiHttpClientService(),
+  WeatherOpenAIService({OpenAiHttpClient? httpClient})
+    : _httpClient = httpClient ?? OpenAiHttpClient(),
       super('weather_openai_service');
 
   /// 날씨 정보를 바탕으로 산책 어드바이스 생성
@@ -21,9 +18,9 @@ class WeatherOpenAIService extends BaseLoggingService {
     }
 
     try {
-      LoggerService.debug('🌤️ WeatherOpenAI: Generating weather advice...');
+      logDebug('🌤️ WeatherOpenAI: Generating weather advice...');
 
-      final response = await _httpClient.callOpenAI<Map<String, dynamic>>(
+      final response = await _httpClient.callOpenAIWithRetry(
         '/chat/completions',
         data: {
           'model': 'gpt-3.5-turbo', // 빠른 응답을 위해 gpt-3.5-turbo 사용
@@ -42,9 +39,7 @@ class WeatherOpenAIService extends BaseLoggingService {
       );
 
       if (!response.isSuccess) {
-        LoggerService.debug(
-          '❌ WeatherOpenAI: API call failed - ${response.message}',
-        );
+        logError('WeatherOpenAI: API call failed - ${response.message}');
         return Result.failure(response.message);
       }
 
@@ -63,7 +58,7 @@ class WeatherOpenAIService extends BaseLoggingService {
               'Empty response content from OpenAI API',
             );
           }
-          LoggerService.debug('✅ WeatherOpenAI: Success - $content');
+          logDebug('✅ WeatherOpenAI: Success - $content');
           return Result<String>.success(
             'Weather advice generated successfully',
             content,
@@ -73,7 +68,7 @@ class WeatherOpenAIService extends BaseLoggingService {
 
       return Result<String>.failure('No valid response from OpenAI API');
     } catch (e) {
-      LoggerService.debug('❌ WeatherOpenAI: Exception - $e');
+      logError('WeatherOpenAI: Exception - $e');
       return Result<String>.failure('OpenAI API call failed: $e');
     }
   }

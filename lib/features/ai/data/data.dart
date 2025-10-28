@@ -9,5 +9,4 @@ export 'services/ai_data_service.dart';
 // ✅ ai_dio_service.dart 제거 완료 (Shared HttpClientService로 통합)
 export 'services/ai_local_storage_service.dart';
 export 'services/local_ai_service.dart';
-export 'services/openai_service.dart';
 export 'services/pet_content_filter_service.dart';

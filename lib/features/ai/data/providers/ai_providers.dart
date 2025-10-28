@@ -3,7 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../domain/domain.dart';
 import '../repositories/ai_chat_repository_impl.dart';
 import '../repositories/ai_repository_impl.dart';
-import '../services/openai_service.dart';
+import '../services/ai_chat_openai_service.dart';
 
 part 'ai_providers.g.dart';
 
@@ -20,7 +20,7 @@ AiRepository aiRepository(Ref ref) {
 /// AI 채팅 관련 기능을 담당합니다 (메시지, 세션, 히스토리, 요약).
 @riverpod
 AiChatRepository aiChatRepository(Ref ref) {
-  return AiChatRepositoryImpl(openAIService: OpenAIService());
+  return AiChatRepositoryImpl(openAIService: AiChatOpenAIService());
 }
 
 /// Legacy AI Repository Provider (기존 구현체)

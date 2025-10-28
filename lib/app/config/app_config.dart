@@ -271,7 +271,7 @@ class DevelopmentConfig extends AppConfig {
   String get openaiApiKey => _env('OPENAI_API_KEY'); // Changed
 
   @override
-  String get openaiModel => 'gpt-5';
+  String get openaiModel => 'gpt-4o-mini';
 
   @override
   String get weatherApiKey => _env('WEATHER_API_KEY'); // Changed
@@ -377,7 +377,7 @@ class StagingConfig extends AppConfig {
   String get openaiApiKey => _env('OPENAI_API_KEY'); // Changed
 
   @override
-  String get openaiModel => 'gpt-5';
+  String get openaiModel => 'gpt-4o-mini';
 
   @override
   String get weatherApiKey => _env('WEATHER_API_KEY'); // Changed
@@ -482,7 +482,7 @@ class ProductionConfig extends AppConfig {
   String get openaiApiKey => _env('OPENAI_API_KEY'); // Changed
 
   @override
-  String get openaiModel => 'gpt-5';
+  String get openaiModel => 'gpt-4o-mini';
 
   @override
   String get weatherApiKey => _env('WEATHER_API_KEY'); // Changed
@@ -587,7 +587,7 @@ class TestConfig extends AppConfig {
   String get openaiApiKey => '';
 
   @override
-  String get openaiModel => 'gpt-5';
+  String get openaiModel => 'gpt-4o-mini';
 
   @override
   String get weatherApiKey => '';

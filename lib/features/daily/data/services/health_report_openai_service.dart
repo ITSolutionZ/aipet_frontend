@@ -1,16 +1,13 @@
 import 'package:aipet_frontend/app/config/app_config.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
-import 'package:aipet_frontend/shared/core/services/ai_http_client_service.dart';
-import 'package:aipet_frontend/shared/core/services/logger_service.dart';
-import 'package:aipet_frontend/shared/services/base_logging_service.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:intl/intl.dart';
 
 /// AI 건강 리포트 생성을 위한 OpenAI API 서비스
 class HealthReportOpenAIService extends BaseLoggingService {
-  final AiHttpClientService _httpClient;
+  final OpenAiHttpClient _httpClient;
 
-  HealthReportOpenAIService({AiHttpClientService? httpClient})
-    : _httpClient = httpClient ?? AiHttpClientService(),
+  HealthReportOpenAIService({OpenAiHttpClient? httpClient})
+    : _httpClient = httpClient ?? OpenAiHttpClient(),
       super('health_report_openai_service');
 
   /// 펫의 1개월 건강 리포트 생성
@@ -37,14 +34,12 @@ class HealthReportOpenAIService extends BaseLoggingService {
 
     if (apiKey.isEmpty) {
       // API 키가 없으면 에러 반환
-      LoggerService.debug('📊 HealthReportOpenAI: API 키가 설정되지 않음');
+      logWarning('HealthReportOpenAI: API 키가 설정되지 않음');
       return Result.failure('OpenAI API 키가 설정되지 않았습니다.');
     }
 
     try {
-      LoggerService.debug(
-        '📊 HealthReportOpenAI: Generating monthly health report...',
-      );
+      logDebug('📊 HealthReportOpenAI: Generating monthly health report...');
 
       final prompt = _buildHealthReportPrompt(
         petName: petName,
@@ -58,7 +53,7 @@ class HealthReportOpenAIService extends BaseLoggingService {
       );
 
       final response = await _httpClient
-          .callOpenAI<Map<String, dynamic>>(
+          .callOpenAIWithRetry(
             '/chat/completions',
             data: {
               'model': 'gpt-3.5-turbo', // 빠른 응답을 위해 gpt-3.5-turbo 사용
@@ -95,21 +90,19 @@ class HealthReportOpenAIService extends BaseLoggingService {
           .timeout(
             const Duration(seconds: 30),
             onTimeout: () {
-              LoggerService.debug('⏰ HealthReportOpenAI: API call timeout');
+              logWarning('HealthReportOpenAI: API call timeout');
               throw Exception('API呼び出しがタイムアウトしました');
             },
           );
 
       if (!response.isSuccess) {
-        LoggerService.debug(
-          '❌ HealthReportOpenAI: API call failed - ${response.message}',
-        );
+        logError('HealthReportOpenAI: API call failed - ${response.message}');
         return Result.failure('リポート生成に失敗しました: ${response.message}');
       }
 
       final responseData = response.dataOrNull;
       if (responseData == null) {
-        LoggerService.debug('❌ HealthReportOpenAI: No response data');
+        logError('HealthReportOpenAI: No response data');
         return Result.failure('リポート生成に失敗しました');
       }
 
@@ -124,20 +117,20 @@ class HealthReportOpenAIService extends BaseLoggingService {
           final content = choice['message']['content'].toString().trim();
 
           if (content.isEmpty) {
-            LoggerService.debug('❌ HealthReportOpenAI: Empty content');
+            logError('HealthReportOpenAI: Empty content');
             return Result.failure('空のリポートが生成されました');
           }
 
-          LoggerService.debug('✅ HealthReportOpenAI: Success');
+          logDebug('✅ HealthReportOpenAI: Success');
           return Result.success('健康リポート生成成功', content);
         }
       }
 
-      LoggerService.debug('❌ HealthReportOpenAI: Invalid response structure');
+      logError('HealthReportOpenAI: Invalid response structure');
       return Result.failure('無効なレスポンス形式');
     } catch (e, stackTrace) {
-      LoggerService.debug('❌ HealthReportOpenAI: Error - $e');
-      LoggerService.debug('Stack trace: $stackTrace');
+      logError('HealthReportOpenAI: Error - $e');
+      logDebug('Stack trace: $stackTrace');
       return Result.failure('リポート生成中にエラーが発生しました: $e');
     }
   }

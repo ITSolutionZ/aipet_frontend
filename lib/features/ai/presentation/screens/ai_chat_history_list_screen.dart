@@ -46,6 +46,16 @@ class _AiChatHistoryListScreenState
     final state = ref.watch(aiChatHistoryListProvider);
     final notifier = ref.read(aiChatHistoryListProvider.notifier);
 
+    // ✅ 디버그 로그 추가
+    LoggerService.debug('📜 AiChatHistoryListScreen: Build');
+    LoggerService.debug(
+      '  - allHistoryItems count: ${state.allHistoryItems.length}',
+    );
+    LoggerService.debug(
+      '  - savedHistoryItems count: ${state.savedHistoryItems.length}',
+    );
+    LoggerService.debug('  - isLoading: ${state.isLoading}');
+
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(

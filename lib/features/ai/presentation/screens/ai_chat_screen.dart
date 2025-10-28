@@ -224,10 +224,11 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
           if (showDateSeparator) _buildDateSeparator(message.timestamp),
           AiMessageBubble(
             message: message,
-            isFavorite: chatState.favoriteMessageIds.contains(message.id),
-            onFavoriteToggle: (msg) async {
-              await ref.read(aiChatProvider.notifier).toggleFavorite(msg);
-            },
+            // ✅ 즐겨찾기 기능 비활성화
+            isFavorite: false, // chatState.favoriteMessageIds.contains(message.id),
+            onFavoriteToggle: null, // (msg) async {
+            //   await ref.read(aiChatProvider.notifier).toggleFavorite(msg);
+            // },
           ),
         ],
       );
@@ -320,22 +321,25 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen>
         foregroundColor: AppColors.pointBrown,
         elevation: 0,
         title: null, // タイトルを削除
-        leading: IconButton(
-          onPressed: _navigateToChatHistory,
-          icon: const Icon(Icons.history, color: AppColors.pointDark),
-          tooltip: 'チャット履歴',
-        ),
+        // ✅ 히스토리 기능 비활성화
+        // leading: IconButton(
+        //   onPressed: _navigateToChatHistory,
+        //   icon: const Icon(Icons.history, color: AppColors.pointDark),
+        //   tooltip: 'チャット履歴',
+        // ),
         actions: [
-          IconButton(
-            onPressed: _navigateToFavoriteMessages,
-            icon: const Icon(Icons.star, color: AppColors.pointDark),
-            tooltip: 'お気に入り',
-          ),
-          IconButton(
-            onPressed: _saveCurrentChat,
-            icon: const Icon(Icons.save, color: AppColors.pointDark),
-            tooltip: '会話を保存',
-          ),
+          // ✅ 즐겨찾기 기능 비활성화
+          // IconButton(
+          //   onPressed: _navigateToFavoriteMessages,
+          //   icon: const Icon(Icons.star, color: AppColors.pointDark),
+          //   tooltip: 'お気に入り',
+          // ),
+          // ✅ 저장 기능 비활성화
+          // IconButton(
+          //   onPressed: _saveCurrentChat,
+          //   icon: const Icon(Icons.save, color: AppColors.pointDark),
+          //   tooltip: '会話を保存',
+          // ),
           IconButton(
             onPressed: _clearChatHistory,
             icon: const Icon(Icons.refresh, color: AppColors.pointDark),

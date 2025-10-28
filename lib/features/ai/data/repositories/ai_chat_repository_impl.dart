@@ -1,8 +1,8 @@
 import 'package:aipet_frontend/shared/shared.dart';
 
 import '../../domain/domain.dart';
+import '../services/ai_chat_openai_service.dart';
 import '../services/ai_local_storage_service.dart';
-import '../services/openai_service.dart';
 
 /// AI 채팅 Repository 구현체
 ///
@@ -10,9 +10,9 @@ import '../services/openai_service.dart';
 /// AiRepository에서 분리되어 채팅 기능만 집중 관리합니다.
 class AiChatRepositoryImpl implements AiChatRepository {
   final AiLocalStorageService _localStorageService;
-  final OpenAIService _openAIService;
+  final AiChatOpenAIService _openAIService;
 
-  AiChatRepositoryImpl({required OpenAIService openAIService})
+  AiChatRepositoryImpl({required AiChatOpenAIService openAIService})
     : _openAIService = openAIService,
       _localStorageService = AiLocalStorageService();
 

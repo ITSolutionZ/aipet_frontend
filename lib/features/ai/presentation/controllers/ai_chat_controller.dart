@@ -326,7 +326,9 @@ class AiChatNotifier extends _$AiChatNotifier {
     LoggerService.debug('   - ペット: ${state.selectedPet?.name ?? "一般相談"}');
     LoggerService.debug('   - カテゴリ: ${state.selectedCategory?.name ?? "未選択"}');
     LoggerService.debug('   - hasPetSelected: ${state.hasPetSelected}');
-    LoggerService.debug('   - hasCategorySelected: ${state.hasCategorySelected}');
+    LoggerService.debug(
+      '   - hasCategorySelected: ${state.hasCategorySelected}',
+    );
 
     final useCase = ref.read(sendMessageUseCaseProvider);
 
@@ -382,46 +384,61 @@ class AiChatNotifier extends _$AiChatNotifier {
       LoggerService.debug('❌ UI状態更新失敗: ${userMessageResult.error}');
     }
 
-    // 날씨 및 산책 정보 가져오기
+    // 날씨 및 산책 정보 가져오기 (캐시된 데이터만 사용, 새로 업데이트하지 않음)
     String? weatherAdvice;
     String? walkGuide;
 
     try {
-      LoggerService.debug('');
-      LoggerService.debug('🌤️ コンテキスト情報収集中...');
-      final dashboardAsync = ref.read(homeDashboardProvider);
-      if (dashboardAsync.hasValue && dashboardAsync.value != null) {
-        final dashboard = dashboardAsync.value!;
-        final weather = dashboard.weather;
+      // ✅ 날씨 정보가 필요한 질문인지 먼저 확인
+      final needsWeatherContext = _isWeatherRelatedQuery(content);
 
-        // 날씨 어드바이스
-        weatherAdvice = weather.dogWalkingRecommendation;
-        if (weatherAdvice.length > 50) {
-          LoggerService.debug(
-            '   ✓ 天気アドバイス: ${weatherAdvice.substring(0, 50)}...',
-          );
-        } else {
-          LoggerService.debug('   ✓ 天気アドバイス: $weatherAdvice');
-        }
+      if (needsWeatherContext) {
+        LoggerService.debug('');
+        LoggerService.debug('🌤️ コンテキスト情報収集中... (天気関連の質問)');
 
-        // 산책 가이드 (펫이 선택되어 있을 때만)
-        if (state.selectedPet != null) {
-          final recommendationService = WalkRecommendationService();
-          final recommendation = await ComputeWalkRecommendationUseCase().call(
-            pet: state.selectedPet!,
-            wbgt: weather.wbgt,
-            temperature: weather.temperature,
-          );
+        // ✅ 캐시된 대시보드 데이터만 읽기 (업데이트 트리거하지 않음)
+        final dashboardAsync = ref.read(homeDashboardProvider);
+        if (dashboardAsync.hasValue && dashboardAsync.value != null) {
+          final dashboard = dashboardAsync.value!;
+          final weather = dashboard.weather;
 
-          walkGuide = recommendationService.generateShortGuide(recommendation);
-          if (walkGuide.length > 50) {
-            LoggerService.debug('   ✓ 散歩ガイド: ${walkGuide.substring(0, 50)}...');
+          // 날씨 어드바이스
+          weatherAdvice = weather.dogWalkingRecommendation;
+          if (weatherAdvice.length > 50) {
+            LoggerService.debug(
+              '   ✓ 天気アドバイス: ${weatherAdvice.substring(0, 50)}...',
+            );
           } else {
-            LoggerService.debug('   ✓ 散歩ガイド: $walkGuide');
+            LoggerService.debug('   ✓ 天気アドバイス: $weatherAdvice');
           }
+
+          // 산책 가이드 (펫이 선택되어 있을 때만)
+          if (state.selectedPet != null) {
+            final recommendationService = WalkRecommendationService();
+            final recommendation = await ComputeWalkRecommendationUseCase()
+                .call(
+                  pet: state.selectedPet!,
+                  wbgt: weather.wbgt,
+                  temperature: weather.temperature,
+                );
+
+            walkGuide = recommendationService.generateShortGuide(
+              recommendation,
+            );
+            if (walkGuide.length > 50) {
+              LoggerService.debug(
+                '   ✓ 散歩ガイド: ${walkGuide.substring(0, 50)}...',
+              );
+            } else {
+              LoggerService.debug('   ✓ 散歩ガイド: $walkGuide');
+            }
+          }
+        } else {
+          LoggerService.debug('   ⚠️ 天気情報なし (キャッシュなし)');
         }
       } else {
-        LoggerService.debug('   ⚠️ 天気情報なし');
+        LoggerService.debug('');
+        LoggerService.debug('ℹ️ 天気情報不要な質問 - コンテキスト収集スキップ');
       }
     } catch (e) {
       LoggerService.debug('   ❌ コンテキスト情報収集失敗: $e');
@@ -431,7 +448,9 @@ class AiChatNotifier extends _$AiChatNotifier {
     LoggerService.debug('🤖 AI API呼び出し開始...');
     LoggerService.debug('   - エンドポイント: callWithPetContext');
     LoggerService.debug('   - 質問内容: "${content.trim()}"');
-    LoggerService.debug('   - ペットコンテキスト: ${state.selectedPet != null ? "あり (${state.selectedPet!.name})" : "なし"}');
+    LoggerService.debug(
+      '   - ペットコンテキスト: ${state.selectedPet != null ? "あり (${state.selectedPet!.name})" : "なし"}',
+    );
     LoggerService.debug('   - 天気情報: ${weatherAdvice != null ? "あり" : "なし"}');
     LoggerService.debug('   - 散歩ガイド: ${walkGuide != null ? "あり" : "なし"}');
 
@@ -443,7 +462,9 @@ class AiChatNotifier extends _$AiChatNotifier {
     );
 
     LoggerService.debug('');
-    LoggerService.debug('🤖 AI API呼び出し結果: ${result.isSuccess ? "✅ 成功" : "❌ 失敗"}');
+    LoggerService.debug(
+      '🤖 AI API呼び出し結果: ${result.isSuccess ? "✅ 成功" : "❌ 失敗"}',
+    );
     if (!result.isSuccess) {
       LoggerService.debug('   エラー: ${result.error}');
     }
@@ -649,6 +670,50 @@ class AiChatNotifier extends _$AiChatNotifier {
   bool shouldPerformCleanup() {
     final memoryStatus = AiMessageManager.checkMemoryStatus(state.messages);
     return memoryStatus.shouldCleanup;
+  }
+
+  /// ⭐ 로컬 저장소에서 즐겨찾기 다시 로드
+  Future<void> loadFavoritesFromStorage() async {
+    try {
+      final aiLocalStorageService = AiLocalStorageService();
+      final favoriteQAs = await aiLocalStorageService.loadFavoriteQAs();
+      final favoriteIds = favoriteQAs.map((qa) => qa.id).toList();
+
+      state = state.copyWith(
+        favoriteMessageIds: favoriteIds,
+        favoriteQAs: favoriteQAs,
+      );
+
+      LoggerService.debug('⭐ 즐겨찾기 로드 완료: ${favoriteQAs.length}개');
+    } catch (e) {
+      LoggerService.debug('⭐ 즐겨찾기 로드 실패: $e');
+    }
+  }
+
+  /// 날씨 관련 질문인지 확인하는 헬퍼 메서드
+  bool _isWeatherRelatedQuery(String query) {
+    final lowerQuery = query.toLowerCase();
+
+    // 날씨/산책 관련 키워드 (일본어/영어/한국어)
+    final weatherKeywords = [
+      // 일본어
+      '天気', '天候', '気温', '暑', '寒', '雨', '雪', '風', '曇',
+      '散歩', 'さんぽ', 'お散歩', '外出', '屋外',
+
+      // 영어
+      'weather', 'temperature', 'hot', 'cold', 'rain', 'snow', 'wind',
+      'walk', 'walking', 'outside', 'outdoor', 'outdoors',
+      'sunny', 'cloudy', 'rainy', 'windy', 'humid', 'humidity',
+      'forecast', 'climate',
+
+      // 한국어
+      '날씨', '기온', '덥', '춥', '비', '눈', '바람', '흐림',
+      '산책', '외출', '밖', '야외', '밖에',
+      '맑', '흐', '습', '습도',
+    ];
+
+    // 하나라도 매칭되면 날씨 관련 질문으로 판단
+    return weatherKeywords.any((keyword) => lowerQuery.contains(keyword));
   }
 }
 

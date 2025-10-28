@@ -1,12 +1,12 @@
 import 'package:aipet_frontend/app/config/app_config.dart';
-import 'package:aipet_frontend/shared/core/services/ai_http_client_service.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 
 import '../../domain/domain.dart';
 
 /// 펫 관련 콘텐츠 필터링 서비스
 class PetContentFilterService {
-  // ✅ Shared AiHttpClientService 사용
-  final AiHttpClientService _httpClient;
+  // ✅ Shared OpenAiHttpClient 사용
+  final OpenAiHttpClient _httpClient;
 
   // 펫 관련 키워드 목록
   List<String> get _petKeywords => AiKeywords.petRelated;
@@ -14,8 +14,8 @@ class PetContentFilterService {
   // 제외할 키워드
   List<String> get _excludeKeywords => AiKeywords.excluded;
 
-  PetContentFilterService({AiHttpClientService? httpClient})
-    : _httpClient = httpClient ?? AiHttpClientService();
+  PetContentFilterService({OpenAiHttpClient? httpClient})
+    : _httpClient = httpClient ?? OpenAiHttpClient();
 
   /// 메시지가 펫 관련 질문인지 검증
   Future<PetContentValidationResult> validatePetContent(String message) async {
@@ -93,8 +93,8 @@ class PetContentFilterService {
 
   /// AI 기반 검증 (GPT-3.5-turbo 사용)
   Future<PetContentValidationResult> _validateByAI(String message) async {
-    // ✅ Shared AiHttpClientService 사용
-    final response = await _httpClient.callOpenAI<Map<String, dynamic>>(
+    // ✅ Shared OpenAiHttpClient 사용
+    final response = await _httpClient.callOpenAI(
       '/chat/completions',
       data: {
         'model': AppConfig.current.openaiModel,
@@ -118,11 +118,11 @@ class PetContentFilterService {
       },
     );
 
-    if (!response.isSuccess || response.data == null) {
+    if (!response.isSuccess || response.dataOrNull == null) {
       throw Exception('AIによる検証に失敗しました');
     }
 
-    final aiResponse = response.data!['choices'][0]['message']['content']
+    final aiResponse = response.dataOrNull!['choices'][0]['message']['content']
         .toString()
         .trim()
         .toUpperCase();
