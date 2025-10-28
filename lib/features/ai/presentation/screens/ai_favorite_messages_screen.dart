@@ -8,16 +8,57 @@ import '../controllers/ai_favorite_messages_controller.dart';
 import '../widgets/favorite_message_widgets.dart';
 
 /// AI 즐겨찾기 질문-답변 목록 화면 (펫별 그룹화)
-class AiFavoriteMessagesScreen extends ConsumerWidget {
+class AiFavoriteMessagesScreen extends ConsumerStatefulWidget {
   const AiFavoriteMessagesScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AiFavoriteMessagesScreen> createState() =>
+      _AiFavoriteMessagesScreenState();
+}
+
+class _AiFavoriteMessagesScreenState
+    extends ConsumerState<AiFavoriteMessagesScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // ✅ 화면 진입 시 즐겨찾기 데이터 새로고침
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _refreshFavorites();
+    });
+  }
+
+  Future<void> _refreshFavorites() async {
+    try {
+      LoggerService.debug('⭐ 즐겨찾기 데이터 새로고침 시작...');
+
+      // ✅ Notifier의 loadFavoritesFromStorage 메서드 사용
+      await ref.read(aiChatProvider.notifier).loadFavoritesFromStorage();
+
+      LoggerService.debug('⭐ 즐겨찾기 상태 업데이트 완료');
+    } catch (e) {
+      LoggerService.debug('⭐ 즐겨찾기 새로고침 실패: $e');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final chatState = ref.watch(aiChatProvider);
     final favoriteController = ref.read(aiFavoriteMessagesControllerProvider);
 
     // 채팅 상태에서 즐겨찾기 QA 목록 가져오기
     final favoriteQAs = chatState.favoriteQAs;
+
+    // ✅ 디버그 로그 추가
+    LoggerService.debug('⭐ AiFavoriteMessagesScreen: Build');
+    LoggerService.debug('  - favoriteQAs count: ${favoriteQAs.length}');
+    LoggerService.debug(
+      '  - favoriteMessageIds count: ${chatState.favoriteMessageIds.length}',
+    );
+    if (favoriteQAs.isNotEmpty) {
+      LoggerService.debug(
+        '  - First favorite: ${favoriteQAs.first.question.substring(0, favoriteQAs.first.question.length > 20 ? 20 : favoriteQAs.first.question.length)}...',
+      );
+    }
 
     // 펫별로 그룹화
     final groupedFavorites = favoriteController.groupFavoritesByPet(
@@ -82,7 +123,7 @@ class AiFavoriteMessagesScreen extends ConsumerWidget {
 
   void _showDeleteDialog(AiFavoriteQaEntity favorite, WidgetRef ref) {
     showDialog(
-      context: ref.context,
+      context: context,
       builder: (context) => AlertDialog(
         title: Row(
           children: [

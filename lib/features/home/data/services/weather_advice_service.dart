@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/shared/core/services/logger_service.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 
 import '../../domain/domain.dart';
 import 'weather_openai_service.dart';

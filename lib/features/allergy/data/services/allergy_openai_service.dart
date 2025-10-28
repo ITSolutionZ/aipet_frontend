@@ -1,16 +1,17 @@
 import 'dart:convert';
 
 import 'package:aipet_frontend/shared/shared.dart';
-import 'package:http/http.dart' as http;
 
 import '../../domain/domain.dart';
 
-/// OpenAI를 사용한 알레르기 분석 서비스
-class OpenAIAllergyAnalysisService implements AllergyAnalysisService {
-  static const String _baseUrl = 'https://api.openai.com/v1/chat/completions';
+/// 알레르기 분석 전용 OpenAI API 서비스
+class AllergyOpenAIService extends BaseLoggingService
+    implements AllergyAnalysisService {
+  final OpenAiHttpClient _httpClient;
 
-  /// OpenAI API 키
-  String get _apiKey => EnvironmentConstants.openAiApiKey;
+  AllergyOpenAIService({OpenAiHttpClient? httpClient})
+    : _httpClient = httpClient ?? OpenAiHttpClient(),
+      super('allergy_openai_service');
 
   @override
   Future<AllergyAnalysisResult> analyzeIngredients({
@@ -18,8 +19,11 @@ class OpenAIAllergyAnalysisService implements AllergyAnalysisService {
     required List<ProductEntity> nonAllergyProducts,
     String? petType,
   }) async {
+    final apiKey = EnvironmentConstants.openAiApiKey;
+
     // API 키가 없으면 즉시 fallback
-    if (_apiKey.isEmpty) {
+    if (apiKey.isEmpty) {
+      logWarning('OpenAI API 키가 설정되지 않음');
       return _getFallbackResult(allergyProducts, nonAllergyProducts);
     }
 
@@ -31,44 +35,53 @@ class OpenAIAllergyAnalysisService implements AllergyAnalysisService {
         petType ?? 'dog',
       );
 
-      // OpenAI API 호출 (30초 타임아웃)
-      final response = await http
-          .post(
-            Uri.parse(_baseUrl),
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': 'Bearer $_apiKey',
-            },
-            body: jsonEncode({
+      logDebug('🧪 AllergyAnalysis: Analyzing ingredients...');
+
+      // OpenAI API 호출 (재시도 로직 포함)
+      final response = await _httpClient
+          .callOpenAIWithRetry(
+            '/chat/completions',
+            data: {
               'model': AllergyConstants.openAiModel,
               'messages': [
                 {'role': 'system', 'content': _getSystemPrompt()},
                 {'role': 'user', 'content': prompt},
               ],
               'temperature': AllergyConstants.openAiTemperature,
-              'max_completion_tokens': AllergyConstants
-                  .openAiMaxTokens, // ✅ max_tokens → max_completion_tokens
-            }),
+              'max_completion_tokens': AllergyConstants.openAiMaxTokens,
+            },
           )
           .timeout(
             const Duration(seconds: AllergyConstants.openAiTimeoutSeconds),
             onTimeout: () {
+              logWarning('AllergyAnalysis: API call timeout');
               throw Exception('API Timeout');
             },
           );
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(utf8.decode(response.bodyBytes));
-        final content = data['choices'][0]['message']['content'] as String;
+      if (response.isSuccess && response.dataOrNull != null) {
+        final data = response.dataOrNull!;
+        if (data['choices'] != null &&
+            data['choices'] is List &&
+            (data['choices'] as List).isNotEmpty) {
+          final choice = data['choices'][0];
+          if (choice is Map<String, dynamic> &&
+              choice['message'] != null &&
+              choice['message']['content'] != null) {
+            final content = choice['message']['content'] as String;
 
-        // GPT 응답을 파싱
-        return _parseGPTResponse(content);
-      } else {
-        throw Exception('OpenAI API Error: ${response.statusCode}');
+            logDebug('✅ AllergyAnalysis: Success');
+            // GPT 응답을 파싱
+            return _parseGPTResponse(content);
+          }
+        }
       }
+
+      logError('AllergyAnalysis: Invalid response structure');
+      return _getFallbackResult(allergyProducts, nonAllergyProducts);
     } catch (e) {
       // 에러 발생 시 기본 분석 결과 반환
-      LoggerService.debug('OpenAI Analysis Error: $e');
+      logError('AllergyAnalysis: Error - $e');
       return _getFallbackResult(allergyProducts, nonAllergyProducts);
     }
   }

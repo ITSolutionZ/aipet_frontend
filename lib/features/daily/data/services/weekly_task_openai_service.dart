@@ -1,15 +1,12 @@
 import 'package:aipet_frontend/app/config/app_config.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
-import 'package:aipet_frontend/shared/core/services/ai_http_client_service.dart';
-import 'package:aipet_frontend/shared/core/services/logger_service.dart';
-import 'package:aipet_frontend/shared/services/base_logging_service.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 
 /// 주차별 펫 케어 할 일 전용 OpenAI API 서비스
 class WeeklyTaskOpenAIService extends BaseLoggingService {
-  final AiHttpClientService _httpClient;
+  final OpenAiHttpClient _httpClient;
 
-  WeeklyTaskOpenAIService({AiHttpClientService? httpClient})
-    : _httpClient = httpClient ?? AiHttpClientService(),
+  WeeklyTaskOpenAIService({OpenAiHttpClient? httpClient})
+    : _httpClient = httpClient ?? OpenAiHttpClient(),
       super('weekly_task_openai_service');
 
   /// 펫 종류와 주차 정보를 바탕으로 금주의 할 일 생성
@@ -24,13 +21,13 @@ class WeeklyTaskOpenAIService extends BaseLoggingService {
     }
 
     try {
-      LoggerService.debug(
+      logDebug(
         '📅 WeeklyTaskOpenAI: Generating weekly task for $petType, week $weekOfYear...',
       );
 
       final prompt = _buildPrompt(petType, weekOfYear);
 
-      final response = await _httpClient.callOpenAI<Map<String, dynamic>>(
+      final response = await _httpClient.callOpenAIWithRetry(
         '/chat/completions',
         data: {
           'model': 'gpt-3.5-turbo', // 빠른 응답을 위해 gpt-3.5-turbo 사용
@@ -55,15 +52,13 @@ class WeeklyTaskOpenAIService extends BaseLoggingService {
       );
 
       if (!response.isSuccess) {
-        LoggerService.debug(
-          '❌ WeeklyTaskOpenAI: API call failed - ${response.message}',
-        );
+        logError('WeeklyTaskOpenAI: API call failed - ${response.message}');
         return _getFallbackTask(petType, weekOfYear);
       }
 
       final responseData = response.dataOrNull;
       if (responseData == null) {
-        LoggerService.debug('❌ WeeklyTaskOpenAI: No response data');
+        logError('WeeklyTaskOpenAI: No response data');
         return _getFallbackTask(petType, weekOfYear);
       }
 
@@ -78,20 +73,20 @@ class WeeklyTaskOpenAIService extends BaseLoggingService {
           final content = choice['message']['content'].toString().trim();
 
           if (content.isEmpty) {
-            LoggerService.debug('❌ WeeklyTaskOpenAI: Empty content');
+            logError('WeeklyTaskOpenAI: Empty content');
             return _getFallbackTask(petType, weekOfYear);
           }
 
-          LoggerService.debug('✅ WeeklyTaskOpenAI: Success - $content');
+          logDebug('✅ WeeklyTaskOpenAI: Success - $content');
           return Result.success('週別タスク生成成功', content);
         }
       }
 
-      LoggerService.debug('❌ WeeklyTaskOpenAI: Invalid response structure');
+      logError('WeeklyTaskOpenAI: Invalid response structure');
       return _getFallbackTask(petType, weekOfYear);
     } catch (e, stackTrace) {
-      LoggerService.debug('❌ WeeklyTaskOpenAI: Error - $e');
-      LoggerService.debug('Stack trace: $stackTrace');
+      logError('WeeklyTaskOpenAI: Error - $e');
+      logDebug('Stack trace: $stackTrace');
       return _getFallbackTask(petType, weekOfYear);
     }
   }

@@ -1,5 +1,4 @@
 // 공통 서비스들
-export 'ai_http_client_service.dart';
 export 'api_service.dart';
 export 'auth_token_repository.dart';
 export 'common_error_service.dart';
@@ -14,6 +13,8 @@ export 'image_cache_service.dart';
 export 'image_management_service.dart';
 export 'image_service.dart';
 export 'logger_service.dart';
+export 'openai_http_client.dart';
+export 'openweathermap_http_client.dart';
 export 'performance_monitor_service.dart';
 export 'performance_optimizer_service.dart';
 export 'secure_storage_service.dart';
@@ -30,3 +31,15 @@ export 'validation_service.dart';
 // - pet_registration_error_handler → pet_profile/domain/services/
 // - google_places_service → facility/data/services/
 // - youtube_api_service → pet_activities/data/services/
+// - ai_http_client_service → deprecated (replaced by openai_http_client.dart)
+//
+// OpenAI services → moved to respective features:
+//   - AiChatOpenAIService → features/ai/data/services/ai_chat_openai_service.dart
+//   - WeatherOpenAIService → features/home/data/services/weather_openai_service.dart
+//   - WeeklyTaskOpenAIService → features/daily/data/services/weekly_task_openai_service.dart
+//   - HealthReportOpenAIService → features/daily/data/services/health_report_openai_service.dart
+//   - OpenAIAllergyAnalysisService → features/allergy/data/services/openai_allergy_analysis_service.dart
+//
+// Weather services → moved to respective features:
+//   - WeatherService → features/home/data/services/weather_service.dart (비즈니스 로직)
+//   - OpenWeatherMapService → features/home/data/services/openweathermap_service.dart (Legacy)
