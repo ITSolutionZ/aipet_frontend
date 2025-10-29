@@ -115,7 +115,7 @@ final class AiChatRepositoryProvider
   }
 }
 
-String _$aiChatRepositoryHash() => r'f4a4272aa3e985097439e4bfcd5a5c635ab6e95d';
+String _$aiChatRepositoryHash() => r'ad2eb2a62ca25c9ee0957f88d891c753a28aaf8d';
 
 /// Legacy AI Repository Provider (기존 구현체)
 ///

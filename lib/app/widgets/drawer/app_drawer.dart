@@ -5,7 +5,7 @@ import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'drawer_controller.dart';
+import 'drawer_controller.dart' as drawer;
 import 'logout_button_widget.dart';
 import 'service_inquiry_section_widget.dart';
 
@@ -63,8 +63,31 @@ class AppDrawer extends ConsumerWidget {
           // ログアウトボタン
           LogoutButtonWidget(
             onTap: () async {
-              final controller = ref.read(drawerControllerProvider);
-              await controller.logout(context);
+              // 확인 다이얼로그 표시
+              final confirmed = await showDialog<bool>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('ログアウト'),
+                  content: const Text('ログアウトしますか？'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      child: const Text('キャンセル'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      style: TextButton.styleFrom(foregroundColor: Colors.red),
+                      child: const Text('ログアウト'),
+                    ),
+                  ],
+                ),
+              );
+
+              // 확인된 경우에만 로그아웃 실행
+              if (confirmed == true && context.mounted) {
+                final controller = drawer.DrawerController(ref);
+                await controller.logout(context);
+              }
             },
           ),
 
