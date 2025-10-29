@@ -31,7 +31,7 @@ dependencies:
     http: ^1.5.0
     path_provider: ^2.1.4
     crypto: ^3.0.3
-    flutter_local_notifications: ^19.4.2
+    awesome_notifications: ^0.10.1
     url_launcher: ^6.2.4
     share_plus: ^10.1.2
     # youtube_player_flutter: ^9.0.3  # iOS 시뮬레이터 WebKit 호환성 문제로 임시 비활성화
@@ -68,6 +68,7 @@ dependencies:
     meta: any
     mobile_scanner: ^7.1.2
     uuid: any
+    flutter_local_notifications: ^19.5.0
 dev_dependencies:
     sentry_dart_plugin: ^3.1.1
     flutter_test:
@@ -182,6 +183,11 @@ flutter:
 
         # Animations
         - assets/lottie/
+
+        # Sounds
+        - assets/sound/
+        - assets/sound/alarm_dog.mp3
+        - assets/sound/alarm_cat.mp3
 
 sentry:
     upload_debug_symbols: true

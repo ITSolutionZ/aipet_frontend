@@ -4,6 +4,7 @@ import 'package:aipet_frontend/app/services/local_storage_service.dart';
 import 'package:aipet_frontend/app/services/preload_service.dart';
 import 'package:aipet_frontend/features/auth/data/services/firebase_token_service.dart';
 import 'package:aipet_frontend/features/auth/data/services/token_storage_auth_token_repository.dart';
+import 'package:aipet_frontend/features/notification/data/services/helpers/notification_initialization_helper.dart';
 import 'package:aipet_frontend/features/pet_profile/data/data.dart';
 import 'package:aipet_frontend/features/pet_profile/presentation/utils/utils.dart';
 import 'package:aipet_frontend/firebase_options.dart';
@@ -92,6 +93,7 @@ class AppBootstrap {
       _initializeLocalDataManager(),
       _initializeLocalStorage(),
       _initializeImageStorage(),
+      _initializeNotifications(),
       _clearPetCache(),
     ];
 
@@ -261,6 +263,18 @@ class AppBootstrap {
     } catch (e) {
       debugPrint('⚠️ ImageStorageService initialization failed: $e');
       // ImageStorageService 초기화 실패해도 앱은 계속 실행
+    }
+  }
+
+  /// Notification 초기화 (알람 기능에 필요)
+  static Future<void> _initializeNotifications() async {
+    try {
+      // Awesome Notifications 초기화
+      await NotificationInitializationHelper.initialize();
+      debugPrint('✅ Awesome Notifications initialized successfully');
+    } catch (e) {
+      debugPrint('⚠️ Notification initialization failed: $e');
+      // Notification 초기화 실패해도 앱은 계속 실행
     }
   }
 

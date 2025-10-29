@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'home_menu_widget.dart';
-import 'qr_code_bottom_sheet.dart';
+// import 'qr_code_bottom_sheet.dart';
 
 /// 홈 메뉴 아이템 정의
 class HomeMenuItems {
@@ -40,20 +40,20 @@ class HomeMenuItems {
         },
       ),
       // 두 번째 줄 (4개): 산책 / 게시판 / 카트 / QR코드
-      MenuItem(
-        title: 'お散歩',
-        iconPath: 'assets/icons/home_menu/place.png',
-        onTap: () {
-          context.go(RouteConstants.walkRoute);
-        },
-      ),
-      MenuItem(
-        title: '掲示板',
-        iconPath: 'assets/icons/home_menu/community.png',
-        onTap: () {
-          context.push(RouteConstants.boardListRoute);
-        },
-      ),
+      // MenuItem(
+      //   title: 'お散歩',
+      //   iconPath: 'assets/icons/home_menu/place.png',
+      //   onTap: () {
+      //     context.go(RouteConstants.walkRoute);
+      //   },
+      // ),
+      // MenuItem(
+      //   title: '掲示板',
+      //   iconPath: 'assets/icons/home_menu/community.png',
+      //   onTap: () {
+      //     context.push(RouteConstants.boardListRoute);
+      //   },
+      // ),
       MenuItem(
         title: 'カート',
         iconPath: 'assets/icons/home_menu/shopping.png',
@@ -61,13 +61,13 @@ class HomeMenuItems {
           context.push(RouteConstants.petSearchRoute);
         },
       ),
-      MenuItem(
-        title: 'QRコード',
-        iconPath: 'assets/icons/home_menu/qr.png',
-        onTap: () {
-          QRCodeBottomSheet.show(context);
-        },
-      ),
+      // MenuItem(
+      //   title: 'QRコード',
+      //   iconPath: 'assets/icons/home_menu/qr.png',
+      //   onTap: () {
+      //     QRCodeBottomSheet.show(context);
+      //   },
+      // ),
       // Pet Activities 메뉴 - 개발 중으로 인해 임시 숨김
       // MenuItem(
       //   title: 'トリック',

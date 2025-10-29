@@ -119,22 +119,23 @@ class AiChatNotifier extends _$AiChatNotifier {
       if (initResult.isSuccess) {
         state = initResult.dataOrNull!;
 
-        // 로컬 저장소에서 즐겨찾기 로드
-        try {
-          // AiLocalStorageService를 직접 사용
-          final aiLocalStorageService = AiLocalStorageService();
-          final favoriteQAs = await aiLocalStorageService.loadFavoriteQAs();
-          final favoriteIds = favoriteQAs.map((qa) => qa.id).toList();
+        // ✅ 즐겨찾기 로드 기능 비활성화
+        // // 로컬 저장소에서 즐겨찾기 로드
+        // try {
+        //   // AiLocalStorageService를 직접 사용
+        //   final aiLocalStorageService = AiLocalStorageService();
+        //   final favoriteQAs = await aiLocalStorageService.loadFavoriteQAs();
+        //   final favoriteIds = favoriteQAs.map((qa) => qa.id).toList();
 
-          state = state.copyWith(
-            favoriteMessageIds: favoriteIds,
-            favoriteQAs: favoriteQAs,
-          );
+        //   state = state.copyWith(
+        //     favoriteMessageIds: favoriteIds,
+        //     favoriteQAs: favoriteQAs,
+        //   );
 
-          LoggerService.debug('⭐ 즐겨찾기 로컬 저장소에서 로드 완료: ${favoriteQAs.length}개');
-        } catch (e) {
-          LoggerService.debug('⭐ 즐겨찾기 로컬 저장소 로드 실패: $e');
-        }
+        //   LoggerService.debug('⭐ 즐겨찾기 로컬 저장소에서 로드 완료: ${favoriteQAs.length}개');
+        // } catch (e) {
+        //   LoggerService.debug('⭐ 즐겨찾기 로컬 저장소 로드 실패: $e');
+        // }
       } else {
         state =
             AiChatStateManager.setErrorState(
@@ -245,64 +246,65 @@ class AiChatNotifier extends _$AiChatNotifier {
     }
   }
 
-  Future<void> toggleFavorite(AiMessageEntity message) async {
-    // 사용자 질문 찾기
-    String userQuestion = '質問を見つけられませんでした';
-    final messageIndex = state.messages.indexWhere((m) => m.id == message.id);
-    if (messageIndex > 0) {
-      final previousMessage = state.messages[messageIndex - 1];
-      if (previousMessage.type == MessageType.user) {
-        userQuestion = previousMessage.content;
-      }
-    }
+  // ✅ 즐겨찾기 토글 기능 비활성화 (Notifier)
+  // Future<void> toggleFavorite(AiMessageEntity message) async {
+  //   // 사용자 질문 찾기
+  //   String userQuestion = '質問を見つけられませんでした';
+  //   final messageIndex = state.messages.indexWhere((m) => m.id == message.id);
+  //   if (messageIndex > 0) {
+  //     final previousMessage = state.messages[messageIndex - 1];
+  //     if (previousMessage.type == MessageType.user) {
+  //       userQuestion = previousMessage.content;
+  //     }
+  //   }
 
-    final updateResult = AiChatStateManager.updateFavoriteToggle(
-      currentState: state,
-      message: message,
-      userQuestion: userQuestion,
-    );
+  //   final updateResult = AiChatStateManager.updateFavoriteToggle(
+  //     currentState: state,
+  //     message: message,
+  //     userQuestion: userQuestion,
+  //   );
 
-    if (updateResult.isSuccess) {
-      state = updateResult.dataOrNull!;
+  //   if (updateResult.isSuccess) {
+  //     state = updateResult.dataOrNull!;
 
-      // 로컬 저장소에 즐겨찾기 저장/삭제
-      try {
-        final aiLocalStorageService = AiLocalStorageService();
-        final isCurrentlyFavorite = state.favoriteMessageIds.contains(
-          message.id,
-        );
-        if (isCurrentlyFavorite) {
-          // 즐겨찾기에 추가된 경우 - 로컬 저장소에 저장
-          final favoriteQA = AiFavoriteQaEntity(
-            id: message.id,
-            question: userQuestion.trim(),
-            answer: message.content.trim(),
-            pet: state.selectedPet,
-            categoryId: state.selectedCategory?.id,
-            categoryName: state.selectedCategory?.name,
-            createdAt: DateTime.now(),
-            originalTimestamp: message.timestamp,
-          );
+  //     // 로컬 저장소에 즐겨찾기 저장/삭제
+  //     try {
+  //       final aiLocalStorageService = AiLocalStorageService();
+  //       final isCurrentlyFavorite = state.favoriteMessageIds.contains(
+  //         message.id,
+  //       );
+  //       if (isCurrentlyFavorite) {
+  //         // 즐겨찾기에 추가된 경우 - 로컬 저장소에 저장
+  //         final favoriteQA = AiFavoriteQaEntity(
+  //           id: message.id,
+  //           question: userQuestion.trim(),
+  //           answer: message.content.trim(),
+  //           pet: state.selectedPet,
+  //           categoryId: state.selectedCategory?.id,
+  //           categoryName: state.selectedCategory?.name,
+  //           createdAt: DateTime.now(),
+  //           originalTimestamp: message.timestamp,
+  //         );
 
-          await aiLocalStorageService.saveFavoriteQA(favoriteQA);
-          LoggerService.debug('⭐ 즐겨찾기 로컬 저장소에 저장 완료: ${message.id}');
-        } else {
-          // 즐겨찾기에서 제거된 경우 - 로컬 저장소에서 삭제
-          await aiLocalStorageService.removeFavoriteQA(message.id);
-          LoggerService.debug('⭐ 즐겨찾기 로컬 저장소에서 삭제 완료: ${message.id}');
-        }
-      } catch (e) {
-        LoggerService.debug('⭐ 즐겨찾기 로컬 저장소 저장/삭제 실패: $e');
-      }
-    } else {
-      state =
-          AiChatStateManager.setErrorState(
-            currentState: state,
-            error: updateResult.error?.toString() ?? 'Update failed',
-          ).dataOrNull ??
-          state;
-    }
-  }
+  //         await aiLocalStorageService.saveFavoriteQA(favoriteQA);
+  //         LoggerService.debug('⭐ 즐겨찾기 로컬 저장소에 저장 완료: ${message.id}');
+  //       } else {
+  //         // 즐겨찾기에서 제거된 경우 - 로컬 저장소에서 삭제
+  //         await aiLocalStorageService.removeFavoriteQA(message.id);
+  //         LoggerService.debug('⭐ 즐겨찾기 로컬 저장소에서 삭제 완료: ${message.id}');
+  //       }
+  //     } catch (e) {
+  //       LoggerService.debug('⭐ 즐겨찾기 로컬 저장소 저장/삭제 실패: $e');
+  //     }
+  //   } else {
+  //     state =
+  //         AiChatStateManager.setErrorState(
+  //           currentState: state,
+  //           error: updateResult.error?.toString() ?? 'Update failed',
+  //         ).dataOrNull ??
+  //         state;
+  //   }
+  // }
 
   Future<void> sendMessage(String content) async {
     if (content.trim().isEmpty) return;
@@ -556,46 +558,49 @@ class AiChatNotifier extends _$AiChatNotifier {
   }
 
   /// 개별 즐겨찾기 삭제
-  void removeFavorite(String favoriteId) {
-    final removeResult = AiFavoriteManager.removeFromFavorites(
-      currentFavoriteIds: state.favoriteMessageIds,
-      currentFavoriteQAs: state.favoriteQAs,
-      messageId: favoriteId,
-    );
+  // ✅ 즐겨찾기 삭제 기능 비활성화
+  // void removeFavorite(String favoriteId) {
+  //   final removeResult = AiFavoriteManager.removeFromFavorites(
+  //     currentFavoriteIds: state.favoriteMessageIds,
+  //     currentFavoriteQAs: state.favoriteQAs,
+  //     messageId: favoriteId,
+  //   );
 
-    if (removeResult.isSuccess) {
-      final result = removeResult.dataOrNull!;
-      state = state.copyWith(
-        favoriteMessageIds: result.favoriteIds,
-        favoriteQAs: result.favoriteQAs,
-      );
-    }
-  }
+  //   if (removeResult.isSuccess) {
+  //     final result = removeResult.dataOrNull!;
+  //     state = state.copyWith(
+  //       favoriteMessageIds: result.favoriteIds,
+  //       favoriteQAs: result.favoriteQAs,
+  //     );
+  //   }
+  // }
 
-  /// 모든 즐겨찾기 삭제
-  void clearAllFavorites() {
-    final clearResult = AiFavoriteManager.clearAllFavorites();
-    if (clearResult.isSuccess) {
-      final result = clearResult.dataOrNull!;
-      state = state.copyWith(
-        favoriteMessageIds: result.favoriteIds,
-        favoriteQAs: result.favoriteQAs,
-      );
-    }
-  }
+  // ✅ 모든 즐겨찾기 삭제 기능 비활성화
+  // /// 모든 즐겨찾기 삭제
+  // void clearAllFavorites() {
+  //   final clearResult = AiFavoriteManager.clearAllFavorites();
+  //   if (clearResult.isSuccess) {
+  //     final result = clearResult.dataOrNull!;
+  //     state = state.copyWith(
+  //       favoriteMessageIds: result.favoriteIds,
+  //       favoriteQAs: result.favoriteQAs,
+  //     );
+  //   }
+  // }
 
-  Future<void> saveCurrentChatToHistory({bool isManualSave = false}) async {
-    if (state.messages.isEmpty) return;
+  // ✅ 히스토리 저장 기능 비활성화
+  // Future<void> saveCurrentChatToHistory({bool isManualSave = false}) async {
+  //   if (state.messages.isEmpty) return;
 
-    final useCase = ref.read(saveChatHistoryUseCaseProvider);
+  //   final useCase = ref.read(saveChatHistoryUseCaseProvider);
 
-    await useCase(
-      messages: state.messages,
-      selectedPet: state.selectedPet,
-      selectedCategory: state.selectedCategory,
-      isManualSave: isManualSave,
-    );
-  }
+  //   await useCase(
+  //     messages: state.messages,
+  //     selectedPet: state.selectedPet,
+  //     selectedCategory: state.selectedCategory,
+  //     isManualSave: isManualSave,
+  //   );
+  // }
 
   /// 현재 대화 ID 생성 또는 가져오기
   String _getCurrentConversationId() {
@@ -606,9 +611,10 @@ class AiChatNotifier extends _$AiChatNotifier {
 
   Future<void> clearChatHistory({bool saveBeforeClear = true}) async {
     try {
-      if (saveBeforeClear && state.messages.isNotEmpty) {
-        await saveCurrentChatToHistory();
-      }
+      // ✅ 히스토리 저장 기능 비활성화
+      // if (saveBeforeClear && state.messages.isNotEmpty) {
+      //   await saveCurrentChatToHistory();
+      // }
 
       final clearUseCase = ref.read(clearChatHistoryUseCaseProvider);
       final clearResult = await clearUseCase();
@@ -672,23 +678,24 @@ class AiChatNotifier extends _$AiChatNotifier {
     return memoryStatus.shouldCleanup;
   }
 
-  /// ⭐ 로컬 저장소에서 즐겨찾기 다시 로드
-  Future<void> loadFavoritesFromStorage() async {
-    try {
-      final aiLocalStorageService = AiLocalStorageService();
-      final favoriteQAs = await aiLocalStorageService.loadFavoriteQAs();
-      final favoriteIds = favoriteQAs.map((qa) => qa.id).toList();
+  // ✅ 즐겨찾기 로드 기능 비활성화
+  // /// ⭐ 로컬 저장소에서 즐겨찾기 다시 로드
+  // Future<void> loadFavoritesFromStorage() async {
+  //   try {
+  //     final aiLocalStorageService = AiLocalStorageService();
+  //     final favoriteQAs = await aiLocalStorageService.loadFavoriteQAs();
+  //     final favoriteIds = favoriteQAs.map((qa) => qa.id).toList();
 
-      state = state.copyWith(
-        favoriteMessageIds: favoriteIds,
-        favoriteQAs: favoriteQAs,
-      );
+  //     state = state.copyWith(
+  //       favoriteMessageIds: favoriteIds,
+  //       favoriteQAs: favoriteQAs,
+  //     );
 
-      LoggerService.debug('⭐ 즐겨찾기 로드 완료: ${favoriteQAs.length}개');
-    } catch (e) {
-      LoggerService.debug('⭐ 즐겨찾기 로드 실패: $e');
-    }
-  }
+  //     LoggerService.debug('⭐ 즐겨찾기 로드 완료: ${favoriteQAs.length}개');
+  //   } catch (e) {
+  //     LoggerService.debug('⭐ 즐겨찾기 로드 실패: $e');
+  //   }
+  // }
 
   /// 날씨 관련 질문인지 확인하는 헬퍼 메서드
   bool _isWeatherRelatedQuery(String query) {
@@ -809,29 +816,31 @@ class AiChatController extends BaseController {
     notifier.selectCategory(category);
   }
 
-  /// 즐겨찾기 토글
-  Future<void> toggleFavorite(AiMessageEntity message) async {
-    final notifier = ref.read(aiChatProvider.notifier);
-    await notifier.toggleFavorite(message);
-  }
+  // ✅ 즐겨찾기 기능 비활성화
+  // /// 즐겨찾기 토글
+  // Future<void> toggleFavorite(AiMessageEntity message) async {
+  //   final notifier = ref.read(aiChatProvider.notifier);
+  //   await notifier.toggleFavorite(message);
+  // }
 
-  Future<Result<void>> saveCurrentChatManually() async {
-    try {
-      final notifier = ref.read(aiChatProvider.notifier);
-      await notifier.saveCurrentChatToHistory(isManualSave: true);
-      return Result.success('チャット履歴が保存されました', null);
-    } catch (error) {
-      return Result.failure('チャット履歴の保存に失敗しました: $error');
-    }
-  }
+  // ✅ 히스토리 저장 기능 비활성화
+  // Future<Result<void>> saveCurrentChatManually() async {
+  //   try {
+  //     final notifier = ref.read(aiChatProvider.notifier);
+  //     await notifier.saveCurrentChatToHistory(isManualSave: true);
+  //     return Result.success('チャット履歴が保存されました', null);
+  //   } catch (error) {
+  //     return Result.failure('チャット履歴の保存に失敗しました: $error');
+  //   }
+  // }
 
-  Future<Result<void>> saveCurrentChatOnTabSwitch() async {
-    try {
-      final notifier = ref.read(aiChatProvider.notifier);
-      await notifier.saveCurrentChatToHistory(isManualSave: false);
-      return Result.success('チャット履歴が自動保存されました', null);
-    } catch (error) {
-      return Result.failure('チャット履歴の自動保存に失敗しました: $error');
-    }
-  }
+  // Future<Result<void>> saveCurrentChatOnTabSwitch() async {
+  //   try {
+  //     final notifier = ref.read(aiChatProvider.notifier);
+  //     await notifier.saveCurrentChatToHistory(isManualSave: false);
+  //     return Result.success('チャット履歴が自動保存されました', null);
+  //   } catch (error) {
+  //     return Result.failure('チャット履歴の自動保存に失敗しました: $error');
+  //   }
+  // }
 }

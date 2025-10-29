@@ -143,12 +143,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           // 검색바 (간격 줄임)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-            child: HomeSearchBarWidget(
-              onTap: _handleSearchTap,
-            ),
+            child: HomeSearchBarWidget(onTap: _handleSearchTap),
           ),
           const SizedBox(height: AppSpacing.md), // 간격 줄임
-
           // 날씨 정보 (펫이 등록되어 있을 때만 표시)
           if (dashboard.hasPets) ...[
             Padding(
@@ -163,7 +160,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
             child: HomeMenuGridWidget(
               menuItems: HomeMenuItems.getMenuItems(context),
-              crossAxisCount: 4,
+              crossAxisCount: 5,
             ),
           ),
           const SizedBox(height: AppSpacing.lg),

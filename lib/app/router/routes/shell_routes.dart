@@ -80,8 +80,12 @@ class ShellRoutes {
               // 경로 파라미터에서 petId 추출
               final petId = state.pathParameters['petId'] ?? 'default';
               // クエリパラメータから編集モードフラグを取得
-              final isEditMode = state.uri.queryParameters['isEditMode'] == 'true';
-              return PetProfileScreen(petId: petId, initialEditMode: isEditMode);
+              final isEditMode =
+                  state.uri.queryParameters['isEditMode'] == 'true';
+              return PetProfileScreen(
+                petId: petId,
+                initialEditMode: isEditMode,
+              );
             },
           ),
           GoRoute(
@@ -539,6 +543,11 @@ class ShellRoutes {
             path: 'push-notification',
             name: 'push-notification',
             builder: (context, state) => const PushNotificationScreen(),
+          ),
+          GoRoute(
+            path: 'local-alarm-settings',
+            name: 'local-alarm-settings',
+            builder: (context, state) => const LocalAlarmSettingsScreen(),
           ),
           GoRoute(
             path: 'alarm-time-settings',

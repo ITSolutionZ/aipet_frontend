@@ -31,7 +31,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
   PetProfileEntity? _selectedPet;
   bool _isRepeating = false;
   final List<int> _selectedDays = [];
-  bool _excludeHolidays = false;
+  final bool _excludeHolidays = false;
   String _eventName = '';
   String _eventDescription = '';
   String _eventLocation = '';
@@ -558,19 +558,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
 
         const SizedBox(height: AppSpacing.md),
 
-        // 공휴일 제외
-        Row(
-          children: [
-            Text('祝日はオフにする', style: AppFonts.titleMedium),
-            const Spacer(),
-            Switch(
-              value: _excludeHolidays,
-              onChanged: (value) => setState(() => _excludeHolidays = value),
-              activeThumbColor: AppColors.pointPink,
-            ),
-          ],
-        ),
-        Text('代替祝日や臨時、祝日を除く', style: AppFonts.bodySmall),
+        // 공휴일 제외 옵션 삭제됨
       ],
     );
   }
@@ -635,7 +623,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
           )
         else
           DropdownButtonFormField<PetProfileEntity>(
-            value: _selectedPet,
+            initialValue: _selectedPet,
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
               contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -976,7 +964,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
       if (mounted) {
         // 먼저 화면을 닫고 (SnackBar 애니메이션 충돌 방지)
         navigator.pop(event);
-        
+
         // 화면이 닫힌 후 SnackBar 표시 (부모 화면에서)
         Future.microtask(() {
           if (mounted) {
