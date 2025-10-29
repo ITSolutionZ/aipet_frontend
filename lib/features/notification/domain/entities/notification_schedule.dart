@@ -70,6 +70,26 @@ class NotificationTimeOfDay {
   int get hashCode => hour.hashCode ^ minute.hashCode;
 }
 
+/// 알림 소리 타입
+enum AlarmSound {
+  dog('dog', 'Dog', 'resource://raw/alarm_dog'), // Android raw 리소스 형식
+  cat('cat', 'Cat', 'resource://raw/alarm_cat'), // Android raw 리소스 형식
+  defaultSound('default', 'Default', null);
+
+  final String key;
+  final String displayName;
+  final String? resourcePath;
+
+  const AlarmSound(this.key, this.displayName, this.resourcePath);
+
+  static AlarmSound fromKey(String key) {
+    return AlarmSound.values.firstWhere(
+      (sound) => sound.key == key,
+      orElse: () => AlarmSound.defaultSound,
+    );
+  }
+}
+
 /// 알림 스케줄 모델
 class NotificationSchedule {
   final String id;
@@ -85,6 +105,7 @@ class NotificationSchedule {
   final DateTime? nextExecution;
   final DateTime createdAt;
   final Map<String, dynamic>? metadata;
+  final AlarmSound sound; // 알람 소리
 
   const NotificationSchedule({
     required this.id,
@@ -100,6 +121,7 @@ class NotificationSchedule {
     this.nextExecution,
     required this.createdAt,
     this.metadata,
+    this.sound = AlarmSound.defaultSound,
   });
 
   /// 다음 실행 시간 계산
@@ -226,6 +248,7 @@ class NotificationSchedule {
     DateTime? nextExecution,
     DateTime? createdAt,
     Map<String, dynamic>? metadata,
+    AlarmSound? sound,
   }) {
     return NotificationSchedule(
       id: id ?? this.id,
@@ -241,6 +264,7 @@ class NotificationSchedule {
       nextExecution: nextExecution ?? this.nextExecution,
       createdAt: createdAt ?? this.createdAt,
       metadata: metadata ?? this.metadata,
+      sound: sound ?? this.sound,
     );
   }
 
@@ -260,6 +284,7 @@ class NotificationSchedule {
       'nextExecution': nextExecution?.toIso8601String(),
       'createdAt': createdAt.toIso8601String(),
       'metadata': metadata,
+      'sound': sound.key,
     };
   }
 
@@ -285,6 +310,9 @@ class NotificationSchedule {
       nextExecution: json['nextExecution'] != null
           ? DateTime.parse(json['nextExecution'])
           : null,
+      sound: json['sound'] != null
+          ? AlarmSound.fromKey(json['sound'])
+          : AlarmSound.defaultSound,
       createdAt: DateTime.parse(json['createdAt']),
       metadata: json['metadata'] != null
           ? Map<String, dynamic>.from(json['metadata'])

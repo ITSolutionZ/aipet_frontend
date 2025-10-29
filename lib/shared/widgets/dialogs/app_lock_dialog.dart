@@ -24,7 +24,7 @@ class AppLockDialog extends StatefulWidget {
 class _AppLockDialogState extends State<AppLockDialog> {
   late BiometricAuthService _biometricService;
   final TextEditingController _pinController = TextEditingController();
-  String _biometricType = '지문';
+  String _biometricType = '指紋';
   bool _isAttemptingBiometric = false;
   bool _showPinInput = false;
   String _errorMessage = '';
@@ -40,14 +40,14 @@ class _AppLockDialogState extends State<AppLockDialog> {
     if (!widget.enableBiometric) return;
 
     final biometrics = await _biometricService.getAvailableBiometrics();
-    String type = '생체인증';
+    String type = '生体認証';
 
     if (biometrics.contains(BiometricType.fingerprint)) {
-      type = '지문';
+      type = '指紋';
     } else if (biometrics.contains(BiometricType.face)) {
-      type = '얼굴';
+      type = '顔';
     } else if (biometrics.contains(BiometricType.iris)) {
-      type = '홍채';
+      type = '虹彩';
     }
 
     setState(() {
@@ -76,14 +76,14 @@ class _AppLockDialogState extends State<AppLockDialog> {
         Navigator.of(context).pop();
       } else if (mounted) {
         setState(() {
-          _errorMessage = '$_biometricType 인증 실패';
+          _errorMessage = '$_biometricType認証に失敗しました';
           _isAttemptingBiometric = false;
         });
       }
     } catch (e) {
       if (mounted) {
         setState(() {
-          _errorMessage = '$_biometricType 인증 오류: $e';
+          _errorMessage = '$_biometricType認証エラー: $e';
           _isAttemptingBiometric = false;
         });
       }
@@ -93,7 +93,7 @@ class _AppLockDialogState extends State<AppLockDialog> {
   Future<void> _verifyPin() async {
     if (_pinController.text.isEmpty) {
       setState(() {
-        _errorMessage = 'PIN을 입력하세요';
+        _errorMessage = 'PIN番号を入力してください';
       });
       return;
     }
@@ -109,9 +109,58 @@ class _AppLockDialogState extends State<AppLockDialog> {
       }
     } else {
       setState(() {
-        _errorMessage = 'PIN이 올바르지 않습니다';
+        _errorMessage = 'PINが正しくありません';
         _pinController.clear();
       });
+    }
+  }
+
+  /// PIN 삭제
+  Future<void> _deletePin() async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('PIN削除'),
+        content: const Text('PINを削除しますか？\n次回からPIN認証なしでログインできます。'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('キャンセル'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('削除'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true && mounted) {
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.remove('user_pin');
+        await prefs.remove('pin_enabled');
+
+        if (mounted) {
+          widget.onSuccess();
+          Navigator.of(context).pop();
+
+          // 성공 메시지
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('✅ PINを削除しました'),
+              backgroundColor: AppColors.pointGreen,
+            ),
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          setState(() {
+            _errorMessage = 'PIN削除に失敗しました: $e';
+          });
+        }
+      }
     }
   }
 
@@ -163,7 +212,7 @@ class _AppLockDialogState extends State<AppLockDialog> {
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
-                        _biometricType == '얼굴' ? Icons.face : Icons.fingerprint,
+                        _biometricType == '顔' ? Icons.face : Icons.fingerprint,
                         size: 40,
                         color: AppColors.pointDark,
                       ),
@@ -185,10 +234,27 @@ class _AppLockDialogState extends State<AppLockDialog> {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     else if (_errorMessage.isNotEmpty)
-                      Text(
-                        _errorMessage,
-                        style: const TextStyle(color: Colors.red, fontSize: 14),
-                        textAlign: TextAlign.center,
+                      Column(
+                        children: [
+                          Text(
+                            _errorMessage,
+                            style: const TextStyle(
+                              color: Colors.red,
+                              fontSize: 14,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: AppSpacing.sm),
+                          ElevatedButton.icon(
+                            onPressed: _attemptBiometric,
+                            icon: const Icon(Icons.refresh, size: 18),
+                            label: const Text('再試行'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.pointBrown,
+                              foregroundColor: Colors.white,
+                            ),
+                          ),
+                        ],
                       ),
 
                     // PIN으로 인증 버튼
@@ -272,6 +338,14 @@ class _AppLockDialogState extends State<AppLockDialog> {
                           ),
                         ),
                       ],
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    // PIN 삭제 버튼
+                    TextButton.icon(
+                      onPressed: _deletePin,
+                      icon: const Icon(Icons.delete_outline, size: 18),
+                      label: const Text('PIN削除'),
+                      style: TextButton.styleFrom(foregroundColor: Colors.red),
                     ),
                   ],
                 ),

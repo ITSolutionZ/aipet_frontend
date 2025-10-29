@@ -1,6 +1,7 @@
 import 'package:aipet_frontend/features/daily/presentation/controllers/pet_registration_controller.dart';
 import 'package:aipet_frontend/features/daily/presentation/logic/pet_registration_logic.dart';
 import 'package:aipet_frontend/features/daily/presentation/screens/daily_pet_registration_screen_widgets/daily_pet_registration_screen_widgets.dart';
+import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
 import 'package:aipet_frontend/features/pet_profile/presentation/controllers/pet_profile_unified_controller.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:aipet_frontend/shared/widgets/actions/actions.dart';
@@ -145,22 +146,15 @@ class _PetRegistrationFormState extends ConsumerState<_PetRegistrationForm> {
     try {
       LoggerService.debug('🔍 Loading existing pet data for ID: $petId');
 
-      // 펫 프로필 로드
-      final petProfileNotifier = ref.read(
-        petProfileUnifiedControllerProvider.notifier,
-      );
-      await petProfileNotifier.loadPetProfile(petId);
+      // 펫 프로필 repository에서 직접 로드
+      final repository = ref.read(petProfileRepositoryProvider);
+      final result = await repository.getPetById(petId);
 
       if (!mounted) return;
 
-      final petProfileState = ref.read(petProfileUnifiedControllerProvider);
-      LoggerService.debug(
-        '📊 petProfileState.selectedPet: ${petProfileState.selectedPet != null}',
-      );
-
-      if (petProfileState.selectedPet != null) {
-        final pet = petProfileState.selectedPet!;
-        LoggerService.debug('✅ Pet loaded: ${pet.name}');
+      if (result.isSuccess && result.dataOrNull != null) {
+        final pet = result.dataOrNull!;
+        LoggerService.debug('✅ Pet loaded from repository: ${pet.name}');
         LoggerService.debug(
           '📋 Pet data - id: ${pet.id}, type: ${pet.type}, breed: ${pet.breed}',
         );
