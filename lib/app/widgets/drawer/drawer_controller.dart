@@ -3,7 +3,6 @@ import 'package:aipet_frontend/app/providers/app_initialization_provider.dart';
 import 'package:aipet_frontend/app/router/routes/route_constants.dart';
 import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -141,6 +140,7 @@ class DrawerController extends BaseController {
 }
 
 /// DrawerController Provider
-final drawerControllerProvider = Provider.autoDispose<DrawerController>(
-  (ref) => DrawerController(ref as WidgetRef),
-);
+/// 注意: ConsumerWidgetで直接インスタンス化して使用してください
+// final drawerControllerProvider = Provider.autoDispose<DrawerController>(
+//   (ref) => DrawerController(ref as WidgetRef),
+// );

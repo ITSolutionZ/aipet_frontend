@@ -1,12 +1,11 @@
 import 'dart:async';
-import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-import '../../domain/domain.dart';
-import 'helpers/helpers.dart';
-import 'notification_local_storage_service.dart';
+import '../../domain/domain.dart' as domain;
+import 'helpers/notification_display_helper.dart';
+import 'helpers/notification_initialization_helper.dart';
 
 /// 알림 서비스
 ///
@@ -18,30 +17,63 @@ class NotificationService {
 
   static const String _tag = 'NotificationService';
 
-  late FlutterLocalNotificationsPlugin _localNotifications;
-  final StreamController<NotificationModel> _notificationController =
-      StreamController<NotificationModel>.broadcast();
+  final StreamController<domain.NotificationModel> _notificationController =
+      StreamController<domain.NotificationModel>.broadcast();
 
   /// 알림 스트림
-  Stream<NotificationModel> get notificationStream =>
+  Stream<domain.NotificationModel> get notificationStream =>
       _notificationController.stream;
 
   /// 알림 서비스 초기화
   Future<void> initialize() async {
-    _localNotifications = FlutterLocalNotificationsPlugin();
+    // Awesome Notifications 초기화
+    await NotificationInitializationHelper.initialize();
 
-    // 초기화 설정 (헬퍼 위임)
-    final initSettings =
-        NotificationInitializationHelper.getInitializationSettings();
-
-    // 알림 서비스 초기화
-    await _localNotifications.initialize(
-      initSettings,
-      onDidReceiveNotificationResponse: _onNotificationTapped,
+    // 알림 탭 리스너 설정
+    AwesomeNotifications().setListeners(
+      onActionReceivedMethod: _onNotificationTapped,
+      onNotificationCreatedMethod: _onNotificationCreated,
+      onNotificationDisplayedMethod: _onNotificationDisplayed,
     );
 
     if (kDebugMode) {
-      LoggerService.debug('알림 서비스 초기화 완료');
+      debugPrint('✅ [$_tag] Awesome Notifications 초기화 완료');
+    }
+  }
+
+  /// 알림 생성됨
+  @pragma('vm:entry-point')
+  static Future<void> _onNotificationCreated(
+    ReceivedNotification receivedNotification,
+  ) async {
+    if (kDebugMode) {
+      debugPrint('🔔 [$_tag] 알림 생성됨: ${receivedNotification.title}');
+    }
+  }
+
+  /// 알림 표시됨
+  @pragma('vm:entry-point')
+  static Future<void> _onNotificationDisplayed(
+    ReceivedNotification receivedNotification,
+  ) async {
+    if (kDebugMode) {
+      debugPrint('🔔 [$_tag] 알림 표시됨: ${receivedNotification.title}');
+    }
+  }
+
+  /// 알림 탭 처리
+  @pragma('vm:entry-point')
+  static Future<void> _onNotificationTapped(
+    ReceivedAction receivedAction,
+  ) async {
+    if (kDebugMode) {
+      debugPrint('🔔 [$_tag] 알림 탭됨: ${receivedAction.title}');
+    }
+
+    // TODO: 알림 탭 처리 로직 구현
+    final payload = receivedAction.payload;
+    if (payload != null && payload.containsKey('scheduleId')) {
+      debugPrint('📋 스케줄 ID: ${payload['scheduleId']}');
     }
   }
 
@@ -49,150 +81,94 @@ class NotificationService {
   Future<void> createNotification({
     required String title,
     required String body,
-    required NotificationType type,
-    NotificationPriority priority = NotificationPriority.normal,
+    required domain.NotificationType type,
+    domain.NotificationPriority priority = domain.NotificationPriority.normal,
     DateTime? scheduledDate,
     Duration? expiresAfter,
     Map<String, dynamic>? data,
-    List<NotificationAction>? actions,
+    List<domain.NotificationAction>? actions,
     String? imageUrl,
     String? icon,
   }) async {
-    // 알림 유효성 검사 (헬퍼 위임)
-    final settings = await getNotificationSettings();
-    if (!NotificationValidationHelper.canSendNotification(settings, type)) {
-      return;
-    }
-
-    final notification = NotificationModel(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      title: title,
-      body: body,
-      type: type,
-      priority: priority,
-      createdAt: DateTime.now(),
-      expiresAt: expiresAfter != null ? DateTime.now().add(expiresAfter) : null,
-      data: data,
-      actions: actions,
-      imageUrl: imageUrl,
-      icon: icon,
+    // 즉시 알림 생성
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: DateTime.now().millisecondsSinceEpoch % 2147483647,
+        channelKey: 'basic_channel',
+        title: title,
+        body: body,
+        payload: data?.map((key, value) => MapEntry(key, value.toString())),
+        notificationLayout: NotificationLayout.Default,
+      ),
     );
-
-    // 로컬 알림 표시 (헬퍼 위임)
-    await NotificationDisplayHelper.showLocalNotification(
-      _localNotifications,
-      notification,
-      scheduledDate,
-    );
-
-    // 알림 저장 (로그만 기록)
-    await NotificationLocalOperations.saveNotification(notification);
-
-    // 스트림으로 알림 전송
-    _notificationController.add(notification);
 
     if (kDebugMode) {
-      LoggerService.debug('[$_tag] ✅ 알림 생성 완료: ${notification.title}');
-    }
-  }
-
-  /// 알림 탭 처리 (헬퍼 위임)
-  void _onNotificationTapped(NotificationResponse response) {
-    NotificationResponseHelper.handleNotificationResponse(
-      response,
-      deleteNotification,
-    );
-  }
-
-  /// 알림 목록 가져오기
-  Future<List<NotificationModel>> getNotifications({
-    NotificationStatus? status,
-    NotificationType? type,
-    int limit = 50,
-  }) async {
-    try {
-      // 로컬 저장소에서 알림 가져오기
-      final notificationsData =
-          await NotificationLocalStorageService.getNotifications();
-
-      final notifications = notificationsData
-          .map((data) => NotificationModel.fromJson(data))
-          .toList();
-
-      // 필터링, 정렬, 제한 (헬퍼 위임)
-      return NotificationQueryHelper.processNotifications(
-        notifications,
-        status: status,
-        type: type,
-        limit: limit,
-      );
-    } catch (e) {
-      if (kDebugMode) {
-        LoggerService.debug('알림 목록 가져오기 실패: $e');
-      }
-      return [];
-    }
-  }
-
-  /// 알림 삭제 (헬퍼 위임)
-  Future<void> deleteNotification(String notificationId) async {
-    await NotificationLocalOperations.deleteNotification(
-      notificationId,
-      _localNotifications,
-    );
-  }
-
-  /// 모든 알림 삭제 (헬퍼 위임)
-  Future<void> clearAllNotifications() async {
-    await NotificationLocalOperations.clearAllNotifications(
-      _localNotifications,
-    );
-  }
-
-  /// 알림을 읽음으로 표시 (헬퍼 위임)
-  Future<void> markNotificationAsRead(String notificationId) async {
-    await NotificationLocalOperations.markAsRead(notificationId);
-  }
-
-  /// 읽지 않은 알림 개수 가져오기
-  Future<int> getUnreadCount() async {
-    try {
-      final notifications = await getNotifications(
-        status: NotificationStatus.unread,
-      );
-      return notifications.length;
-    } catch (e) {
-      if (kDebugMode) {}
-      return 0;
+      debugPrint('[$_tag] ✅ 알림 생성 완료: $title');
     }
   }
 
   /// 알림 설정 가져오기
-  Future<NotificationSettings> getNotificationSettings() async {
-    try {
-      // 로컬 저장소에서 설정 가져오기
-      final settingsData = await NotificationLocalStorageService.getSettings();
-      return NotificationSettings.fromJson(settingsData);
-    } catch (e) {
-      if (kDebugMode) {
-        LoggerService.debug('알림 설정 가져오기 실패: $e');
-      }
-      return const NotificationSettings();
-    }
+  Future<domain.NotificationSettings> getNotificationSettings() async {
+    // 기본 설정 반환
+    return const domain.NotificationSettings(enabled: true);
   }
 
   /// 알림 설정 저장
-  Future<void> saveNotificationSettings(NotificationSettings settings) async {
-    try {
-      await NotificationLocalStorageService.saveSettings(settings.toJson());
-    } catch (e) {
-      if (kDebugMode) {
-        LoggerService.debug('알림 설정 저장 실패: $e');
-      }
+  Future<void> saveNotificationSettings(
+    domain.NotificationSettings settings,
+  ) async {
+    // TODO: 설정 저장 구현
+    if (kDebugMode) {
+      debugPrint('알림 설정 저장: enabled=${settings.enabled}');
     }
   }
 
-  // 사용하지 않는 메서드들 제거
+  /// 스케줄 알람 등록
+  Future<void> scheduleNotification(
+    domain.NotificationSchedule schedule,
+  ) async {
+    try {
+      if (kDebugMode) {
+        debugPrint(
+          '[$_tag] 🔔 스케줄 알람 등록 - ${schedule.time.hour}:${schedule.time.minute}',
+        );
+      }
+
+      await NotificationDisplayHelper.scheduleNotification(null, schedule);
+
+      if (kDebugMode) {
+        debugPrint('[$_tag] ✅ 스케줄 알람 등록 완료');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('[$_tag] ❌ 스케줄 알람 등록 실패: $e');
+      }
+      rethrow;
+    }
+  }
+
+  /// 스케줄 알람 취소
+  Future<void> cancelScheduledNotification(String scheduleId) async {
+    try {
+      if (kDebugMode) {
+        debugPrint('[$_tag] 🔔 스케줄 알람 취소 - ID: $scheduleId');
+      }
+
+      await NotificationDisplayHelper.cancelScheduledNotification(
+        null,
+        scheduleId,
+      );
+
+      if (kDebugMode) {
+        debugPrint('[$_tag] ✅ 스케줄 알람 취소 완료');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('[$_tag] ❌ 스케줄 알람 취소 실패: $e');
+      }
+      rethrow;
+    }
+  }
 
   /// 리소스 정리
   void dispose() {

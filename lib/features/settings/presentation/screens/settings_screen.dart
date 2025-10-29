@@ -85,26 +85,22 @@ class SettingsScreen extends ConsumerWidget {
             tileColor: AppColors.pureWhite,
             onTap: () => context.push(AppRouter.profileEditRoute),
           ),
-          const SizedBox(height: AppSpacing.xs),
-          SettingsTileWidget(
-            icon: Icons.pets,
-            title: 'ペット情報編集',
-            backgroundColor: const Color(0xFFA88B5A),
-            tileColor: AppColors.pureWhite,
-            onTap: () {
-              LoggerService.debug('🔍 ペット情報編集 버튼 클릭됨 - 간단 테스트');
-              // 간단한 테스트: 바로 펫 등록 화면으로 이동
-              context.push('/daily-pet-registration');
-            },
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          SettingsTileWidget(
-            icon: Icons.lock,
-            title: 'セキュリティ設定',
-            backgroundColor: const Color(0xFFA88B5A),
-            tileColor: AppColors.pureWhite,
-            onTap: () => context.push('/settings/biometric-security'),
-          ),
+          // const SizedBox(height: AppSpacing.xs),
+          // SettingsTileWidget(
+          //   icon: Icons.pets,
+          //   title: 'ペット情報編集',
+          //   backgroundColor: const Color(0xFFA88B5A),
+          //   tileColor: AppColors.pureWhite,
+          //   onTap: () => _handlePetEdit(context, ref),
+          // ),
+          // const SizedBox(height: AppSpacing.xs),
+          // SettingsTileWidget(
+          //   icon: Icons.lock,
+          //   title: 'セキュリティ設定',
+          //   backgroundColor: const Color(0xFFA88B5A),
+          //   tileColor: AppColors.pureWhite,
+          //   onTap: () => context.push('/settings/biometric-security'),
+          // ),
           const SizedBox(height: AppSpacing.xs),
           SettingsTileWidget(
             icon: Icons.delete,
@@ -123,37 +119,37 @@ class SettingsScreen extends ConsumerWidget {
             title: 'アラーム設定',
             backgroundColor: const Color(0xFF7A9CC6),
             tileColor: AppColors.pureWhite,
-            onTap: () => context.push(AppRouter.pushNotificationRoute),
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          SettingsTileWidget(
-            icon: Icons.star,
-            title: 'プレミアム管理',
-            backgroundColor: const Color(0xFF7A9CC6),
-            tileColor: AppColors.pureWhite,
-            onTap: () {},
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          SettingsTileWidget(
-            icon: Icons.lightbulb,
-            title: 'テーマ設定',
-            backgroundColor: const Color(0xFF7A9CC6),
-            tileColor: AppColors.pureWhite,
-            onTap: () {},
+            onTap: () => context.push('/settings/local-alarm-settings'),
           ),
 
+          // const SizedBox(height: AppSpacing.xs),
+          // SettingsTileWidget(
+          //   icon: Icons.star,
+          //   title: 'プレミアム管理',
+          //   backgroundColor: const Color(0xFF7A9CC6),
+          //   tileColor: AppColors.pureWhite,
+          //   onTap: () {},
+          // ),
+          // const SizedBox(height: AppSpacing.xs),
+          // SettingsTileWidget(
+          //   icon: Icons.lightbulb,
+          //   title: 'テーマ設定',
+          //   backgroundColor: const Color(0xFF7A9CC6),
+          //   tileColor: AppColors.pureWhite,
+          //   onTap: () {},
+          // ),
           const SizedBox(height: AppSpacing.lg),
 
           // その他
           const SectionHeaderWidget(title: 'その他'),
-          SettingsTileWidget(
-            icon: Icons.dashboard,
-            title: 'データベースダッシュボード (開発用)',
-            backgroundColor: const Color(0xFF6B73FF),
-            tileColor: AppColors.pureWhite,
-            onTap: () => context.push('/settings/database-dashboard'),
-          ),
-          const SizedBox(height: AppSpacing.xs),
+          // SettingsTileWidget(
+          //   icon: Icons.dashboard,
+          //   title: 'データベースダッシュボード (開発用)',
+          //   backgroundColor: const Color(0xFF6B73FF),
+          //   tileColor: AppColors.pureWhite,
+          //   onTap: () => context.push('/settings/database-dashboard'),
+          // ),
+          // const SizedBox(height: AppSpacing.xs),
           SettingsTileWidget(
             icon: Icons.help,
             title: 'お問い合わせ',
@@ -237,7 +233,9 @@ class SettingsScreen extends ConsumerWidget {
         LoggerService.debug('🖼️ SettingsScreen - File exists: $fileExists');
 
         if (!fileExists) {
-          LoggerService.debug('❌ SettingsScreen - File does not exist: $absolutePath');
+          LoggerService.debug(
+            '❌ SettingsScreen - File does not exist: $absolutePath',
+          );
           return _buildDefaultUserImage(size);
         }
 
@@ -247,7 +245,9 @@ class SettingsScreen extends ConsumerWidget {
           width: size,
           height: size,
           errorBuilder: (context, error, stackTrace) {
-            LoggerService.debug('🖼️ SettingsScreen - File image error: $error');
+            LoggerService.debug(
+              '🖼️ SettingsScreen - File image error: $error',
+            );
             return _buildDefaultUserImage(size);
           },
         );
@@ -258,7 +258,9 @@ class SettingsScreen extends ConsumerWidget {
           width: size,
           height: size,
           errorBuilder: (context, error, stackTrace) {
-            LoggerService.debug('🖼️ SettingsScreen - Network image error: $error');
+            LoggerService.debug(
+              '🖼️ SettingsScreen - Network image error: $error',
+            );
             return _buildDefaultUserImage(size);
           },
         );
@@ -269,7 +271,9 @@ class SettingsScreen extends ConsumerWidget {
           width: size,
           height: size,
           errorBuilder: (context, error, stackTrace) {
-            LoggerService.debug('🖼️ SettingsScreen - Asset image error: $error');
+            LoggerService.debug(
+              '🖼️ SettingsScreen - Asset image error: $error',
+            );
             return _buildDefaultUserImage(size);
           },
         );
@@ -304,4 +308,95 @@ class SettingsScreen extends ConsumerWidget {
       ),
     );
   }
+
+  // /// 펫 정보 편집 처리 (드로워에서 펫 카드 선택 후 상세보기 → 편집으로 대체)
+  // Future<void> _handlePetEdit(BuildContext context, WidgetRef ref) async {
+  //   try {
+  //     LoggerService.debug('🔍 ペット情報編集 버튼 클릭됨');
+  //
+  //     // 펫 목록 가져오기 (.future로 데이터 로드 완료까지 대기)
+  //     final pets = await ref.read(petProfilesProvider.future);
+  //
+  //     LoggerService.debug('📊 로드된 펫 수: ${pets.length}');
+  //
+  //     if (!context.mounted) return;
+  //
+  //     if (pets.isEmpty) {
+  //       LoggerService.debug('📝 등록된 펫이 없음 - 새 등록 화면으로 이동');
+  //       context.push('/daily-pet-registration');
+  //     } else if (pets.length == 1) {
+  //       // 펫이 1마리만 있으면 자동으로 해당 펫 편집
+  //       final petId = pets.first.id;
+  //       LoggerService.debug(
+  //         '✏️ 펫 편집 모드로 이동 - petId: $petId, name: ${pets.first.name}',
+  //       );
+  //       context.push('/daily-pet-registration?petId=$petId');
+  //     } else {
+  //       // 여러 펫이 있으면 선택 다이얼로그 표시
+  //       LoggerService.debug('📋 여러 펫 존재 - 선택 다이얼로그 표시');
+  //       final selectedPet = await _showPetSelectionDialog(context, pets);
+  //       if (selectedPet != null && context.mounted) {
+  //         LoggerService.debug(
+  //           '✏️ 선택된 펫 편집 - petId: ${selectedPet.id}, name: ${selectedPet.name}',
+  //         );
+  //         context.push('/daily-pet-registration?petId=${selectedPet.id}');
+  //       }
+  //     }
+  //   } catch (e, stackTrace) {
+  //     LoggerService.debug('❌ 펫 편집 처리 중 에러: $e');
+  //     LoggerService.debug('Stack trace: $stackTrace');
+  //
+  //     if (context.mounted) {
+  //       // 에러 메시지 표시
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(
+  //           content: Text('ペット情報の読み込みに失敗しました: $e'),
+  //           backgroundColor: Colors.red,
+  //         ),
+  //       );
+  //     }
+  //   }
+  // }
+  //
+  // /// 펫 선택 다이얼로그
+  // Future<PetProfileEntity?> _showPetSelectionDialog(
+  //   BuildContext context,
+  //   List<PetProfileEntity> pets,
+  // ) async {
+  //   return showDialog<PetProfileEntity>(
+  //     context: context,
+  //     builder: (context) => AlertDialog(
+  //       title: const Text('編集するペットを選択'),
+  //       content: SizedBox(
+  //         width: double.maxFinite,
+  //         child: ListView.builder(
+  //           shrinkWrap: true,
+  //           itemCount: pets.length,
+  //           itemBuilder: (context, index) {
+  //             final pet = pets[index];
+  //             return ListTile(
+  //               leading: CircleAvatar(
+  //                 backgroundImage: pet.imagePath != null
+  //                     ? FileImage(File(pet.imagePath!))
+  //                     : null,
+  //                 child: pet.imagePath == null
+  //                     ? Icon(pet.type == 'dog' ? Icons.pets : Icons.settings)
+  //                     : null,
+  //               ),
+  //               title: Text(pet.name),
+  //               subtitle: Text('${pet.type} • ${pet.breed ?? ''}'),
+  //               onTap: () => Navigator.of(context).pop(pet),
+  //             );
+  //           },
+  //         ),
+  //       ),
+  //       actions: [
+  //         TextButton(
+  //           onPressed: () => Navigator.of(context).pop(),
+  //           child: const Text('キャンセル'),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 }
