@@ -1,0 +1,50 @@
+[
+  {
+    "id": "1761742621074",
+    "hospitalId": "hospital_001",
+    "hospitalName": "東京動物病院",
+    "petId": "pet_001",
+    "petName": "ポチ",
+    "reserverName": "山田太郎",
+    "phoneNumber": "090-1234-5678",
+    "purpose": "定期健康診断",
+    "reservationDate": "2025-10-30T21:57:01.072192",
+    "timeSlot": "10:00 - 11:00",
+    "symptoms": "特になし",
+    "status": "pending",
+    "createdAt": "2025-10-29T21:57:01.072192",
+    "updatedAt": "2025-10-29T21:57:01.072192"
+  },
+  {
+    "id": "1761742621078",
+    "hospitalId": "hospital_002",
+    "hospitalName": "渋谷ペットクリニック",
+    "petId": "pet_001",
+    "petName": "タマ",
+    "reserverName": "佐藤花子",
+    "phoneNumber": "090-9876-5432",
+    "purpose": "ワクチン接種",
+    "reservationDate": "2025-11-05T21:57:01.072192",
+    "timeSlot": "14:00 - 15:00",
+    "symptoms": null,
+    "status": "confirmed",
+    "createdAt": "2025-10-29T21:57:01.072192",
+    "updatedAt": "2025-10-29T21:57:01.072192"
+  },
+  {
+    "id": "1761742621079",
+    "hospitalId": "hospital_003",
+    "hospitalName": "新宿動物医療センター",
+    "petId": "pet_002",
+    "petName": "チョコ",
+    "reserverName": "鈴木一郎",
+    "phoneNumber": "080-1111-2222",
+    "purpose": "皮膚科診察",
+    "reservationDate": "2025-11-01T21:57:01.072192",
+    "timeSlot": "16:00 - 17:00",
+    "symptoms": "皮膚に赤みがあります",
+    "status": "pending",
+    "createdAt": "2025-10-29T21:57:01.072192",
+    "updatedAt": "2025-10-29T21:57:01.072192"
+  }
+]

@@ -112,10 +112,17 @@ class NotificationScheduleController extends _$NotificationScheduleController {
 
   /// 스케줄 업데이트
   Future<void> updateSchedule(NotificationSchedule schedule) async {
+    print('🔔 [Controller] 스케줄 업데이트 요청 - ID: ${schedule.id}');
+    print('  - 시간: ${schedule.time.hour}:${schedule.time.minute}');
+    print('  - 활성화: ${schedule.isActive}');
+    print('  - 생성일: ${schedule.createdAt}');
+
     try {
       await _schedulerService.updateSchedule(schedule);
+      print('✅ [Controller] 스케줄 서비스 업데이트 완료, 목록 새로고침 시작');
       await loadSchedules(); // 목록 새로고침
     } catch (e) {
+      print('❌ [Controller] 스케줄 업데이트 실패: $e');
       state = state.copyWith(error: e.toString());
       rethrow;
     }
