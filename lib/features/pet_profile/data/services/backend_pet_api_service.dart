@@ -1,9 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 
 import '../../../../shared/core/api/backend_api_client.dart';
 import '../../../../shared/core/domain/result.dart';
-import '../../../../shared/core/services/logger_service.dart';
 import '../../../../shared/domain/entities/pet_profile_entity.dart';
 
 /// 백엔드 Pet API 서비스

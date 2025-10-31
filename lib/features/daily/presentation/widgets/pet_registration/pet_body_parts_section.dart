@@ -71,7 +71,10 @@ class _PetBodyPartsSectionState extends State<PetBodyPartsSection> {
   void didUpdateWidget(PetBodyPartsSection oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.bodyPartsToManage != widget.bodyPartsToManage) {
-      _loadSelectedBodyParts();
+      // 빌드가 완료된 후에 실행
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _loadSelectedBodyParts();
+      });
     }
   }
 
