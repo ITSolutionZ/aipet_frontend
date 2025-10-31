@@ -117,9 +117,9 @@ class RouteConstants {
   // ===== SHOPPING =====
   static const String petSearchRoute = '/pet-search';
 
-  // ===== BOARD (掲示板) =====
-  static const String boardListRoute = '/board';
-  static const String boardDetailRoute = '/board/:postId';
+  // ===== COMMUNITY (コミュニティ掲示板) =====
+  static const String communityListRoute = '/community';
+  static const String communityDetailRoute = '/community/:postId';
 
   // ===== CONTACT =====
   static const String contactFormRoute = '/contact-form';

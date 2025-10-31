@@ -17,8 +17,8 @@ class MainNavigationScreen extends ConsumerWidget {
       return -1; // 선택된 탭 없음
     }
 
-    if (location.startsWith('/home') || location.startsWith('/board')) {
-      return 0; // 게시판은 홈 탭에 포함
+    if (location.startsWith('/home') || location.startsWith('/community')) {
+      return 0; // 커뮤니티는 홈 탭에 포함
     } else if (location.startsWith('/ai')) {
       return 1;
     } else if (location.startsWith('/walk')) {

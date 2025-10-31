@@ -8,6 +8,7 @@ import '../../domain/entities/calendar_event_entity.dart';
 
 class AddEventScreen extends ConsumerStatefulWidget {
   final DateTime selectedDate;
+
   final CalendarEventEntity? initialEvent;
 
   const AddEventScreen({
@@ -75,6 +76,7 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
   @override
   Widget build(BuildContext context) {
     final isEditing = widget.initialEvent != null;
+    final responsive = context.responsive;
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
@@ -84,7 +86,11 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
         elevation: 0,
         leading: IconButton(
           onPressed: () => context.pop(),
-          icon: const Icon(Icons.close, color: AppColors.pointGray),
+          icon: Icon(
+            Icons.close,
+            color: AppColors.pointGray,
+            size: responsive.ri(24),
+          ),
         ),
         actions: [
           TextButton(
@@ -95,49 +101,53 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppRadius.medium),
               ),
+              padding: responsive.rPaddingSymmetric(
+                horizontal: AppSpacing.md,
+                vertical: AppSpacing.sm,
+              ),
             ),
             child: Text('保存', style: AppFonts.titleMedium),
           ),
-          const SizedBox(width: AppSpacing.md),
+          SizedBox(width: responsive.rs(AppSpacing.md)),
         ],
       ),
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSpacing.lg),
+          padding: responsive.rPadding(AppSpacing.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // 선택된 날짜 표시
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(16),
+                padding: responsive.rPadding(16),
                 decoration: BoxDecoration(
                   color: AppColors.pureWhite,
                   borderRadius: BorderRadius.circular(AppRadius.medium),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withValues(alpha: 0.05),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
+                      blurRadius: responsive.rs(8),
+                      offset: Offset(0, responsive.rs(2)),
                     ),
                   ],
                 ),
                 child: Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(12),
+                      padding: responsive.rPadding(12),
                       decoration: BoxDecoration(
                         color: AppColors.pointBlue.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(AppRadius.small),
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.calendar_today,
                         color: AppColors.pointBlue,
-                        size: 24,
+                        size: responsive.ri(24),
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    SizedBox(width: responsive.rs(16)),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -147,7 +157,7 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
                             color: AppColors.pointGray,
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        SizedBox(height: responsive.rs(4)),
                         Text(
                           DateFormat(
                             'yyyy年 M月 d日 (E)',
@@ -162,24 +172,25 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: responsive.rs(24)),
 
               // 제목
               _buildSectionTitle('제목'),
-              const SizedBox(height: 8),
+              SizedBox(height: responsive.rs(8)),
               TextFormField(
                 controller: _titleController,
                 decoration: InputDecoration(
-                  hintText: '일정 제목을 입력하세요',
-                  prefixIcon: const Icon(
+                  hintText: '일정 제목を入力してください',
+                  prefixIcon: Icon(
                     Icons.title,
                     color: AppColors.pointBlue,
+                    size: responsive.ri(24),
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(AppRadius.medium),
                     borderSide: const BorderSide(color: AppColors.pointGray),
                   ),
-                  contentPadding: const EdgeInsets.symmetric(
+                  contentPadding: responsive.rPaddingSymmetric(
                     horizontal: AppSpacing.md,
                     vertical: AppSpacing.sm,
                   ),
@@ -191,11 +202,11 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
                   return null;
                 },
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: responsive.rs(24)),
 
-              // 카테고리
-              _buildSectionTitle('카테고리'),
-              const SizedBox(height: 8),
+              // 카テゴリー
+              _buildSectionTitle('カテゴリー'),
+              SizedBox(height: responsive.rs(8)),
               Container(
                 decoration: BoxDecoration(
                   color: AppColors.pureWhite,
@@ -206,7 +217,7 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
                   child: DropdownButton<CalendarEventType>(
                     value: _selectedType,
                     isExpanded: true,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: responsive.rPaddingSymmetric(horizontal: 16),
                     items: CalendarEventType.values.map((type) {
                       return DropdownMenuItem(
                         value: type,
@@ -214,9 +225,9 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
                           children: [
                             Text(
                               type.emoji,
-                              style: const TextStyle(fontSize: 20),
+                              style: TextStyle(fontSize: responsive.rf(20)),
                             ),
-                            const SizedBox(width: 12),
+                            SizedBox(width: responsive.rs(12)),
                             Text(type.displayName, style: AppFonts.bodyMedium),
                           ],
                         ),

@@ -34,6 +34,10 @@
 -keep class com.google.firebase.** { *; }
 -dontwarn com.google.firebase.**
 
+# Google Play Core (Flutter deferred components 관련)
+-dontwarn com.google.android.play.core.**
+-keep class com.google.android.play.core.** { *; }
+
 # Gson 관련
 -keepattributes Signature
 -keepattributes *Annotation*

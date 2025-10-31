@@ -1,6 +1,6 @@
-import 'package:aipet_frontend/features/board/data/models/board_post_model.dart';
-import 'package:aipet_frontend/features/board/presentation/screens/board_detail_screen.dart';
-import 'package:aipet_frontend/features/board/presentation/screens/board_list_screen.dart';
+import 'package:aipet_frontend/features/community/data/models/board_post_model.dart';
+import 'package:aipet_frontend/features/community/presentation/screens/board_detail_screen.dart';
+import 'package:aipet_frontend/features/community/presentation/screens/board_list_screen.dart';
 import 'package:aipet_frontend/features/contact/contact.dart';
 import 'package:aipet_frontend/features/daily/presentation/screens/daily_pet_registration_screen.dart';
 import 'package:aipet_frontend/features/daily/presentation/screens/reservation_status_screen_new.dart';
@@ -223,16 +223,16 @@ class StandaloneRoutes {
       name: 'favorites',
       builder: (context, state) => const FavoritesScreen(),
     ),
-    // Board List
+    // Community List
     GoRoute(
-      path: RouteConstants.boardListRoute,
-      name: 'board-list',
+      path: RouteConstants.communityListRoute,
+      name: 'community-list',
       builder: (context, state) => const BoardListScreen(),
     ),
-    // Board Detail
+    // Community Detail
     GoRoute(
-      path: '/board/:postId',
-      name: 'board-detail',
+      path: RouteConstants.communityDetailRoute,
+      name: 'community-detail',
       builder: (context, state) {
         final postId = state.pathParameters['postId'] ?? '';
         final post = state.extra as BoardPost?;

@@ -28,6 +28,7 @@ class _AddLocalAlarmScreenState extends ConsumerState<AddLocalAlarmScreen> {
   final FocusNode _minuteFocusNode = FocusNode();
   bool _isEditingHour = false; // 시간 편집 모드
   bool _isEditingMinute = false; // 분 편집 모드
+  bool _isDailyAlarm = false; // 매일 알람 토글
 
   @override
   void initState() {
@@ -45,6 +46,9 @@ class _AddLocalAlarmScreenState extends ConsumerState<AddLocalAlarmScreen> {
       );
       _selectedDate = DateTime.now();
       _titleController.text = schedule.description;
+
+      // 매일 알람 설정
+      _isDailyAlarm = schedule.scheduleType == notification.ScheduleType.daily;
 
       // 요일 설정 (API: 1=월요일, 7=일요일 → UI: 0=일요일, 1=월요일)
       if (schedule.weekDays != null) {
@@ -81,13 +85,18 @@ class _AddLocalAlarmScreenState extends ConsumerState<AddLocalAlarmScreen> {
       final now = DateTime.now();
 
       // 반복 타입 결정
-      final scheduleType = _selectedDays.isEmpty
-          ? notification.ScheduleType.once
-          : notification.ScheduleType.weekly;
+      final notification.ScheduleType scheduleType;
+      if (_isDailyAlarm) {
+        scheduleType = notification.ScheduleType.daily;
+      } else if (_selectedDays.isEmpty) {
+        scheduleType = notification.ScheduleType.once;
+      } else {
+        scheduleType = notification.ScheduleType.weekly;
+      }
 
       // 요일 변환 (UI: 0=일요일 → API: 1=월요일, 7=일요일)
       List<int>? weekDays;
-      if (_selectedDays.isNotEmpty) {
+      if (_selectedDays.isNotEmpty && !_isDailyAlarm) {
         weekDays = _selectedDays.map((day) {
           return day == 0 ? 7 : day;
         }).toList();
@@ -112,12 +121,19 @@ class _AddLocalAlarmScreenState extends ConsumerState<AddLocalAlarmScreen> {
           minute: time.minute,
         ),
         weekDays: weekDays,
-        isActive: true,
-        createdAt: now,
-        sound: notification.AlarmSound.defaultSound,
+        isActive: widget.schedule?.isActive ?? true, // 편집 시 기존 상태 유지
+        createdAt: widget.schedule?.createdAt ?? now, // 편집 시 기존 생성 시간 유지
+        sound: widget.schedule?.sound ?? notification.AlarmSound.defaultSound,
       );
 
       LoggerService.debug('🔔 [알람추가] 스케줄 저장 시작');
+      LoggerService.debug('  - ID: ${schedule.id}');
+      LoggerService.debug(
+        '  - 시간: ${schedule.time.hour}:${schedule.time.minute}',
+      );
+      LoggerService.debug('  - 반복: ${schedule.scheduleType}');
+      LoggerService.debug('  - 활성화: ${schedule.isActive}');
+      LoggerService.debug('  - 생성일: ${schedule.createdAt}');
 
       // 스케줄 추가 또는 업데이트
       if (widget.schedule != null) {
@@ -533,8 +549,11 @@ class _AddLocalAlarmScreenState extends ConsumerState<AddLocalAlarmScreen> {
             ],
           ),
           const SizedBox(height: AppSpacing.md),
+          // 매일 알람 토글
+          _buildDailyAlarmToggle(),
+          const SizedBox(height: AppSpacing.md),
           // 요일 선택
-          _buildDaySelection(),
+          if (!_isDailyAlarm) _buildDaySelection(),
         ],
       ),
     );
@@ -544,6 +563,61 @@ class _AddLocalAlarmScreenState extends ConsumerState<AddLocalAlarmScreen> {
   String _getWeekdayName(int weekday) {
     const weekdays = ['月', '火', '水', '木', '金', '土', '日'];
     return weekdays[(weekday - 1) % 7];
+  }
+
+  /// 매일 알람 토글
+  Widget _buildDailyAlarmToggle() {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.sm,
+      ),
+      decoration: BoxDecoration(
+        color: _isDailyAlarm
+            ? AppColors.pointPink.withValues(alpha: 0.1)
+            : Colors.transparent,
+        borderRadius: BorderRadius.circular(AppRadius.medium),
+        border: Border.all(
+          color: _isDailyAlarm
+              ? AppColors.pointPink
+              : AppColors.pointGray.withValues(alpha: 0.2),
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.today,
+            size: 20,
+            color: _isDailyAlarm ? AppColors.pointPink : AppColors.pointGray,
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          Expanded(
+            child: Text(
+              '毎日繰り返す',
+              style: AppFonts.bodyMedium.copyWith(
+                color: _isDailyAlarm
+                    ? AppColors.pointPink
+                    : AppColors.pointDark,
+                fontWeight: _isDailyAlarm ? FontWeight.w600 : FontWeight.w400,
+              ),
+            ),
+          ),
+          Switch(
+            value: _isDailyAlarm,
+            onChanged: (value) {
+              setState(() {
+                _isDailyAlarm = value;
+                if (value) {
+                  // 매일 알람이 켜지면 선택된 요일 초기화
+                  _selectedDays.clear();
+                }
+              });
+            },
+            activeThumbColor: AppColors.pointPink,
+          ),
+        ],
+      ),
+    );
   }
 
   /// 요일 선택 UI
