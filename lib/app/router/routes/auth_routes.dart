@@ -12,7 +12,8 @@ class AuthRoutes {
     GoRoute(
       path: RouteConstants.loginRoute,
       name: 'login',
-      builder: (context, state) => const LoginScreen(), // Google 로그인 가능한 일반 로그인 화면
+      builder: (context, state) =>
+          const LoginScreen(), // Google 로그인 가능한 일반 로그인 화면
     ),
     GoRoute(
       path: RouteConstants.signupRoute,
