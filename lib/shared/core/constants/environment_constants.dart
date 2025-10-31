@@ -24,8 +24,10 @@ class EnvironmentConstants {
   // ========== API Base URLs ==========
 
   /// Development API Base URL
+  /// Android 에뮬레이터: http://10.0.2.2:3000
+  /// iOS 시뮬레이터/실제 기기: http://localhost:3000
   static String get devApiBaseUrl =>
-      dotenv.env['DEV_API_BASE_URL'] ?? 'https://dev-api.aipet.com';
+      dotenv.env['DEV_API_BASE_URL'] ?? 'http://localhost:3000';
 
   /// Staging API Base URL
   static String get stagingApiBaseUrl =>

@@ -47,24 +47,32 @@ class BackendPetRepository implements PetProfileRepository {
   }
 
   @override
-  Future<Result<void>> updateSharingSettings(String petId, bool isPublic) async {
+  Future<Result<void>> updateSharingSettings(
+    String petId,
+    bool isPublic,
+  ) async {
     // TODO: 공유 설정 API 구현
-    LoggerService.debug('⚠️ [BackendPetRepository] updateSharingSettings 아직 구현되지 않음');
+    LoggerService.debug(
+      '⚠️ [BackendPetRepository] updateSharingSettings 아직 구현되지 않음',
+    );
     return Result.failure('共有設定機能は開発中です');
   }
 
   @override
   Future<Result<void>> addFamilyManager(String petId, String userId) async {
     // TODO: 가족 관리자 추가 API 구현
-    LoggerService.debug('⚠️ [BackendPetRepository] addFamilyManager 아직 구현되지 않음');
+    LoggerService.debug(
+      '⚠️ [BackendPetRepository] addFamilyManager 아직 구현되지 않음',
+    );
     return Result.failure('家族管理機能は開発中です');
   }
 
   @override
   Future<Result<void>> removeFamilyManager(String petId, String userId) async {
     // TODO: 가족 관리자 제거 API 구현
-    LoggerService.debug('⚠️ [BackendPetRepository] removeFamilyManager 아직 구현되지 않음');
+    LoggerService.debug(
+      '⚠️ [BackendPetRepository] removeFamilyManager 아직 구현되지 않음',
+    );
     return Result.failure('家族管理機能は開発中です');
   }
 }
-

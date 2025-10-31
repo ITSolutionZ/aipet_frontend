@@ -76,14 +76,14 @@ class BackendPetApiService {
 
       if (response.statusCode == 200) {
         final data = response.data;
-        
+
         if (data is Map<String, dynamic>) {
           final pet = _mapToPetEntity(data['data'] ?? data);
-          
+
           if (kDebugMode) {
             LoggerService.debug('✅ 펫 조회 성공: ${pet.name}');
           }
-          
+
           return Result.success('ペット情報を取得しました', pet);
         }
 
@@ -124,14 +124,16 @@ class BackendPetApiService {
 
       if (response.statusCode == 201 || response.statusCode == 200) {
         final data = response.data;
-        
+
         if (data is Map<String, dynamic>) {
           final createdPet = _mapToPetEntity(data['data'] ?? data);
-          
+
           if (kDebugMode) {
-            LoggerService.debug('✅ 펫 생성 성공: ${createdPet.name} (${createdPet.id})');
+            LoggerService.debug(
+              '✅ 펫 생성 성공: ${createdPet.name} (${createdPet.id})',
+            );
           }
-          
+
           return Result.success('ペットを作成しました', createdPet);
         }
 
@@ -166,14 +168,14 @@ class BackendPetApiService {
 
       if (response.statusCode == 200) {
         final data = response.data;
-        
+
         if (data is Map<String, dynamic>) {
           final updatedPet = _mapToPetEntity(data['data'] ?? data);
-          
+
           if (kDebugMode) {
             LoggerService.debug('✅ 펫 업데이트 성공: ${updatedPet.name}');
           }
-          
+
           return Result.success('ペット情報を更新しました', updatedPet);
         }
 
@@ -207,7 +209,7 @@ class BackendPetApiService {
         if (kDebugMode) {
           LoggerService.debug('✅ 펫 삭제 성공: $id');
         }
-        
+
         return Result.success('ペットを削除しました', null);
       } else {
         return Result.failure('ペットの削除に失敗しました');
@@ -310,4 +312,3 @@ class BackendPetApiService {
     return Result.failure(errorMessage);
   }
 }
-
