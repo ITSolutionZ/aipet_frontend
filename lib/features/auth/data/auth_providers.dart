@@ -1,7 +1,6 @@
 library;
 
 import 'package:aipet_frontend/shared/core/services/logger_service.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../domain/repositories/auth_repository.dart';
@@ -11,14 +10,14 @@ import 'repositories/local_auth_impl.dart';
 
 /// AuthRepository Provider
 ///
-/// 모든 모드: 로컬 전용 (LocalAuthImpl)
+/// Firebase Auth 사용 (백엔드 토큰 전송)
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
-  // 🚧 로컬 전용 구현체 사용 (Debug + Release)
-  LoggerService.debug('🔐 [Auth] 로컬 전용 인증 사용');
-  return LocalAuthImpl();
+  // ✅ Firebase Auth 사용 (백엔드 연동)
+  LoggerService.debug('🔐 [Auth] Firebase Auth 사용 (백엔드 연동)');
+  return FirebaseAuthRealImpl();
   
-  // Firebase Auth는 추후 백엔드 연동 시 활성화
-  // return FirebaseAuthRealImpl();
+  // 로컬 전용 (개발/테스트용)
+  // return LocalAuthImpl();
 });
 
 /// AuthFormState Provider
