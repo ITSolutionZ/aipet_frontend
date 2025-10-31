@@ -11,18 +11,14 @@ import 'repositories/local_auth_impl.dart';
 
 /// AuthRepository Provider
 ///
-/// 개발 모드: 로컬 전용 (LocalAuthImpl)
-/// 프로덕션: Firebase Auth (FirebaseAuthRealImpl)
+/// 모든 모드: 로컬 전용 (LocalAuthImpl)
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
-  // 🚧 개발 중: 로컬 전용 구현체 사용
-  if (kDebugMode) {
-    LoggerService.debug('🔐 [Auth] 개발 모드 - 로컬 전용 인증 사용');
-    return LocalAuthImpl();
-  }
-
-  // 프로덕션: Firebase Auth 사용 (추후 활성화)
-  LoggerService.debug('🔐 [Auth] 프로덕션 모드 - Firebase Auth 사용');
-  return FirebaseAuthRealImpl();
+  // 🚧 로컬 전용 구현체 사용 (Debug + Release)
+  LoggerService.debug('🔐 [Auth] 로컬 전용 인증 사용');
+  return LocalAuthImpl();
+  
+  // Firebase Auth는 추후 백엔드 연동 시 활성화
+  // return FirebaseAuthRealImpl();
 });
 
 /// AuthFormState Provider
