@@ -9,6 +9,9 @@ PODS:
     - GoogleUtilities/Environment (~> 8.0)
     - GoogleUtilities/UserDefaults (~> 8.0)
     - PromisesObjC (~> 2.4)
+  - awesome_notifications (0.10.0):
+    - Flutter
+    - IosAwnCore (~> 0.10.0)
   - connectivity_plus (0.0.1):
     - Flutter
   - Firebase/Auth (11.5.0):
@@ -105,6 +108,7 @@ PODS:
     - GTMSessionFetcher/Core
   - image_picker_ios (0.0.1):
     - Flutter
+  - IosAwnCore (0.10.0)
   - local_auth_darwin (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -145,6 +149,7 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
+  - awesome_notifications (from `.symlinks/plugins/awesome_notifications/ios`)
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
@@ -188,11 +193,14 @@ SPEC REPOS:
     - GoogleUtilities
     - GTMAppAuth
     - GTMSessionFetcher
+    - IosAwnCore
     - PromisesObjC
     - RecaptchaInterop
     - Sentry
 
 EXTERNAL SOURCES:
+  awesome_notifications:
+    :path: ".symlinks/plugins/awesome_notifications/ios"
   connectivity_plus:
     :path: ".symlinks/plugins/connectivity_plus/ios"
   firebase_auth:
@@ -247,6 +255,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   AppAuth: 1c1a8afa7e12f2ec3a294d9882dfa5ab7d3cb063
   AppCheckCore: cc8fd0a3a230ddd401f326489c99990b013f0c4f
+  awesome_notifications: 0f432b28098d193920b11a44cfa9d2d9313a3888
   connectivity_plus: cb623214f4e1f6ef8fe7403d580fdad517d2f7dd
   Firebase: 7a56fe4f56b5ab81b86a6822f5b8f909ae6fc7e2
   firebase_auth: b0a89ef56f9b019551464d3f2b9ed8917d4ac65c
@@ -271,6 +280,7 @@ SPEC CHECKSUMS:
   GTMAppAuth: 217a876b249c3c585a54fd6f73e6b58c4f5c4238
   GTMSessionFetcher: 5aea5ba6bd522a239e236100971f10cb71b96ab6
   image_picker_ios: e0ece4aa2a75771a7de3fa735d26d90817041326
+  IosAwnCore: 653786a911089012092ce831f2945cd339855a89
   local_auth_darwin: c3ee6cce0a8d56be34c8ccb66ba31f7f180aaebb
   location: 155caecf9da4f280ab5fe4a55f94ceccfab838f8
   mobile_scanner: 9157936403f5a0644ca3779a38ff8404c5434a93
@@ -289,6 +299,6 @@ SPEC CHECKSUMS:
   sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
   url_launcher_ios: 7a95fa5b60cc718a708b8f2966718e93db0cef1b
 
-PODFILE CHECKSUM: 4f82ea7203480a64cf4a63207327ebaffed20ca3
+PODFILE CHECKSUM: 77a2780636f3d4a927e920f4406b508ba58da4f6
 
 COCOAPODS: 1.16.2

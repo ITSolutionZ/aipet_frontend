@@ -60,3 +60,4 @@ PR_DESCRIPTION_JA.md
 sentry.properties
 .env
 .env.backup
+*.apk

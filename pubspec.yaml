@@ -199,7 +199,7 @@ sentry:
 flutter_launcher_icons:
     android: true
     ios: true
-    image_path: "assets/icons/logos/aipet_logo.png"
+    image_path: "assets/icons/logos/aipet_text.png"
     min_sdk_android: 21
     remove_alpha_ios: true
 

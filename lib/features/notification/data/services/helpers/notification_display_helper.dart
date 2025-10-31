@@ -117,20 +117,58 @@ class NotificationDisplayHelper {
       );
     }
 
-    final success = await AwesomeNotifications().createNotification(
-      content: content,
-      schedule: NotificationCalendar.fromDate(
-        date: nextTime,
-        repeats: schedule.scheduleType == domain.ScheduleType.daily,
+    // ✅ 스케줄 타입에 따라 다르게 설정
+    final NotificationCalendar notificationSchedule;
+
+    if (schedule.scheduleType == domain.ScheduleType.weekly ||
+        schedule.scheduleType == domain.ScheduleType.daily) {
+      // Weekly / Daily: 매일 반복 (시간만 지정, 날짜 지정 X)
+      // ⚠️ 참고: AwesomeNotifications는 여러 요일 지정이 어려워 일단 매일 반복으로 설정
+      notificationSchedule = NotificationCalendar(
+        hour: schedule.time.hour,
+        minute: schedule.time.minute,
+        second: 0,
+        repeats: true,
         allowWhileIdle: true,
         preciseAlarm: true,
-      ),
+      );
+    } else {
+      // Once: 특정 날짜/시간 1회
+      notificationSchedule = NotificationCalendar(
+        year: nextTime.year,
+        month: nextTime.month,
+        day: nextTime.day,
+        hour: schedule.time.hour,
+        minute: schedule.time.minute,
+        second: 0,
+        repeats: false,
+        allowWhileIdle: true,
+        preciseAlarm: true,
+      );
+    }
+
+    if (kDebugMode) {
+      print('📋 [알람등록] NotificationCalendar 상세:');
+      print('   - hour: ${notificationSchedule.hour}');
+      print('   - minute: ${notificationSchedule.minute}');
+      print('   - repeats: ${notificationSchedule.repeats}');
+      print('   - scheduleType: ${schedule.scheduleType}');
+      if (notificationSchedule.year != null) {
+        print('   - year: ${notificationSchedule.year}');
+        print('   - month: ${notificationSchedule.month}');
+        print('   - day: ${notificationSchedule.day}');
+      }
+    }
+
+    final success = await AwesomeNotifications().createNotification(
+      content: content,
+      schedule: notificationSchedule,
     );
 
     if (kDebugMode) {
       print('✅ [AwesomeNotifications] 스케줄 알람 등록 결과: $success');
       print(
-        '   ⏰ 알람이 ${nextTime.hour.toString().padLeft(2, '0')}:${nextTime.minute.toString().padLeft(2, '0')}에 울립니다',
+        '   ⏰ 알람이 ${schedule.time.hour.toString().padLeft(2, '0')}:${schedule.time.minute.toString().padLeft(2, '0')}에 울립니다 (수정된 시간)',
       );
       print('   🔊 content.customSound 실제 값: ${content.customSound}');
 
@@ -143,7 +181,13 @@ class NotificationDisplayHelper {
 
       if (justScheduled.isNotEmpty) {
         print('✅ [AwesomeNotifications] 알람이 시스템에 등록됨!');
-        print('   📋 스케줄 상세: ${justScheduled.first.schedule?.toMap()}');
+        final scheduleMap = justScheduled.first.schedule?.toMap();
+        print('   📋 스케줄 상세: $scheduleMap');
+        if (scheduleMap != null) {
+          print(
+            '   ✅ 시스템 등록 시간 확인: ${scheduleMap['hour']}:${scheduleMap['minute']}',
+          );
+        }
       } else {
         print('❌ [AwesomeNotifications] 알람이 시스템에 등록되지 않음!');
         print('   📋 전체 등록된 알람: ${scheduledList.length}개');
