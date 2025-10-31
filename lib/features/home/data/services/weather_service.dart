@@ -53,10 +53,6 @@ class WeatherService extends BaseLoggingService {
   }
 
   Future<WeatherLocation?> _getCurrentLocation() async {
-    // 현재 환경 및 설정 로깅
-      '🔑 Weather API キー設定状態: ${AppConfig.current.weatherApiKey.isNotEmpty ? '設定済み' : '未設定'}',
-    );
-
     // 테스트 환경에서는 바로 기본 위치 사용
     if (AppConfig.current.environment == 'test') {
       return _getDefaultLocation();
@@ -66,11 +62,10 @@ class WeatherService extends BaseLoggingService {
       // 실제 GPS 위치를 먼저 시도 (사용자의 현재 위치)
       final realLocation = await _getRealLocation();
       if (realLocation != null) {
-          '✅ GPS位置取得成功: ${realLocation.name} (${realLocation.latitude}, ${realLocation.longitude})',
-        );
         return realLocation;
       }
     } catch (e) {
+      // GPS 실패 시 기본 위치 사용
     }
 
     // GPS 실패 시 기본 위치(도쿄 시나가와구) 사용
@@ -80,7 +75,6 @@ class WeatherService extends BaseLoggingService {
   // 실제 GPS 위치를 가져오는 메서드 (사용자의 현재 위치)
   Future<WeatherLocation?> _getRealLocation() async {
     try {
-
       // 1. 위치 서비스 활성화 확인
       final bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
@@ -105,7 +99,7 @@ class WeatherService extends BaseLoggingService {
       final position =
           await Geolocator.getCurrentPosition(
             locationSettings: const LocationSettings(
-              accuracy: LocationAccuracy.high, // 높은 정확도로 변경
+              accuracy: LocationAccuracy.high,
               timeLimit: Duration(seconds: 10),
             ),
           ).timeout(
@@ -129,8 +123,6 @@ class WeatherService extends BaseLoggingService {
           );
 
       // 4. 역지오코딩으로 위치명 가져오기
-        '📍 取得した座標: (${position.latitude}, ${position.longitude}), 精度: ${position.accuracy}m',
-      );
       final locationName = await _getLocationName(
         position.latitude,
         position.longitude,
@@ -149,7 +141,6 @@ class WeatherService extends BaseLoggingService {
   // 위치명을 가져오는 메서드
   Future<String> _getLocationName(double lat, double lon) async {
     try {
-
       // ✅ 새로운 HTTP 클라이언트의 역지오코딩 사용
       final result = await _httpClient.reverseGeocode(
         latitude: lat,
@@ -161,11 +152,9 @@ class WeatherService extends BaseLoggingService {
         final locationName = result.dataOrNull!;
         return locationName;
       } else {
-        logWarning('역지오코딩 실패: ${result.message} - 좌표 사용');
         return _formatCoordinatesAsLocation(lat, lon);
       }
     } catch (e) {
-      logWarning('위치명 가져오기 실패: $e - 좌표 사용');
       return _formatCoordinatesAsLocation(lat, lon);
     }
   }
@@ -225,9 +214,6 @@ class WeatherService extends BaseLoggingService {
       name: '東京都品川区',
     );
   }
-
-  // 마지막 API 요청 시간 추적 (향후 사용 예정)
-  // static DateTime? _lastRequestTime;
 
   /// API 실패 시 목업 날씨 데이터 반환
   WeatherData _getMockWeatherData(String locationName) {
