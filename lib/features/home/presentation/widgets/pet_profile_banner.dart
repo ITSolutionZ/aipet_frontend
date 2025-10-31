@@ -56,19 +56,12 @@ class PetProfileBanner extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // 펫 프로필 섹션
+                  // 펫 프로필 섹션 (완전히 숨김)
                   Expanded(
                     child: petsAsync.when(
-                      data: (pets) {
-                        if (pets.isEmpty) {
-                          return _buildEmptyState(context);
-                        }
-                        return _buildPetProfiles(context, pets);
-                      },
-                      loading: () => const Center(
-                        child: CircularProgressIndicator(color: Colors.white),
-                      ),
-                      error: (error, _) => _buildErrorState(context),
+                      data: (pets) => const SizedBox.shrink(),
+                      loading: () => const SizedBox.shrink(),
+                      error: (error, _) => const SizedBox.shrink(),
                     ),
                   ),
                 ],
@@ -76,24 +69,6 @@ class PetProfileBanner extends ConsumerWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildPetProfiles(BuildContext context, List<PetProfileEntity> pets) {
-    // 펫 프로필과 추가 버튼을 완전히 숨김
-    return const SizedBox.shrink();
-  }
-
-  Widget _buildEmptyState(BuildContext context) {
-    return const SizedBox.shrink(); // 빈 위젯으로 완전히 숨김
-  }
-
-  Widget _buildErrorState(BuildContext context) {
-    return const Center(
-      child: Text(
-        'データの読み込みに失敗しました',
-        style: TextStyle(color: Colors.white, fontSize: 14),
       ),
     );
   }
