@@ -42,11 +42,6 @@ class BackendApiClient {
       LoggingInterceptor(),
       ErrorInterceptor(),
     ]);
-
-    if (kDebugMode) {
-      LoggerService.debug('🚀 BackendApiClient 초기화 완료');
-      LoggerService.debug('   Base URL: ${ApiConfig.fullApiUrl}');
-    }
   }
 
   /// GET 요청
@@ -166,21 +161,9 @@ class FirebaseTokenInterceptor extends Interceptor {
       if (token != null) {
         // Authorization 헤더에 Bearer 토큰 추가
         options.headers['Authorization'] = 'Bearer $token';
-
-        if (kDebugMode) {
-          LoggerService.debug(
-            '🔑 Firebase ID Token 헤더 추가: ${token.substring(0, 20)}...',
-          );
-        }
-      } else {
-        if (kDebugMode) {
-          LoggerService.debug('⚠️ Firebase ID Token이 없습니다 (로그인 필요)');
-        }
       }
     } catch (e) {
-      if (kDebugMode) {
-        LoggerService.debug('❌ Firebase ID Token 추가 실패: $e');
-      }
+      // 에러 무시
     }
 
     handler.next(options);
@@ -190,10 +173,6 @@ class FirebaseTokenInterceptor extends Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) async {
     // 401 Unauthorized 에러 시 토큰 갱신 시도
     if (err.response?.statusCode == 401) {
-      if (kDebugMode) {
-        LoggerService.debug('🔄 401 에러 - Firebase ID Token 갱신 시도');
-      }
-
       try {
         // 토큰 갱신
         final newToken = await FirebaseTokenService.getIdToken(
@@ -211,16 +190,10 @@ class FirebaseTokenInterceptor extends Interceptor {
           final dio = Dio();
           final response = await dio.fetch(opts);
 
-          if (kDebugMode) {
-            LoggerService.debug('✅ 토큰 갱신 후 요청 재시도 성공');
-          }
-
           return handler.resolve(response);
         }
       } catch (e) {
-        if (kDebugMode) {
-          LoggerService.debug('❌ 토큰 갱신 실패: $e');
-        }
+        // 에러 무시
       }
     }
 
@@ -234,39 +207,19 @@ class FirebaseTokenInterceptor extends Interceptor {
 class LoggingInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    if (kDebugMode) {
-      LoggerService.debug('📡 [API Request] ${options.method} ${options.uri}');
-      if (options.data != null) {
-        LoggerService.debug('   Data: ${options.data}');
-      }
-    }
+    // 로깅 비활성화
     handler.next(options);
   }
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    if (kDebugMode) {
-      LoggerService.debug(
-        '✅ [API Response] ${response.statusCode} ${response.requestOptions.uri}',
-      );
-      if (response.data != null) {
-        LoggerService.debug('   Data: ${response.data}');
-      }
-    }
+    // 로깅 비활성화
     handler.next(response);
   }
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
-    if (kDebugMode) {
-      LoggerService.debug(
-        '❌ [API Error] ${err.response?.statusCode} ${err.requestOptions.uri}',
-      );
-      LoggerService.debug('   Message: ${err.message}');
-      if (err.response?.data != null) {
-        LoggerService.debug('   Error Data: ${err.response?.data}');
-      }
-    }
+    // 로깅 비활성화
     handler.next(err);
   }
 }
