@@ -94,16 +94,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         child: Stack(
           children: [
             // メインコンテンツ
-            dashboardState.when(
+            dashboardState.maybeWhen(
               data: (dashboard) => _buildDashboard(dashboard),
-              loading: () => Center(
-                child: Lottie.asset(
-                  'assets/lottie/loading.json',
-                  width: 150,
-                  height: 150,
-                ),
-              ),
               error: (error, stackTrace) => HomeErrorViewWidget(error: error),
+              // 초기 로딩일 때만 전체 화면 로딩 표시
+              orElse: () => dashboardState.hasValue
+                  ? _buildDashboard(dashboardState.value!)
+                  : Center(
+                      child: Lottie.asset(
+                        'assets/lottie/loading.json',
+                        width: 150,
+                        height: 150,
+                      ),
+                    ),
             ),
 
             // ドロワーオーバーレイ（開いている時のみ表示）
@@ -150,7 +153,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           if (dashboard.hasPets) ...[
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-              child: WeatherCardWidget(weather: dashboard.weather),
+              child: _buildWeatherCard(dashboard.weather),
             ),
             const SizedBox(height: AppSpacing.lg),
           ],
@@ -446,5 +449,52 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     } catch (e) {
       // 에러 무시
     }
+  }
+
+  /// 날씨 카드 빌드 (로딩 상태 포함)
+  Widget _buildWeatherCard(WeatherEntity weather) {
+    final dashboardState = ref.watch(homeDashboardProvider);
+
+    // 새로고침 중일 때 날씨 카드 자리에 로딩 표시
+    return dashboardState.isLoading
+        ? Container(
+            height: 180, // 날씨 카드와 비슷한 높이
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(AppSpacing.md),
+              border: Border.all(
+                color: AppColors.pointBrown.withValues(alpha: 0.2),
+                width: 1,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.1),
+                  blurRadius: 10,
+                  spreadRadius: 1,
+                ),
+              ],
+            ),
+            child: const Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircularProgressIndicator(
+                    color: AppColors.pointBrown,
+                    strokeWidth: 2,
+                  ),
+                  SizedBox(height: AppSpacing.md),
+                  Text(
+                    '天気情報を更新中...',
+                    style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
+        : WeatherCardWidget(weather: weather);
   }
 }
