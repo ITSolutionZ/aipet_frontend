@@ -431,7 +431,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     try {
       // 실시간 GPS 위치로 날씨 새로고침
       await ref.read(homeDashboardProvider.notifier).refreshWeatherWithGPS();
-      
+
       // 대시보드 데이터 다시 로드
       ref.invalidate(homeDashboardProvider);
     } catch (e) {

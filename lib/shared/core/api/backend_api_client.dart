@@ -230,41 +230,7 @@ class LoggingInterceptor extends Interceptor {
 class ErrorInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
-    String errorMessage = 'エラーが発生しました';
-
-    switch (err.type) {
-      case DioExceptionType.connectionTimeout:
-      case DioExceptionType.sendTimeout:
-      case DioExceptionType.receiveTimeout:
-        errorMessage = 'タイムアウトが発生しました';
-        break;
-      case DioExceptionType.badResponse:
-        final statusCode = err.response?.statusCode;
-        if (statusCode == 401) {
-          errorMessage = '認証に失敗しました';
-        } else if (statusCode == 403) {
-          errorMessage = 'アクセスが拒否されました';
-        } else if (statusCode == 404) {
-          errorMessage = 'リソースが見つかりません';
-        } else if (statusCode != null && statusCode >= 500) {
-          errorMessage = 'サーバーエラーが発生しました';
-        }
-        break;
-      case DioExceptionType.cancel:
-        errorMessage = 'リクエストがキャンセルされました';
-        break;
-      case DioExceptionType.connectionError:
-      case DioExceptionType.unknown:
-        errorMessage = 'ネットワークエラーが発生しました';
-        break;
-      default:
-        errorMessage = '予期しないエラーが発生しました';
-    }
-
-    if (kDebugMode) {
-      LoggerService.debug('🔍 [Error Interceptor] $errorMessage');
-    }
-
+    // 에러 처리 (로깅 없음)
     handler.next(err);
   }
 }
