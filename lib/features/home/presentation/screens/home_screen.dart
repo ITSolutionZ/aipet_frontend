@@ -428,25 +428,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   /// Pull-to-Refresh 핸들러
   Future<void> _handleRefresh() async {
-    LoggerService.debug('🔄 HomeScreen: Pull-to-Refresh 시작');
-
-    // 실시간 GPS 위치로 날씨 새로고침
-    await _refreshWeatherWithGPS();
-
-    // 대시보드 데이터 다시 로드
-    ref.invalidate(homeDashboardProvider);
-
-    LoggerService.debug('✅ HomeScreen: Pull-to-Refresh 완료');
+    try {
+      // 실시간 GPS 위치로 날씨 새로고침
+      await ref.read(homeDashboardProvider.notifier).refreshWeatherWithGPS();
+      
+      // 대시보드 데이터 다시 로드
+      ref.invalidate(homeDashboardProvider);
+    } catch (e) {
+      // 에러 무시
+    }
   }
 
   /// 실시간 GPS 위치로 날씨 새로고침
   Future<void> _refreshWeatherWithGPS() async {
     try {
-      LoggerService.debug('🌍 [HomeScreen] 실시간 GPS 날씨 새로고침 요청');
       await ref.read(homeDashboardProvider.notifier).refreshWeatherWithGPS();
-      LoggerService.debug('✅ [HomeScreen] GPS 날씨 새로고침 완료');
     } catch (e) {
-      LoggerService.debug('❌ [HomeScreen] GPS 날씨 새로고침 실패: $e');
+      // 에러 무시
     }
   }
 }

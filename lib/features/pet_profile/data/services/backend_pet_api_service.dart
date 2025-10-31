@@ -19,10 +19,6 @@ class BackendPetApiService {
   /// Authorization 헤더는 자동으로 추가됨
   static Future<Result<List<PetProfileEntity>>> getAllPets() async {
     try {
-      if (kDebugMode) {
-        LoggerService.debug('📡 [PetAPI] GET /pets');
-      }
-
       final response = await _apiClient.get('/pets');
 
       if (response.statusCode == 200) {
@@ -42,10 +38,6 @@ class BackendPetApiService {
               pets.add(_mapToPetEntity(item));
             }
           }
-        }
-
-        if (kDebugMode) {
-          LoggerService.debug('✅ 펫 목록 조회 성공: ${pets.length}마리');
         }
 
         return Result.success('ペットリストを取得しました', pets);

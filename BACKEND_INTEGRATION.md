@@ -1,6 +1,7 @@
 # 🔗 백엔드 API 연동 가이드
 
 ## 📋 목차
+
 1. [개요](#개요)
 2. [API 설정](#api-설정)
 3. [인증 방식](#인증-방식)
@@ -14,11 +15,12 @@
 Flutter 앱이 Express 백엔드와 Firebase ID Token으로 인증하여 통신합니다.
 
 ### 핵심 기능
-- ✅ Firebase Auth로 로그인
-- ✅ Firebase ID Token 자동 획득
-- ✅ 모든 API 호출에 `Authorization: Bearer <token>` 자동 추가
-- ✅ 401 에러 시 자동 토큰 갱신
-- ✅ 백엔드 없이도 앱 동작 가능 (로컬 모드)
+
+-   ✅ Firebase Auth로 로그인
+-   ✅ Firebase ID Token 자동 획득
+-   ✅ 모든 API 호출에 `Authorization: Bearer <token>` 자동 추가
+-   ✅ 401 에러 시 자동 토큰 갱신
+-   ✅ 백엔드 없이도 앱 동작 가능 (로컬 모드)
 
 ---
 
@@ -73,19 +75,19 @@ sequenceDiagram
     Flutter->>Firebase: 소셜 인증 요청
     Firebase-->>Flutter: 인증 성공 + ID Token
     Flutter->>Flutter: SecureStorage에 토큰 저장
-    
+
     Flutter->>Backend: GET / (연결 테스트)
     Backend-->>Flutter: 200 OK
-    
+
     Flutter->>Backend: POST /auth/verify-token
     Note right of Backend: Firebase Admin SDK로<br/>토큰 검증
     Backend-->>Flutter: 200 OK
-    
+
     Flutter->>Backend: POST /users {uid, email}
     Backend-->>Flutter: 201 Created
-    
+
     Note over Flutter,Backend: 이후 모든 API 호출
-    
+
     Flutter->>Backend: GET /pets<br/>Authorization: Bearer <token>
     Backend->>Backend: 토큰 검증 & ownerId 추출
     Backend-->>Flutter: 200 OK + 펫 목록
@@ -172,48 +174,52 @@ flutter run -d 4C0DA192-9E69-4869-BDA9-4BF2719D815B  # iOS
 ### 4. 테스트 시나리오
 
 #### ✅ 로그인 테스트
+
 1. Google 로그인 버튼 클릭
 2. 로그 확인:
-   ```
-   🔑 Firebase ID Token 헤더 추가: eyJhbGciOiJSUzI1NiI...
-   📡 [API Request] POST http://localhost:3000/api/v1/auth/verify-token
-   ✅ [API Response] 200
-   ✅ 백엔드 인증 완료
-   ```
+    ```
+    🔑 Firebase ID Token 헤더 추가: eyJhbGciOiJSUzI1NiI...
+    📡 [API Request] POST http://localhost:3000/api/v1/auth/verify-token
+    ✅ [API Response] 200
+    ✅ 백엔드 인증 완료
+    ```
 
 #### ✅ 펫 조회 테스트
+
 1. 펫 목록 화면 이동
 2. 로그 확인:
-   ```
-   📡 [PetAPI] GET /pets
-   🔑 Firebase ID Token 헤더 추가: eyJhbGciOiJSUzI1NiI...
-   📡 [API Request] GET http://localhost:3000/api/v1/pets
-   ✅ [API Response] 200
-   ✅ 펫 목록 조회 성공: 3마리
-   ```
+    ```
+    📡 [PetAPI] GET /pets
+    🔑 Firebase ID Token 헤더 추가: eyJhbGciOiJSUzI1NiI...
+    📡 [API Request] GET http://localhost:3000/api/v1/pets
+    ✅ [API Response] 200
+    ✅ 펫 목록 조회 성공: 3마리
+    ```
 
 #### ✅ 펫 생성 테스트
+
 1. 펫 등록 화면에서 새 펫 생성
 2. 로그 확인:
-   ```
-   📡 [PetAPI] POST /pets
-   🔑 Firebase ID Token 헤더 추가: eyJhbGciOiJSUzI1NiI...
-   📡 [API Request] POST http://localhost:3000/api/v1/pets
-   ✅ [API Response] 201
-   ✅ 펫 생성 성공: テスト (pet_123456)
-   ```
+    ```
+    📡 [PetAPI] POST /pets
+    🔑 Firebase ID Token 헤더 추가: eyJhbGciOiJSUzI1NiI...
+    📡 [API Request] POST http://localhost:3000/api/v1/pets
+    ✅ [API Response] 201
+    ✅ 펫 생성 성공: テスト (pet_123456)
+    ```
 
 #### ✅ 401 에러 테스트 (토큰 만료)
+
 1. 토큰 만료 대기 (1시간)
 2. 펫 목록 조회
 3. 로그 확인:
-   ```
-   📡 [API Request] GET http://localhost:3000/api/v1/pets
-   ❌ [API Error] 401
-   🔄 401 에러 - Firebase ID Token 갱신 시도
-   ✅ 토큰 갱신 후 요청 재시도 성공
-   ✅ [API Response] 200
-   ```
+    ```
+    📡 [API Request] GET http://localhost:3000/api/v1/pets
+    ❌ [API Error] 401
+    🔄 401 에러 - Firebase ID Token 갱신 시도
+    ✅ 토큰 갱신 후 요청 재시도 성공
+    ✅ [API Response] 200
+    ```
 
 ---
 
@@ -258,49 +264,55 @@ lib/
 
 ### 필수 구현
 
-- [ ] Firebase Admin SDK 설정
-  ```javascript
-  import admin from 'firebase-admin';
-  const serviceAccount = require('./firebase-service-account.json');
-  admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
-  ```
+-   [ ] Firebase Admin SDK 설정
 
-- [ ] Firebase 토큰 검증 미들웨어
-  ```javascript
-  const firebaseAuthMiddleware = async (req, res, next) => {
-    const token = req.headers.authorization?.replace('Bearer ', '');
-    const decodedToken = await admin.auth().verifyIdToken(token);
-    req.user = { uid: decodedToken.uid, email: decodedToken.email };
-    next();
-  };
-  ```
+    ```javascript
+    import admin from "firebase-admin";
+    const serviceAccount = require("./firebase-service-account.json");
+    admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
+    ```
 
-- [ ] 필수 엔드포인트 구현
-  ```
-  GET  /                        - 연결 테스트
-  POST /auth/verify-token       - 토큰 검증 (선택)
-  POST /users                   - 사용자 등록 (선택)
-  GET  /auth/me                 - 현재 사용자 조회
-  GET  /pets                    - 펫 목록 조회
-  GET  /pets/:id                - 펫 상세 조회
-  POST /pets                    - 펫 생성
-  PUT  /pets/:id                - 펫 수정
-  DELETE /pets/:id              - 펫 삭제
-  ```
+-   [ ] Firebase 토큰 검증 미들웨어
 
-- [ ] CORS 설정
-  ```javascript
-  app.use(cors({
-    origin: ['http://localhost:*', 'http://10.0.2.2:*'],
-    credentials: true
-  }));
-  ```
+    ```javascript
+    const firebaseAuthMiddleware = async (req, res, next) => {
+        const token = req.headers.authorization?.replace("Bearer ", "");
+        const decodedToken = await admin.auth().verifyIdToken(token);
+        req.user = { uid: decodedToken.uid, email: decodedToken.email };
+        next();
+    };
+    ```
+
+-   [ ] 필수 엔드포인트 구현
+
+    ```
+    GET  /                        - 연결 테스트
+    POST /auth/verify-token       - 토큰 검증 (선택)
+    POST /users                   - 사용자 등록 (선택)
+    GET  /auth/me                 - 현재 사용자 조회
+    GET  /pets                    - 펫 목록 조회
+    GET  /pets/:id                - 펫 상세 조회
+    POST /pets                    - 펫 생성
+    PUT  /pets/:id                - 펫 수정
+    DELETE /pets/:id              - 펫 삭제
+    ```
+
+-   [ ] CORS 설정
+    ```javascript
+    app.use(
+        cors({
+            origin: ["http://localhost:*", "http://10.0.2.2:*"],
+            credentials: true,
+        })
+    );
+    ```
 
 ---
 
 ## 트러블슈팅
 
 ### 문제 1: "Connection refused"
+
 ```bash
 # 해결: 백엔드 서버 실행 확인
 cd aipet_backend
@@ -310,6 +322,7 @@ npm run dev
 ```
 
 ### 문제 2: Android 에뮬레이터에서 연결 안 됨
+
 ```bash
 # 해결: ADB reverse 설정
 adb reverse tcp:3000 tcp:3000
@@ -319,12 +332,14 @@ DEV_API_BASE_URL=http://10.0.2.2:3000
 ```
 
 ### 문제 3: "401 Unauthorized"
+
 ```
 # 원인: Firebase Admin SDK 미설정
 # 해결: 백엔드에 firebase-service-account.json 추가
 ```
 
 ### 문제 4: "404 Not Found - /auth/verify-token"
+
 ```
 # 정상: 이 엔드포인트는 선택사항
 # 토큰은 이미 저장되어 다른 API 호출 시 사용됨
@@ -354,6 +369,7 @@ ApiConfig.printCurrentConfig();
 ## 디버깅 도구
 
 ### Firebase 토큰 디버그
+
 ```dart
 await FirebaseTokenService.debugTokenInfo();
 
@@ -369,6 +385,7 @@ await FirebaseTokenService.debugTokenInfo();
 ```
 
 ### 백엔드 연결 테스트
+
 ```dart
 final isConnected = await BackendTokenService.testBackendConnection();
 print('백엔드 연결: ${isConnected ? "성공" : "실패"}');
@@ -379,6 +396,7 @@ print('백엔드 연결: ${isConnected ? "성공" : "실패"}');
 ## 주요 클래스
 
 ### 1. FirebaseTokenService
+
 ```dart
 // Firebase ID Token 관리
 await FirebaseTokenService.getIdToken()           // 토큰 획득
@@ -389,6 +407,7 @@ await FirebaseTokenService.clearToken()           // 로그아웃
 ```
 
 ### 2. BackendApiClient
+
 ```dart
 // HTTP 클라이언트 (토큰 자동 추가)
 final client = BackendApiClient.instance;
@@ -399,6 +418,7 @@ await client.delete('/pets/:id')                  // DELETE
 ```
 
 ### 3. BackendTokenService
+
 ```dart
 // 백엔드 인증 서비스
 await BackendTokenService.authenticateWithBackend()  // 전체 인증
@@ -408,6 +428,7 @@ await BackendTokenService.testBackendConnection()    // 연결 테스트
 ```
 
 ### 4. BackendPetApiService
+
 ```dart
 // 펫 API 서비스
 await BackendPetApiService.getAllPets()           // GET /pets
@@ -422,6 +443,7 @@ await BackendPetApiService.deletePet(id)          // DELETE /pets/:id
 ## 예제 코드
 
 ### 로그인 후 펫 조회
+
 ```dart
 // 1. Google 로그인
 final authController = ref.read(authControllerProvider.notifier);
@@ -429,10 +451,10 @@ final loginResult = await authController.loginWithGoogle();
 
 if (loginResult.isSuccess) {
   print('✅ 로그인 성공');
-  
+
   // 2. 펫 목록 조회 (토큰 자동 추가!)
   final petsResult = await BackendPetApiService.getAllPets();
-  
+
   if (petsResult.isSuccess) {
     final pets = petsResult.dataOrNull ?? [];
     print('✅ 펫 ${pets.length}마리 조회 성공');
@@ -441,6 +463,7 @@ if (loginResult.isSuccess) {
 ```
 
 ### 새 펫 생성
+
 ```dart
 final newPet = PetProfileEntity(
   id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -482,18 +505,19 @@ PROD_API_BASE_URL=https://api.aipet.com
 ## 보안 고려사항
 
 ### ✅ 안전한 것
-- Firebase ID Token은 HTTP 요청 헤더로만 전송
-- SecureStorage에 암호화 저장
-- 1시간마다 자동 만료 (Firebase 기본값)
-- 401 에러 시 자동 갱신
+
+-   Firebase ID Token은 HTTP 요청 헤더로만 전송
+-   SecureStorage에 암호화 저장
+-   1시간마다 자동 만료 (Firebase 기본값)
+-   401 에러 시 자동 갱신
 
 ### ⚠️ 주의사항
-- Firebase Service Account Key는 **절대** 프론트엔드에 포함하지 말 것
-- 백엔드에서만 사용
-- `.gitignore`에 추가 필수
+
+-   Firebase Service Account Key는 **절대** 프론트엔드에 포함하지 말 것
+-   백엔드에서만 사용
+-   `.gitignore`에 추가 필수
 
 ---
 
-**프론트엔드 구현 완료!** 🎉  
+**프론트엔드 구현 완료!** 🎉
 **백엔드만 구현하면 바로 사용 가능합니다!** 🚀
-
