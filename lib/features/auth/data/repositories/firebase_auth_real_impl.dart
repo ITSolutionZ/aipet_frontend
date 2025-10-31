@@ -5,8 +5,7 @@ import 'package:aipet_frontend/shared/shared.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-// TODO: Re-enable when Google Sign-In is reimplemented for google_sign_in 7.2.0+
-// import 'package:google_sign_in/google_sign_in.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
@@ -32,9 +31,8 @@ class FirebaseAuthRealImpl implements AuthRepository {
   /// Firebase Auth 인스턴스
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-  // Google Sign-In 인스턴스 (이메일, 프로필 스코프 포함)
-  // TODO: Update to google_sign_in 7.2.0+ API - currently commented out due to API changes
-  // GoogleSignIn get _googleSignIn => GoogleSignIn(...);
+  /// Google Sign-In 인스턴스
+  final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
 
   /// LINE OAuth 서비스 인스턴스
   final LineOAuthService _lineOAuthService = LineOAuthService();
@@ -107,25 +105,74 @@ class FirebaseAuthRealImpl implements AuthRepository {
 
   @override
   Future<Result<AuthUser>> signInWithGoogle() async {
-    // TODO: Google Sign-In implementation needs to be updated for google_sign_in 7.2.0+
-    // The API has changed significantly. For now, return a failure.
-    // When implementing, refer to: https://pub.dev/packages/google_sign_in
-
-    if (kDebugMode) {
-      LoggerService.debug('⚠️ Google Sign-In は現在利用できません (API更新が必要)');
-    }
-
-    return Result.failure('Google ログインは現在利用できません。開発中です。');
-
-    /* TODO: Update to new API
     try {
-      // New google_sign_in 7.2.0+ API
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      // ... implementation
+      // Google Sign-In 초기화
+      await _googleSignIn.initialize();
+
+      // Google Sign-In 인증 시작
+      final GoogleSignInAccount? googleUser;
+      try {
+        googleUser = await _googleSignIn.authenticate(
+          scopeHint: [
+            'email',
+            'https://www.googleapis.com/auth/userinfo.profile',
+          ],
+        );
+      } catch (authError) {
+        if (kDebugMode) {
+          LoggerService.debug('❌ Google Sign-In 에러: $authError');
+        }
+        
+        // 사용자 취소 에러인 경우
+        if (authError.toString().contains('canceled') ||
+            authError.toString().contains('cancelled')) {
+          return Result.failure('Googleログインがキャンセルされました');
+        }
+        
+        rethrow;
+      }
+
+      // Google 인증 토큰 획득
+      final GoogleSignInAuthentication googleAuth = googleUser.authentication;
+
+      if (googleAuth.idToken == null) {
+        throw Exception('Google idTokenを獲得できませんでした');
+      }
+
+      // Firebase 자격증명 생성
+      final credential = GoogleAuthProvider.credential(
+        idToken: googleAuth.idToken,
+      );
+
+      // Firebase Auth로 로그인
+      final userCredential = await _firebaseAuth.signInWithCredential(
+        credential,
+      );
+
+      if (userCredential.user != null) {
+        final user = _mapFirebaseUserToAuthUser(userCredential.user!);
+
+        if (kDebugMode) {
+          LoggerService.debug('✅ Google Sign-In 성공: ${user.email}');
+        }
+
+        return Result.success('Googleログインが完了しました', user);
+      }
+
+      return Result.failure('Googleログインに失敗しました');
     } catch (e) {
-      return Result.failure('Google ログインに失敗しました: ${e.toString()}');
+      if (kDebugMode) {
+        LoggerService.debug('❌ Google Sign-In 에러: $e');
+      }
+
+      // 사용자 취소 에러인 경우
+      if (e.toString().contains('canceled') ||
+          e.toString().contains('cancelled')) {
+        return Result.failure('Googleログインがキャンセルされました');
+      }
+
+      return Result.failure('Googleログインに失敗しました: ${e.toString()}');
     }
-    */
   }
 
   @override
