@@ -47,10 +47,7 @@ class BackendPetApiService {
     } on DioException catch (e) {
       return _handleDioError('펫 목록 조회', e);
     } catch (e) {
-      if (kDebugMode) {
-        LoggerService.debug('❌ [PetAPI] getAllPets 에러: $e');
-      }
-      return Result.failure('ペットリストの取得に失敗しました: ${e.toString()}');
+      return Result.failure('ペットリストの取得に失敗しました');
     }
   }
 
@@ -60,10 +57,6 @@ class BackendPetApiService {
   /// Authorization 헤더는 자동으로 추가됨
   static Future<Result<PetProfileEntity?>> getPetById(String id) async {
     try {
-      if (kDebugMode) {
-        LoggerService.debug('📡 [PetAPI] GET /pets/$id');
-      }
-
       final response = await _apiClient.get('/pets/$id');
 
       if (response.statusCode == 200) {
@@ -71,11 +64,6 @@ class BackendPetApiService {
 
         if (data is Map<String, dynamic>) {
           final pet = _mapToPetEntity(data['data'] ?? data);
-
-          if (kDebugMode) {
-            LoggerService.debug('✅ 펫 조회 성공: ${pet.name}');
-          }
-
           return Result.success('ペット情報を取得しました', pet);
         }
 
@@ -91,10 +79,7 @@ class BackendPetApiService {
       }
       return _handleDioError('펫 조회', e);
     } catch (e) {
-      if (kDebugMode) {
-        LoggerService.debug('❌ [PetAPI] getPetById 에러: $e');
-      }
-      return Result.failure('ペット情報の取得に失敗しました: ${e.toString()}');
+      return Result.failure('ペット情報の取得に失敗しました');
     }
   }
 
@@ -107,10 +92,6 @@ class BackendPetApiService {
     PetProfileEntity pet,
   ) async {
     try {
-      if (kDebugMode) {
-        LoggerService.debug('📡 [PetAPI] POST /pets');
-      }
-
       final petData = _petEntityToMap(pet);
       final response = await _apiClient.post('/pets', data: petData);
 
@@ -119,27 +100,17 @@ class BackendPetApiService {
 
         if (data is Map<String, dynamic>) {
           final createdPet = _mapToPetEntity(data['data'] ?? data);
-
-          if (kDebugMode) {
-            LoggerService.debug(
-              '✅ 펫 생성 성공: ${createdPet.name} (${createdPet.id})',
-            );
-          }
-
           return Result.success('ペットを作成しました', createdPet);
         }
 
-        return Result.failure('ペットの作成に失敗しました: 응답 데이터 없음');
+        return Result.failure('ペットの作成に失敗しました');
       } else {
         return Result.failure('ペットの作成に失敗しました');
       }
     } on DioException catch (e) {
       return _handleDioError('펫 생성', e);
     } catch (e) {
-      if (kDebugMode) {
-        LoggerService.debug('❌ [PetAPI] createPet 에러: $e');
-      }
-      return Result.failure('ペットの作成に失敗しました: ${e.toString()}');
+      return Result.failure('ペットの作成に失敗しました');
     }
   }
 
@@ -151,10 +122,6 @@ class BackendPetApiService {
     PetProfileEntity pet,
   ) async {
     try {
-      if (kDebugMode) {
-        LoggerService.debug('📡 [PetAPI] PUT /pets/${pet.id}');
-      }
-
       final petData = _petEntityToMap(pet);
       final response = await _apiClient.put('/pets/${pet.id}', data: petData);
 
@@ -163,25 +130,17 @@ class BackendPetApiService {
 
         if (data is Map<String, dynamic>) {
           final updatedPet = _mapToPetEntity(data['data'] ?? data);
-
-          if (kDebugMode) {
-            LoggerService.debug('✅ 펫 업데이트 성공: ${updatedPet.name}');
-          }
-
           return Result.success('ペット情報を更新しました', updatedPet);
         }
 
-        return Result.failure('ペット情報の更新に失敗しました: 응답 데이터 없음');
+        return Result.failure('ペット情報の更新に失敗しました');
       } else {
         return Result.failure('ペット情報の更新に失敗しました');
       }
     } on DioException catch (e) {
       return _handleDioError('펫 업데이트', e);
     } catch (e) {
-      if (kDebugMode) {
-        LoggerService.debug('❌ [PetAPI] updatePet 에러: $e');
-      }
-      return Result.failure('ペット情報の更新に失敗しました: ${e.toString()}');
+      return Result.failure('ペット情報の更新に失敗しました');
     }
   }
 
@@ -191,17 +150,9 @@ class BackendPetApiService {
   /// Authorization 헤더는 자동으로 추가됨
   static Future<Result<void>> deletePet(String id) async {
     try {
-      if (kDebugMode) {
-        LoggerService.debug('📡 [PetAPI] DELETE /pets/$id');
-      }
-
       final response = await _apiClient.delete('/pets/$id');
 
       if (response.statusCode == 200 || response.statusCode == 204) {
-        if (kDebugMode) {
-          LoggerService.debug('✅ 펫 삭제 성공: $id');
-        }
-
         return Result.success('ペットを削除しました', null);
       } else {
         return Result.failure('ペットの削除に失敗しました');
@@ -209,10 +160,7 @@ class BackendPetApiService {
     } on DioException catch (e) {
       return _handleDioError('펫 삭제', e);
     } catch (e) {
-      if (kDebugMode) {
-        LoggerService.debug('❌ [PetAPI] deletePet 에러: $e');
-      }
-      return Result.failure('ペットの削除に失敗しました: ${e.toString()}');
+      return Result.failure('ペットの削除に失敗しました');
     }
   }
 
@@ -268,12 +216,6 @@ class BackendPetApiService {
 
   /// DioException 에러 처리
   static Result<T> _handleDioError<T>(String operation, DioException e) {
-    if (kDebugMode) {
-      LoggerService.debug('❌ [$operation] DioException: ${e.type}');
-      LoggerService.debug('   Status Code: ${e.response?.statusCode}');
-      LoggerService.debug('   Message: ${e.message}');
-    }
-
     String errorMessage = 'エラーが発生しました';
 
     switch (e.type) {

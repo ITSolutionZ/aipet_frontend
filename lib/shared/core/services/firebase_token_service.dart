@@ -19,26 +19,12 @@ class FirebaseTokenService {
     try {
       final user = _auth.currentUser;
       if (user == null) {
-        if (kDebugMode) {
-          LoggerService.debug('⚠️ Firebase 사용자가 로그인하지 않았습니다');
-        }
         return null;
       }
 
       final token = await user.getIdToken(forceRefresh);
-      
-      if (kDebugMode) {
-        LoggerService.debug('✅ Firebase ID Token 획득 완료 (forceRefresh: $forceRefresh)');
-        if (token != null && token.length > 20) {
-          LoggerService.debug('   Token: ${token.substring(0, 20)}...');
-        }
-      }
-
       return token;
     } catch (e) {
-      if (kDebugMode) {
-        LoggerService.debug('❌ Firebase ID Token 획득 실패: $e');
-      }
       return null;
     }
   }
@@ -50,23 +36,12 @@ class FirebaseTokenService {
     try {
       final token = await getIdToken();
       if (token == null) {
-        if (kDebugMode) {
-          LoggerService.debug('⚠️ 저장할 토큰이 없습니다');
-        }
         return false;
       }
 
       await SecureStorageService.saveToken(token);
-      
-      if (kDebugMode) {
-        LoggerService.debug('✅ Firebase ID Token을 SecureStorage에 저장 완료');
-      }
-      
       return true;
     } catch (e) {
-      if (kDebugMode) {
-        LoggerService.debug('❌ Firebase ID Token 저장 실패: $e');
-      }
       return false;
     }
   }
@@ -75,20 +50,8 @@ class FirebaseTokenService {
   static Future<String?> getTokenFromStorage() async {
     try {
       final token = await SecureStorageService.getToken();
-      
-      if (kDebugMode) {
-        if (token != null) {
-          LoggerService.debug('✅ SecureStorage에서 토큰 조회 완료');
-        } else {
-          LoggerService.debug('⚠️ SecureStorage에 저장된 토큰이 없습니다');
-        }
-      }
-      
       return token;
     } catch (e) {
-      if (kDebugMode) {
-        LoggerService.debug('❌ 토큰 조회 실패: $e');
-      }
       return null;
     }
   }
@@ -104,16 +67,8 @@ class FirebaseTokenService {
       }
 
       await SecureStorageService.saveToken(token);
-      
-      if (kDebugMode) {
-        LoggerService.debug('✅ Firebase ID Token 갱신 및 저장 완료');
-      }
-      
       return token;
     } catch (e) {
-      if (kDebugMode) {
-        LoggerService.debug('❌ 토큰 갱신 실패: $e');
-      }
       return null;
     }
   }
@@ -132,9 +87,6 @@ class FirebaseTokenService {
       final token = await user.getIdToken();
       return token != null;
     } catch (e) {
-      if (kDebugMode) {
-        LoggerService.debug('❌ 토큰 유효성 검증 실패: $e');
-      }
       return false;
     }
   }
@@ -143,14 +95,8 @@ class FirebaseTokenService {
   static Future<void> clearToken() async {
     try {
       await SecureStorageService.clearTokens();
-      
-      if (kDebugMode) {
-        LoggerService.debug('✅ Firebase ID Token 삭제 완료');
-      }
     } catch (e) {
-      if (kDebugMode) {
-        LoggerService.debug('❌ 토큰 삭제 실패: $e');
-      }
+      // 에러 무시
     }
   }
 
