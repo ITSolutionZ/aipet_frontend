@@ -1,4 +1,5 @@
 import 'package:aipet_frontend/features/pet_profile/pet_profile.dart';
+import 'package:aipet_frontend/shared/core/services/backend_token_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -195,9 +196,23 @@ class AuthController extends Notifier<AuthFormState> {
   /// Google 로그인 처리
   Future<AuthControllerResult> loginWithGoogle() async {
     try {
+      // 1. Google 로그인 실행
       final result = await _socialLoginUseCase.loginWithGoogle();
 
       if (result.isSuccess) {
+        // 2. 백엔드에 Firebase ID Token 전송
+        try {
+          final backendAuthSuccess = await BackendTokenService.authenticateWithBackend();
+          if (backendAuthSuccess) {
+            LoggerService.debug('✅ 백엔드 인증 완료');
+          } else {
+            LoggerService.debug('⚠️ 백엔드 인증 실패 (앱은 계속 사용 가능)');
+          }
+        } catch (e) {
+          LoggerService.debug('⚠️ 백엔드 인증 중 에러: $e');
+          // 백엔드 인증 실패해도 Firebase 로그인은 성공으로 처리
+        }
+
         return Result.success('Googleログインが完了しました', '');
       } else {
         return Result.failure('Googleログインに失敗しました');
@@ -211,9 +226,23 @@ class AuthController extends Notifier<AuthFormState> {
   /// Apple 로그인 처리
   Future<AuthControllerResult> loginWithApple() async {
     try {
+      // 1. Apple 로그인 실행
       final result = await _socialLoginUseCase.loginWithApple();
 
       if (result.isSuccess) {
+        // 2. 백엔드에 Firebase ID Token 전송
+        try {
+          final backendAuthSuccess = await BackendTokenService.authenticateWithBackend();
+          if (backendAuthSuccess) {
+            LoggerService.debug('✅ 백엔드 인증 완료');
+          } else {
+            LoggerService.debug('⚠️ 백엔드 인증 실패 (앱은 계속 사용 가능)');
+          }
+        } catch (e) {
+          LoggerService.debug('⚠️ 백엔드 인증 중 에러: $e');
+          // 백엔드 인증 실패해도 Firebase 로그인은 성공으로 처리
+        }
+
         return Result.success('Appleログインが完了しました', '');
       } else {
         return Result.failure('Appleログインに失敗しました');
@@ -227,9 +256,23 @@ class AuthController extends Notifier<AuthFormState> {
   /// LINE 로그인 처리
   Future<AuthControllerResult> loginWithLine() async {
     try {
+      // 1. LINE 로그인 실행
       final result = await _socialLoginUseCase.loginWithLine();
 
       if (result.isSuccess) {
+        // 2. 백엔드에 Firebase ID Token 전송
+        try {
+          final backendAuthSuccess = await BackendTokenService.authenticateWithBackend();
+          if (backendAuthSuccess) {
+            LoggerService.debug('✅ 백엔드 인증 완료');
+          } else {
+            LoggerService.debug('⚠️ 백엔드 인증 실패 (앱은 계속 사용 가능)');
+          }
+        } catch (e) {
+          LoggerService.debug('⚠️ 백엔드 인증 중 에러: $e');
+          // 백엔드 인증 실패해도 Firebase 로그인은 성공으로 처리
+        }
+
         return Result.success('LINEログインが完了しました', '');
       } else {
         return Result.failure('LINEログインに失敗しました');
