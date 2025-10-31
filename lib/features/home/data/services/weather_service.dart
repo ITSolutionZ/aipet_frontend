@@ -17,17 +17,8 @@ class WeatherService extends BaseLoggingService {
     bool userTriggered = false,
   }) async {
     try {
-      logDebug('🌤️ =============[ WeatherService 호출 ]=============');
-      logDebug(
-        '📍 전달받은 위치: ${location != null ? '${location.name} (${location.latitude}, ${location.longitude})' : 'null - ユーザーのGPS位置を使用'}',
-      );
-      logDebug('👤 사용자 직접 요청: $userTriggered');
-
       // 위치가 지정되지 않은 경우 사용자의 실제 GPS 위치 사용
       final weatherLocation = location ?? await _getCurrentLocation();
-      logDebug(
-        '📍 최종 사용 위치: ${weatherLocation?.name ?? 'null'} (${weatherLocation?.latitude}, ${weatherLocation?.longitude})',
-      );
       if (weatherLocation == null) return null;
 
       // API 키 확인
@@ -35,17 +26,12 @@ class WeatherService extends BaseLoggingService {
           AppConfig.current.baseApiKey.isEmpty) {
         // 테스트 환경에서는 Mock 데이터 사용
         if (AppConfig.current.environment == 'test') {
-          logDebug('🧪 테스트 환경 - Mock 날씨 데이터 사용');
           return _getMockWeatherData(weatherLocation.name);
         }
-        logDebug('❌ 모든 Weather API 키가 없음 - Mock 데이터 사용');
         return _getMockWeatherData(weatherLocation.name);
       }
 
-      logDebug('🔑 Weather API 키 상태: 설정됨');
-      logDebug('🎯 OpenWeatherMap API 호출 시작...');
-
-      // ✅ 새로운 HTTP 클라이언트 사용
+      // OpenWeatherMap API 호출
       final response = await _httpClient.getCurrentWeather(
         latitude: weatherLocation.latitude,
         longitude: weatherLocation.longitude,
@@ -54,26 +40,13 @@ class WeatherService extends BaseLoggingService {
 
       if (response.isSuccess && response.dataOrNull != null) {
         final data = response.dataOrNull!;
-        logDebug('📊 날씨 API 응답 데이터:');
-        logDebug(
-          '  - 위치: ${weatherLocation.name} (${weatherLocation.latitude}, ${weatherLocation.longitude})',
-        );
-        logDebug('  - 현재 온도: ${data['main']?['temp']}°C');
-        logDebug('  - 날씨: ${data['weather']?[0]?['description']}');
-
         final weatherData = WeatherData.fromJson(data, weatherLocation.name);
-        logDebug(
-          '✅ 날씨 데이터 생성 완료: ${weatherData.location}, ${weatherData.temperature}°C',
-        );
         return weatherData;
       } else {
-        logWarning('날씨 API 실패: ${response.message}');
         return _getMockWeatherData(weatherLocation.name);
       }
     } catch (e) {
       // 기본 API 실패시 목업 데이터 사용
-      logError('날씨 API 호출 실패: $e');
-      logDebug('🔄 목업 데이터 사용');
       final weatherLocation = location ?? _getDefaultLocation();
       return _getMockWeatherData(weatherLocation.name);
     }
@@ -81,70 +54,54 @@ class WeatherService extends BaseLoggingService {
 
   Future<WeatherLocation?> _getCurrentLocation() async {
     // 현재 환경 및 설정 로깅
-    logDebug('🔍 =============[ ユーザー位置取得 開始 ]=============');
-    logDebug('🌍 現在環境: ${AppConfig.current.environment}');
-    logDebug(
       '🔑 Weather API キー設定状態: ${AppConfig.current.weatherApiKey.isNotEmpty ? '設定済み' : '未設定'}',
     );
 
     // 테스트 환경에서는 바로 기본 위치 사용
     if (AppConfig.current.environment == 'test') {
-      logDebug('🧪 テスト環境 - デフォルト位置(東京)使用');
       return _getDefaultLocation();
     }
 
     try {
       // 실제 GPS 위치를 먼저 시도 (사용자의 현재 위치)
-      logDebug('📍 ユーザーの実際のGPS位置取得を試行中...');
       final realLocation = await _getRealLocation();
       if (realLocation != null) {
-        logDebug(
           '✅ GPS位置取得成功: ${realLocation.name} (${realLocation.latitude}, ${realLocation.longitude})',
         );
         return realLocation;
       }
     } catch (e) {
-      logWarning('GPS位置取得失敗: $e');
     }
 
     // GPS 실패 시 기본 위치(도쿄 시나가와구) 사용
-    logInfo('🏙️ GPS失敗のためデフォルト位置(東京都品川区)を使用');
     return _getDefaultLocation();
   }
 
   // 실제 GPS 위치를 가져오는 메서드 (사용자의 현재 위치)
   Future<WeatherLocation?> _getRealLocation() async {
     try {
-      logDebug('🌍 位置サービス確認開始...');
 
       // 1. 위치 서비스 활성화 확인
       final bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
-        logWarning('位置サービスが無効です。デフォルト位置を使用します。');
         return _getDefaultLocation();
       }
-      logDebug('✅ 位置サービスが有効です');
 
       // 2. 위치 권한 확인 및 요청
       LocationPermission permission = await Geolocator.checkPermission();
-      logDebug('📍 現在の位置権限: $permission');
 
       if (permission == LocationPermission.denied) {
-        logInfo('🔒 位置権限をリクエスト中...');
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
-          logWarning('位置権限が拒否されました。デフォルト位置を使用します。');
           return _getDefaultLocation();
         }
       }
 
       if (permission == LocationPermission.deniedForever) {
-        logWarning('位置権限が永久に拒否されました。設定から権限を有効にしてください。');
         return _getDefaultLocation();
       }
 
       // 3. GPS로 실제 사용자 위치 취득
-      logDebug('📱 ユーザーのGPS位置を取得中... (精度: high, タイムアウト: 10秒)');
       final position =
           await Geolocator.getCurrentPosition(
             locationSettings: const LocationSettings(
@@ -154,7 +111,6 @@ class WeatherService extends BaseLoggingService {
           ).timeout(
             const Duration(seconds: 10),
             onTimeout: () {
-              logWarning('GPS位置取得タイムアウト - デフォルト位置を使用');
               return Future.value(
                 Position(
                   latitude: 35.6092,
@@ -173,7 +129,6 @@ class WeatherService extends BaseLoggingService {
           );
 
       // 4. 역지오코딩으로 위치명 가져오기
-      logDebug(
         '📍 取得した座標: (${position.latitude}, ${position.longitude}), 精度: ${position.accuracy}m',
       );
       final locationName = await _getLocationName(
@@ -181,14 +136,12 @@ class WeatherService extends BaseLoggingService {
         position.longitude,
       );
 
-      logDebug('✅ ユーザーGPS位置取得成功: $locationName');
       return WeatherLocation(
         latitude: position.latitude,
         longitude: position.longitude,
         name: locationName,
       );
     } catch (e) {
-      logWarning('位置取得エラー: $e - デフォルト位置を使用');
       return _getDefaultLocation();
     }
   }
@@ -196,7 +149,6 @@ class WeatherService extends BaseLoggingService {
   // 위치명을 가져오는 메서드
   Future<String> _getLocationName(double lat, double lon) async {
     try {
-      logDebug('🔍 위치명 검색 중: ($lat, $lon)');
 
       // ✅ 새로운 HTTP 클라이언트의 역지오코딩 사용
       final result = await _httpClient.reverseGeocode(
@@ -207,7 +159,6 @@ class WeatherService extends BaseLoggingService {
 
       if (result.isSuccess && result.dataOrNull != null) {
         final locationName = result.dataOrNull!;
-        logDebug('✅ 위치명 확정: $locationName');
         return locationName;
       } else {
         logWarning('역지오코딩 실패: ${result.message} - 좌표 사용');
@@ -224,7 +175,6 @@ class WeatherService extends BaseLoggingService {
     // 주요 도시 좌표 기반 추정 (대략적인 위치)
     final estimatedCity = _estimateCityFromCoordinates(lat, lon);
     if (estimatedCity != null) {
-      logDebug('📍 推定位置: $estimatedCity (座標: $lat, $lon)');
       return estimatedCity;
     }
 
@@ -235,7 +185,6 @@ class WeatherService extends BaseLoggingService {
     final lonDir = lon >= 0 ? 'E' : 'W';
 
     final locationName = '$latStr°$latDir $lonStr°$lonDir';
-    logDebug('📍 座標ベース位置名: $locationName');
     return locationName;
   }
 
@@ -270,7 +219,6 @@ class WeatherService extends BaseLoggingService {
 
   WeatherLocation _getDefaultLocation() {
     // 東京都品川区をデフォルト位置とする
-    logDebug('🏙️ デフォルト位置를 사용: 東京都品川区');
     return const WeatherLocation(
       latitude: 35.6092,
       longitude: 139.7301,
