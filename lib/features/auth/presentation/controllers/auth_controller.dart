@@ -1,6 +1,11 @@
+import 'dart:convert';
+
+import 'package:aipet_frontend/features/pet_profile/data/services/backend_pet_api_service.dart';
+import 'package:aipet_frontend/features/pet_profile/data/services/local_pet_service.dart';
 import 'package:aipet_frontend/features/pet_profile/pet_profile.dart';
 import 'package:aipet_frontend/shared/core/services/backend_token_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/data.dart';
@@ -210,6 +215,9 @@ class AuthController extends Notifier<AuthFormState> {
               await BackendTokenService.authenticateWithBackend();
           if (backendAuthSuccess) {
             LoggerService.debug('✅ 백엔드 인증 완료');
+            
+            // 3. 로컬 펫 데이터를 백엔드로 마이그레이션
+            await _migrateLocalPetsToBackend();
           } else {
             LoggerService.debug('⚠️ 백엔드 인증 실패 (앱은 계속 사용 가능)');
           }
@@ -450,6 +458,100 @@ class AuthController extends Notifier<AuthFormState> {
     } else {
       return 'エラーが発生しました';
     }
+  }
+
+  /// 로컬 펫 데이터를 백엔드로 마이그레이션
+  Future<void> _migrateLocalPetsToBackend() async {
+    try {
+      LoggerService.debug('🔄 로컬 펫 데이터 마이그레이션 시작');
+
+      // 1. 로컬 스토리지에서 펫 데이터 가져오기
+      final localPetService = LocalPetService();
+      final localPets = await localPetService.getAllPets();
+      
+      if (localPets.isEmpty) {
+        LoggerService.debug('📭 마이그레이션할 로컬 펫이 없음');
+        return;
+      }
+
+      LoggerService.debug('📦 마이그레이션할 펫: ${localPets.length}개');
+
+      // 2. 각 펫을 백엔드로 전송
+      int successCount = 0;
+      int failCount = 0;
+
+      for (final localPet in localPets) {
+        try {
+          // PetProfileEntity로 변환
+          final petEntity = _convertLocalPetToEntity(localPet);
+          
+          // 백엔드로 전송 (static 메서드)
+          final result = await BackendPetApiService.createPet(petEntity);
+          
+          if (result.isSuccess) {
+            successCount++;
+            LoggerService.debug('✅ 펫 업로드 성공: ${petEntity.name}');
+          } else {
+            failCount++;
+            LoggerService.debug('❌ 펫 업로드 실패: ${petEntity.name} - ${result.error}');
+          }
+        } catch (e) {
+          failCount++;
+          LoggerService.debug('❌ 펫 업로드 실패: ${localPet['name']} - $e');
+        }
+      }
+
+      LoggerService.debug(
+        '🎉 마이그레이션 완료: 성공 $successCount개, 실패 $failCount개',
+      );
+
+      // 4. 성공한 경우 알림 (선택사항)
+      if (successCount > 0) {
+        LoggerService.debug('✅ $successCount匹のペットを同期しました');
+      }
+    } catch (e) {
+      LoggerService.debug('⚠️ 펫 마이그레이션 중 에러: $e');
+      // 에러가 나도 로그인은 계속 진행
+    }
+  }
+
+  /// 로컬 펫 데이터를 PetProfileEntity로 변환
+  PetProfileEntity _convertLocalPetToEntity(Map<String, dynamic> localPet) {
+    // additionalInfo JSON 파싱
+    final additionalInfoStr = localPet['additionalInfo'] as String?;
+    Map<String, dynamic> additionalInfo = {};
+    
+    if (additionalInfoStr != null && additionalInfoStr.isNotEmpty) {
+      try {
+        additionalInfo = jsonDecode(additionalInfoStr) as Map<String, dynamic>;
+      } catch (e) {
+        LoggerService.debug('⚠️ additionalInfo 파싱 실패: $e');
+      }
+    }
+
+    // Firebase 현재 사용자 UID 가져오기
+    final firebaseAuth = FirebaseAuth.instance;
+    final ownerId = firebaseAuth.currentUser?.uid ?? '';
+
+    return PetProfileEntity(
+      id: '', // 백엔드에서 새로 생성
+      name: localPet['name'] as String? ?? '',
+      type: localPet['species'] as String? ?? 'dog', // species → type
+      breed: localPet['breed'] as String?,
+      gender: localPet['gender'] as String? ?? 'male',
+      birthDate: DateTime.tryParse(localPet['birthDate'] as String? ?? '') ??
+          DateTime.now(),
+      weight: (localPet['weight'] as num?)?.toDouble() ?? 0.0,
+      imagePath: localPet['imagePath'] as String?,
+      microchipNumber: localPet['microchipId'] as String?,
+      neutered: additionalInfo['isNeutered'] as bool?,
+      arrivalDate:
+          DateTime.tryParse(additionalInfo['adoptionDate'] as String? ?? ''),
+      ownerId: ownerId,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      additionalInfo: additionalInfo,
+    );
   }
 }
 
