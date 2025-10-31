@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/features/pet_profile/data/repositories/pet_profile_repository_impl.dart';
+import 'package:aipet_frontend/features/pet_profile/data/repositories/backend_pet_repository.dart';
 import 'package:aipet_frontend/features/pet_profile/data/services/pet_local_storage_service.dart';
 import 'package:aipet_frontend/features/pet_profile/domain/repositories/pet_profile_repository.dart';
 import 'package:aipet_frontend/shared/core/services/logger_service.dart';
@@ -7,10 +7,11 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'pet_profile_providers.g.dart';
 
-/// PetProfileRepository 프로바이더
+/// PetProfileRepository 프로바이더 (백엔드 API 사용)
 @riverpod
 PetProfileRepository petProfileRepository(Ref ref) {
-  return PetProfileRepositoryImpl();
+  LoggerService.debug('🚀 [PetProfile] BackendPetRepository 초기화');
+  return BackendPetRepository();
 }
 
 /// 모든 펫 목록 프로바이더

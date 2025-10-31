@@ -14,7 +14,7 @@ class BackendTokenService {
   /// Firebase ID Token을 백엔드로 전송하여 인증
   ///
   /// 로그인 성공 후 호출하여 백엔드 세션을 설정합니다.
-  /// 
+  ///
   /// Returns: 성공 여부
   static Future<bool> sendTokenToBackend() async {
     try {
@@ -36,9 +36,10 @@ class BackendTokenService {
 
       // 3. 백엔드 API 호출 테스트 (예: /auth/verify-token)
       try {
-        final response = await _apiClient.post('/auth/verify-token', data: {
-          'token': token,
-        });
+        final response = await _apiClient.post(
+          '/auth/verify-token',
+          data: {'token': token},
+        );
 
         if (response.statusCode == 200) {
           if (kDebugMode) {
@@ -57,7 +58,7 @@ class BackendTokenService {
           }
           return true;
         }
-        
+
         if (kDebugMode) {
           LoggerService.debug('❌ 백엔드 API 에러: ${e.response?.statusCode}');
           LoggerService.debug('   Message: ${e.message}');
@@ -95,10 +96,10 @@ class BackendTokenService {
 
       // 백엔드 API 호출 (예: POST /users 또는 POST /auth/sync-user)
       try {
-        final response = await _apiClient.post('/users', data: {
-          'uid': userId,
-          'email': email,
-        });
+        final response = await _apiClient.post(
+          '/users',
+          data: {'uid': userId, 'email': email},
+        );
 
         if (response.statusCode == 200 || response.statusCode == 201) {
           if (kDebugMode) {
@@ -156,11 +157,13 @@ class BackendTokenService {
       if (kDebugMode) {
         LoggerService.debug('❌ 백엔드 연결 실패: ${e.type}');
         LoggerService.debug('   Message: ${e.message}');
-        
+
         if (e.type == DioExceptionType.connectionError ||
             e.type == DioExceptionType.connectionTimeout) {
           LoggerService.debug('   💡 백엔드 서버가 실행 중인지 확인하세요');
-          LoggerService.debug('   💡 Android 에뮬레이터: adb reverse tcp:3000 tcp:3000');
+          LoggerService.debug(
+            '   💡 Android 에뮬레이터: adb reverse tcp:3000 tcp:3000',
+          );
         }
       }
       return false;
@@ -223,4 +226,3 @@ class BackendTokenService {
     }
   }
 }
-

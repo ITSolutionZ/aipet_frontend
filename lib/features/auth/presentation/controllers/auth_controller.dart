@@ -106,7 +106,9 @@ class AuthController extends Notifier<AuthFormState> {
   /// [return] 로드된 펫 데이터
   Future<List<PetProfileEntity>> loadUserPetsOnLogin(String userId) async {
     try {
-      LoggerService.debug('🐾 AuthController: 로그인 성공 시 펫 데이터 로드 시작 - 사용자: $userId');
+      LoggerService.debug(
+        '🐾 AuthController: 로그인 성공 시 펫 데이터 로드 시작 - 사용자: $userId',
+      );
 
       // 펫 프로필 프로바이더를 통해 사용자 펫 데이터 로드
       final petsAsync = ref.read(petProfilesProvider);
@@ -150,7 +152,9 @@ class AuthController extends Notifier<AuthFormState> {
         final userId = currentState.email; // 임시로 이메일을 사용자 ID로 사용
         final pets = await loadUserPetsOnLogin(userId);
 
-        LoggerService.debug('✅ AuthController: 로그인 성공 - 펫 ${pets.length}마리 로드됨');
+        LoggerService.debug(
+          '✅ AuthController: 로그인 성공 - 펫 ${pets.length}마리 로드됨',
+        );
 
         return Result.success('ログインが完了しました', '');
       } else {
@@ -202,7 +206,8 @@ class AuthController extends Notifier<AuthFormState> {
       if (result.isSuccess) {
         // 2. 백엔드에 Firebase ID Token 전송
         try {
-          final backendAuthSuccess = await BackendTokenService.authenticateWithBackend();
+          final backendAuthSuccess =
+              await BackendTokenService.authenticateWithBackend();
           if (backendAuthSuccess) {
             LoggerService.debug('✅ 백엔드 인증 완료');
           } else {
@@ -232,7 +237,8 @@ class AuthController extends Notifier<AuthFormState> {
       if (result.isSuccess) {
         // 2. 백엔드에 Firebase ID Token 전송
         try {
-          final backendAuthSuccess = await BackendTokenService.authenticateWithBackend();
+          final backendAuthSuccess =
+              await BackendTokenService.authenticateWithBackend();
           if (backendAuthSuccess) {
             LoggerService.debug('✅ 백엔드 인증 완료');
           } else {
@@ -262,7 +268,8 @@ class AuthController extends Notifier<AuthFormState> {
       if (result.isSuccess) {
         // 2. 백엔드에 Firebase ID Token 전송
         try {
-          final backendAuthSuccess = await BackendTokenService.authenticateWithBackend();
+          final backendAuthSuccess =
+              await BackendTokenService.authenticateWithBackend();
           if (backendAuthSuccess) {
             LoggerService.debug('✅ 백엔드 인증 완료');
           } else {
