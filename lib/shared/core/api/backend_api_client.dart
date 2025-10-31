@@ -121,6 +121,33 @@ class BackendApiClient {
       options: options,
     );
   }
+
+  /// 현재 로그인 사용자 정보 조회
+  ///
+  /// Firebase ID Token을 백엔드로 전송하여 사용자 정보를 조회합니다.
+  /// Authorization 헤더는 FirebaseTokenInterceptor가 자동으로 추가합니다.
+  ///
+  /// Returns: 백엔드에서 반환하는 사용자 정보
+  Future<Response<Map<String, dynamic>>> getCurrentUser() async {
+    if (kDebugMode) {
+      LoggerService.debug('📡 [BackendApiClient] GET /auth/me 호출');
+    }
+
+    return get<Map<String, dynamic>>('/auth/me');
+  }
+
+  /// 사용자 정보 업데이트
+  ///
+  /// [data] 업데이트할 사용자 정보
+  Future<Response<Map<String, dynamic>>> updateCurrentUser(
+    Map<String, dynamic> data,
+  ) async {
+    if (kDebugMode) {
+      LoggerService.debug('📡 [BackendApiClient] PATCH /auth/me 호출');
+    }
+
+    return patch<Map<String, dynamic>>('/auth/me', data: data);
+  }
 }
 
 /// Firebase ID Token 인터셉터
