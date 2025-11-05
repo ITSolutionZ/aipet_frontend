@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        background: transparent;
+      }
+      #app {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      svg {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script>
+      async function loadIcon(name) {
+        try {
+          // Flutter WebView에서 절대 경로 사용
+          const basePath = window.location.href.replace("viewer.html", "");
+          const svgPath = `${basePath}design/fill/animation-ready/${name}.svg`;
+          console.log("Loading SVG from:", svgPath);
+
+          const res = await fetch(svgPath);
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+          const txt = await res.text();
+          document.getElementById("app").innerHTML = txt;
+          console.log("Icon loaded successfully:", name);
+        } catch (e) {
+          // 에러 발생 시 더 자세한 정보 표시
+          console.error("Failed to load icon:", name, e);
+          document.getElementById(
+            "app"
+          ).innerHTML = `<p style="color:red; font-size: 12px;">Icon not found: ${name}<br>Error: ${e.message}</p>`;
+        }
+      }
+      // Flutter에서 JS 호출용
+      window.setIcon = (name) => loadIcon(name);
+
+      // URL 쿼리 ?icon=clear-day 지원
+      const q = new URLSearchParams(location.search);
+      const init = q.get("icon") || "clear-day";
+      loadIcon(init);
+    </script>
+  </body>
+</html>

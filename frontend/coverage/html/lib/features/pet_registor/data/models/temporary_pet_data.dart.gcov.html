@@ -1,0 +1,222 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - AI Pet Frontend - Full Project Test Coverage Report - lib/features/pet_registor/data/models/temporary_pet_data.dart</title>
+  <link rel="stylesheet" type="text/css" href="../../../../../gcov.css">
+</head>
+
+<body>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="title">LCOV - code coverage report</td></tr>
+            <tr><td class="ruler"><img src="../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+            <tr>
+              <td width="100%">
+                <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="10%" class="headerValue"><a href="../../../../../index.html" title="Click to go to top-level">top level</a> - <a href="index.html" title="Click to go to directory lib/features/pet_registor/data/models">lib/features/pet_registor/data/models</a> - temporary_pet_data.dart</td>
+            <td width="5%"></td>
+            <td width="5%"></td>
+            <td width="5%" class="headerCovTableHead">Coverage</td>
+            <td width="5%" class="headerCovTableHead" title="Covered + Uncovered code">Total</td>
+            <td width="5%" class="headerCovTableHead" title="Exercised code only">Hit</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">AI Pet Frontend - Full Project Test Coverage Report</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntryLo">0.0&nbsp;%</td>
+            <td class="headerCovTableEntry">81</td>
+            <td class="headerCovTableEntry">0</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test Date:</td>
+            <td class="headerValue">2025-09-12 18:09:19</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntryHi">-</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+          </tr>
+                  <tr><td><img src="../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr><td class="ruler"><img src="../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+          </table>
+
+          <table cellpadding=0 cellspacing=0 border=0>
+            <tr>
+              <td><br></td>
+            </tr>
+            <tr>
+              <td>
+<pre class="sourceHeading">            Line data    Source code</pre>
+<pre class="source">
+<span id="L1"><span class="lineNum">       1</span>              : import '../../domain/entities/temporary_pet_data_entity.dart';</span>
+<span id="L2"><span class="lineNum">       2</span>              : </span>
+<span id="L3"><span class="lineNum">       3</span>              : class TemporaryPetData {</span>
+<span id="L4"><span class="lineNum">       4</span>              :   final String? id;</span>
+<span id="L5"><span class="lineNum">       5</span>              :   final String? name;</span>
+<span id="L6"><span class="lineNum">       6</span>              :   final String? type;</span>
+<span id="L7"><span class="lineNum">       7</span>              :   final String? breed;</span>
+<span id="L8"><span class="lineNum">       8</span>              :   final DateTime? birthDate;</span>
+<span id="L9"><span class="lineNum">       9</span>              :   final String? imagePath;</span>
+<span id="L10"><span class="lineNum">      10</span>              :   final String? ownerId;</span>
+<span id="L11"><span class="lineNum">      11</span>              :   final DateTime? createdAt;</span>
+<span id="L12"><span class="lineNum">      12</span>              :   final DateTime? updatedAt;</span>
+<span id="L13"><span class="lineNum">      13</span>              :   final bool isActive;</span>
+<span id="L14"><span class="lineNum">      14</span>              :   final Map&lt;String, dynamic&gt;? additionalInfo;</span>
+<span id="L15"><span class="lineNum">      15</span>              :   final PetRegistrationStep currentStep;</span>
+<span id="L16"><span class="lineNum">      16</span>              :   final Map&lt;String, dynamic&gt;? stepData;</span>
+<span id="L17"><span class="lineNum">      17</span>              : </span>
+<span id="L18"><span class="lineNum">      18</span> <span class="tlaUNC">           0 :   const TemporaryPetData({</span></span>
+<span id="L19"><span class="lineNum">      19</span>              :     this.id,</span>
+<span id="L20"><span class="lineNum">      20</span>              :     this.name,</span>
+<span id="L21"><span class="lineNum">      21</span>              :     this.type,</span>
+<span id="L22"><span class="lineNum">      22</span>              :     this.breed,</span>
+<span id="L23"><span class="lineNum">      23</span>              :     this.birthDate,</span>
+<span id="L24"><span class="lineNum">      24</span>              :     this.imagePath,</span>
+<span id="L25"><span class="lineNum">      25</span>              :     this.ownerId,</span>
+<span id="L26"><span class="lineNum">      26</span>              :     this.createdAt,</span>
+<span id="L27"><span class="lineNum">      27</span>              :     this.updatedAt,</span>
+<span id="L28"><span class="lineNum">      28</span>              :     this.isActive = true,</span>
+<span id="L29"><span class="lineNum">      29</span>              :     this.additionalInfo,</span>
+<span id="L30"><span class="lineNum">      30</span>              :     this.currentStep = PetRegistrationStep.typeSelection,</span>
+<span id="L31"><span class="lineNum">      31</span>              :     this.stepData,</span>
+<span id="L32"><span class="lineNum">      32</span>              :   });</span>
+<span id="L33"><span class="lineNum">      33</span>              : </span>
+<span id="L34"><span class="lineNum">      34</span> <span class="tlaUNC">           0 :   factory TemporaryPetData.fromEntity(TemporaryPetDataEntity entity) {</span></span>
+<span id="L35"><span class="lineNum">      35</span> <span class="tlaUNC">           0 :     return TemporaryPetData(</span></span>
+<span id="L36"><span class="lineNum">      36</span> <span class="tlaUNC">           0 :       id: entity.id,</span></span>
+<span id="L37"><span class="lineNum">      37</span> <span class="tlaUNC">           0 :       name: entity.name,</span></span>
+<span id="L38"><span class="lineNum">      38</span> <span class="tlaUNC">           0 :       type: entity.type,</span></span>
+<span id="L39"><span class="lineNum">      39</span> <span class="tlaUNC">           0 :       breed: entity.breed,</span></span>
+<span id="L40"><span class="lineNum">      40</span> <span class="tlaUNC">           0 :       birthDate: entity.birthDate,</span></span>
+<span id="L41"><span class="lineNum">      41</span> <span class="tlaUNC">           0 :       imagePath: entity.imagePath,</span></span>
+<span id="L42"><span class="lineNum">      42</span> <span class="tlaUNC">           0 :       ownerId: entity.ownerId,</span></span>
+<span id="L43"><span class="lineNum">      43</span> <span class="tlaUNC">           0 :       createdAt: entity.createdAt,</span></span>
+<span id="L44"><span class="lineNum">      44</span> <span class="tlaUNC">           0 :       updatedAt: entity.updatedAt,</span></span>
+<span id="L45"><span class="lineNum">      45</span> <span class="tlaUNC">           0 :       isActive: entity.isActive,</span></span>
+<span id="L46"><span class="lineNum">      46</span> <span class="tlaUNC">           0 :       additionalInfo: entity.additionalInfo,</span></span>
+<span id="L47"><span class="lineNum">      47</span> <span class="tlaUNC">           0 :       currentStep: entity.currentStep,</span></span>
+<span id="L48"><span class="lineNum">      48</span> <span class="tlaUNC">           0 :       stepData: entity.stepData,</span></span>
+<span id="L49"><span class="lineNum">      49</span>              :     );</span>
+<span id="L50"><span class="lineNum">      50</span>              :   }</span>
+<span id="L51"><span class="lineNum">      51</span>              : </span>
+<span id="L52"><span class="lineNum">      52</span> <span class="tlaUNC">           0 :   TemporaryPetDataEntity toEntity() {</span></span>
+<span id="L53"><span class="lineNum">      53</span> <span class="tlaUNC">           0 :     return TemporaryPetDataEntity(</span></span>
+<span id="L54"><span class="lineNum">      54</span> <span class="tlaUNC">           0 :       id: id,</span></span>
+<span id="L55"><span class="lineNum">      55</span> <span class="tlaUNC">           0 :       name: name,</span></span>
+<span id="L56"><span class="lineNum">      56</span> <span class="tlaUNC">           0 :       type: type,</span></span>
+<span id="L57"><span class="lineNum">      57</span> <span class="tlaUNC">           0 :       breed: breed,</span></span>
+<span id="L58"><span class="lineNum">      58</span> <span class="tlaUNC">           0 :       birthDate: birthDate,</span></span>
+<span id="L59"><span class="lineNum">      59</span> <span class="tlaUNC">           0 :       imagePath: imagePath,</span></span>
+<span id="L60"><span class="lineNum">      60</span> <span class="tlaUNC">           0 :       ownerId: ownerId,</span></span>
+<span id="L61"><span class="lineNum">      61</span> <span class="tlaUNC">           0 :       createdAt: createdAt,</span></span>
+<span id="L62"><span class="lineNum">      62</span> <span class="tlaUNC">           0 :       updatedAt: updatedAt,</span></span>
+<span id="L63"><span class="lineNum">      63</span> <span class="tlaUNC">           0 :       isActive: isActive,</span></span>
+<span id="L64"><span class="lineNum">      64</span> <span class="tlaUNC">           0 :       additionalInfo: additionalInfo,</span></span>
+<span id="L65"><span class="lineNum">      65</span> <span class="tlaUNC">           0 :       currentStep: currentStep,</span></span>
+<span id="L66"><span class="lineNum">      66</span> <span class="tlaUNC">           0 :       stepData: stepData,</span></span>
+<span id="L67"><span class="lineNum">      67</span>              :     );</span>
+<span id="L68"><span class="lineNum">      68</span>              :   }</span>
+<span id="L69"><span class="lineNum">      69</span>              : </span>
+<span id="L70"><span class="lineNum">      70</span> <span class="tlaUNC">           0 :   TemporaryPetData copyWith({</span></span>
+<span id="L71"><span class="lineNum">      71</span>              :     String? id,</span>
+<span id="L72"><span class="lineNum">      72</span>              :     String? name,</span>
+<span id="L73"><span class="lineNum">      73</span>              :     String? type,</span>
+<span id="L74"><span class="lineNum">      74</span>              :     String? breed,</span>
+<span id="L75"><span class="lineNum">      75</span>              :     DateTime? birthDate,</span>
+<span id="L76"><span class="lineNum">      76</span>              :     String? imagePath,</span>
+<span id="L77"><span class="lineNum">      77</span>              :     String? ownerId,</span>
+<span id="L78"><span class="lineNum">      78</span>              :     DateTime? createdAt,</span>
+<span id="L79"><span class="lineNum">      79</span>              :     DateTime? updatedAt,</span>
+<span id="L80"><span class="lineNum">      80</span>              :     bool? isActive,</span>
+<span id="L81"><span class="lineNum">      81</span>              :     Map&lt;String, dynamic&gt;? additionalInfo,</span>
+<span id="L82"><span class="lineNum">      82</span>              :     PetRegistrationStep? currentStep,</span>
+<span id="L83"><span class="lineNum">      83</span>              :     Map&lt;String, dynamic&gt;? stepData,</span>
+<span id="L84"><span class="lineNum">      84</span>              :   }) {</span>
+<span id="L85"><span class="lineNum">      85</span> <span class="tlaUNC">           0 :     return TemporaryPetData(</span></span>
+<span id="L86"><span class="lineNum">      86</span> <span class="tlaUNC">           0 :       id: id ?? this.id,</span></span>
+<span id="L87"><span class="lineNum">      87</span> <span class="tlaUNC">           0 :       name: name ?? this.name,</span></span>
+<span id="L88"><span class="lineNum">      88</span> <span class="tlaUNC">           0 :       type: type ?? this.type,</span></span>
+<span id="L89"><span class="lineNum">      89</span> <span class="tlaUNC">           0 :       breed: breed ?? this.breed,</span></span>
+<span id="L90"><span class="lineNum">      90</span> <span class="tlaUNC">           0 :       birthDate: birthDate ?? this.birthDate,</span></span>
+<span id="L91"><span class="lineNum">      91</span> <span class="tlaUNC">           0 :       imagePath: imagePath ?? this.imagePath,</span></span>
+<span id="L92"><span class="lineNum">      92</span> <span class="tlaUNC">           0 :       ownerId: ownerId ?? this.ownerId,</span></span>
+<span id="L93"><span class="lineNum">      93</span> <span class="tlaUNC">           0 :       createdAt: createdAt ?? this.createdAt,</span></span>
+<span id="L94"><span class="lineNum">      94</span> <span class="tlaUNC">           0 :       updatedAt: updatedAt ?? this.updatedAt,</span></span>
+<span id="L95"><span class="lineNum">      95</span> <span class="tlaUNC">           0 :       isActive: isActive ?? this.isActive,</span></span>
+<span id="L96"><span class="lineNum">      96</span> <span class="tlaUNC">           0 :       additionalInfo: additionalInfo ?? this.additionalInfo,</span></span>
+<span id="L97"><span class="lineNum">      97</span> <span class="tlaUNC">           0 :       currentStep: currentStep ?? this.currentStep,</span></span>
+<span id="L98"><span class="lineNum">      98</span> <span class="tlaUNC">           0 :       stepData: stepData ?? this.stepData,</span></span>
+<span id="L99"><span class="lineNum">      99</span>              :     );</span>
+<span id="L100"><span class="lineNum">     100</span>              :   }</span>
+<span id="L101"><span class="lineNum">     101</span>              : </span>
+<span id="L102"><span class="lineNum">     102</span> <span class="tlaUNC">           0 :   Map&lt;String, dynamic&gt; toJson() {</span></span>
+<span id="L103"><span class="lineNum">     103</span> <span class="tlaUNC">           0 :     return {</span></span>
+<span id="L104"><span class="lineNum">     104</span> <span class="tlaUNC">           0 :       'id': id,</span></span>
+<span id="L105"><span class="lineNum">     105</span> <span class="tlaUNC">           0 :       'name': name,</span></span>
+<span id="L106"><span class="lineNum">     106</span> <span class="tlaUNC">           0 :       'type': type,</span></span>
+<span id="L107"><span class="lineNum">     107</span> <span class="tlaUNC">           0 :       'breed': breed,</span></span>
+<span id="L108"><span class="lineNum">     108</span> <span class="tlaUNC">           0 :       'birthDate': birthDate?.toIso8601String(),</span></span>
+<span id="L109"><span class="lineNum">     109</span> <span class="tlaUNC">           0 :       'imagePath': imagePath,</span></span>
+<span id="L110"><span class="lineNum">     110</span> <span class="tlaUNC">           0 :       'ownerId': ownerId,</span></span>
+<span id="L111"><span class="lineNum">     111</span> <span class="tlaUNC">           0 :       'createdAt': createdAt?.toIso8601String(),</span></span>
+<span id="L112"><span class="lineNum">     112</span> <span class="tlaUNC">           0 :       'updatedAt': updatedAt?.toIso8601String(),</span></span>
+<span id="L113"><span class="lineNum">     113</span> <span class="tlaUNC">           0 :       'isActive': isActive,</span></span>
+<span id="L114"><span class="lineNum">     114</span> <span class="tlaUNC">           0 :       'additionalInfo': additionalInfo,</span></span>
+<span id="L115"><span class="lineNum">     115</span> <span class="tlaUNC">           0 :       'currentStep': currentStep.name,</span></span>
+<span id="L116"><span class="lineNum">     116</span> <span class="tlaUNC">           0 :       'stepData': stepData,</span></span>
+<span id="L117"><span class="lineNum">     117</span>              :     };</span>
+<span id="L118"><span class="lineNum">     118</span>              :   }</span>
+<span id="L119"><span class="lineNum">     119</span>              : </span>
+<span id="L120"><span class="lineNum">     120</span> <span class="tlaUNC">           0 :   factory TemporaryPetData.fromJson(Map&lt;String, dynamic&gt; json) {</span></span>
+<span id="L121"><span class="lineNum">     121</span> <span class="tlaUNC">           0 :     return TemporaryPetData(</span></span>
+<span id="L122"><span class="lineNum">     122</span> <span class="tlaUNC">           0 :       id: json['id'] as String?,</span></span>
+<span id="L123"><span class="lineNum">     123</span> <span class="tlaUNC">           0 :       name: json['name'] as String?,</span></span>
+<span id="L124"><span class="lineNum">     124</span> <span class="tlaUNC">           0 :       type: json['type'] as String?,</span></span>
+<span id="L125"><span class="lineNum">     125</span> <span class="tlaUNC">           0 :       breed: json['breed'] as String?,</span></span>
+<span id="L126"><span class="lineNum">     126</span> <span class="tlaUNC">           0 :       birthDate: json['birthDate'] != null</span></span>
+<span id="L127"><span class="lineNum">     127</span> <span class="tlaUNC">           0 :           ? DateTime.parse(json['birthDate'] as String)</span></span>
+<span id="L128"><span class="lineNum">     128</span>              :           : null,</span>
+<span id="L129"><span class="lineNum">     129</span> <span class="tlaUNC">           0 :       imagePath: json['imagePath'] as String?,</span></span>
+<span id="L130"><span class="lineNum">     130</span> <span class="tlaUNC">           0 :       ownerId: json['ownerId'] as String?,</span></span>
+<span id="L131"><span class="lineNum">     131</span> <span class="tlaUNC">           0 :       createdAt: json['createdAt'] != null</span></span>
+<span id="L132"><span class="lineNum">     132</span> <span class="tlaUNC">           0 :           ? DateTime.parse(json['createdAt'] as String)</span></span>
+<span id="L133"><span class="lineNum">     133</span>              :           : null,</span>
+<span id="L134"><span class="lineNum">     134</span> <span class="tlaUNC">           0 :       updatedAt: json['updatedAt'] != null</span></span>
+<span id="L135"><span class="lineNum">     135</span> <span class="tlaUNC">           0 :           ? DateTime.parse(json['updatedAt'] as String)</span></span>
+<span id="L136"><span class="lineNum">     136</span>              :           : null,</span>
+<span id="L137"><span class="lineNum">     137</span> <span class="tlaUNC">           0 :       isActive: json['isActive'] as bool? ?? true,</span></span>
+<span id="L138"><span class="lineNum">     138</span> <span class="tlaUNC">           0 :       additionalInfo: json['additionalInfo'] as Map&lt;String, dynamic&gt;?,</span></span>
+<span id="L139"><span class="lineNum">     139</span> <span class="tlaUNC">           0 :       currentStep: PetRegistrationStep.values.firstWhere(</span></span>
+<span id="L140"><span class="lineNum">     140</span> <span class="tlaUNC">           0 :         (e) =&gt; e.name == json['currentStep'],</span></span>
+<span id="L141"><span class="lineNum">     141</span> <span class="tlaUNC">           0 :         orElse: () =&gt; PetRegistrationStep.typeSelection,</span></span>
+<span id="L142"><span class="lineNum">     142</span>              :       ),</span>
+<span id="L143"><span class="lineNum">     143</span> <span class="tlaUNC">           0 :       stepData: json['stepData'] as Map&lt;String, dynamic&gt;?,</span></span>
+<span id="L144"><span class="lineNum">     144</span>              :     );</span>
+<span id="L145"><span class="lineNum">     145</span>              :   }</span>
+<span id="L146"><span class="lineNum">     146</span>              : }</span>
+        </pre>
+              </td>
+            </tr>
+          </table>
+          <br>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="ruler"><img src="../../../../../glass.png" width=3 height=3 alt=""></td></tr>
+            <tr><td class="versionInfo">Generated by: <a href="https://github.com//linux-test-project/lcov" target="_parent">LCOV version 2.3.2-1</a></td></tr>
+          </table>
+          <br>
+
+</body>
+</html>

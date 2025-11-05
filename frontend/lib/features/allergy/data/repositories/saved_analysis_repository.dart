@@ -1,0 +1,150 @@
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
+
+
+import '../../../../shared/shared.dart';
+import '../../domain/domain.dart';
+
+
+
+/// 저장된 알레르기 분석 결과 Repository
+class SavedAnalysisRepository {
+  // ✅ SharedPreferences 인스턴스 재사용
+  static final _cache = CacheService();
+  static Future<void> _init() async {
+    await _cache.initialize();
+  }
+  static const String _key = 'saved_allergy_analyses';
+
+  /// 모든 분석 결과 로드 (Result 패턴)
+  Future<Result<List<SavedAnalysisEntity>>> loadAll() async {
+    try {
+      await _init();
+      final jsonString = _cache.getString(_key);
+
+      if (jsonString == null || jsonString.isEmpty) {
+        return Result.success('データがありません', []);
+      }
+
+      final List<dynamic> jsonList = jsonDecode(jsonString);
+      final analyses = jsonList.map((json) => _fromJson(json)).toList();
+
+      return Result.success('${analyses.length}件の分析結果を読み込みました', analyses);
+    } catch (e) {
+      if (kDebugMode) {
+        LoggerService.debug('Error loading saved analyses: $e');
+      }
+      return Result.failure(
+        '分析結果の読み込み中にエラーが発生しました',
+        e is Exception ? e : Exception(e.toString()),
+      );
+    }
+  }
+
+  /// 분석 결과 저장
+  Future<Result<void>> save(SavedAnalysisEntity analysis) async {
+    try {
+      await _init();
+      final loadResult = await loadAll();
+      final analyses = loadResult.dataOr([]);
+
+      // 새 분석 추가
+      analyses.insert(0, analysis);
+
+      // JSON으로 변환하여 저장
+      final jsonList = analyses.map((a) => _toJson(a)).toList();
+      await _cache.setString(_key, jsonEncode(jsonList));
+
+      return Result.success('分析結果を保存しました');
+    } catch (e) {
+      if (kDebugMode) {
+        LoggerService.debug('Error saving analysis: $e');
+      }
+      return Result.failure(
+        '分析結果の保存中にエラーが発生しました',
+        e is Exception ? e : Exception(e.toString()),
+      );
+    }
+  }
+
+  /// 분석 결과 삭제
+  Future<Result<void>> delete(String id) async {
+    try {
+      await _init();
+      final loadResult = await loadAll();
+      final analyses = loadResult.dataOr([]);
+
+      // ID로 찾아서 삭제
+      analyses.removeWhere((analysis) => analysis.id == id);
+
+      // JSON으로 변환하여 저장
+      final jsonList = analyses.map((a) => _toJson(a)).toList();
+      await _cache.setString(_key, jsonEncode(jsonList));
+
+      return Result.success('分析結果を削除しました');
+    } catch (e) {
+      if (kDebugMode) {
+        LoggerService.debug('Error deleting analysis: $e');
+      }
+      return Result.failure(
+        '分析結果の削除中にエラーが発生しました',
+        e is Exception ? e : Exception(e.toString()),
+      );
+    }
+  }
+
+  /// 모든 분석 결과 삭제
+  Future<Result<void>> deleteAll() async {
+    try {
+      await _init();
+      await _cache.removeKey(_key);
+      return Result.success('すべての分析結果を削除しました');
+    } catch (e) {
+      if (kDebugMode) {
+        LoggerService.debug('Error deleting all analyses: $e');
+      }
+      return Result.failure(
+        'すべての分析結果の削除中にエラーが発生しました',
+        e is Exception ? e : Exception(e.toString()),
+      );
+    }
+  }
+
+  /// Entity를 JSON으로 변환
+  Map<String, dynamic> _toJson(SavedAnalysisEntity entity) {
+    return {
+      'id': entity.id,
+      'petId': entity.petId,
+      'petName': entity.petName,
+      'analysisResult': entity.analysisResult,
+      'savedAt': entity.savedAt.toIso8601String(),
+    };
+  }
+
+  /// JSON을 Entity로 변환
+  SavedAnalysisEntity _fromJson(Map<String, dynamic> json) {
+    final analysisResult = Map<String, dynamic>.from(json['analysisResult']);
+
+    // List<dynamic>을 List<String>으로 명시적 변환
+    if (analysisResult['suspectedIngredients'] is List) {
+      analysisResult['suspectedIngredients'] = List<String>.from(
+        analysisResult['suspectedIngredients'] as List,
+      );
+    }
+
+    if (analysisResult['recommendations'] is List) {
+      analysisResult['recommendations'] = List<String>.from(
+        analysisResult['recommendations'] as List,
+      );
+    }
+
+    return SavedAnalysisEntity(
+      id: json['id'],
+      petId: json['petId'],
+      petName: json['petName'],
+      analysisResult: analysisResult,
+      savedAt: DateTime.parse(json['savedAt']),
+    );
+  }
+}

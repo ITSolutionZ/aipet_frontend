@@ -1,0 +1,662 @@
+{
+  "info": {
+    "name": "AIPet Backend API",
+    "description": "AIPet Backend API 테스트 컬렉션 - Node.js + Express + MySQL + Firebase Auth",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Health Check",
+      "item": [
+        {
+          "name": "Root Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/",
+              "host": ["{{BASE_URL}}"],
+              "path": [""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "API Info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "v1"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "2. Authentication",
+      "item": [
+        {
+          "name": "Verify Firebase Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{FIREBASE_ID_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/auth/verify-token",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "v1", "auth", "verify-token"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Sync User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{FIREBASE_ID_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"displayName\": \"테스트 사용자\",\n  \"photoURL\": \"https://example.com/photo.jpg\",\n  \"provider\": \"google\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/users",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "v1", "users"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{FIREBASE_ID_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/auth/me",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "v1", "auth", "me"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "3. Pets Management",
+      "item": [
+        {
+          "name": "Get All Pets",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{FIREBASE_ID_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/pets",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "v1", "pets"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Pet",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.environment.set('PET_ID', response.data.id);",
+                  "    console.log('Pet ID saved:', response.data.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{FIREBASE_ID_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"테스트\",\n  \"type\": \"dog\",\n  \"breed\": \"시바견\",\n  \"birthDate\": \"2020-01-15\",\n  \"gender\": \"male\",\n  \"weight\": 8.5,\n  \"color\": \"brown\",\n  \"isNeutered\": true\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/pets",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "v1", "pets"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Pet by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{FIREBASE_ID_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/pets/{{PET_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "v1", "pets", "{{PET_ID}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Pet",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{FIREBASE_ID_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"weight\": 9.0,\n  \"notes\": \"체중 증가\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/pets/{{PET_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "v1", "pets", "{{PET_ID}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Pet Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{FIREBASE_ID_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/pets/stats",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "v1", "pets", "stats"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "4. Health Records",
+      "item": [
+        {
+          "name": "Get Vaccinations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{FIREBASE_ID_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/health/pets/{{PET_ID}}/vaccinations",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "v1", "health", "pets", "{{PET_ID}}", "vaccinations"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Vaccination",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{FIREBASE_ID_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"vaccineName\": \"광견병\",\n  \"vaccineType\": \"필수\",\n  \"vaccinationDate\": \"2025-01-15\",\n  \"nextDueDate\": \"2026-01-15\",\n  \"veterinarianName\": \"김수의사\",\n  \"clinicName\": \"행복동물병원\",\n  \"notes\": \"특이사항 없음\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/health/pets/{{PET_ID}}/vaccinations",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "v1", "health", "pets", "{{PET_ID}}", "vaccinations"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Medical Records",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{FIREBASE_ID_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/health/pets/{{PET_ID}}/medical-records",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "v1", "health", "pets", "{{PET_ID}}", "medical-records"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Medical Record",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{FIREBASE_ID_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"visitDate\": \"2025-01-15\",\n  \"visitType\": \"checkup\",\n  \"diagnosis\": \"정기 검진\",\n  \"treatment\": \"건강 상태 양호\",\n  \"veterinarianName\": \"김수의사\",\n  \"clinicName\": \"행복동물병원\",\n  \"cost\": 50000,\n  \"notes\": \"다음 방문: 6개월 후\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/health/pets/{{PET_ID}}/medical-records",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "v1", "health", "pets", "{{PET_ID}}", "medical-records"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Weight History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{FIREBASE_ID_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/health/pets/{{PET_ID}}/weight-history",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "v1", "health", "pets", "{{PET_ID}}", "weight-history"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Weight Record",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{FIREBASE_ID_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"weight\": 8.5,\n  \"notes\": \"정상 체중\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/health/pets/{{PET_ID}}/weight-history",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "v1", "health", "pets", "{{PET_ID}}", "weight-history"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "5. Activities",
+      "item": [
+        {
+          "name": "Get Walks",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{FIREBASE_ID_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/activity/pets/{{PET_ID}}/walks",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "v1", "activity", "pets", "{{PET_ID}}", "walks"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Walk",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{FIREBASE_ID_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"startTime\": \"2025-01-15T10:00:00Z\",\n  \"endTime\": \"2025-01-15T10:30:00Z\",\n  \"durationMinutes\": 30,\n  \"distanceMeters\": 2000,\n  \"routeData\": [\n    {\"lat\": 37.5665, \"lng\": 126.9780},\n    {\"lat\": 37.5670, \"lng\": 126.9785}\n  ],\n  \"temperature\": 15.5,\n  \"weather\": \"맑음\",\n  \"poopCount\": 1,\n  \"peeCount\": 2,\n  \"notes\": \"공원에서 산책\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/activity/pets/{{PET_ID}}/walks",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "v1", "activity", "pets", "{{PET_ID}}", "walks"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Walk Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{FIREBASE_ID_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/activity/pets/{{PET_ID}}/walks/stats?period=7",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "v1", "activity", "pets", "{{PET_ID}}", "walks", "stats"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "7"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Feedings",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{FIREBASE_ID_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/activity/pets/{{PET_ID}}/feedings",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "v1", "activity", "pets", "{{PET_ID}}", "feedings"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Feeding",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{FIREBASE_ID_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"foodType\": \"사료\",\n  \"foodBrand\": \"로얄캐닌\",\n  \"amountGrams\": 150,\n  \"mealType\": \"breakfast\",\n  \"notes\": \"잘 먹음\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/activity/pets/{{PET_ID}}/feedings",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "v1", "activity", "pets", "{{PET_ID}}", "feedings"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "6. Notifications",
+      "item": [
+        {
+          "name": "Get All Notifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{FIREBASE_ID_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/notifications",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "v1", "notifications"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Notification",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{FIREBASE_ID_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"급식 시간입니다\",\n  \"body\": \"테스트에게 사료를 챙겨주세요\",\n  \"petId\": \"{{PET_ID}}\",\n  \"notificationType\": \"feeding\",\n  \"scheduledAt\": \"2025-01-15T18:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/notifications",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "v1", "notifications"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Unread Count",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{FIREBASE_ID_TOKEN}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/notifications/unread-count",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "v1", "notifications", "unread-count"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Save FCM Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{FIREBASE_ID_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fcmToken\": \"{{FCM_TOKEN}}\",\n  \"deviceType\": \"android\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/notifications/fcm-token",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "v1", "notifications", "fcm-token"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Send Test Push Notification",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{FIREBASE_ID_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fcmToken\": \"{{FCM_TOKEN}}\",\n  \"title\": \"테스트 알림\",\n  \"body\": \"푸시 알림 테스트입니다\",\n  \"data\": {\n    \"custom_key\": \"custom_value\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/notifications/push",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "v1", "notifications", "push"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "BASE_URL",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "FIREBASE_ID_TOKEN",
+      "value": "YOUR_FIREBASE_ID_TOKEN_HERE",
+      "type": "string"
+    },
+    {
+      "key": "PET_ID",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "FCM_TOKEN",
+      "value": "YOUR_FCM_TOKEN_HERE",
+      "type": "string"
+    }
+  ]
+}

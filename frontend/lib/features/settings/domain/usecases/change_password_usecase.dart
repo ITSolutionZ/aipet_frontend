@@ -1,0 +1,24 @@
+import '../../../../shared/shared.dart';
+
+import '../../../../../features/settings/domain/entities/settings_entity.dart';
+import '../../../../../features/settings/domain/repositories/settings_repository.dart';
+
+class ChangePasswordUseCase {
+  final SettingsRepository repository;
+
+  ChangePasswordUseCase(this.repository);
+
+  Future<Result<void>> call(PasswordChangeRequest request) async {
+    // 비밀번호 변경 요청 유효성 검사
+    if (!request.isValid) {
+      return Result.failure('無効なパスワード変更リクエストです');
+    }
+
+    final result = await repository.changePassword(request);
+    if (result.isSuccess) {
+      return Result.success('パスワードを変更しました', null);
+    } else {
+      return Result.failure('パスワードの変更に失敗しました');
+    }
+  }
+}

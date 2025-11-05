@@ -1,0 +1,522 @@
+import 'dart:convert';
+
+import '../../features/pet_profile/pet_profile.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+import '../../shared/monitoring/app_monitoring_dashboard.dart';
+import '../../shared/performance/memory_optimizer.dart';
+import '../../shared/performance/performance_monitor.dart';
+import '../../shared/security/environment_config.dart';
+import '../../shared/shared.dart';
+// 프로젝트 모듈
+import '../security/security_bootstrap.dart';
+
+/// 🚀 앱 통합 부트스트랩 시스템
+///
+/// 앱 시작 시 모든 시스템을 초기화하고 모니터링을 시작합니다.
+class AppBootstrap {
+  static bool _isInitialized = false;
+  static bool _isInitializing = false;
+
+  /// 앱 초기화
+  static Future<void> initialize() async {
+    if (_isInitialized || _isInitializing) return;
+
+    _isInitializing = true;
+
+    try {
+      if (kDebugMode) {
+        debugPrint('🚀 Starting app bootstrap...');
+      }
+
+      // 1. 환경 변수 로드
+      await _loadEnvironmentVariables();
+
+      // 2. 보안 시스템 초기화
+      await _initializeSecuritySystems();
+
+      // 3. 성능 모니터링 시스템 초기화
+      await _initializePerformanceSystems();
+
+      // 4. 모니터링 대시보드 초기화
+      await _initializeMonitoringDashboard();
+
+      // 5. 환경별 설정 적용
+      await _applyEnvironmentSettings();
+
+      // 6. 로컬 데이터 초기화
+      await _initializeLocalData();
+
+      // 7. 앱 실행 관련 초기화
+      await _initializeAppRuntime();
+
+      _isInitialized = true;
+      _isInitializing = false;
+
+      if (kDebugMode) {
+        debugPrint('✅ App bootstrap completed successfully');
+        _printBootstrapSummary();
+      }
+    } catch (e) {
+      _isInitializing = false;
+
+      if (kDebugMode) {
+        debugPrint('❌ App bootstrap failed: $e');
+      }
+
+      // 프로덕션 환경에서는 초기화 실패 시 앱 종료
+      if (kReleaseMode) {
+        throw AppBootstrapException(
+          'App initialization failed: ${e.toString()}',
+        );
+      }
+    }
+  }
+
+  /// 환경 변수 로드
+  static Future<void> _loadEnvironmentVariables() async {
+    if (kDebugMode) {
+      debugPrint('📁 Loading environment variables...');
+    }
+
+    try {
+      await dotenv.load(fileName: '.env');
+
+      if (kDebugMode) {
+        debugPrint('✅ Environment variables loaded successfully');
+        // API 키 로드 확인 (디버그 모드에서만)
+        final rakutenAppId = dotenv.env['RAKUTEN_APP_ID'];
+        final rakutenAffiliateId = dotenv.env['RAKUTEN_APP_ID_AIPET'];
+        debugPrint(
+          '🔑 Rakuten App ID: ${rakutenAppId?.isNotEmpty == true ? "✅ Loaded" : "❌ Missing"}',
+        );
+        debugPrint(
+          '🔑 Rakuten Affiliate ID: ${rakutenAffiliateId?.isNotEmpty == true ? "✅ Loaded" : "❌ Missing"}',
+        );
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('⚠️ Failed to load .env file: $e');
+        debugPrint('📝 Using default environment variables');
+      }
+    }
+  }
+
+  /// 보안 시스템 초기화
+  static Future<void> _initializeSecuritySystems() async {
+    if (kDebugMode) {
+      debugPrint('🛡️ Initializing security systems...');
+    }
+
+    // 1. 보안 부트스트랩 실행
+    await SecurityBootstrap.initialize();
+
+    // 2. API 보안 관리자 초기화
+    // ApiSecurityManager는 싱글톤이므로 자동으로 초기화됨
+
+    if (kDebugMode) {
+      debugPrint('✅ Security systems initialized');
+    }
+  }
+
+  /// 성능 시스템 초기화
+  static Future<void> _initializePerformanceSystems() async {
+    if (kDebugMode) {
+      debugPrint('📊 Initializing performance systems...');
+    }
+
+    // 1. 성능 모니터링 시작
+    if (EnvironmentConfig.isPerformanceMonitoringEnabled) {
+      PerformanceMonitor.instance.startMonitoring();
+    }
+
+    // 2. 메모리 최적화 시작
+    if (EnvironmentConfig.isPerformanceMonitoringEnabled) {
+      MemoryOptimizer.instance.startOptimization();
+    }
+
+    if (kDebugMode) {
+      debugPrint('✅ Performance systems initialized');
+    }
+  }
+
+  /// 모니터링 대시보드 초기화
+  static Future<void> _initializeMonitoringDashboard() async {
+    if (kDebugMode) {
+      debugPrint('📈 Initializing monitoring dashboard...');
+    }
+
+    // 모니터링 대시보드 시작
+    if (EnvironmentConfig.isPerformanceMonitoringEnabled) {
+      AppMonitoringDashboard.instance.startMonitoring();
+    }
+
+    if (kDebugMode) {
+      debugPrint('✅ Monitoring dashboard initialized');
+    }
+  }
+
+  /// 환경별 설정 적용
+  static Future<void> _applyEnvironmentSettings() async {
+    if (kDebugMode) {
+      debugPrint('🔧 Applying environment settings...');
+    }
+
+    // 환경별 설정 검증
+    EnvironmentConfig.validateConfiguration();
+
+    if (kDebugMode) {
+      debugPrint('✅ Environment settings applied');
+    }
+  }
+
+  /// 로컬 데이터 초기화
+  static Future<void> _initializeLocalData() async {
+    if (kDebugMode) {
+      debugPrint('💾 Initializing local data...');
+    }
+
+    try {
+      // 1. 이미지 저장소 초기화 (가장 먼저 초기화)
+      final imageStorageService = ImageStorageService();
+      await imageStorageService.initialize();
+
+      if (kDebugMode) {
+        debugPrint('✅ ImageStorageService initialized');
+        await imageStorageService.printStorageStatus();
+      }
+
+      // 2. 펫 데이터 초기화 (SQLite DB에서 로드)
+      await _initializePetData();
+
+      if (kDebugMode) {
+        final pets = await PetLocalStorageService.getPets();
+        debugPrint('✅ Pet data initialized: ${pets.length} pets loaded');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('⚠️ Failed to initialize local data: $e');
+      }
+    }
+  }
+
+  /// 펫 데이터 초기화 (SQLite → SharedPreferences 동기화)
+  static Future<void> _initializePetData() async {
+    try {
+      // LocalStorageService를 통해 SQLite DB에서 펫 데이터 로드
+      final localStorageService = LocalDataManager.instance;
+      await localStorageService.initialize();
+
+      final sqlitePets = await localStorageService.loadPetProfiles();
+
+      if (kDebugMode) {
+        debugPrint('📊 SQLite pets count: ${sqlitePets.length}');
+      }
+
+      if (sqlitePets.isNotEmpty) {
+        // SQLite의 펫 데이터를 Entity로 변환
+        final petEntities = sqlitePets.map((petData) {
+          return PetProfileEntity(
+            id: petData['petId']?.toString() ?? '',
+            name: petData['name']?.toString() ?? '',
+            type: petData['type']?.toString() ?? 'dog',
+            breed: petData['breed']?.toString(),
+            birthDate:
+                DateTime.tryParse(petData['birth_date']?.toString() ?? '') ??
+                DateTime.now(),
+            gender: petData['gender']?.toString() ?? 'unknown',
+            weight: (petData['weight'] as num?)?.toDouble() ?? 0.0,
+            size: petData['size']?.toString(),
+            microchipNumber: petData['microchip_number']?.toString(),
+            arrivalDate: DateTime.tryParse(
+              petData['arrival_date']?.toString() ?? '',
+            ),
+            neutered: (petData['is_neutered'] as int?) == 1,
+            imagePath: petData['profile_image']?.toString(),
+            ownerId: petData['ownerId']?.toString() ?? 'unknown',
+            createdAt:
+                DateTime.tryParse(petData['created_at']?.toString() ?? '') ??
+                DateTime.now(),
+            updatedAt:
+                DateTime.tryParse(petData['updated_at']?.toString() ?? '') ??
+                DateTime.now(),
+            isActive: (petData['is_active'] as int?) == 1,
+            additionalInfo: _parseAdditionalInfo(petData),
+          );
+        }).toList();
+
+        // SharedPreferences에 동기화
+        await PetLocalStorageService.savePets(petEntities);
+
+        if (kDebugMode) {
+          debugPrint(
+            '✅ Synchronized ${petEntities.length} pets to SharedPreferences',
+          );
+        }
+      }
+    } catch (e, stackTrace) {
+      if (kDebugMode) {
+        debugPrint('⚠️ Failed to initialize pet data: $e');
+        debugPrint('Stack trace: $stackTrace');
+      }
+    }
+  }
+
+  /// additionalInfo 파싱
+  static Map<String, dynamic> _parseAdditionalInfo(
+    Map<String, dynamic> petData,
+  ) {
+    try {
+      // additionalInfo JSON 문자열 파싱
+      if (petData['additionalInfo'] is String) {
+        return jsonDecode(petData['additionalInfo'] as String)
+            as Map<String, dynamic>;
+      } else if (petData['additionalInfo'] is Map) {
+        return petData['additionalInfo'] as Map<String, dynamic>;
+      }
+      return {};
+    } catch (e) {
+      return {};
+    }
+  }
+
+  /// 앱 실행 관련 초기화
+  static Future<void> _initializeAppRuntime() async {
+    if (kDebugMode) {
+      debugPrint('🚀 Initializing app runtime...');
+    }
+
+    try {
+      // 1. 앱 상태 초기화
+      // await AppStateManager.initialize();
+
+      // 2. 네비게이션 시스템 초기화
+      // await NavigationManager.initialize();
+
+      // 3. 알림 시스템 초기화
+      // await NotificationManager.initialize();
+
+      // 4. 백그라운드 작업 초기화
+      // await BackgroundTaskManager.initialize();
+
+      // 5. 사용자 세션 초기화
+      // await SessionManager.initialize();
+
+      // 6. 캐시 시스템 초기화
+      // await CacheManager.initialize();
+
+      if (kDebugMode) {
+        debugPrint('✅ App runtime initialized');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('⚠️ Failed to initialize app runtime: $e');
+      }
+      // 앱 실행에 필수적이지 않은 초기화는 실패해도 계속 진행
+    }
+  }
+
+  /// 부트스트랩 요약 출력
+  static void _printBootstrapSummary() {
+    if (!kDebugMode) return;
+
+    debugPrint('\n=== App Bootstrap Summary ===');
+    debugPrint('Environment: ${EnvironmentConfig.currentEnvironment.name}');
+    debugPrint('Bootstrap Status: ${_isInitialized ? 'Completed' : 'Failed'}');
+    debugPrint(
+      'Security Validation: ${EnvironmentConfig.isSecurityValidationEnabled ? 'Enabled' : 'Disabled'}',
+    );
+    debugPrint(
+      'Performance Monitoring: ${EnvironmentConfig.isPerformanceMonitoringEnabled ? 'Enabled' : 'Disabled'}',
+    );
+    debugPrint(
+      'Mock Mode Allowed: ${EnvironmentConfig.isMockModeAllowed ? 'Yes' : 'No'}',
+    );
+    debugPrint(
+      'Debug Logging: ${EnvironmentConfig.isDebugLoggingAllowed ? 'Enabled' : 'Disabled'}',
+    );
+    debugPrint(
+      'Error Reporting: ${EnvironmentConfig.isErrorReportingEnabled ? 'Enabled' : 'Disabled'}',
+    );
+    debugPrint('App Runtime: Initialized');
+    debugPrint('===============================\n');
+  }
+
+  /// 앱 종료 처리
+  static Future<void> dispose() async {
+    if (!_isInitialized) return;
+
+    try {
+      if (kDebugMode) {
+        debugPrint('🔄 Disposing app systems...');
+      }
+
+      // 1. 모니터링 대시보드 중지
+      AppMonitoringDashboard.instance.stopMonitoring();
+
+      // 2. 성능 모니터링 중지
+      PerformanceMonitor.instance.stopMonitoring();
+
+      // 3. 메모리 최적화 중지
+      MemoryOptimizer.instance.stopOptimization();
+
+      // 4. 보안 시스템 종료
+      await SecurityBootstrap.dispose();
+
+      _isInitialized = false;
+
+      if (kDebugMode) {
+        debugPrint('✅ App systems disposed');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('❌ App disposal failed: $e');
+      }
+    }
+  }
+
+  /// 초기화 상태 확인
+  static bool get isInitialized => _isInitialized;
+  static bool get isInitializing => _isInitializing;
+
+  /// 시스템 상태 리포트 생성
+  static Map<String, dynamic> generateSystemReport() {
+    return {
+      'isInitialized': _isInitialized,
+      'isInitializing': _isInitializing,
+      'environment': EnvironmentConfig.currentEnvironment.name,
+      'securityValidation': EnvironmentConfig.isSecurityValidationEnabled,
+      'performanceMonitoring': EnvironmentConfig.isPerformanceMonitoringEnabled,
+      'mockModeAllowed': EnvironmentConfig.isMockModeAllowed,
+      'debugLogging': EnvironmentConfig.isDebugLoggingAllowed,
+      'errorReporting': EnvironmentConfig.isErrorReportingEnabled,
+      'timestamp': DateTime.now().toIso8601String(),
+    };
+  }
+
+  /// 시스템 건강도 체크
+  static Future<SystemHealthCheck> performHealthCheck() async {
+    try {
+      final issues = <String>[];
+      int healthScore = 100;
+
+      // 1. 초기화 상태 체크
+      if (!_isInitialized) {
+        issues.add('App not initialized');
+        healthScore -= 50;
+      }
+
+      // 2. 환경 설정 체크
+      try {
+        EnvironmentConfig.validateConfiguration();
+      } catch (e) {
+        issues.add('Environment configuration invalid: ${e.toString()}');
+        healthScore -= 30;
+      }
+
+      // 3. 보안 시스템 체크
+      if (EnvironmentConfig.isSecurityValidationEnabled) {
+        try {
+          // 보안 검증 실행
+          // ProductionSecurityValidator.runAllSecurityValidations();
+        } catch (e) {
+          issues.add('Security validation failed: ${e.toString()}');
+          healthScore -= 40;
+        }
+      }
+
+      // 4. 성능 시스템 체크
+      if (EnvironmentConfig.isPerformanceMonitoringEnabled) {
+        try {
+          // 성능 모니터링 상태 체크
+          final performanceReport = PerformanceMonitor.instance
+              .generateReport();
+          if (performanceReport.slowOperations.isNotEmpty) {
+            issues.add(
+              '${performanceReport.slowOperations.length} slow operations detected',
+            );
+            healthScore -= 20;
+          }
+        } catch (e) {
+          issues.add('Performance monitoring failed: ${e.toString()}');
+          healthScore -= 20;
+        }
+      }
+
+      // 건강도 등급 결정
+      SystemHealthLevel level;
+      if (healthScore >= 90) {
+        level = SystemHealthLevel.excellent;
+      } else if (healthScore >= 70) {
+        level = SystemHealthLevel.good;
+      } else if (healthScore >= 50) {
+        level = SystemHealthLevel.warning;
+      } else {
+        level = SystemHealthLevel.critical;
+      }
+
+      return SystemHealthCheck(
+        score: healthScore,
+        level: level,
+        issues: issues,
+        timestamp: DateTime.now(),
+      );
+    } catch (e) {
+      return SystemHealthCheck(
+        score: 0,
+        level: SystemHealthLevel.critical,
+        issues: ['Health check failed: ${e.toString()}'],
+        timestamp: DateTime.now(),
+      );
+    }
+  }
+
+  /// 시스템 건강도 체크 결과 출력
+  static void printHealthCheck() {
+    if (!kDebugMode) return;
+
+    performHealthCheck().then((healthCheck) {
+      debugPrint('\n=== System Health Check ===');
+      debugPrint('Score: ${healthCheck.score}/100');
+      debugPrint('Level: ${healthCheck.level.name}');
+      debugPrint('Timestamp: ${healthCheck.timestamp.toIso8601String()}');
+
+      if (healthCheck.issues.isNotEmpty) {
+        debugPrint('\nIssues:');
+        for (final issue in healthCheck.issues) {
+          debugPrint('  - $issue');
+        }
+      }
+      debugPrint('============================\n');
+    });
+  }
+}
+
+/// 앱 부트스트랩 예외
+class AppBootstrapException implements Exception {
+  final String message;
+
+  const AppBootstrapException(this.message);
+
+  @override
+  String toString() => 'AppBootstrapException: $message';
+}
+
+/// 시스템 건강도 체크
+class SystemHealthCheck {
+  final int score;
+  final SystemHealthLevel level;
+  final List<String> issues;
+  final DateTime timestamp;
+
+  const SystemHealthCheck({
+    required this.score,
+    required this.level,
+    required this.issues,
+    required this.timestamp,
+  });
+}
+
+/// 시스템 건강도 등급
+enum SystemHealthLevel { excellent, good, warning, critical }

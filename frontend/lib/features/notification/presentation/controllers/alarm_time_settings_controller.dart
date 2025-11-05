@@ -1,0 +1,157 @@
+import 'package:flutter/material.dart';
+
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../../../../../features/notification/data/providers/notification_controller_providers.dart';
+import '../../../../shared/services/cache_service.dart';
+import '../../domain/domain.dart';
+
+
+part 'alarm_time_settings_controller.g.dart';
+
+/// 알림 시간 설정 컨트롤러
+@riverpod
+class AlarmTimeSettingsController extends _$AlarmTimeSettingsController {
+  late final GetNotificationSettingsUseCase _getNotificationSettingsUseCase;
+
+  @override
+  AlarmTimeSettingsState build() {
+    _getNotificationSettingsUseCase = ref.read(
+      getNotificationSettingsUseCaseProvider,
+    );
+    return const AlarmTimeSettingsState(isLoading: false);
+  }
+
+  /// 알림 시간 로드
+  Future<void> loadAlarmTimes(String userId) async {
+    try {
+      // ローディング状態を開始
+      state = state.copyWith(isLoading: true, error: null);
+
+      await _getNotificationSettingsUseCase(userId);
+
+      // ✅ CacheService 사용
+      final cache = CacheService();
+      await cache.initialize();
+
+      final morningTime = _parseTimeString(
+        cache.getString('morning_alarm_time') ?? '8:0',
+      );
+      final lunchTime = _parseTimeString(
+        cache.getString('lunch_alarm_time') ?? '12:0',
+      );
+      final dinnerTime = _parseTimeString(
+        cache.getString('dinner_alarm_time') ?? '18:0',
+      );
+      final walkTime = _parseTimeString(
+        cache.getString('walk_alarm_time') ?? '16:0',
+      );
+
+      state = state.copyWith(
+        morningTime: morningTime,
+        lunchTime: lunchTime,
+        dinnerTime: dinnerTime,
+        walkTime: walkTime,
+        isLoading: false,
+        error: null,
+      );
+    } catch (e) {
+      state = state.copyWith(isLoading: false, error: e.toString());
+    }
+  }
+
+  /// 시간 선택
+  void selectTime(String timeType, TimeOfDay time) {
+    switch (timeType) {
+      case 'morning':
+        state = state.copyWith(morningTime: time);
+        break;
+      case 'lunch':
+        state = state.copyWith(lunchTime: time);
+        break;
+      case 'dinner':
+        state = state.copyWith(dinnerTime: time);
+        break;
+      case 'walk':
+        state = state.copyWith(walkTime: time);
+        break;
+    }
+  }
+
+  /// 알림 시간 저장
+  Future<void> saveAlarmTimes() async {
+    try {
+      // ✅ CacheService 사용
+      final cache = CacheService();
+      await cache.initialize();
+
+      await cache.setString(
+        'morning_alarm_time',
+        '${state.morningTime.hour}:${state.morningTime.minute}',
+      );
+      await cache.setString(
+        'lunch_alarm_time',
+        '${state.lunchTime.hour}:${state.lunchTime.minute}',
+      );
+      await cache.setString(
+        'dinner_alarm_time',
+        '${state.dinnerTime.hour}:${state.dinnerTime.minute}',
+      );
+      await cache.setString(
+        'walk_alarm_time',
+        '${state.walkTime.hour}:${state.walkTime.minute}',
+      );
+
+      state = state.copyWith(isSaved: true);
+    } catch (e) {
+      state = state.copyWith(error: e.toString());
+    }
+  }
+
+  /// 시간 문자열 파싱
+  TimeOfDay _parseTimeString(String timeString) {
+    final parts = timeString.split(':');
+    return TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
+  }
+}
+
+/// 알림 시간 설정 상태
+class AlarmTimeSettingsState {
+  final TimeOfDay morningTime;
+  final TimeOfDay lunchTime;
+  final TimeOfDay dinnerTime;
+  final TimeOfDay walkTime;
+  final bool isLoading;
+  final bool isSaved;
+  final String? error;
+
+  const AlarmTimeSettingsState({
+    this.morningTime = const TimeOfDay(hour: 8, minute: 0),
+    this.lunchTime = const TimeOfDay(hour: 12, minute: 0),
+    this.dinnerTime = const TimeOfDay(hour: 18, minute: 0),
+    this.walkTime = const TimeOfDay(hour: 16, minute: 0),
+    this.isLoading = true,
+    this.isSaved = false,
+    this.error,
+  });
+
+  AlarmTimeSettingsState copyWith({
+    TimeOfDay? morningTime,
+    TimeOfDay? lunchTime,
+    TimeOfDay? dinnerTime,
+    TimeOfDay? walkTime,
+    bool? isLoading,
+    bool? isSaved,
+    String? error,
+  }) {
+    return AlarmTimeSettingsState(
+      morningTime: morningTime ?? this.morningTime,
+      lunchTime: lunchTime ?? this.lunchTime,
+      dinnerTime: dinnerTime ?? this.dinnerTime,
+      walkTime: walkTime ?? this.walkTime,
+      isLoading: isLoading ?? this.isLoading,
+      isSaved: isSaved ?? this.isSaved,
+      error: error ?? this.error,
+    );
+  }
+}

@@ -1,0 +1,58 @@
+import 'package:flutter/material.dart';
+
+
+import '../../../../../shared/shared.dart';
+import '../../../../../../features/walk/domain/entities/walk_record_entity.dart';
+import '../../../../../../features/walk/presentation/controllers/walk_controller.dart';
+
+/// 산책 기록 삭제 확인 다이얼로그
+class WalkDeleteDialog extends StatelessWidget {
+  final WalkRecordEntity walkRecord;
+  final WalkController controller;
+
+  const WalkDeleteDialog({
+    super.key,
+    required this.walkRecord,
+    required this.controller,
+  });
+
+  static Future<void> show(
+    BuildContext context,
+    WalkRecordEntity walkRecord,
+    WalkController controller,
+  ) {
+    return showDialog(
+      context: context,
+      builder: (context) =>
+          WalkDeleteDialog(walkRecord: walkRecord, controller: controller),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('削除確認'),
+      content: Text('「${walkRecord.title}」の散歩記録を削除しますか？\nこの操作は取り消せません。'),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('キャンセル'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            Navigator.pop(context);
+            controller.deleteWalkRecord(walkRecord.id);
+            if (context.mounted) {
+              SnackBarService.showSuccess(context, '散歩記録を削除しました');
+            }
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.pointPink,
+            foregroundColor: Colors.white,
+          ),
+          child: const Text('削除'),
+        ),
+      ],
+    );
+  }
+}

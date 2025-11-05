@@ -1,0 +1,198 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - lcov.info - shared/mock_data/features/ai_favorite_mock_data.dart</title>
+  <link rel="stylesheet" type="text/css" href="../../../gcov.css">
+</head>
+
+<body>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="title">LCOV - code coverage report</td></tr>
+            <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+            <tr>
+              <td width="100%">
+                <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="10%" class="headerValue"><a href="../../../index.html" title="Click to go to top-level">top level</a> - <a href="index.html" title="Click to go to directory shared/mock_data/features">shared/mock_data/features</a> - ai_favorite_mock_data.dart</td>
+            <td width="5%"></td>
+            <td width="5%"></td>
+            <td width="5%" class="headerCovTableHead">Coverage</td>
+            <td width="5%" class="headerCovTableHead" title="Covered + Uncovered code">Total</td>
+            <td width="5%" class="headerCovTableHead" title="Exercised code only">Hit</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntryLo">0.0&nbsp;%</td>
+            <td class="headerCovTableEntry">38</td>
+            <td class="headerCovTableEntry">0</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test Date:</td>
+            <td class="headerValue">2025-09-12 16:09:08</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntryHi">-</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">0</td>
+          </tr>
+                  <tr><td><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+          </table>
+
+          <table cellpadding=0 cellspacing=0 border=0>
+            <tr>
+              <td><br></td>
+            </tr>
+            <tr>
+              <td>
+<pre class="sourceHeading">            Line data    Source code</pre>
+<pre class="source">
+<span id="L1"><span class="lineNum">       1</span>              : import 'package:flutter_riverpod/flutter_riverpod.dart';</span>
+<span id="L2"><span class="lineNum">       2</span>              : import 'package:riverpod_annotation/riverpod_annotation.dart';</span>
+<span id="L3"><span class="lineNum">       3</span>              : </span>
+<span id="L4"><span class="lineNum">       4</span>              : import '../../../features/ai/domain/entities/ai_favorite_qa_entity.dart';</span>
+<span id="L5"><span class="lineNum">       5</span>              : import '../../../features/pet_registor/domain/entities/pet_profile_entity.dart';</span>
+<span id="L6"><span class="lineNum">       6</span>              : </span>
+<span id="L7"><span class="lineNum">       7</span>              : part 'ai_favorite_mock_data.g.dart';</span>
+<span id="L8"><span class="lineNum">       8</span>              : </span>
+<span id="L9"><span class="lineNum">       9</span>              : /// AI 즐겨찾기 QA Mock 데이터 프로바이더</span>
+<span id="L10"><span class="lineNum">      10</span>              : /// </span>
+<span id="L11"><span class="lineNum">      11</span>              : /// 실제 API 연계 전까지 사용하는 즐겨찾기 Mock 데이터를 중앙 관리합니다.</span>
+<span id="L12"><span class="lineNum">      12</span> <span class="tlaUNC">           0 : @riverpod</span></span>
+<span id="L13"><span class="lineNum">      13</span>              : List&lt;AiFavoriteQaEntity&gt; aiFavoriteMockData(Ref ref) {</span>
+<span id="L14"><span class="lineNum">      14</span> <span class="tlaUNC">           0 :     final now = DateTime.now();</span></span>
+<span id="L15"><span class="lineNum">      15</span> <span class="tlaUNC">           0 :     final mockPet1 = PetProfileEntity(</span></span>
+<span id="L16"><span class="lineNum">      16</span>              :       id: 'pet1',</span>
+<span id="L17"><span class="lineNum">      17</span>              :       name: 'ゆうくん',</span>
+<span id="L18"><span class="lineNum">      18</span>              :       type: 'dog',</span>
+<span id="L19"><span class="lineNum">      19</span>              :       breed: '柴犬',</span>
+<span id="L20"><span class="lineNum">      20</span> <span class="tlaUNC">           0 :       birthDate: DateTime(2020, 3, 15),</span></span>
+<span id="L21"><span class="lineNum">      21</span>              :       ownerId: 'user1',</span>
+<span id="L22"><span class="lineNum">      22</span> <span class="tlaUNC">           0 :       createdAt: now.subtract(const Duration(days: 30)),</span></span>
+<span id="L23"><span class="lineNum">      23</span> <span class="tlaUNC">           0 :       updatedAt: now.subtract(const Duration(days: 1)),</span></span>
+<span id="L24"><span class="lineNum">      24</span>              :       imagePath: null,</span>
+<span id="L25"><span class="lineNum">      25</span>              :     );</span>
+<span id="L26"><span class="lineNum">      26</span>              :     </span>
+<span id="L27"><span class="lineNum">      27</span> <span class="tlaUNC">           0 :     final mockPet2 = PetProfileEntity(</span></span>
+<span id="L28"><span class="lineNum">      28</span>              :       id: 'pet2', </span>
+<span id="L29"><span class="lineNum">      29</span>              :       name: 'みゃあちゃん',</span>
+<span id="L30"><span class="lineNum">      30</span>              :       type: 'cat',</span>
+<span id="L31"><span class="lineNum">      31</span>              :       breed: 'マンチカン',</span>
+<span id="L32"><span class="lineNum">      32</span> <span class="tlaUNC">           0 :       birthDate: DateTime(2021, 7, 20),</span></span>
+<span id="L33"><span class="lineNum">      33</span>              :       ownerId: 'user1',</span>
+<span id="L34"><span class="lineNum">      34</span> <span class="tlaUNC">           0 :       createdAt: now.subtract(const Duration(days: 20)),</span></span>
+<span id="L35"><span class="lineNum">      35</span> <span class="tlaUNC">           0 :       updatedAt: now.subtract(const Duration(days: 1)),</span></span>
+<span id="L36"><span class="lineNum">      36</span>              :       imagePath: null,</span>
+<span id="L37"><span class="lineNum">      37</span>              :     );</span>
+<span id="L38"><span class="lineNum">      38</span>              :     </span>
+<span id="L39"><span class="lineNum">      39</span> <span class="tlaUNC">           0 :     return [</span></span>
+<span id="L40"><span class="lineNum">      40</span> <span class="tlaUNC">           0 :       AiFavoriteQaEntity(</span></span>
+<span id="L41"><span class="lineNum">      41</span>              :         id: 'fav1',</span>
+<span id="L42"><span class="lineNum">      42</span>              :         question: 'ペットが食事を拒否する時はどうしたらいいですか？',</span>
+<span id="L43"><span class="lineNum">      43</span>              :         answer: '🍽️ お腹の調子が悪い理由はたくさんあります:\n\n1. **健康上の問題**: 歯の問題, 消化器の問題\n2. **ストレス**: 環境の変化, 新しい食事\n3. **活動量不足**: 運動が不足すると食欲が落ちます\n\n**解決策:**\n• 定められた時間に定期的に食事\n• 食器を清潔に保つ\n• 十分な運動でエネルギーを消費\n• 継続的に症状があれば獣医師に相談を推奨',</span>
+<span id="L44"><span class="lineNum">      44</span>              :         pet: mockPet1,</span>
+<span id="L45"><span class="lineNum">      45</span>              :         categoryId: 'health',</span>
+<span id="L46"><span class="lineNum">      46</span>              :         categoryName: '健康',</span>
+<span id="L47"><span class="lineNum">      47</span> <span class="tlaUNC">           0 :         createdAt: now.subtract(const Duration(days: 2)),</span></span>
+<span id="L48"><span class="lineNum">      48</span> <span class="tlaUNC">           0 :         originalTimestamp: now.subtract(const Duration(days: 2, hours: 1)),</span></span>
+<span id="L49"><span class="lineNum">      49</span>              :       ),</span>
+<span id="L50"><span class="lineNum">      50</span> <span class="tlaUNC">           0 :       AiFavoriteQaEntity(</span></span>
+<span id="L51"><span class="lineNum">      51</span>              :         id: 'fav2',</span>
+<span id="L52"><span class="lineNum">      52</span>              :         question: '散歩の時間はどれくらいかかりますか?',</span>
+<span id="L53"><span class="lineNum">      53</span>              :         answer: '🚶‍♂️ ペットの散歩ガイド:\n\n**小型犬 (5kg 未満)**\n• 1日30-60分 (2-3回に分けて)\n\n**中型犬 (5-25kg)**\n• 1日60-90分 (朝, 夕方)\n\n**大型犬 (25kg 以上)**\n• 1日90-120分 (活発な運動が必要)\n\n**注意事項:**\n• 暑い時間帯を避ける (アスファルトの熱傷に注意)\n• 十分な水分補給\n• 段階的に運動量を増やす',</span>
+<span id="L54"><span class="lineNum">      54</span>              :         pet: mockPet1,</span>
+<span id="L55"><span class="lineNum">      55</span>              :         categoryId: 'exercise',</span>
+<span id="L56"><span class="lineNum">      56</span>              :         categoryName: '運動',</span>
+<span id="L57"><span class="lineNum">      57</span> <span class="tlaUNC">           0 :         createdAt: now.subtract(const Duration(days: 1)),</span></span>
+<span id="L58"><span class="lineNum">      58</span> <span class="tlaUNC">           0 :         originalTimestamp: now.subtract(const Duration(days: 1, hours: 2)),</span></span>
+<span id="L59"><span class="lineNum">      59</span>              :       ),</span>
+<span id="L60"><span class="lineNum">      60</span> <span class="tlaUNC">           0 :       AiFavoriteQaEntity(</span></span>
+<span id="L61"><span class="lineNum">      61</span>              :         id: 'fav3',</span>
+<span id="L62"><span class="lineNum">      62</span>              :         question: '猫の適正なフード量はどれくらいですか？',</span>
+<span id="L63"><span class="lineNum">      63</span>              :         answer: '🐱 猫のフード量ガイド:\n\n**年齢別の基準:**\n• 子猫 (2-12か月): 体重×80-100kcal/日\n• 成猫 (1-7歳): 体重×70-80kcal/日\n• 高齢猫 (7歳以上): 体重×60-70kcal/日\n\n**フードタイプ別:**\n• ドライフード: 1日2-3回に分けて\n• ウェットフード: 1日2回が理想\n\n**注意事項:**\n• 急な変更は避ける\n• 水分摂取量も重要\n• 体重変化を定期的にチェック',</span>
+<span id="L64"><span class="lineNum">      64</span>              :         pet: mockPet2,</span>
+<span id="L65"><span class="lineNum">      65</span>              :         categoryId: 'feeding',</span>
+<span id="L66"><span class="lineNum">      66</span>              :         categoryName: '食事',</span>
+<span id="L67"><span class="lineNum">      67</span> <span class="tlaUNC">           0 :         createdAt: now.subtract(const Duration(hours: 5)),</span></span>
+<span id="L68"><span class="lineNum">      68</span> <span class="tlaUNC">           0 :         originalTimestamp: now.subtract(const Duration(hours: 6)),</span></span>
+<span id="L69"><span class="lineNum">      69</span>              :       ),</span>
+<span id="L70"><span class="lineNum">      70</span> <span class="tlaUNC">           0 :       AiFavoriteQaEntity(</span></span>
+<span id="L71"><span class="lineNum">      71</span>              :         id: 'fav4',</span>
+<span id="L72"><span class="lineNum">      72</span>              :         question: '一般的なペットケアについて教えてください',</span>
+<span id="L73"><span class="lineNum">      73</span>              :         answer: '🐾 一般的なペットケアの基本:\n\n**日常ケア:**\n• 定期的なブラッシング\n• 歯磨きまたは歯のケア\n• 爪切り\n• 耳掃除\n\n**健康管理:**\n• 年1-2回の健康チェック\n• 予防接種の継続\n• 体重管理\n• 異常な行動や症状の観察\n\n**環境整備:**\n• 清潔な生活空間\n• 適切な温度管理\n• 十分な運動と遊び時間',</span>
+<span id="L74"><span class="lineNum">      74</span>              :         pet: null,</span>
+<span id="L75"><span class="lineNum">      75</span>              :         categoryId: 'general',</span>
+<span id="L76"><span class="lineNum">      76</span>              :         categoryName: '一般',</span>
+<span id="L77"><span class="lineNum">      77</span> <span class="tlaUNC">           0 :         createdAt: now.subtract(const Duration(hours: 3)),</span></span>
+<span id="L78"><span class="lineNum">      78</span> <span class="tlaUNC">           0 :         originalTimestamp: now.subtract(const Duration(hours: 4)),</span></span>
+<span id="L79"><span class="lineNum">      79</span>              :       ),</span>
+<span id="L80"><span class="lineNum">      80</span> <span class="tlaUNC">           0 :       AiFavoriteQaEntity(</span></span>
+<span id="L81"><span class="lineNum">      81</span>              :         id: 'fav5',</span>
+<span id="L82"><span class="lineNum">      82</span>              :         question: '猫が夜中に鳴くのはなぜですか？',</span>
+<span id="L83"><span class="lineNum">      83</span>              :         answer: '🐱 猫が夜中に鳴く理由:\n\n**主な原因:**\n• 狩猟本能の発露 (野生の名残)\n• 注意を引きたい\n• ストレスや不安\n• 病気や体調不良\n• 発情期の行動\n\n**対処法:**\n• 昼間に十分遊ばせる\n• 夜間の環境を整える\n• 定期的な健康チェック\n• ストレス要因の除去\n• 必要に応じて避妊・去勢手術を検討',</span>
+<span id="L84"><span class="lineNum">      84</span>              :         pet: mockPet2,</span>
+<span id="L85"><span class="lineNum">      85</span>              :         categoryId: 'behavior',</span>
+<span id="L86"><span class="lineNum">      86</span>              :         categoryName: '行動',</span>
+<span id="L87"><span class="lineNum">      87</span> <span class="tlaUNC">           0 :         createdAt: now.subtract(const Duration(hours: 8)),</span></span>
+<span id="L88"><span class="lineNum">      88</span> <span class="tlaUNC">           0 :         originalTimestamp: now.subtract(const Duration(hours: 9)),</span></span>
+<span id="L89"><span class="lineNum">      89</span>              :       ),</span>
+<span id="L90"><span class="lineNum">      90</span> <span class="tlaUNC">           0 :       AiFavoriteQaEntity(</span></span>
+<span id="L91"><span class="lineNum">      91</span>              :         id: 'fav6',</span>
+<span id="L92"><span class="lineNum">      92</span>              :         question: '犬の毛玉ケアはどうしたらいいですか？',</span>
+<span id="L93"><span class="lineNum">      93</span>              :         answer: '✂️ 犬の毛玉ケアガイド:\n\n**予防方法:**\n• 毎日のブラッシング (長毛種は特に重要)\n• 適切なブラシの選択\n• シャンプー後の完全な乾燥\n\n**毛玉ができてしまった場合:**\n• 小さな毛玉: 手でほぐしながらブラッシング\n• 大きな毛玉: 毛玉カッターで慎重に除去\n• ひどい場合: プロのトリマーに相談\n\n**注意事項:**\n• 無理に引っ張らない\n• 皮膚を傷つけないよう注意\n• 定期的なトリミングサロンの利用',</span>
+<span id="L94"><span class="lineNum">      94</span>              :         pet: mockPet1,</span>
+<span id="L95"><span class="lineNum">      95</span>              :         categoryId: 'grooming',</span>
+<span id="L96"><span class="lineNum">      96</span>              :         categoryName: 'グルーミング',</span>
+<span id="L97"><span class="lineNum">      97</span> <span class="tlaUNC">           0 :         createdAt: now.subtract(const Duration(hours: 12)),</span></span>
+<span id="L98"><span class="lineNum">      98</span> <span class="tlaUNC">           0 :         originalTimestamp: now.subtract(const Duration(hours: 13)),</span></span>
+<span id="L99"><span class="lineNum">      99</span>              :       ),</span>
+<span id="L100"><span class="lineNum">     100</span>              :     ];</span>
+<span id="L101"><span class="lineNum">     101</span>              : }</span>
+<span id="L102"><span class="lineNum">     102</span>              : </span>
+<span id="L103"><span class="lineNum">     103</span>              : /// 즐겨찾기 카테고리별 목록 프로바이더</span>
+<span id="L104"><span class="lineNum">     104</span> <span class="tlaUNC">           0 : @riverpod</span></span>
+<span id="L105"><span class="lineNum">     105</span>              : List&lt;AiFavoriteQaEntity&gt; aiFavoritesByCategory(Ref ref, String categoryId) {</span>
+<span id="L106"><span class="lineNum">     106</span> <span class="tlaUNC">           0 :   final favorites = ref.watch(aiFavoriteMockDataProvider);</span></span>
+<span id="L107"><span class="lineNum">     107</span> <span class="tlaUNC">           0 :   return favorites.where((favorite) =&gt; favorite.categoryId == categoryId).toList();</span></span>
+<span id="L108"><span class="lineNum">     108</span>              : }</span>
+<span id="L109"><span class="lineNum">     109</span>              : </span>
+<span id="L110"><span class="lineNum">     110</span>              : /// 즐겨찾기 펫별 목록 프로바이더</span>
+<span id="L111"><span class="lineNum">     111</span> <span class="tlaUNC">           0 : @riverpod</span></span>
+<span id="L112"><span class="lineNum">     112</span>              : List&lt;AiFavoriteQaEntity&gt; aiFavoritesByPet(Ref ref, String petId) {</span>
+<span id="L113"><span class="lineNum">     113</span> <span class="tlaUNC">           0 :   final favorites = ref.watch(aiFavoriteMockDataProvider);</span></span>
+<span id="L114"><span class="lineNum">     114</span> <span class="tlaUNC">           0 :   return favorites.where((favorite) =&gt; favorite.pet?.id == petId).toList();</span></span>
+<span id="L115"><span class="lineNum">     115</span>              : }</span>
+<span id="L116"><span class="lineNum">     116</span>              : </span>
+<span id="L117"><span class="lineNum">     117</span>              : /// 일반 상담 즐겨찾기 목록 프로바이더 (펫이 지정되지 않은 경우)</span>
+<span id="L118"><span class="lineNum">     118</span> <span class="tlaUNC">           0 : @riverpod</span></span>
+<span id="L119"><span class="lineNum">     119</span>              : List&lt;AiFavoriteQaEntity&gt; aiGeneralFavorites(Ref ref) {</span>
+<span id="L120"><span class="lineNum">     120</span> <span class="tlaUNC">           0 :   final favorites = ref.watch(aiFavoriteMockDataProvider);</span></span>
+<span id="L121"><span class="lineNum">     121</span> <span class="tlaUNC">           0 :   return favorites.where((favorite) =&gt; favorite.pet == null).toList();</span></span>
+<span id="L122"><span class="lineNum">     122</span>              : }</span>
+        </pre>
+              </td>
+            </tr>
+          </table>
+          <br>
+
+          <table width="100%" border=0 cellspacing=0 cellpadding=0>
+            <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+            <tr><td class="versionInfo">Generated by: <a href="https://github.com//linux-test-project/lcov" target="_parent">LCOV version 2.3.2-1</a></td></tr>
+          </table>
+          <br>
+
+</body>
+</html>
