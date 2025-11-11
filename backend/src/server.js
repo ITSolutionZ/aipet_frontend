@@ -5,8 +5,10 @@ import compression from 'compression';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
+import swaggerUi from 'swagger-ui-express';
 import { testConnection, initializeDatabase } from './config/database.js';
 import { initializeFirebase } from './config/firebase.js';
+import swaggerSpec from './config/swagger.js';
 import routes from './routes/index.js';
 import { errorHandler, notFoundHandler } from './middlewares/error.middleware.js';
 import {
@@ -80,7 +82,38 @@ app.use('/api', limiter);
 // 라우트 설정
 // ===========================
 
-// 헬스 체크 (루트)
+/**
+ * @openapi
+ * /:
+ *   get:
+ *     tags:
+ *       - Health
+ *     summary: ヘルスチェック
+ *     description: APIサーバーの稼働状態を確認します
+ *     responses:
+ *       200:
+ *         description: サーバーが正常に稼働中
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: AIPet Backend API
+ *                 version:
+ *                   type: string
+ *                   example: v1
+ *                 status:
+ *                   type: string
+ *                   example: running
+ *                 timestamp:
+ *                   type: string
+ *                   format: date-time
+ */
 app.get('/', (req, res) => {
   res.json({
     success: true,
@@ -89,6 +122,18 @@ app.get('/', (req, res) => {
     status: 'running',
     timestamp: new Date().toISOString(),
   });
+});
+
+// Swagger UI
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  customSiteTitle: 'AIPet API Documentation',
+  customCss: '.swagger-ui .topbar { display: none }',
+}));
+
+// Swagger JSON
+app.get('/api-docs.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(swaggerSpec);
 });
 
 // API 라우트
@@ -137,11 +182,13 @@ const startServer = async () => {
       console.log('====================================');
       console.log(`🌐 서버 주소: http://localhost:${PORT}`);
       console.log(`📡 API 엔드포인트: http://localhost:${PORT}/api/${API_VERSION}`);
+      console.log(`📖 Swagger UI: http://localhost:${PORT}/api-docs`);
       console.log(`🔧 환경: ${process.env.NODE_ENV || 'development'}`);
       console.log('====================================\n');
       console.log('📚 주요 엔드포인트:');
       console.log(`   GET  / - 헬스 체크`);
       console.log(`   GET  /api/${API_VERSION} - API 정보`);
+      console.log(`   GET  /api-docs - Swagger API ドキュメント`);
       console.log(`   POST /api/${API_VERSION}/auth/verify-token - 토큰 검증`);
       console.log(`   POST /api/${API_VERSION}/users - 사용자 동기화`);
       console.log(`   GET  /api/${API_VERSION}/auth/me - 현재 사용자`);

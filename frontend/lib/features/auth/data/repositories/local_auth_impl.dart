@@ -238,7 +238,7 @@ class LocalAuthImpl implements AuthRepository {
 
   /// 현재 사용자 ID 토큰 조회 (개발 모드: Mock)
   @override
-  Future<String?> getCurrentUserIdToken() async {
+  Future<String?> getCurrentUserIdToken({bool forceRefresh = false}) async {
     if (_currentUser == null) return null;
 
     return 'local_id_token_${DateTime.now().millisecondsSinceEpoch}';

@@ -17,23 +17,109 @@ const router = express.Router();
 router.use(authenticateFirebase);
 
 /**
- * @route   GET /api/v1/pets
- * @desc    모든 펫 조회 (현재 사용자 소유)
- * @access  Private
+ * @openapi
+ * /api/v1/pets:
+ *   get:
+ *     tags:
+ *       - Pets
+ *     summary: ペット一覧取得
+ *     description: ログイン中のユーザーが所有するペット一覧を取得します
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: ペット一覧の取得に成功
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Pet'
+ *                 count:
+ *                   type: integer
+ *                   example: 3
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
  */
 router.get('/', getAllPets);
 
 /**
- * @route   GET /api/v1/pets/stats
- * @desc    펫 통계 정보 조회
- * @access  Private
+ * @openapi
+ * /api/v1/pets/stats:
+ *   get:
+ *     tags:
+ *       - Pets
+ *     summary: ペット統計情報取得
+ *     description: ユーザーのペットに関する統計情報を取得します
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: 統計情報の取得に成功
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     total:
+ *                       type: integer
+ *                       example: 3
+ *                     byType:
+ *                       type: object
+ *                       example: {"dog": 2, "cat": 1}
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
  */
 router.get('/stats', getPetStats);
 
 /**
- * @route   GET /api/v1/pets/:id
- * @desc    특정 펫 조회
- * @access  Private
+ * @openapi
+ * /api/v1/pets/{id}:
+ *   get:
+ *     tags:
+ *       - Pets
+ *     summary: ペット詳細取得
+ *     description: 指定されたIDのペット情報を取得します
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ペットID
+ *     responses:
+ *       200:
+ *         description: ペット情報の取得に成功
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   $ref: '#/components/schemas/Pet'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
  */
 router.get(
   '/:id',
@@ -43,9 +129,41 @@ router.get(
 );
 
 /**
- * @route   POST /api/v1/pets
- * @desc    새 펫 생성
- * @access  Private
+ * @openapi
+ * /api/v1/pets:
+ *   post:
+ *     tags:
+ *       - Pets
+ *     summary: ペット作成
+ *     description: 新しいペットを登録します
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/PetInput'
+ *     responses:
+ *       201:
+ *         description: ペットの作成に成功
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: ペットを作成しました
+ *                 data:
+ *                   $ref: '#/components/schemas/Pet'
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
  */
 router.post(
   '/',
@@ -70,9 +188,52 @@ router.post(
 );
 
 /**
- * @route   PUT /api/v1/pets/:id
- * @desc    펫 정보 업데이트
- * @access  Private
+ * @openapi
+ * /api/v1/pets/{id}:
+ *   put:
+ *     tags:
+ *       - Pets
+ *     summary: ペット情報更新
+ *     description: 指定されたペットの情報を更新します
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ペットID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/PetInput'
+ *     responses:
+ *       200:
+ *         description: ペット情報の更新に成功
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: ペット情報を更新しました
+ *                 data:
+ *                   $ref: '#/components/schemas/Pet'
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
  */
 router.put(
   '/:id',
@@ -98,9 +259,42 @@ router.put(
 );
 
 /**
- * @route   DELETE /api/v1/pets/:id
- * @desc    펫 삭제 (Soft Delete)
- * @access  Private
+ * @openapi
+ * /api/v1/pets/{id}:
+ *   delete:
+ *     tags:
+ *       - Pets
+ *     summary: ペット削除
+ *     description: 指定されたペットを削除します（論理削除）
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ペットID
+ *     responses:
+ *       200:
+ *         description: ペットの削除に成功
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: ペットを削除しました
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
  */
 router.delete(
   '/:id',

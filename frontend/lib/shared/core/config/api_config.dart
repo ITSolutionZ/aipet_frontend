@@ -32,8 +32,8 @@ class ApiConfig {
     }
   }
 
-  /// 백엔드 API URL (버전 없음, /api만 사용)
-  static String get fullApiUrl => '$baseUrl/api';
+  /// 백엔드 API URL (버전 포함)
+  static String get fullApiUrl => '$baseUrl/api/$apiVersion';
 
   static bool get isProduction =>
       currentEnvironment == ApiEnvironment.production;

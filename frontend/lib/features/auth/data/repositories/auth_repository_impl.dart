@@ -215,7 +215,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<String?> getCurrentUserIdToken() async {
+  Future<String?> getCurrentUserIdToken({bool forceRefresh = false}) async {
     return _remoteDatasource.getCurrentUserIdToken();
   }
 

@@ -4,12 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../features/pet_profile/data/services/backend_pet_api_service.dart';
-import '../../../../features/pet_profile/data/services/local_pet_service.dart';
 import '../../../../features/pet_profile/pet_profile.dart';
 import '../../../../shared/core/services/backend_token_service.dart';
 import '../../../../shared/shared.dart';
 import '../../data/data.dart';
-import '../../data/services/firebase_token_service.dart';
 import '../../domain/domain.dart';
 
 

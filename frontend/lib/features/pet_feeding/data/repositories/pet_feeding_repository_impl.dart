@@ -1,29 +1,30 @@
 import '../../../../shared/shared.dart';
 
-import '../../../../../features/pet_feeding/data/models/feeding_record_model.dart';
-import '../../../../../features/pet_feeding/data/services/pet_feeding_local_storage_service.dart';
+import '../../../../../features/pet_feeding/data/services/backend_feeding_api_service.dart';
 import '../../../../../features/pet_feeding/domain/entities/feeding_record_entity.dart';
 import '../../../../../features/pet_feeding/domain/repositories/pet_feeding_repository.dart';
 
 /// 급여 기록 Repository 구현체
-/// Hybrid 패턴: 로컬 스토리지 서비스 사용 (추후 API 연동 예정)
+/// Backend API 연동 (BackendFeedingApiService 사용)
 class PetFeedingRepositoryImpl implements PetFeedingRepository {
   PetFeedingRepositoryImpl();
 
   @override
   Future<List<FeedingRecordEntity>> getFeedingRecords(String petId) async {
-    await Future.delayed(const Duration(milliseconds: 300));
+    final result = await BackendFeedingApiService.getFeedings(petId: petId);
 
-    final recordsData = await PetFeedingLocalStorageService.getFeedingRecords(
-      petId: petId,
-    );
-
-    LoggerService.debug(
-      '✅ PetFeedingRepository: 급여 기록 ${recordsData.length}개 조회',
-    );
-    return recordsData
-        .map((data) => FeedingRecordModel.fromJson(data).toEntity())
-        .toList();
+    if (result.isSuccess) {
+      final records = result.dataOrNull ?? [];
+      LoggerService.debug(
+        '✅ PetFeedingRepository: 급여 기록 ${records.length}개 조회 (Backend API)',
+      );
+      return records;
+    } else {
+      LoggerService.error(
+        '❌ PetFeedingRepository: 급여 기록 조회 실패 - ${result.error}',
+      );
+      throw Exception(result.error);
+    }
   }
 
   @override
@@ -31,109 +32,104 @@ class PetFeedingRepositoryImpl implements PetFeedingRepository {
     String petId,
     DateTime date,
   ) async {
-    await Future.delayed(const Duration(milliseconds: 300));
+    // 해당 날짜의 시작과 끝 시간 계산
+    final startDate = DateTime(date.year, date.month, date.day);
+    final endDate = DateTime(date.year, date.month, date.day, 23, 59, 59);
 
-    final recordsData = await PetFeedingLocalStorageService.getFeedingRecords(
+    final result = await BackendFeedingApiService.getFeedings(
       petId: petId,
+      startDate: startDate,
+      endDate: endDate,
     );
 
-    return recordsData
-        .where((data) {
-          final fedTime = DateTime.parse(data['fedTime'] as String);
-          return fedTime.year == date.year &&
-              fedTime.month == date.month &&
-              fedTime.day == date.day;
-        })
-        .map((data) => FeedingRecordModel.fromJson(data).toEntity())
-        .toList();
+    if (result.isSuccess) {
+      final records = result.dataOrNull ?? [];
+      LoggerService.debug(
+        '✅ PetFeedingRepository: ${date.toString().split(' ')[0]} 급여 기록 ${records.length}개 조회 (Backend API)',
+      );
+      return records;
+    } else {
+      LoggerService.error(
+        '❌ PetFeedingRepository: 날짜별 급여 기록 조회 실패 - ${result.error}',
+      );
+      throw Exception(result.error);
+    }
   }
 
   @override
   Future<FeedingRecordEntity> addFeedingRecord(
     FeedingRecordEntity record,
   ) async {
-    await Future.delayed(const Duration(milliseconds: 500));
+    final result = await BackendFeedingApiService.createFeeding(
+      petId: record.petId,
+      feeding: record,
+    );
 
-    final model = FeedingRecordModel.fromEntity(record);
-    final recordData = model.toJson();
-
-    await PetFeedingLocalStorageService.addFeedingRecord(recordData);
-
-    LoggerService.debug('✅ PetFeedingRepository: 급여 기록 추가 - ID: ${record.id}');
-    return record;
+    if (result.isSuccess) {
+      final createdRecord = result.dataOrNull!;
+      LoggerService.debug(
+        '✅ PetFeedingRepository: 급여 기록 추가 - ID: ${createdRecord.id} (Backend API)',
+      );
+      return createdRecord;
+    } else {
+      LoggerService.error(
+        '❌ PetFeedingRepository: 급여 기록 추가 실패 - ${result.error}',
+      );
+      throw Exception(result.error);
+    }
   }
 
   @override
   Future<FeedingRecordEntity> updateFeedingRecord(
     FeedingRecordEntity record,
   ) async {
-    await Future.delayed(const Duration(milliseconds: 500));
-
-    final model = FeedingRecordModel.fromEntity(record);
-    final recordData = model.toJson();
-
-    await PetFeedingLocalStorageService.updateFeedingRecord(recordData);
-
-    LoggerService.debug(
-      '✅ PetFeedingRepository: 급여 기록 업데이트 - ID: ${record.id}',
+    final result = await BackendFeedingApiService.updateFeeding(
+      petId: record.petId,
+      feeding: record,
     );
-    return record;
+
+    if (result.isSuccess) {
+      final updatedRecord = result.dataOrNull!;
+      LoggerService.debug(
+        '✅ PetFeedingRepository: 급여 기록 업데이트 - ID: ${updatedRecord.id} (Backend API)',
+      );
+      return updatedRecord;
+    } else {
+      LoggerService.error(
+        '❌ PetFeedingRepository: 급여 기록 업데이트 실패 - ${result.error}',
+      );
+      throw Exception(result.error);
+    }
   }
 
   @override
   Future<void> deleteFeedingRecord(String recordId) async {
-    await Future.delayed(const Duration(milliseconds: 400));
-
-    await PetFeedingLocalStorageService.deleteFeedingRecord(recordId);
-    LoggerService.debug('✅ PetFeedingRepository: 급여 기록 삭제 - ID: $recordId');
+    // ⚠️ Backend API는 petId도 필요하지만, interface에는 recordId만 있음
+    // Controller에서 petId를 함께 전달하도록 수정 필요
+    // 임시로 에러 처리 - interface 변경 필요
+    throw UnimplementedError(
+      'deleteFeedingRecord는 petId가 필요합니다. '
+      'Repository interface를 deleteFeedingRecord(String petId, String recordId)로 변경해주세요.',
+    );
   }
 
   @override
   Future<FeedingStatistics> getFeedingStatistics(String petId) async {
-    await Future.delayed(const Duration(milliseconds: 300));
-
-    final recordsData = await PetFeedingLocalStorageService.getFeedingRecords(
+    final result = await BackendFeedingApiService.getFeedingStats(
       petId: petId,
     );
 
-    final records = recordsData
-        .map((data) => FeedingRecordModel.fromJson(data).toEntity())
-        .toList();
-
-    final completedRecords = records
-        .where((r) => r.status == FeedingStatus.completed)
-        .toList();
-    final skippedRecords = records
-        .where((r) => r.status == FeedingStatus.skipped)
-        .toList();
-
-    final totalAmount = completedRecords.fold<double>(
-      0,
-      (sum, record) => sum + record.amount,
-    );
-    final averageAmount = completedRecords.isNotEmpty
-        ? totalAmount / completedRecords.length
-        : 0.0;
-    final completionRate = records.isNotEmpty
-        ? completedRecords.length / records.length
-        : 0.0;
-
-    final feedingsByHour = <String, int>{};
-    for (final record in completedRecords) {
-      // ✅ DateTimeUtils 사용
-      final timeStr = DateTimeUtils.formatTime(record.fedTime);
-      final hour = timeStr.split(':')[0];
-      feedingsByHour[hour] = (feedingsByHour[hour] ?? 0) + 1;
+    if (result.isSuccess) {
+      final stats = result.dataOrNull!;
+      LoggerService.debug(
+        '✅ PetFeedingRepository: 급여 통계 조회 (Backend API)',
+      );
+      return stats;
+    } else {
+      LoggerService.error(
+        '❌ PetFeedingRepository: 급여 통계 조회 실패 - ${result.error}',
+      );
+      throw Exception(result.error);
     }
-
-    return FeedingStatistics(
-      totalFeedings: records.length,
-      completedFeedings: completedRecords.length,
-      skippedFeedings: skippedRecords.length,
-      totalAmount: totalAmount,
-      averageAmount: averageAmount,
-      completionRate: completionRate,
-      feedingsByHour: feedingsByHour,
-    );
   }
 }

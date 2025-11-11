@@ -51,7 +51,9 @@ abstract class AuthRepository {
   Future<String> exchangeServerToken(String idToken);
 
   /// 현재 Firebase 사용자의 최신 idToken 획득
-  Future<String?> getCurrentUserIdToken();
+  ///
+  /// [forceRefresh] true인 경우 캐시를 무시하고 새로운 토큰을 서버에서 가져옵니다.
+  Future<String?> getCurrentUserIdToken({bool forceRefresh = false});
 
   /// 저장된 서버 JWT 토큰 확인
   Future<String?> getStoredServerToken();

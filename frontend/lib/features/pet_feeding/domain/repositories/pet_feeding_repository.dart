@@ -8,6 +8,10 @@ abstract class PetFeedingRepository {
   );
   Future<FeedingRecordEntity> addFeedingRecord(FeedingRecordEntity record);
   Future<FeedingRecordEntity> updateFeedingRecord(FeedingRecordEntity record);
-  Future<void> deleteFeedingRecord(String recordId);
+
+  /// 급여 기록 삭제
+  /// Backend API 요구사항: petId와 recordId 모두 필요
+  Future<void> deleteFeedingRecord(String petId, String recordId);
+
   Future<FeedingStatistics> getFeedingStatistics(String petId);
 }

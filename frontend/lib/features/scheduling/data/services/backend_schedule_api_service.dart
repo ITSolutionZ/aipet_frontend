@@ -8,6 +8,13 @@ import '../../../../shared/core/domain/result.dart';
 
 /// 백엔드 Schedule API 서비스
 ///
+/// ⚠️ 주의: 현재 백엔드에 /api/schedules 엔드포인트가 구현되어 있지 않습니다.
+/// 백엔드는 Notification API를 통해 스케줄링을 수행합니다 (scheduledAt 필드).
+///
+/// 향후 작업:
+/// 1. 백엔드에 /api/schedules 엔드포인트 구현 필요
+/// 2. 또는 프론트엔드를 Notification API를 사용하도록 리팩토링 필요
+///
 /// BackendApiClient를 사용하여 일정 CRUD를 수행합니다.
 /// Firebase ID Token이 자동으로 Authorization 헤더에 추가됩니다.
 class BackendScheduleApiService {

@@ -386,13 +386,110 @@ class FirebaseAuthRealImpl implements AuthRepository {
     }
   }
 
+  /// 현재 사용자의 Firebase ID Token 획득
+  ///
+  /// [forceRefresh] true인 경우 서버에서 새로운 토큰을 강제로 가져옵니다.
+  /// 기본값은 false로, 캐시된 토큰을 사용합니다.
+  ///
+  /// 💡 베스트 프랙티스:
+  /// - 일반적인 경우: forceRefresh=false (기본값) 사용
+  /// - Custom Claims 업데이트 후: forceRefresh=true 사용
+  /// - 토큰 만료 의심 시: forceRefresh=true 사용
+  ///
+  /// Returns: ID Token (String?) 또는 null (로그인되지 않은 경우)
   @override
-  Future<String?> getCurrentUserIdToken() async {
+  Future<String?> getCurrentUserIdToken({bool forceRefresh = false}) async {
     try {
       final user = _firebaseAuth.currentUser;
-      if (user == null) return null;
-      return await user.getIdToken();
+      if (user == null) {
+        if (kDebugMode) {
+          LoggerService.debug('🔐 [IdToken] 로그인되지 않음');
+        }
+        return null;
+      }
+
+      // forceRefresh 옵션으로 토큰 획득
+      final token = await user.getIdToken(forceRefresh);
+
+      if (kDebugMode) {
+        if (forceRefresh) {
+          LoggerService.debug('🔐 [IdToken] 강제 갱신된 Firebase ID Token 획득 (${token?.length ?? 0}자)');
+        } else {
+          LoggerService.debug('🔐 [IdToken] Firebase ID Token 획득 (${token?.length ?? 0}자)');
+        }
+      }
+
+      return token;
     } catch (e) {
+      if (kDebugMode) {
+        LoggerService.debug('❌ [IdToken] Firebase ID Token 획득 에러: $e');
+      }
+      return null;
+    }
+  }
+
+  /// Custom Claims 확인
+  ///
+  /// Firebase Admin SDK에서 설정한 Custom Claims를 확인합니다.
+  /// 예: 사용자 역할(admin, premium 등), 권한, 메타데이터 등
+  ///
+  /// 💡 베스트 프랙티스:
+  /// - Custom Claims 업데이트 후에는 forceRefresh=true로 호출하여 최신 정보를 가져옵니다.
+  /// - Claims는 ID Token에 포함되어 있어, 서버 호출 없이 빠르게 확인할 수 있습니다.
+  ///
+  /// [forceRefresh] true인 경우 서버에서 새로운 토큰을 가져와 최신 Claims를 반영합니다.
+  ///
+  /// Returns: Custom Claims Map (예: {'admin': true, 'role': 'premium'})
+  Future<Map<String, dynamic>?> getCustomClaims({bool forceRefresh = false}) async {
+    try {
+      final user = _firebaseAuth.currentUser;
+      if (user == null) {
+        if (kDebugMode) {
+          LoggerService.debug('🔐 [CustomClaims] 로그인되지 않음');
+        }
+        return null;
+      }
+
+      // ID Token Result 획득 (forceRefresh 옵션 적용)
+      final idTokenResult = await user.getIdTokenResult(forceRefresh);
+
+      if (kDebugMode) {
+        LoggerService.debug('🔐 [CustomClaims] Claims: ${idTokenResult.claims}');
+      }
+
+      return idTokenResult.claims;
+    } catch (e) {
+      if (kDebugMode) {
+        LoggerService.debug('❌ [CustomClaims] Custom Claims 확인 에러: $e');
+      }
+      return null;
+    }
+  }
+
+  /// Custom Claim 값 확인
+  ///
+  /// 특정 Custom Claim의 값을 확인합니다.
+  ///
+  /// [key] Custom Claim 키 (예: 'admin', 'role', 'isPremium')
+  /// [forceRefresh] true인 경우 서버에서 새로운 토큰을 가져와 최신 값을 반영합니다.
+  ///
+  /// Returns: Custom Claim 값 또는 null
+  ///
+  /// 사용 예시:
+  /// ```dart
+  /// final isAdmin = await repository.getCustomClaim('admin');
+  /// if (isAdmin == true) {
+  ///   // 관리자 기능 활성화
+  /// }
+  /// ```
+  Future<dynamic> getCustomClaim(String key, {bool forceRefresh = false}) async {
+    try {
+      final claims = await getCustomClaims(forceRefresh: forceRefresh);
+      return claims?[key];
+    } catch (e) {
+      if (kDebugMode) {
+        LoggerService.debug('❌ [CustomClaim] $key 확인 에러: $e');
+      }
       return null;
     }
   }
