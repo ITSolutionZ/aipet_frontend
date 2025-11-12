@@ -313,6 +313,24 @@ class PetProfileScreen extends ConsumerWidget {
 
 ### 현재 알려진 제한사항 및 TODO
 
+#### Backend API 연동 현황 (2025-11-12 업데이트)
+
+- ✅ **Pet Health API** - Backend 연동 완료
+  - 예방접종 기록 CRUD 완료
+  - 체중 기록 조회/추가 완료
+  - ⚠️ 체중 기록 업데이트/삭제는 Backend API 미지원
+- ✅ **Pet Feeding API** - Backend 연동 완료
+  - 급여 기록 CRUD 완료
+  - 급여 통계 조회 완료
+- ✅ **Notification API** - Backend 연동 완료
+  - 알림 조회/읽음 처리/삭제 완료
+  - 캐시 서비스 통합 완료
+- ✅ **Walk API** - Backend 연동 완료
+  - 산책 기록 CRUD 완료
+  - 산책 통계 조회 완료
+  - petId 파라미터 통합 완료
+- ⚠️ **AI 기능** - OpenAI 서비스 파일 누락 확인 필요
+
 #### Pet Registration 기능
 
 - **데이터 영속성**: 현재 Mock 데이터 사용, 실제 SQLite/Firebase 연동 필요
@@ -340,10 +358,12 @@ class PetProfileScreen extends ConsumerWidget {
 
 1. **Critical**: Pet Profile 코드 리팩토링 (UI/Logic 분리, 위젯 분할)
 2. **Critical**: 데이터 영속성 구현 (`PetRepositoryImpl`)
-3. **High**: 테스트 커버리지 확대 (95% 목표)
-4. **High**: 공통 위젯 추출 및 재사용성 개선
-5. **Medium**: 이미지 관리 시스템 구축
-6. **Low**: UI/UX 개선 (로딩 상태, 에러 핸들링)
+3. **High**: 백엔드 API 통합 테스트 수정 완료
+4. **High**: 테스트 커버리지 확대 (95% 목표)
+5. **High**: 공통 위젯 추출 및 재사용성 개선
+6. **Medium**: AI 기능 복구 (OpenAI 서비스)
+7. **Medium**: 이미지 관리 시스템 구축
+8. **Low**: UI/UX 개선 (로딩 상태, 에러 핸들링)
 
 ## 🚀 배포 가이드
 

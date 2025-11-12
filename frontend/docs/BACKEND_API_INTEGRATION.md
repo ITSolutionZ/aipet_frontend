@@ -14,14 +14,28 @@ AIPet Frontend と Backend の API 連携に関する完全ガイド
 
 ### 完成した API サービス
 
-| 機能 | サービスファイル | 状態 |
-|------|----------------|------|
-| **認証** | `api_auth_service.dart` | ✅ 更新完了 |
-| **ペット** | `backend_pet_api_service.dart` | ✅ 実装済み |
-| **散歩** | `backend_walk_api_service.dart` | ✅ 新規作成 |
-| **散歩 (Wrapper)** | `walk_api_service_backend.dart` | ✅ 新規作成 |
-| **健康** | `backend_health_api_service.dart` | ✅ 新規作成 |
-| **スケジュール** | `backend_schedule_api_service.dart` | ✅ 新規作成 |
+| 機能 | サービスファイル | 状態 | Repository 連携 |
+|------|----------------|------|----------------|
+| **認証** | `api_auth_service.dart` | ✅ 更新完了 | - |
+| **ペット** | `backend_pet_api_service.dart` | ✅ 実装済み | ✅ 完了 |
+| **散歩** | `backend_walk_api_service.dart` | ✅ 実装済み | ✅ 完了 |
+| **散歩 (Wrapper)** | `walk_api_service_backend.dart` | ✅ 実装済み | ✅ 完了 |
+| **健康** | `backend_health_api_service.dart` | ✅ 実装済み | ✅ 完了 |
+| **給餌** | `backend_feeding_api_service.dart` | ✅ 実装済み | ✅ 完了 |
+| **通知** | `backend_notification_api_service.dart` | ✅ 実装済み | ✅ 完了 |
+| **スケジュール** | `backend_schedule_api_service.dart` | ✅ 実装済み | ✅ 完了 |
+
+### Repository 層連携状態 (2025-11-12 更新)
+
+すべての主要機能で Backend API への移行が完了しました:
+
+- ✅ **Pet Health Repository** - Backend API 完全連携
+  - 予防接種記録 CRUD
+  - 体重履歴 (取得/作成のみ、更新/削除は Backend 未対応)
+- ✅ **Pet Feeding Repository** - Backend API 完全連携
+- ✅ **Notification Repository** - Backend API 完全連携 (キャッシュサービス統合)
+- ✅ **Walk Repository** - Backend API 完全連携
+- ✅ **Schedule Repository** - Backend API 完全連携
 
 ### バックエンド API エンドポイント
 
@@ -50,15 +64,31 @@ Base URL: http://localhost:3000/api
 - `DELETE /walks/:id` - 散歩記録削除
 
 #### 健康記録
-- `GET /health/:recordId` - 健康記録詳細
-- `GET /pets/:petId/health` - ペットの健康記録一覧
-- `GET /pets/:petId/health/:recordType` - タイプ別健康記録
-- `GET /health/schedules/upcoming` - 予定されている健康スケジュール
-- `POST /health` - 健康記録作成
-- `PUT /health/:recordId` - 健康記録更新
-- `DELETE /health/:recordId` - 健康記録削除
+
+**予防接種 (Vaccinations)**:
+
+- `GET /pets/:petId/vaccinations` - ペットの予防接種記録一覧
+- `GET /pets/:petId/vaccinations/:vaccinationId` - 予防接種記録詳細
+- `POST /pets/:petId/vaccinations` - 予防接種記録作成
+- `PUT /pets/:petId/vaccinations/:vaccinationId` - 予防接種記録更新
+- `DELETE /pets/:petId/vaccinations/:vaccinationId` - 予防接種記録削除
+
+**体重履歴 (Weight History)**:
+
+- `GET /pets/:petId/weight-history` - ペットの体重履歴
+- `POST /pets/:petId/weight-history` - 体重記録作成
+- ⚠️ 体重記録の更新・削除エンドポイントは未対応
+
+**医療記録 (Medical Records)**:
+
+- `GET /pets/:petId/medical-records` - ペットの医療記録一覧
+- `GET /pets/:petId/medical-records/:recordId` - 医療記録詳細
+- `POST /pets/:petId/medical-records` - 医療記録作成
+- `PUT /pets/:petId/medical-records/:recordId` - 医療記録更新
+- `DELETE /pets/:petId/medical-records/:recordId` - 医療記録削除
 
 #### スケジュール
+
 - `GET /schedules` - ユーザーのスケジュール一覧
 - `GET /schedules/:id` - スケジュール詳細
 - `GET /pets/:petId/schedules` - ペット別スケジュール
@@ -68,6 +98,22 @@ Base URL: http://localhost:3000/api
 - `PUT /schedules/:id` - スケジュール更新
 - `PATCH /schedules/:id/complete` - スケジュール完了
 - `DELETE /schedules/:id` - スケジュール削除
+
+#### 給餌 (Feeding)
+
+- `GET /pets/:petId/feeding-records` - ペットの給餌記録一覧
+- `GET /pets/:petId/feeding-records/:recordId` - 給餌記録詳細
+- `GET /pets/:petId/feeding-records/stats` - 給餌統計
+- `POST /pets/:petId/feeding-records` - 給餌記録作成
+- `PUT /pets/:petId/feeding-records/:recordId` - 給餌記録更新
+- `DELETE /pets/:petId/feeding-records/:recordId` - 給餌記録削除
+
+#### 通知 (Notifications)
+
+- `GET /notifications` - ユーザーの通知一覧
+- `GET /notifications/unread/count` - 未読通知数
+- `PATCH /notifications/:notificationId/read` - 通知を既読にする
+- `DELETE /notifications/:notificationId` - 通知削除
 
 ## API サービス構成
 
@@ -126,9 +172,9 @@ import 'package:aipet_frontend/features/walk/data/services/backend_walk_api_serv
 // 散歩記録作成
 final result = await BackendWalkApiService.createWalk(
   petId: 'pet-id-123',
-  startTime: DateTime.now().toIso8601String(),
-  duration: 1800, // 30分 (秒)
-  distance: 2.5, // 2.5km
+  startTime: DateTime.now(), // DateTime型
+  durationMinutes: 30, // 30分
+  distanceMeters: 2500, // 2.5km = 2500m
   notes: '公園を散歩',
 );
 
@@ -136,8 +182,17 @@ if (result.isSuccess) {
   print('散歩記録作成成功: ${result.data!['id']}');
 }
 
+// 散歩記録更新
+final updateResult = await BackendWalkApiService.updateWalk(
+  petId: 'pet-id-123',
+  walkId: 'walk-id-456',
+  endTime: DateTime.now(),
+  distanceMeters: 3000, // 3km
+  notes: '公園と川沿いを散歩',
+);
+
 // ペットの散歩統計取得
-final statsResult = await BackendWalkApiService.getPetWalkStatistics('pet-id-123');
+final statsResult = await BackendWalkApiService.getWalkStats(petId: 'pet-id-123');
 if (statsResult.isSuccess) {
   final stats = statsResult.data!;
   print('総散歩回数: ${stats['total_walks']}');
@@ -151,28 +206,45 @@ if (statsResult.isSuccess) {
 ```dart
 import 'package:aipet_frontend/features/pet_health/data/services/backend_health_api_service.dart';
 
-// 健康記録作成 (ワクチン接種)
-final result = await BackendHealthApiService.createHealthRecord(
+// 予防接種記録作成
+final result = await BackendHealthApiService.createVaccination(
   petId: 'pet-id-123',
-  recordType: 'vaccination',
-  recordDate: DateTime.now().toIso8601String().split('T')[0],
-  vetName: 'ペットクリニック ABC',
-  notes: '狂犬病ワクチン接種',
-  nextScheduledDate: DateTime.now()
-      .add(const Duration(days: 365))
-      .toIso8601String()
-      .split('T')[0],
+  vaccineName: '狂犬病ワクチン',
+  vaccinationDate: DateTime.now(),
+  nextDueDate: DateTime.now().add(const Duration(days: 365)),
+  veterinarianName: 'ペットクリニック ABC',
+  notes: '年次予防接種',
 );
 
 if (result.isSuccess) {
-  print('健康記録作成成功: ${result.data!['id']}');
+  print('予防接種記録作成成功: ${result.data!['id']}');
 }
 
-// ペットの健康記録一覧取得
-final recordsResult = await BackendHealthApiService.getPetHealthRecords('pet-id-123');
-if (recordsResult.isSuccess) {
-  for (final record in recordsResult.data!) {
-    print('${record['record_type']}: ${record['record_date']}');
+// ペットの予防接種記録一覧取得
+final vaccinationsResult = await BackendHealthApiService.getVaccinations(petId: 'pet-id-123');
+if (vaccinationsResult.isSuccess) {
+  for (final vaccination in vaccinationsResult.data!) {
+    print('${vaccination['vaccineName']}: ${vaccination['vaccinationDate']}');
+  }
+}
+
+// 体重記録作成
+final weightResult = await BackendHealthApiService.createWeightRecord(
+  petId: 'pet-id-123',
+  weight: 12.5,
+  measuredAt: DateTime.now(),
+  notes: '定期検診',
+);
+
+if (weightResult.isSuccess) {
+  print('体重記録作成成功: ${weightResult.data!['weight']} kg');
+}
+
+// 体重履歴取得
+final historyResult = await BackendHealthApiService.getWeightHistory(petId: 'pet-id-123');
+if (historyResult.isSuccess) {
+  for (final record in historyResult.data!) {
+    print('${record['measuredAt']}: ${record['weight']} kg');
   }
 }
 ```
@@ -345,22 +417,64 @@ if (result.isSuccess) {
 }
 ```
 
+## 既知の制限事項 (2025-11-12 更新)
+
+### Backend API 未対応機能
+
+1. **体重記録の更新・削除**
+   - `PUT /pets/:petId/weight-history/:weightId` - 未実装
+   - `DELETE /pets/:petId/weight-history/:weightId` - 未実装
+   - 現在: 取得と作成のみ対応
+
+2. **通知設定管理**
+   - 通知設定の取得・更新エンドポイントなし
+   - 現在: ローカルキャッシュのみ使用
+
+3. **通知統計**
+   - 総通知数、既読数などの統計エンドポイントなし
+   - 現在: 未読数のみ取得可能
+
+### Frontend 側の対応
+
+```dart
+// 体重記録更新 - Backend 未対応のため一時的に元の値を返す
+@override
+Future<WeightRecordEntity> updateWeightRecord(WeightRecordEntity record) async {
+  LoggerService.warning('⚠️ 体重記録更新は Backend API で未対応');
+  return record; // 一時的な対応
+}
+
+// 体重記録削除 - Backend 未対応のため例外スロー
+@override
+Future<void> deleteWeightRecord(String petId, String recordId) async {
+  throw UnimplementedError('体重記録削除機能は未実装です');
+}
+```
+
 ## 次のステップ
 
-1. **Repository 層の統合**
-   - 各機能の Repository で Backend API Service を使用
+1. **✅ Repository 層の統合** - 完了 (2025-11-12)
+   - すべての主要機能で Backend API Service を使用
 
-2. **オフライン対応**
+2. **Backend API 機能拡張**
+   - 体重記録の更新・削除エンドポイント追加
+   - 通知設定管理エンドポイント追加
+   - 通知統計エンドポイント追加
+
+3. **オフライン対応**
    - ローカルキャッシュとの同期
    - オフライン時の動作改善
+   - 同期キューの実装
 
-3. **エラーハンドリング強化**
+4. **エラーハンドリング強化**
    - ネットワークエラーの詳細処理
    - リトライロジック実装
+   - タイムアウト設定の最適化
 
-4. **パフォーマンス最適化**
+5. **パフォーマンス最適化**
    - API レスポンスキャッシュ
    - バッチリクエスト実装
+   - ページネーション対応
 
 ## 参考リンク
 

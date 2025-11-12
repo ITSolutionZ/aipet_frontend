@@ -217,33 +217,34 @@ class FeatureFlags {
 
 #### ✅ API 연동 전 체크포인트
 
-- [ ] API 스펙 문서 확정
-- [ ] 인증 방식 합의 (JWT, OAuth 등)
-- [ ] 에러 코드 정의
-- [ ] Rate Limiting 정책 확인
-- [ ] 데이터 스키마 일치성 검증
+- [x] API 스펙 문서 확정
+- [x] 인증 방식 합의 (Firebase ID Token)
+- [x] 에러 코드 정의
+- [x] Rate Limiting 정책 확인
+- [x] 데이터 스키마 일치성 검증
 
-#### ✅ 개발 단계별 체크리스트
+#### ✅ 개발 단계별 체크리스트 (2025-11-12 업데이트)
 
-- [x] **설계 단계**
+- [x] **설계 단계** ✅ 완료
 
   - [x] API 엔드포인트 설계
   - [x] 데이터 모델 매핑
   - [x] 에러 처리 전략 수립
   - [x] 캐시 전략 설계
 
-- [x] **구현 단계**
+- [x] **구현 단계** ✅ 완료
 
   - [x] Remote Data Source 구현
   - [x] Repository 하이브리드 로직 구현
   - [x] 에러 처리 및 재시도 로직
-  - [ ] 단위/통합 테스트 작성
+  - [x] 단위/통합 테스트 작성 (backend_api_integration_test.dart)
 
-- [ ] **테스트 단계**
-  - [ ] 네트워크 상태별 테스트
+- [ ] **테스트 단계** 🔄 진행 중
+  - [x] Backend API 통합 테스트 (Pet, Walk, Health, Schedule)
+  - [ ] 네트워크 상태별 테스트 (오프라인/온라인 전환)
   - [ ] 동시성 처리 테스트
   - [ ] 성능 테스트 (응답시간, 메모리)
-  - [ ] 사용자 시나리오 테스트
+  - [ ] 사용자 시나리오 E2E 테스트
 
 ### 3. 데이터 무결성 보장
 
@@ -460,12 +461,93 @@ final pets = await hybridRepo.getAllPets(); // 네트워크 상태 자동 감지
 - 연결 복구 시 자동 동기화
 - 지능형 충돌 해결
 
-### 다음 단계 (Phase 4)
+#### Phase 4: 추가 기능 API 연동 ✅ COMPLETED (2025-11-12)
 
-- [ ] 스케줄링 시스템 API 연동
-- [ ] 활동 추적 시스템 API 연동
-- [ ] 건강 관리 시스템 API 연동
-- [ ] 종합 테스트 및 성능 최적화
+- [x] **Pet Health API 연동** (`features/pet_health/data/services/backend_health_api_service.dart`)
+
+  - 예방접종 기록 CRUD 완료
+  - 의료 기록 CRUD 완료
+  - 체중 기록 조회/추가 완료
+  - ⚠️ 제한사항: 체중 기록 업데이트/삭제는 Backend API 미지원
+
+- [x] **Pet Health Repository 통합** (`features/pet_health/data/repositories/pet_health_repository_impl.dart`)
+
+  - BackendHealthApiService 완전 통합
+  - VaccineRecord, WeightRecord 엔티티 매핑 완료
+  - 데이터 파싱 헬퍼 메서드 구현
+
+- [x] **Pet Feeding API 연동** (`features/pet_feeding/data/services/backend_feeding_api_service.dart`)
+
+  - 급여 기록 CRUD 완료
+  - 급여 통계 조회 완료
+  - Repository 층 완전 통합
+
+- [x] **Walk API 연동** (`features/walk/data/services/backend_walk_api_service.dart`)
+
+  - 산책 기록 CRUD 완료
+  - 산책 통계 조회 완료
+  - DateTime 타입 지원, petId 파라미터 통합
+
+- [x] **Walk API Wrapper** (`features/walk/data/services/walk_api_service_backend.dart`)
+
+  - 기존 WalkApiService 인터페이스와 호환
+  - 데이터 변환 및 매핑 로직 구현
+  - 단위 변환 (km ↔ meters) 처리
+
+- [x] **Notification API 연동** (`features/notification/data/services/backend_notification_api_service.dart`)
+
+  - 알림 조회/읽음 처리/삭제 완료
+  - 읽지 않은 알림 개수 조회
+  - 캐시 서비스와 통합
+
+- [x] **Notification Repository 통합** (`features/notification/data/repositories/notification_repository_impl.dart`)
+
+  - BackendNotificationApiService 완전 통합
+  - NotificationCacheService와 하이브리드 운영
+  - API 실패 시 캐시 폴백 전략 구현
+
+- [x] **Schedule API 연동** (`features/scheduling/data/services/backend_schedule_api_service.dart`)
+  - 스케줄 CRUD 완료
+  - 예정/완료된 스케줄 조회
+  - 스케줄 완료 처리
+  - Repository 층 완전 통합
+
+#### 통합 테스트 완료
+
+- [x] **Backend API 통합 테스트** (`test/integration/backend_api_integration_test.dart`)
+  - Pet, Walk, Health, Schedule API 전체 플로우 테스트
+  - Firebase 인증 통합 테스트
+  - 테스트 데이터 자동 정리 로직
+
+### 다음 단계 (Phase 5)
+
+- [ ] **Backend API 기능 확장**
+
+  - 체중 기록 업데이트/삭제 API 백엔드 구현 요청
+  - 통지 설정 관리 API 백엔드 구현 요청
+  - 통지 통계 API 백엔드 구현 요청
+
+- [ ] **AI 기능 복구**
+
+  - OpenAI 서비스 파일 확인 및 복구
+  - AI 어시스턴트 Backend API 연동
+
+- [ ] **오프라인 동기화 강화**
+
+  - 모든 기능에 대한 오프라인 큐잉 시스템
+  - 충돌 해결 전략 고도화
+  - 배치 동기화 최적화
+
+- [ ] **성능 최적화**
+
+  - API 응답 캐싱 전략 개선
+  - 페이지네이션 구현 (대용량 데이터)
+  - 이미지 로딩 최적화
+
+- [ ] **종합 테스트 및 안정화**
+  - 네트워크 상태별 시나리오 테스트 확대
+  - 성능 벤치마킹 (응답시간, 메모리)
+  - 사용자 시나리오 E2E 테스트
 
 ---
 
