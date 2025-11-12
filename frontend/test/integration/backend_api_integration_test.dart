@@ -8,6 +8,7 @@ import 'package:aipet_frontend/features/scheduling/data/services/backend_schedul
 import 'package:aipet_frontend/features/notification/data/services/backend_notification_api_service.dart';
 import 'package:aipet_frontend/features/community/data/services/backend_board_api_service.dart';
 import 'package:aipet_frontend/features/pet_health/data/services/backend_daily_health_api_service.dart';
+import 'package:aipet_frontend/features/facility/data/services/backend_booking_api_service.dart';
 import 'package:aipet_frontend/shared/core/api/backend_api_client.dart';
 import 'package:aipet_frontend/shared/domain/entities/pet_profile_entity.dart';
 
@@ -38,6 +39,7 @@ void main() {
     late String testPostId;
     late String testCommentId;
     late String testDailyHealthRecordId;
+    late String testBookingId;
 
     test('0. Backend Health Check', () async {
       final client = BackendApiClient.instance;
@@ -703,8 +705,131 @@ void main() {
       }
     }, skip: firebase_auth.FirebaseAuth.instance.currentUser == null);
 
+    test('9.10. Booking API - Create, Read, Update, Cancel', () async {
+      print('\n=== Testing Booking API ===');
+
+      if (testPetId.isEmpty) {
+        print('⚠️ Skipping: No test pet ID available');
+        return;
+      }
+
+      try {
+        // Create booking
+        print('\n--- Create Booking ---');
+        final tomorrow = DateTime.now().add(const Duration(days: 1));
+        final bookingDate = tomorrow.toIso8601String().split('T')[0];
+        final createResult = await BackendBookingApiService.createBooking(
+          petId: int.parse(testPetId),
+          facilityName: 'テスト動物病院',
+          facilityType: 'hospital',
+          bookingDate: bookingDate,
+          bookingTime: '14:00',
+          facilityAddress: '東京都渋谷区テスト1-2-3',
+          facilityPhone: '03-1234-5678',
+          serviceType: '健康診断',
+          notes: 'テスト予約',
+        );
+
+        if (createResult.isSuccess) {
+          print('✅ Booking created successfully');
+          testBookingId = createResult.data!['id']?.toString() ?? '';
+          print('   Booking ID: $testBookingId');
+          print('   Date: ${createResult.data!['booking_date']}');
+          print('   Time: ${createResult.data!['booking_time']}');
+        } else {
+          print('❌ Failed to create booking: ${createResult.message}');
+          return;
+        }
+
+        // Get booking by ID
+        print('\n--- Get Booking by ID ---');
+        final getResult = await BackendBookingApiService.getBookingById(testBookingId);
+
+        if (getResult.isSuccess) {
+          print('✅ Booking retrieved successfully');
+          print('   Facility: ${getResult.data!['facility_name']}');
+          print('   Status: ${getResult.data!['status']}');
+        } else {
+          print('❌ Failed to get booking: ${getResult.message}');
+        }
+
+        // Update booking
+        print('\n--- Update Booking ---');
+        final updateResult = await BackendBookingApiService.updateBooking(
+          bookingId: testBookingId,
+          bookingTime: '15:00',
+          notes: 'テスト予約 (更新)',
+        );
+
+        if (updateResult.isSuccess) {
+          print('✅ Booking updated successfully');
+          print('   Updated Time: ${updateResult.data!['booking_time']}');
+        } else {
+          print('❌ Failed to update booking: ${updateResult.message}');
+        }
+
+        // Get upcoming bookings
+        print('\n--- Get Upcoming Bookings ---');
+        final upcomingResult = await BackendBookingApiService.getUpcomingBookings(
+          limit: 10,
+        );
+
+        if (upcomingResult.isSuccess) {
+          print('✅ Upcoming bookings retrieved successfully');
+          print('   Total upcoming bookings: ${upcomingResult.data!.length}');
+        } else {
+          print('❌ Failed to get upcoming bookings: ${upcomingResult.message}');
+        }
+
+        // Get bookings list
+        print('\n--- Get Bookings List ---');
+        final listResult = await BackendBookingApiService.getBookings(
+          petId: int.parse(testPetId),
+          limit: 50,
+        );
+
+        if (listResult.isSuccess) {
+          print('✅ Bookings list retrieved successfully');
+          print('   Total bookings: ${listResult.data!.length}');
+        } else {
+          print('❌ Failed to get bookings list: ${listResult.message}');
+        }
+
+        // Update booking status
+        print('\n--- Update Booking Status ---');
+        final statusResult = await BackendBookingApiService.updateBookingStatus(
+          bookingId: testBookingId,
+          status: 'confirmed',
+        );
+
+        if (statusResult.isSuccess) {
+          print('✅ Booking status updated successfully');
+          print('   New Status: ${statusResult.data!['status']}');
+        } else {
+          print('❌ Failed to update booking status: ${statusResult.message}');
+        }
+
+        // Cancel booking (will be tested in cleanup)
+        // We'll keep this for cleanup phase
+      } catch (e) {
+        print('❌ Exception during booking API test: $e');
+      }
+    }, skip: firebase_auth.FirebaseAuth.instance.currentUser == null);
+
     test('10. Cleanup - Delete Test Data', () async {
       print('\n=== Cleaning up test data ===');
+
+      // Cancel test booking
+      if (testBookingId.isNotEmpty) {
+        try {
+          final result = await BackendBookingApiService.cancelBooking(testBookingId);
+          if (result.isSuccess) {
+            print('✅ Test booking cancelled');
+          }
+        } catch (e) {
+          print('⚠️ Failed to cancel test booking: $e');
+        }
+      }
 
       // Delete test daily health record
       if (testDailyHealthRecordId.isNotEmpty) {
