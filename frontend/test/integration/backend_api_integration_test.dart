@@ -5,6 +5,7 @@ import 'package:aipet_frontend/features/pet_profile/data/services/backend_pet_ap
 import 'package:aipet_frontend/features/walk/data/services/backend_walk_api_service.dart';
 import 'package:aipet_frontend/features/pet_health/data/services/backend_health_api_service.dart';
 import 'package:aipet_frontend/features/scheduling/data/services/backend_schedule_api_service.dart';
+import 'package:aipet_frontend/features/scheduling/domain/entities/schedule_entity.dart';
 import 'package:aipet_frontend/features/notification/data/services/backend_notification_api_service.dart';
 import 'package:aipet_frontend/features/community/data/services/backend_board_api_service.dart';
 import 'package:aipet_frontend/features/pet_health/data/services/backend_daily_health_api_service.dart';
@@ -389,22 +390,33 @@ void main() {
       }
 
       try {
-        final result = await BackendScheduleApiService.createSchedule(
+        // ScheduleEntity 생성
+        final schedule = ScheduleEntity(
+          id: '',
+          title: 'テストスケジュール ${DateTime.now().millisecondsSinceEpoch}',
+          description: 'ドッグフード 200g',
+          startDateTime: DateTime.now().add(const Duration(hours: 2)),
+          type: ScheduleType.feeding,
+          status: ScheduleStatus.pending,
+          priority: SchedulePriority.normal,
           petId: testPetId,
-          title: 'テストスケジュール',
-          scheduleType: 'feeding',
-          scheduledTime: DateTime.now()
-              .add(const Duration(hours: 2))
-              .toIso8601String(),
-          notes: 'ドッグフード 200g',
+          petName: 'Test Pet',
+          hasReminder: true,
+          reminderTime: const Duration(minutes: 30),
+          isRecurring: false,
+          notes: 'Integration test schedule',
+          createdAt: DateTime.now(),
         );
+
+        final result = await BackendScheduleApiService.createSchedule(schedule);
 
         if (result.isSuccess) {
           print('✅ Schedule created successfully');
-          testScheduleId = result.data!['id'] as String;
+          testScheduleId = result.data!.id;
           print('   Schedule ID: $testScheduleId');
-          print('   Title: ${result.data!['title']}');
-          print('   Type: ${result.data!['schedule_type']}');
+          print('   Title: ${result.data!.title}');
+          print('   Type: ${result.data!.type}');
+          print('   Status: ${result.data!.status}');
         } else {
           print('❌ Failed to create schedule: ${result.message}');
         }
@@ -413,26 +425,136 @@ void main() {
       }
     }, skip: firebase_auth.FirebaseAuth.instance.currentUser == null);
 
-    test('9. Schedules API - Get Upcoming Schedules', () async {
-      print('\n=== Testing Schedules API - Upcoming ===');
+    test('9. Schedules API - Get All Schedules', () async {
+      print('\n=== Testing Schedules API - Get All ===');
 
       try {
-        final result = await BackendScheduleApiService.getUpcomingSchedules(
-          daysAhead: 7,
-        );
+        final result = await BackendScheduleApiService.getSchedules();
 
         if (result.isSuccess) {
-          print('✅ Upcoming schedules retrieved successfully');
+          print('✅ Schedules retrieved successfully');
           print('   Total schedules: ${result.data!.length}');
 
           for (final schedule in result.data!) {
-            print('   - ${schedule['title']}: ${schedule['scheduled_time']}');
+            print('   - ${schedule.title}: ${schedule.startDateTime}');
+            print('     Type: ${schedule.type}, Status: ${schedule.status}');
           }
         } else {
-          print('❌ Failed to get upcoming schedules: ${result.message}');
+          print('❌ Failed to get schedules: ${result.message}');
         }
       } catch (e) {
-        print('❌ Exception during get upcoming schedules: $e');
+        print('❌ Exception during get schedules: $e');
+      }
+    }, skip: firebase_auth.FirebaseAuth.instance.currentUser == null);
+
+    test('9.1. Schedules API - Get Schedule by ID', () async {
+      print('\n=== Testing Schedules API - Get by ID ===');
+
+      if (testScheduleId.isEmpty) {
+        print('⚠️ Skipping: No test schedule ID available');
+        return;
+      }
+
+      try {
+        final result = await BackendScheduleApiService.getScheduleById(testScheduleId);
+
+        if (result.isSuccess && result.data != null) {
+          print('✅ Schedule retrieved successfully');
+          print('   Schedule ID: ${result.data!.id}');
+          print('   Title: ${result.data!.title}');
+          print('   Type: ${result.data!.type}');
+          print('   Status: ${result.data!.status}');
+          print('   Start Time: ${result.data!.startDateTime}');
+        } else {
+          print('❌ Failed to get schedule: ${result.message}');
+        }
+      } catch (e) {
+        print('❌ Exception during get schedule by ID: $e');
+      }
+    }, skip: firebase_auth.FirebaseAuth.instance.currentUser == null);
+
+    test('9.2. Schedules API - Update Schedule', () async {
+      print('\n=== Testing Schedules API - Update ===');
+
+      if (testScheduleId.isEmpty) {
+        print('⚠️ Skipping: No test schedule ID available');
+        return;
+      }
+
+      try {
+        // Get current schedule first
+        final getResult = await BackendScheduleApiService.getScheduleById(testScheduleId);
+        if (!getResult.isSuccess || getResult.data == null) {
+          print('❌ Failed to get schedule for update');
+          return;
+        }
+
+        final schedule = getResult.data!;
+        final updatedSchedule = schedule.copyWith(
+          title: 'Updated Schedule Title',
+          status: ScheduleStatus.confirmed,
+          notes: 'Updated notes from integration test',
+        );
+
+        final result = await BackendScheduleApiService.updateSchedule(updatedSchedule);
+
+        if (result.isSuccess) {
+          print('✅ Schedule updated successfully');
+          print('   Updated Title: ${result.data!.title}');
+          print('   Updated Status: ${result.data!.status}');
+          print('   Updated Notes: ${result.data!.notes}');
+        } else {
+          print('❌ Failed to update schedule: ${result.message}');
+        }
+      } catch (e) {
+        print('❌ Exception during schedule update: $e');
+      }
+    }, skip: firebase_auth.FirebaseAuth.instance.currentUser == null);
+
+    test('9.3. Schedules API - Update Schedule Status', () async {
+      print('\n=== Testing Schedules API - Update Status ===');
+
+      if (testScheduleId.isEmpty) {
+        print('⚠️ Skipping: No test schedule ID available');
+        return;
+      }
+
+      try {
+        final result = await BackendScheduleApiService.updateScheduleStatus(
+          testScheduleId,
+          ScheduleStatus.completed,
+        );
+
+        if (result.isSuccess) {
+          print('✅ Schedule status updated successfully');
+          print('   New Status: completed');
+        } else {
+          print('❌ Failed to update schedule status: ${result.message}');
+        }
+      } catch (e) {
+        print('❌ Exception during schedule status update: $e');
+      }
+    }, skip: firebase_auth.FirebaseAuth.instance.currentUser == null);
+
+    test('9.4. Schedules API - Delete Schedule', () async {
+      print('\n=== Testing Schedules API - Delete ===');
+
+      if (testScheduleId.isEmpty) {
+        print('⚠️ Skipping: No test schedule ID available');
+        return;
+      }
+
+      try {
+        final result = await BackendScheduleApiService.deleteSchedule(testScheduleId);
+
+        if (result.isSuccess) {
+          print('✅ Schedule deleted successfully');
+          print('   Deleted Schedule ID: $testScheduleId');
+        } else {
+          print('❌ Failed to delete schedule: ${result.message}');
+        }
+      } catch (e) {
+        print('❌ Exception during schedule deletion: $e');
       }
     }, skip: firebase_auth.FirebaseAuth.instance.currentUser == null);
 

@@ -7,6 +7,7 @@ import notificationRoutes from './notification.routes.js';
 import boardRoutes from './board.routes.js';
 import dailyHealthRoutes from './daily-health.routes.js';
 import bookingRoutes from './booking.routes.js';
+import scheduleRoutes from './schedule.routes.js';
 
 const router = express.Router();
 
@@ -33,5 +34,6 @@ router.use('/notifications', notificationRoutes);
 router.use('/board', boardRoutes);
 router.use('/daily-health', dailyHealthRoutes);
 router.use('/bookings', bookingRoutes);
+router.use('/schedules', scheduleRoutes);
 
 export default router;
