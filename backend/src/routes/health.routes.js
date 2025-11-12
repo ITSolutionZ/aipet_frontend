@@ -11,6 +11,8 @@ import {
   deleteMedicalRecord,
   getWeightHistory,
   createWeightRecord,
+  updateWeightRecord,
+  deleteWeightRecord,
 } from '../controllers/health.controller.js';
 import { authenticateFirebase } from '../middlewares/auth.middleware.js';
 import { validate } from '../middlewares/validation.middleware.js';
@@ -212,6 +214,39 @@ router.post(
   ],
   validate,
   createWeightRecord
+);
+
+/**
+ * @route   PUT /api/v1/health/pets/:petId/weight-history/:weightId
+ * @desc    체중 기록 업데이트
+ * @access  Private
+ */
+router.put(
+  '/pets/:petId/weight-history/:weightId',
+  [
+    param('petId').notEmpty().withMessage('펫 ID가 필요합니다.'),
+    param('weightId').notEmpty().withMessage('체중 기록 ID가 필요합니다.'),
+    body('weight').optional().isFloat({ min: 0 }).withMessage('체중은 0 이상이어야 합니다.'),
+    body('measuredAt').optional().isISO8601().withMessage('유효한 날짜 형식이 아닙니다.'),
+    body('notes').optional().isString(),
+  ],
+  validate,
+  updateWeightRecord
+);
+
+/**
+ * @route   DELETE /api/v1/health/pets/:petId/weight-history/:weightId
+ * @desc    체중 기록 삭제
+ * @access  Private
+ */
+router.delete(
+  '/pets/:petId/weight-history/:weightId',
+  [
+    param('petId').notEmpty().withMessage('펫 ID가 필요합니다.'),
+    param('weightId').notEmpty().withMessage('체중 기록 ID가 필요합니다.'),
+  ],
+  validate,
+  deleteWeightRecord
 );
 
 export default router;

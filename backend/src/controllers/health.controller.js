@@ -599,3 +599,179 @@ export const createWeightRecord = async (req, res) => {
     });
   }
 };
+
+/**
+ * 체중 기록 업데이트
+ */
+export const updateWeightRecord = async (req, res) => {
+  try {
+    const { petId, weightId } = req.params;
+    const ownerId = req.user.uid;
+    const { weight, measuredAt, notes } = req.body;
+
+    // 펫 소유권 확인
+    const [pet] = await pool.query(
+      'SELECT * FROM pets WHERE id = ? AND owner_id = ? AND is_active = true',
+      [petId, ownerId]
+    );
+
+    if (pet.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: '펫을 찾을 수 없습니다.',
+      });
+    }
+
+    // 체중 기록 존재 확인
+    const [existing] = await pool.query(
+      'SELECT * FROM weight_history WHERE id = ? AND pet_id = ?',
+      [weightId, petId]
+    );
+
+    if (existing.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: '체중 기록을 찾을 수 없습니다.',
+      });
+    }
+
+    // 업데이트할 필드만 추출
+    const updates = [];
+    const values = [];
+
+    if (weight !== undefined) {
+      updates.push('weight = ?');
+      values.push(weight);
+    }
+    if (measuredAt !== undefined) {
+      updates.push('measured_at = ?');
+      values.push(measuredAt);
+    }
+    if (notes !== undefined) {
+      updates.push('notes = ?');
+      values.push(notes);
+    }
+
+    if (updates.length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: '업데이트할 내용이 없습니다.',
+      });
+    }
+
+    updates.push('updated_at = NOW()');
+    values.push(weightId);
+
+    await pool.query(
+      `UPDATE weight_history SET ${updates.join(', ')} WHERE id = ?`,
+      values
+    );
+
+    // 가장 최근 체중으로 펫 정보 업데이트
+    if (weight !== undefined) {
+      const [latest] = await pool.query(
+        'SELECT weight FROM weight_history WHERE pet_id = ? ORDER BY measured_at DESC LIMIT 1',
+        [petId]
+      );
+
+      if (latest.length > 0) {
+        await pool.query(
+          'UPDATE pets SET weight = ?, updated_at = NOW() WHERE id = ?',
+          [latest[0].weight, petId]
+        );
+      }
+    }
+
+    const [rows] = await pool.query(
+      'SELECT * FROM weight_history WHERE id = ?',
+      [weightId]
+    );
+
+    console.log(`✅ [Health] 체중 기록 업데이트: ${weightId}`);
+
+    res.json({
+      success: true,
+      message: '체중 기록이 업데이트되었습니다.',
+      data: rows[0],
+    });
+  } catch (error) {
+    console.error('❌ [Health] 체중 기록 업데이트 에러:', error);
+    res.status(500).json({
+      success: false,
+      error: '체중 기록 업데이트 중 오류 발생',
+      message: error.message,
+    });
+  }
+};
+
+/**
+ * 체중 기록 삭제
+ */
+export const deleteWeightRecord = async (req, res) => {
+  try {
+    const { petId, weightId } = req.params;
+    const ownerId = req.user.uid;
+
+    // 펫 소유권 확인
+    const [pet] = await pool.query(
+      'SELECT * FROM pets WHERE id = ? AND owner_id = ? AND is_active = true',
+      [petId, ownerId]
+    );
+
+    if (pet.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: '펫을 찾을 수 없습니다.',
+      });
+    }
+
+    // 체중 기록 존재 확인
+    const [existing] = await pool.query(
+      'SELECT * FROM weight_history WHERE id = ? AND pet_id = ?',
+      [weightId, petId]
+    );
+
+    if (existing.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: '체중 기록을 찾을 수 없습니다.',
+      });
+    }
+
+    // 체중 기록 삭제
+    await pool.query('DELETE FROM weight_history WHERE id = ?', [weightId]);
+
+    // 가장 최근 체중으로 펫 정보 업데이트
+    const [latest] = await pool.query(
+      'SELECT weight FROM weight_history WHERE pet_id = ? ORDER BY measured_at DESC LIMIT 1',
+      [petId]
+    );
+
+    if (latest.length > 0) {
+      await pool.query(
+        'UPDATE pets SET weight = ?, updated_at = NOW() WHERE id = ?',
+        [latest[0].weight, petId]
+      );
+    } else {
+      // 모든 체중 기록이 삭제된 경우 NULL로 설정
+      await pool.query(
+        'UPDATE pets SET weight = NULL, updated_at = NOW() WHERE id = ?',
+        [petId]
+      );
+    }
+
+    console.log(`✅ [Health] 체중 기록 삭제: ${weightId}`);
+
+    res.json({
+      success: true,
+      message: '체중 기록이 삭제되었습니다.',
+    });
+  } catch (error) {
+    console.error('❌ [Health] 체중 기록 삭제 에러:', error);
+    res.status(500).json({
+      success: false,
+      error: '체중 기록 삭제 중 오류 발생',
+      message: error.message,
+    });
+  }
+};

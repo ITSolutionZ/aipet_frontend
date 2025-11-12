@@ -170,26 +170,47 @@ class PetHealthRepositoryImpl implements PetHealthRepository {
   Future<WeightRecordEntity> updateWeightRecord(
     WeightRecordEntity record,
   ) async {
-    // Backend API에는 체중 기록 업데이트 엔드포인트가 없음
-    // 임시로 로컬에서 처리하거나, 삭제 후 재생성으로 구현
-    LoggerService.warning(
-      '⚠️ PetHealthRepository: 체중 기록 업데이트는 Backend API에서 지원하지 않음',
+    final result = await BackendHealthApiService.updateWeightRecord(
+      petId: record.petId,
+      weightId: record.id,
+      weight: record.weight,
+      measuredAt: record.recordedDate,
+      notes: record.notes,
     );
 
-    // 임시로 record를 그대로 반환
-    // TODO: 백엔드에 업데이트 API 추가 요청 또는 삭제+재생성 로직 구현
-    return record;
+    if (result.isSuccess) {
+      final data = result.dataOrNull!;
+      final updatedRecord = _mapToWeightEntity(data, record.petId);
+
+      LoggerService.debug(
+        '✅ PetHealthRepository: 체중 기록 업데이트 - ID: ${updatedRecord.id} (Backend API)',
+      );
+      return updatedRecord;
+    } else {
+      LoggerService.error(
+        '❌ PetHealthRepository: 체중 기록 업데이트 실패 - ${result.error}',
+      );
+      throw Exception(result.error);
+    }
   }
 
   @override
   Future<void> deleteWeightRecord(String petId, String recordId) async {
-    // Backend API에는 체중 기록 삭제 엔드포인트가 없음
-    LoggerService.warning(
-      '⚠️ PetHealthRepository: 체중 기록 삭제는 Backend API에서 지원하지 않음',
+    final result = await BackendHealthApiService.deleteWeightRecord(
+      petId: petId,
+      weightId: recordId,
     );
 
-    // TODO: 백엔드에 삭제 API 추가 요청
-    throw UnimplementedError('체중 기록 삭제 기능은 아직 구현되지 않았습니다');
+    if (result.isSuccess) {
+      LoggerService.debug(
+        '✅ PetHealthRepository: 체중 기록 삭제 - ID: $recordId (Backend API)',
+      );
+    } else {
+      LoggerService.error(
+        '❌ PetHealthRepository: 체중 기록 삭제 실패 - ${result.error}',
+      );
+      throw Exception(result.error);
+    }
   }
 
   // =========================================================================

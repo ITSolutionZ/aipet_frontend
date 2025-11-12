@@ -30,6 +30,7 @@ void main() {
     late String testPetId;
     late String testWalkId;
     late String testHealthRecordId;
+    late String testWeightRecordId;
     late String testScheduleId;
 
     test('0. Backend Health Check', () async {
@@ -140,9 +141,9 @@ void main() {
       try {
         final result = await BackendWalkApiService.createWalk(
           petId: testPetId,
-          startTime: DateTime.now().toIso8601String(),
-          duration: 1800, // 30분
-          distance: 2.5, // 2.5km
+          startTime: DateTime.now(),
+          durationMinutes: 30, // 30분
+          distanceMeters: 2500, // 2.5km = 2500m
           notes: 'テスト散歩',
         );
 
@@ -169,7 +170,7 @@ void main() {
       }
 
       try {
-        final result = await BackendWalkApiService.getPetWalkStatistics(testPetId);
+        final result = await BackendWalkApiService.getWalkStats(petId: testPetId);
 
         if (result.isSuccess) {
           print('✅ Walk statistics retrieved successfully');
@@ -242,6 +243,70 @@ void main() {
         }
       } catch (e) {
         print('❌ Exception during get health records: $e');
+      }
+    }, skip: firebase_auth.FirebaseAuth.instance.currentUser == null);
+
+    test('7.5. Weight History API - Create, Update, Delete', () async {
+      print('\n=== Testing Weight History API ===');
+
+      if (testPetId.isEmpty) {
+        print('⚠️ Skipping: No test pet ID available');
+        return;
+      }
+
+      try {
+        // Create weight record
+        print('\n--- Create Weight Record ---');
+        final createResult = await BackendHealthApiService.createWeightRecord(
+          petId: testPetId,
+          weight: 12.5,
+          measuredAt: DateTime.now(),
+          notes: 'テスト体重記録',
+        );
+
+        if (createResult.isSuccess) {
+          print('✅ Weight record created successfully');
+          testWeightRecordId = createResult.data!['id'] as String;
+          print('   Weight Record ID: $testWeightRecordId');
+          print('   Weight: ${createResult.data!['weight']}kg');
+        } else {
+          print('❌ Failed to create weight record: ${createResult.message}');
+          return;
+        }
+
+        // Update weight record
+        print('\n--- Update Weight Record ---');
+        final updateResult = await BackendHealthApiService.updateWeightRecord(
+          petId: testPetId,
+          weightId: testWeightRecordId,
+          weight: 13.0,
+          notes: 'テスト体重記録 (更新)',
+        );
+
+        if (updateResult.isSuccess) {
+          print('✅ Weight record updated successfully');
+          print('   Updated Weight: ${updateResult.data!['weight']}kg');
+        } else {
+          print('❌ Failed to update weight record: ${updateResult.message}');
+        }
+
+        // Get weight history
+        print('\n--- Get Weight History ---');
+        final historyResult = await BackendHealthApiService.getWeightHistory(
+          petId: testPetId,
+        );
+
+        if (historyResult.isSuccess) {
+          print('✅ Weight history retrieved successfully');
+          print('   Total records: ${historyResult.data!.length}');
+        } else {
+          print('❌ Failed to get weight history: ${historyResult.message}');
+        }
+
+        // Delete weight record (will be tested in cleanup)
+        // We'll keep this for cleanup phase
+      } catch (e) {
+        print('❌ Exception during weight history test: $e');
       }
     }, skip: firebase_auth.FirebaseAuth.instance.currentUser == null);
 
@@ -328,10 +393,28 @@ void main() {
         }
       }
 
+      // Delete test weight record
+      if (testWeightRecordId.isNotEmpty) {
+        try {
+          final result = await BackendHealthApiService.deleteWeightRecord(
+            petId: testPetId,
+            weightId: testWeightRecordId,
+          );
+          if (result.isSuccess) {
+            print('✅ Test weight record deleted');
+          }
+        } catch (e) {
+          print('⚠️ Failed to delete test weight record: $e');
+        }
+      }
+
       // Delete test walk
       if (testWalkId.isNotEmpty) {
         try {
-          final result = await BackendWalkApiService.deleteWalk(testWalkId);
+          final result = await BackendWalkApiService.deleteWalk(
+            petId: testPetId,
+            walkId: testWalkId,
+          );
           if (result.isSuccess) {
             print('✅ Test walk deleted');
           }

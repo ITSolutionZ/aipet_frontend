@@ -407,6 +407,64 @@ class BackendHealthApiService {
     }
   }
 
+  /// 체중 기록 수정
+  ///
+  /// PUT /health/pets/:petId/weight-history/:weightId
+  static Future<Result<Map<String, dynamic>>> updateWeightRecord({
+    required String petId,
+    required String weightId,
+    double? weight,
+    DateTime? measuredAt,
+    String? notes,
+  }) async {
+    try {
+      final response = await _apiClient.put(
+        '/health/pets/$petId/weight-history/$weightId',
+        data: {
+          if (weight != null) 'weight': weight,
+          if (measuredAt != null) 'measuredAt': measuredAt.toIso8601String(),
+          if (notes != null) 'notes': notes,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = response.data;
+        if (data is Map<String, dynamic>) {
+          final weightRecord = data['data'] ?? data;
+          return Result.success('体重記録を更新しました', weightRecord);
+        }
+      }
+      return Result.failure('体重記録の更新に失敗しました');
+    } on DioException catch (e) {
+      return _handleDioError('체중 기록 업데이트', e);
+    } catch (e) {
+      return Result.failure('体重記録の更新に失敗しました');
+    }
+  }
+
+  /// 체중 기록 삭제
+  ///
+  /// DELETE /health/pets/:petId/weight-history/:weightId
+  static Future<Result<void>> deleteWeightRecord({
+    required String petId,
+    required String weightId,
+  }) async {
+    try {
+      final response = await _apiClient.delete(
+        '/health/pets/$petId/weight-history/$weightId',
+      );
+
+      if (response.statusCode == 200) {
+        return Result.success('体重記録を削除しました');
+      }
+      return Result.failure('体重記録の削除に失敗しました');
+    } on DioException catch (e) {
+      return _handleDioError('체중 기록 삭제', e);
+    } catch (e) {
+      return Result.failure('体重記録の削除に失敗しました');
+    }
+  }
+
   // =========================================================================
   // 에러 처리
   // =========================================================================
