@@ -6,6 +6,7 @@ import 'package:aipet_frontend/features/walk/data/services/backend_walk_api_serv
 import 'package:aipet_frontend/features/pet_health/data/services/backend_health_api_service.dart';
 import 'package:aipet_frontend/features/scheduling/data/services/backend_schedule_api_service.dart';
 import 'package:aipet_frontend/features/notification/data/services/backend_notification_api_service.dart';
+import 'package:aipet_frontend/features/community/data/services/backend_board_api_service.dart';
 import 'package:aipet_frontend/shared/core/api/backend_api_client.dart';
 import 'package:aipet_frontend/shared/domain/entities/pet_profile_entity.dart';
 
@@ -33,6 +34,8 @@ void main() {
     late String testHealthRecordId;
     late String testWeightRecordId;
     late String testScheduleId;
+    late String testPostId;
+    late String testCommentId;
 
     test('0. Backend Health Check', () async {
       final client = BackendApiClient.instance;
@@ -439,8 +442,179 @@ void main() {
       }
     }, skip: firebase_auth.FirebaseAuth.instance.currentUser == null);
 
+    test('9.7. Board API - Create, Read, Update, Delete Post', () async {
+      print('\n=== Testing Board API - Posts ===');
+
+      try {
+        // Create post
+        print('\n--- Create Post ---');
+        final createResult = await BackendBoardApiService.createPost(
+          title: 'テスト投稿',
+          content: 'これはテスト投稿です。',
+          category: 'question',
+          tags: ['テスト', 'API'],
+        );
+
+        if (createResult.isSuccess) {
+          print('✅ Post created successfully');
+          testPostId = createResult.data!.id;
+          print('   Post ID: $testPostId');
+          print('   Title: ${createResult.data!.title}');
+        } else {
+          print('❌ Failed to create post: ${createResult.message}');
+          return;
+        }
+
+        // Get post by ID
+        print('\n--- Get Post by ID ---');
+        final getResult = await BackendBoardApiService.getPostById(testPostId);
+
+        if (getResult.isSuccess) {
+          print('✅ Post retrieved successfully');
+          print('   Title: ${getResult.data!.title}');
+          print('   View Count: ${getResult.data!.viewCount}');
+        } else {
+          print('❌ Failed to get post: ${getResult.message}');
+        }
+
+        // Update post
+        print('\n--- Update Post ---');
+        final updateResult = await BackendBoardApiService.updatePost(
+          postId: testPostId,
+          title: 'テスト投稿 (更新)',
+          content: 'これはテスト投稿です (更新)',
+          category: 'tip',
+          tags: ['テスト', 'API', '更新'],
+        );
+
+        if (updateResult.isSuccess) {
+          print('✅ Post updated successfully');
+          print('   Updated Title: ${updateResult.data!.title}');
+        } else {
+          print('❌ Failed to update post: ${updateResult.message}');
+        }
+
+        // Get posts list
+        print('\n--- Get Posts List ---');
+        final listResult = await BackendBoardApiService.getPosts(
+          category: 'all',
+          page: 1,
+          limit: 10,
+        );
+
+        if (listResult.isSuccess) {
+          print('✅ Posts list retrieved successfully');
+          print('   Total posts: ${listResult.data!.length}');
+        } else {
+          print('❌ Failed to get posts list: ${listResult.message}');
+        }
+      } catch (e) {
+        print('❌ Exception during board API test: $e');
+      }
+    }, skip: firebase_auth.FirebaseAuth.instance.currentUser == null);
+
+    test('9.8. Board API - Comments and Likes', () async {
+      print('\n=== Testing Board API - Comments and Likes ===');
+
+      if (testPostId.isEmpty) {
+        print('⚠️ Skipping: No test post ID available');
+        return;
+      }
+
+      try {
+        // Create comment
+        print('\n--- Create Comment ---');
+        final commentResult = await BackendBoardApiService.createComment(
+          postId: testPostId,
+          content: 'これはテストコメントです。',
+        );
+
+        if (commentResult.isSuccess) {
+          print('✅ Comment created successfully');
+          testCommentId = commentResult.data!['id']?.toString() ?? '';
+          print('   Comment ID: $testCommentId');
+        } else {
+          print('❌ Failed to create comment: ${commentResult.message}');
+        }
+
+        // Get comments
+        print('\n--- Get Comments ---');
+        final getCommentsResult = await BackendBoardApiService.getComments(testPostId);
+
+        if (getCommentsResult.isSuccess) {
+          print('✅ Comments retrieved successfully');
+          print('   Total comments: ${getCommentsResult.data!.length}');
+        } else {
+          print('❌ Failed to get comments: ${getCommentsResult.message}');
+        }
+
+        // Toggle like (add)
+        print('\n--- Toggle Like (Add) ---');
+        final likeResult = await BackendBoardApiService.toggleLike(testPostId);
+
+        if (likeResult.isSuccess) {
+          print('✅ Like toggled successfully');
+          print('   Liked: ${likeResult.data!['liked']}');
+          print('   Like Count: ${likeResult.data!['likeCount']}');
+        } else {
+          print('❌ Failed to toggle like: ${likeResult.message}');
+        }
+
+        // Check like status
+        print('\n--- Check Like Status ---');
+        final statusResult = await BackendBoardApiService.checkLikeStatus(testPostId);
+
+        if (statusResult.isSuccess) {
+          print('✅ Like status checked successfully');
+          print('   Is Liked: ${statusResult.data}');
+        } else {
+          print('❌ Failed to check like status: ${statusResult.message}');
+        }
+
+        // Toggle like (remove)
+        print('\n--- Toggle Like (Remove) ---');
+        final unlikeResult = await BackendBoardApiService.toggleLike(testPostId);
+
+        if (unlikeResult.isSuccess) {
+          print('✅ Like toggled successfully');
+          print('   Liked: ${unlikeResult.data!['liked']}');
+        } else {
+          print('❌ Failed to toggle like: ${unlikeResult.message}');
+        }
+      } catch (e) {
+        print('❌ Exception during board API test: $e');
+      }
+    }, skip: firebase_auth.FirebaseAuth.instance.currentUser == null);
+
     test('10. Cleanup - Delete Test Data', () async {
       print('\n=== Cleaning up test data ===');
+
+      // Delete test comment (if needed separately - but CASCADE handles it)
+      if (testCommentId.isNotEmpty) {
+        try {
+          final result = await BackendBoardApiService.deleteComment(
+            postId: testPostId,
+            commentId: testCommentId,
+          );
+          if (result.isSuccess) {
+            print('✅ Test comment deleted');
+          }
+        } catch (e) {
+          print('⚠️ Failed to delete test comment: $e');
+        }
+      }
+
+      // Delete test post (this will CASCADE delete comments and likes)
+      if (testPostId.isNotEmpty) {
+        try {
+          final result = await BackendBoardApiService.deletePost(testPostId);
+          if (result.isSuccess) {
+            print('✅ Test post deleted');
+          }
+        } catch (e) {
+          print('⚠️ Failed to delete test post: $e');
+        }
+      }
 
       // Delete test schedule
       if (testScheduleId.isNotEmpty) {

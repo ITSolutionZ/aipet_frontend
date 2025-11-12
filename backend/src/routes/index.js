@@ -4,6 +4,7 @@ import petRoutes from './pet.routes.js';
 import healthRoutes from './health.routes.js';
 import activityRoutes from './activity.routes.js';
 import notificationRoutes from './notification.routes.js';
+import boardRoutes from './board.routes.js';
 
 const router = express.Router();
 
@@ -27,5 +28,6 @@ router.use('/pets', petRoutes);
 router.use('/health', healthRoutes);
 router.use('/activity', activityRoutes);
 router.use('/notifications', notificationRoutes);
+router.use('/board', boardRoutes);
 
 export default router;
