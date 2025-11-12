@@ -138,6 +138,68 @@ void main() {
       }
     }, skip: firebase_auth.FirebaseAuth.instance.currentUser == null);
 
+    test('3.1. Pets API - Update Pet', () async {
+      print('\n=== Testing Pets API - Update ===');
+
+      if (testPetId.isEmpty) {
+        print('⚠️ Skipping: No test pet ID available');
+        return;
+      }
+
+      try {
+        // Get current pet data first
+        final getResult = await BackendPetApiService.getPetById(testPetId);
+        if (!getResult.isSuccess || getResult.data == null) {
+          print('❌ Failed to get pet for update');
+          return;
+        }
+
+        final pet = getResult.data!;
+        final updatedPet = pet.copyWith(
+          weight: 27.0, // 체중 변경: 25.5 -> 27.0
+          breed: 'ラブラドールレトリバー', // 품종 변경
+        );
+
+        final result = await BackendPetApiService.updatePet(updatedPet);
+
+        if (result.isSuccess) {
+          print('✅ Pet updated successfully');
+          print('   Updated Weight: ${result.data!.weight}kg');
+          print('   Updated Breed: ${result.data!.breed}');
+        } else {
+          print('❌ Failed to update pet: ${result.message}');
+        }
+      } catch (e) {
+        print('❌ Exception during pet update: $e');
+      }
+    }, skip: firebase_auth.FirebaseAuth.instance.currentUser == null);
+
+    test('3.2. Pets API - Get Pet by ID', () async {
+      print('\n=== Testing Pets API - Get by ID ===');
+
+      if (testPetId.isEmpty) {
+        print('⚠️ Skipping: No test pet ID available');
+        return;
+      }
+
+      try {
+        final result = await BackendPetApiService.getPetById(testPetId);
+
+        if (result.isSuccess && result.data != null) {
+          print('✅ Pet retrieved successfully');
+          print('   Pet ID: ${result.data!.id}');
+          print('   Name: ${result.data!.name}');
+          print('   Type: ${result.data!.type}');
+          print('   Weight: ${result.data!.weight}kg');
+          print('   Breed: ${result.data!.breed}');
+        } else {
+          print('❌ Failed to get pet: ${result.message}');
+        }
+      } catch (e) {
+        print('❌ Exception during get pet by ID: $e');
+      }
+    }, skip: firebase_auth.FirebaseAuth.instance.currentUser == null);
+
     test('4. Walks API - Create Walk', () async {
       print('\n=== Testing Walks API - Create ===');
 

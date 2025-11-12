@@ -166,51 +166,78 @@ class BackendPetApiService {
   }
 
   /// 백엔드 응답 데이터를 PetProfileEntity로 변환
+  /// Backend는 snake_case를 사용 (birth_date, microchip_number 등)
   static PetProfileEntity _mapToPetEntity(Map<String, dynamic> json) {
     return PetProfileEntity(
       id: json['id']?.toString() ?? '',
       name: json['name']?.toString() ?? '',
-      type: json['type']?.toString() ?? json['species']?.toString() ?? 'dog',
+      type: json['type']?.toString() ?? 'dog',
       breed: json['breed']?.toString(),
-      birthDate: json['birthDate'] != null
-          ? DateTime.tryParse(json['birthDate']) ?? DateTime.now()
+      birthDate: (json['birth_date'] ?? json['birthDate']) != null
+          ? DateTime.tryParse((json['birth_date'] ?? json['birthDate']).toString()) ?? DateTime.now()
           : DateTime.now(),
-      gender: json['gender']?.toString() ?? 'male',
-      weight: (json['weight'] as num?)?.toDouble() ?? 0.0,
+      gender: json['gender']?.toString() ?? 'unknown',
+      weight: _parseDouble(json['weight']) ?? 0.0,
       size: json['size']?.toString(),
-      microchipNumber: json['microchipNumber']?.toString(),
-      arrivalDate: json['arrivalDate'] != null
-          ? DateTime.tryParse(json['arrivalDate'])
+      microchipNumber: (json['microchip_number'] ?? json['microchipNumber'])?.toString(),
+      arrivalDate: (json['arrival_date'] ?? json['arrivalDate']) != null
+          ? DateTime.tryParse((json['arrival_date'] ?? json['arrivalDate']).toString())
           : null,
-      neutered: json['neutered'] as bool?,
-      imagePath: json['imageUrl']?.toString() ?? json['imagePath']?.toString(),
-      ownerId: json['ownerId']?.toString() ?? '',
-      createdAt: json['createdAt'] != null
-          ? DateTime.tryParse(json['createdAt']) ?? DateTime.now()
+      neutered: _parseBool(json['is_neutered'] ?? json['neutered']),
+      imagePath: (json['photo_url'] ?? json['imageUrl'] ?? json['imagePath'])?.toString(),
+      ownerId: (json['owner_id'] ?? json['ownerId'])?.toString() ?? '',
+      createdAt: (json['created_at'] ?? json['createdAt']) != null
+          ? DateTime.tryParse((json['created_at'] ?? json['createdAt']).toString()) ?? DateTime.now()
           : DateTime.now(),
-      updatedAt: json['updatedAt'] != null
-          ? DateTime.tryParse(json['updatedAt']) ?? DateTime.now()
+      updatedAt: (json['updated_at'] ?? json['updatedAt']) != null
+          ? DateTime.tryParse((json['updated_at'] ?? json['updatedAt']).toString()) ?? DateTime.now()
           : DateTime.now(),
-      isActive: json['isActive'] as bool? ?? true,
-      additionalInfo: json['additionalInfo'] as Map<String, dynamic>?,
+      isActive: _parseBool(json['is_active'] ?? json['isActive']) ?? true,
+      additionalInfo: {
+        if (json['color'] != null) 'color': json['color'],
+        if (json['notes'] != null) 'notes': json['notes'],
+        ...(json['additionalInfo'] as Map<String, dynamic>? ?? {}),
+      },
     );
   }
 
+  /// 안전한 bool 파싱 (int 1/0 또는 bool 처리)
+  static bool? _parseBool(dynamic value) {
+    if (value == null) return null;
+    if (value is bool) return value;
+    if (value is int) return value == 1;
+    if (value is String) return value == '1' || value.toLowerCase() == 'true';
+    return null;
+  }
+
+  /// 안전한 double 파싱
+  static double? _parseDouble(dynamic value) {
+    if (value == null) return null;
+    if (value is double) return value;
+    if (value is int) return value.toDouble();
+    if (value is num) return value.toDouble();
+    if (value is String) return double.tryParse(value);
+    return null;
+  }
+
   /// PetProfileEntity를 백엔드 요청 데이터로 변환
+  /// Backend는 snake_case를 사용
   static Map<String, dynamic> _petEntityToMap(PetProfileEntity pet) {
     return {
+      if (pet.id.isNotEmpty) 'id': pet.id,
       'name': pet.name,
       'type': pet.type,
-      'breed': pet.breed,
-      'birthDate': pet.birthDate.toIso8601String(),
+      if (pet.breed != null) 'breed': pet.breed,
+      'birthDate': pet.birthDate.toIso8601String().split('T')[0], // YYYY-MM-DD
       'gender': pet.gender,
-      'weight': pet.weight,
-      'size': pet.size,
-      'microchipNumber': pet.microchipNumber,
-      'arrivalDate': pet.arrivalDate?.toIso8601String(),
-      'neutered': pet.neutered,
-      'imageUrl': pet.imagePath,
-      'additionalInfo': pet.additionalInfo,
+      if (pet.weight > 0) 'weight': pet.weight,
+      if (pet.imagePath != null) 'photoUrl': pet.imagePath,
+      if (pet.microchipNumber != null) 'microchipNumber': pet.microchipNumber,
+      if (pet.neutered != null) 'isNeutered': pet.neutered,
+      if (pet.additionalInfo['color'] != null)
+        'color': pet.additionalInfo['color'],
+      if (pet.additionalInfo['notes'] != null)
+        'notes': pet.additionalInfo['notes'],
       // ownerId는 백엔드에서 토큰으로 자동 설정되므로 전송하지 않음
     };
   }
