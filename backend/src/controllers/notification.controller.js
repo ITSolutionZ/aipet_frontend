@@ -449,3 +449,214 @@ export const saveFCMToken = async (req, res) => {
     });
   }
 };
+
+/**
+ * 알림 설정 조회
+ */
+export const getNotificationSettings = async (req, res) => {
+  try {
+    const userId = req.user.uid;
+
+    // notification_settings 테이블 확인 및 조회
+    const [settings] = await pool.query(
+      'SELECT * FROM notification_settings WHERE user_id = ?',
+      [userId]
+    ).catch(() => [[]]);
+
+    if (settings.length > 0) {
+      const setting = settings[0];
+      res.json({
+        success: true,
+        data: {
+          pushEnabled: setting.push_enabled || true,
+          emailEnabled: setting.email_enabled || false,
+          notificationTypes: setting.notification_types
+            ? (typeof setting.notification_types === 'string'
+                ? JSON.parse(setting.notification_types)
+                : setting.notification_types)
+            : {
+                vaccination: true,
+                feeding: true,
+                walk: true,
+                medical: true,
+                general: true,
+              },
+        },
+      });
+    } else {
+      // 설정이 없으면 기본값 반환
+      res.json({
+        success: true,
+        data: {
+          pushEnabled: true,
+          emailEnabled: false,
+          notificationTypes: {
+            vaccination: true,
+            feeding: true,
+            walk: true,
+            medical: true,
+            general: true,
+          },
+        },
+      });
+    }
+  } catch (error) {
+    console.error('❌ [Notification] 설정 조회 에러:', error);
+    // 테이블이 없어도 기본값 반환
+    res.json({
+      success: true,
+      data: {
+        pushEnabled: true,
+        emailEnabled: false,
+        notificationTypes: {
+          vaccination: true,
+          feeding: true,
+          walk: true,
+          medical: true,
+          general: true,
+        },
+      },
+    });
+  }
+};
+
+/**
+ * 알림 설정 업데이트
+ */
+export const updateNotificationSettings = async (req, res) => {
+  try {
+    const userId = req.user.uid;
+    const { pushEnabled, emailEnabled, notificationTypes } = req.body;
+
+    // 테이블 존재 확인 및 생성
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS notification_settings (
+        user_id VARCHAR(255) PRIMARY KEY,
+        push_enabled BOOLEAN DEFAULT true,
+        email_enabled BOOLEAN DEFAULT false,
+        notification_types JSON,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+      )
+    `).catch(() => {});
+
+    // 기존 설정 확인
+    const [existing] = await pool.query(
+      'SELECT * FROM notification_settings WHERE user_id = ?',
+      [userId]
+    ).catch(() => [[]]);
+
+    const notificationTypesJson = notificationTypes
+      ? JSON.stringify(notificationTypes)
+      : null;
+
+    if (existing.length > 0) {
+      // 설정 업데이트
+      const updates = [];
+      const values = [];
+
+      if (pushEnabled !== undefined) {
+        updates.push('push_enabled = ?');
+        values.push(pushEnabled);
+      }
+      if (emailEnabled !== undefined) {
+        updates.push('email_enabled = ?');
+        values.push(emailEnabled);
+      }
+      if (notificationTypesJson) {
+        updates.push('notification_types = ?');
+        values.push(notificationTypesJson);
+      }
+
+      if (updates.length > 0) {
+        updates.push('updated_at = NOW()');
+        values.push(userId);
+
+        await pool.query(
+          `UPDATE notification_settings SET ${updates.join(', ')} WHERE user_id = ?`,
+          values
+        );
+      }
+
+      console.log(`✅ [Notification] 설정 업데이트: ${userId}`);
+    } else {
+      // 새 설정 생성
+      await pool.query(
+        'INSERT INTO notification_settings (user_id, push_enabled, email_enabled, notification_types) VALUES (?, ?, ?, ?)',
+        [
+          userId,
+          pushEnabled !== undefined ? pushEnabled : true,
+          emailEnabled !== undefined ? emailEnabled : false,
+          notificationTypesJson || JSON.stringify({
+            vaccination: true,
+            feeding: true,
+            walk: true,
+            medical: true,
+            general: true,
+          }),
+        ]
+      );
+
+      console.log(`✅ [Notification] 새 설정 생성: ${userId}`);
+    }
+
+    res.json({
+      success: true,
+      message: '알림 설정이 업데이트되었습니다.',
+    });
+  } catch (error) {
+    console.error('❌ [Notification] 설정 업데이트 에러:', error);
+    res.status(500).json({
+      success: false,
+      error: '알림 설정 업데이트 중 오류 발생',
+      message: error.message,
+    });
+  }
+};
+
+/**
+ * 알림 통계 조회
+ */
+export const getNotificationStats = async (req, res) => {
+  try {
+    const userId = req.user.uid;
+
+    // 총 알림 개수
+    const [totalResult] = await pool.query(
+      'SELECT COUNT(*) as count FROM notifications WHERE user_id = ?',
+      [userId]
+    );
+
+    // 읽지 않은 알림 개수
+    const [unreadResult] = await pool.query(
+      'SELECT COUNT(*) as count FROM notifications WHERE user_id = ? AND is_read = false',
+      [userId]
+    );
+
+    // 읽은 알림 개수
+    const [readResult] = await pool.query(
+      'SELECT COUNT(*) as count FROM notifications WHERE user_id = ? AND is_read = true',
+      [userId]
+    );
+
+    const totalCount = totalResult[0].count;
+    const unreadCount = unreadResult[0].count;
+    const readCount = readResult[0].count;
+
+    res.json({
+      success: true,
+      data: {
+        totalCount,
+        unreadCount,
+        readCount,
+      },
+    });
+  } catch (error) {
+    console.error('❌ [Notification] 통계 조회 에러:', error);
+    res.status(500).json({
+      success: false,
+      error: '알림 통계 조회 중 오류 발생',
+      message: error.message,
+    });
+  }
+};

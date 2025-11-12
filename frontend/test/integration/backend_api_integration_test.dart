@@ -5,6 +5,7 @@ import 'package:aipet_frontend/features/pet_profile/data/services/backend_pet_ap
 import 'package:aipet_frontend/features/walk/data/services/backend_walk_api_service.dart';
 import 'package:aipet_frontend/features/pet_health/data/services/backend_health_api_service.dart';
 import 'package:aipet_frontend/features/scheduling/data/services/backend_schedule_api_service.dart';
+import 'package:aipet_frontend/features/notification/data/services/backend_notification_api_service.dart';
 import 'package:aipet_frontend/shared/core/api/backend_api_client.dart';
 import 'package:aipet_frontend/shared/domain/entities/pet_profile_entity.dart';
 
@@ -363,6 +364,78 @@ void main() {
         }
       } catch (e) {
         print('❌ Exception during get upcoming schedules: $e');
+      }
+    }, skip: firebase_auth.FirebaseAuth.instance.currentUser == null);
+
+    test('9.5. Notification Settings API - Get, Update', () async {
+      print('\n=== Testing Notification Settings API ===');
+
+      try {
+        // Get notification settings
+        print('\n--- Get Notification Settings ---');
+        final getResult = await BackendNotificationApiService.getNotificationSettings();
+
+        if (getResult.isSuccess) {
+          print('✅ Notification settings retrieved successfully');
+          print('   Push Enabled: ${getResult.data!['pushEnabled']}');
+          print('   Email Enabled: ${getResult.data!['emailEnabled']}');
+          print('   Notification Types: ${getResult.data!['notificationTypes']}');
+        } else {
+          print('❌ Failed to get notification settings: ${getResult.message}');
+        }
+
+        // Update notification settings
+        print('\n--- Update Notification Settings ---');
+        final updateResult = await BackendNotificationApiService.updateNotificationSettings(
+          pushEnabled: false,
+          emailEnabled: true,
+          notificationTypes: {
+            'vaccination': true,
+            'feeding': false,
+            'walk': true,
+            'medical': true,
+            'general': false,
+          },
+        );
+
+        if (updateResult.isSuccess) {
+          print('✅ Notification settings updated successfully');
+        } else {
+          print('❌ Failed to update notification settings: ${updateResult.message}');
+        }
+
+        // Verify updated settings
+        print('\n--- Verify Updated Settings ---');
+        final verifyResult = await BackendNotificationApiService.getNotificationSettings();
+
+        if (verifyResult.isSuccess) {
+          print('✅ Updated settings verified');
+          print('   Push Enabled: ${verifyResult.data!['pushEnabled']}');
+          print('   Email Enabled: ${verifyResult.data!['emailEnabled']}');
+        } else {
+          print('❌ Failed to verify updated settings: ${verifyResult.message}');
+        }
+      } catch (e) {
+        print('❌ Exception during notification settings test: $e');
+      }
+    }, skip: firebase_auth.FirebaseAuth.instance.currentUser == null);
+
+    test('9.6. Notification Stats API - Get Statistics', () async {
+      print('\n=== Testing Notification Stats API ===');
+
+      try {
+        final result = await BackendNotificationApiService.getNotificationStats();
+
+        if (result.isSuccess) {
+          print('✅ Notification statistics retrieved successfully');
+          print('   Total Count: ${result.data!['totalCount']}');
+          print('   Unread Count: ${result.data!['unreadCount']}');
+          print('   Read Count: ${result.data!['readCount']}');
+        } else {
+          print('❌ Failed to get notification statistics: ${result.message}');
+        }
+      } catch (e) {
+        print('❌ Exception during notification stats test: $e');
       }
     }, skip: firebase_auth.FirebaseAuth.instance.currentUser == null);
 

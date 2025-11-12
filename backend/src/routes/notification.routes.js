@@ -9,6 +9,9 @@ import {
   getUnreadCount,
   sendPushNotification,
   saveFCMToken,
+  getNotificationSettings,
+  updateNotificationSettings,
+  getNotificationStats,
 } from '../controllers/notification.controller.js';
 import { authenticateFirebase } from '../middlewares/auth.middleware.js';
 import { validate } from '../middlewares/validation.middleware.js';
@@ -129,5 +132,35 @@ router.post(
   validate,
   saveFCMToken
 );
+
+/**
+ * @route   GET /api/v1/notifications/settings
+ * @desc    알림 설정 조회
+ * @access  Private
+ */
+router.get('/settings', getNotificationSettings);
+
+/**
+ * @route   PUT /api/v1/notifications/settings
+ * @desc    알림 설정 업데이트
+ * @access  Private
+ */
+router.put(
+  '/settings',
+  [
+    body('pushEnabled').optional().isBoolean(),
+    body('emailEnabled').optional().isBoolean(),
+    body('notificationTypes').optional().isObject(),
+  ],
+  validate,
+  updateNotificationSettings
+);
+
+/**
+ * @route   GET /api/v1/notifications/stats
+ * @desc    알림 통계 조회 (총 개수, 읽음, 안읽음)
+ * @access  Private
+ */
+router.get('/stats', getNotificationStats);
 
 export default router;

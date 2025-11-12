@@ -188,38 +188,57 @@ class NotificationRepositoryImpl implements NotificationRepository {
     String userId,
   ) async {
     try {
-      // Backend API에는 설정 관리 엔드포인트가 없으므로 로컬 캐시만 사용
-      LoggerService.debug(
-        '⚠️ NotificationRepository: 설정은 Backend API에서 지원하지 않음, 로컬 캐시 사용',
-      );
-
+      // 1. 캐시가 유효한지 확인
       final cachedSettings = await NotificationCacheService.getCachedSettings(
         userId,
       );
 
       if (cachedSettings.isSuccess) {
+        LoggerService.debug('✅ NotificationRepository: 유효한 캐시 설정 사용');
         return cachedSettings;
       }
 
-      // 기본 설정 반환
-      final defaultSettings = {
-        'pushEnabled': true,
-        'emailEnabled': false,
-        'notificationTypes': {
-          'vaccination': true,
-          'feeding': true,
-          'walk': true,
-          'medical': true,
-          'general': true,
-        },
-      };
+      // 2. Backend API에서 설정 조회
+      final result = await BackendNotificationApiService.getNotificationSettings();
 
-      await NotificationCacheService.cacheSettings(
-        userId: userId,
-        settings: defaultSettings,
-      );
+      if (result.isSuccess) {
+        // 3. 성공한 경우 캐시에 저장
+        final settings = result.dataOrNull!;
+        await NotificationCacheService.cacheSettings(
+          userId: userId,
+          settings: settings,
+        );
 
-      return Result.success('기본 설정을 사용합니다', defaultSettings);
+        LoggerService.debug(
+          '✅ NotificationRepository: Backend API에서 설정 조회 및 캐시 저장 완료',
+        );
+
+        return result;
+      } else {
+        // 4. API 조회 실패 시 기본 설정 반환
+        LoggerService.debug(
+          '⚠️ NotificationRepository: API 조회 실패, 기본 설정 사용',
+        );
+
+        final defaultSettings = {
+          'pushEnabled': true,
+          'emailEnabled': false,
+          'notificationTypes': {
+            'vaccination': true,
+            'feeding': true,
+            'walk': true,
+            'medical': true,
+            'general': true,
+          },
+        };
+
+        await NotificationCacheService.cacheSettings(
+          userId: userId,
+          settings: defaultSettings,
+        );
+
+        return Result.success('기본 설정을 사용합니다', defaultSettings);
+      }
     } catch (error) {
       LoggerService.debug('❌ NotificationRepository: 설정 조회 중 예외 발생 - $error');
       return Result.failure('설정 조회 중 오류 발생: $error');
@@ -232,18 +251,36 @@ class NotificationRepositoryImpl implements NotificationRepository {
     required Map<String, dynamic> settings,
   }) async {
     try {
-      // Backend API에는 설정 관리 엔드포인트가 없으므로 로컬 캐시만 업데이트
-      LoggerService.debug(
-        '⚠️ NotificationRepository: 설정은 Backend API에서 지원하지 않음, 로컬 캐시만 업데이트',
+      // 1. Backend API에서 설정 업데이트
+      final result = await BackendNotificationApiService.updateNotificationSettings(
+        pushEnabled: settings['pushEnabled'] as bool?,
+        emailEnabled: settings['emailEnabled'] as bool?,
+        notificationTypes: settings['notificationTypes'] as Map<String, dynamic>?,
       );
 
-      await NotificationCacheService.cacheSettings(
-        userId: userId,
-        settings: settings,
-      );
+      if (result.isSuccess) {
+        // 2. 성공한 경우 로컬 캐시도 업데이트
+        await NotificationCacheService.cacheSettings(
+          userId: userId,
+          settings: settings,
+        );
 
-      LoggerService.debug('✅ NotificationRepository: 설정 로컬 캐시 업데이트 완료');
-      return Result.success('설정을 업데이트했습니다', true);
+        LoggerService.debug(
+          '✅ NotificationRepository: Backend API 및 로컬 캐시 설정 업데이트 완료',
+        );
+        return Result.success('설정을 업데이트했습니다', true);
+      } else {
+        // 3. API 업데이트 실패 시에도 로컬 캐시는 업데이트 (오프라인 지원)
+        await NotificationCacheService.cacheSettings(
+          userId: userId,
+          settings: settings,
+        );
+
+        LoggerService.debug(
+          '⚠️ NotificationRepository: Backend API 업데이트 실패, 로컬 캐시만 업데이트',
+        );
+        return Result.success('설정을 로컬에 저장했습니다', true);
+      }
     } catch (error) {
       LoggerService.debug('❌ NotificationRepository: 설정 업데이트 중 예외 발생 - $error');
       return Result.failure('설정 업데이트 중 오류 발생: $error');
@@ -255,26 +292,38 @@ class NotificationRepositoryImpl implements NotificationRepository {
     String userId,
   ) async {
     try {
-      // Backend API에는 통계 엔드포인트가 없으므로 로컬에서 계산
-      LoggerService.debug(
-        '⚠️ NotificationRepository: 통계는 Backend API에서 지원하지 않음, 로컬 계산',
-      );
+      // 1. Backend API에서 통계 조회
+      final result = await BackendNotificationApiService.getNotificationStats();
 
-      // 읽지 않은 알림 개수만 Backend API에서 가져오기
-      final unreadCountResult =
-          await BackendNotificationApiService.getUnreadCount();
+      if (result.isSuccess) {
+        final stats = result.dataOrNull!;
+        LoggerService.debug(
+          '✅ NotificationRepository: Backend API에서 통계 조회 완료 '
+          '(총: ${stats['totalCount']}, 읽음: ${stats['readCount']}, 안읽음: ${stats['unreadCount']})',
+        );
+        return result;
+      } else {
+        // 2. API 조회 실패 시 최소한의 통계만 제공
+        LoggerService.debug(
+          '⚠️ NotificationRepository: API 통계 조회 실패, unread count만 조회 시도',
+        );
 
-      final unreadCount = unreadCountResult.isSuccess
-          ? (unreadCountResult.dataOrNull ?? 0)
-          : 0;
+        // 읽지 않은 알림 개수만이라도 조회 시도
+        final unreadCountResult =
+            await BackendNotificationApiService.getUnreadCount();
 
-      final stats = {
-        'unreadCount': unreadCount,
-        'totalCount': 0, // Backend API에서 제공하지 않음
-        'readCount': 0, // Backend API에서 제공하지 않음
-      };
+        final unreadCount = unreadCountResult.isSuccess
+            ? (unreadCountResult.dataOrNull ?? 0)
+            : 0;
 
-      return Result.success('통계를 조회했습니다', stats);
+        final fallbackStats = {
+          'unreadCount': unreadCount,
+          'totalCount': 0,
+          'readCount': 0,
+        };
+
+        return Result.success('부분 통계를 조회했습니다', fallbackStats);
+      }
     } catch (error) {
       LoggerService.debug('❌ NotificationRepository: 통계 조회 중 예외 발생 - $error');
       return Result.failure('통계 조회 중 오류 발생: $error');

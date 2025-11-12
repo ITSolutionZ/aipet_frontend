@@ -1,20 +1,20 @@
-import '../../../../shared/shared.dart';
-
 import '../../../../../features/walk/data/services/backend_walk_api_service.dart';
 import '../../../../../features/walk/domain/entities/walk_record_entity.dart';
 import '../../../../../features/walk/domain/entities/walk_statistics_entity.dart';
+import '../../../../shared/shared.dart';
 
 /// 백엔드 API를 사용하는 산책 API 서비스
 ///
 /// BackendWalkApiService를 래핑하여 기존 WalkApiService 인터페이스와 호환되도록 구현
 class WalkApiServiceBackend {
-  /// 모든 산책 기록 조회 (기본 petId 필요)
+  /// 모든 산책 기록 조회 (petId 필요)
   Future<Result<List<WalkRecordEntity>>> getAllWalkRecords({
     String? petId,
   }) async {
     try {
       LoggerService.debug('🌐 WalkAPIBackend: 전체 산책 기록 조회 요청');
 
+      // petId가 없으면 빈 목록 반환
       if (petId == null || petId.isEmpty) {
         LoggerService.debug('⚠️ WalkAPIBackend: petId가 없어 빈 목록 반환');
         return Result.success('산책 기록을 가져왔습니다', []);
@@ -41,7 +41,7 @@ class WalkApiServiceBackend {
     }
   }
 
-  /// ID로 산책 기록 조회
+  /// ID로 산책 기록 조회 (petId 필요)
   Future<Result<WalkRecordEntity>> getWalkRecordById(
     String id, {
     String? petId,
@@ -57,20 +57,21 @@ class WalkApiServiceBackend {
       final result = await BackendWalkApiService.getWalks(petId: petId);
 
       if (result.isSuccess && result.data != null) {
-        final records = result.data!
-            .map((json) => _mapToWalkRecord(json))
-            .toList();
-        final record = records.firstWhere(
-          (r) => r.id == id,
-          orElse: () => throw Exception('산책 기록을 찾을 수 없습니다'),
+        final records = result.data!;
+        final targetRecord = records.cast<Map<String, dynamic>?>().firstWhere(
+          (json) => json?['id']?.toString() == id,
+          orElse: () => null,
         );
 
-        LoggerService.debug('✅ WalkAPIBackend: 산책 기록 조회 성공 - ID: $id');
-        return Result.success('산책 기록을 가져왔습니다', record);
+        if (targetRecord != null) {
+          final record = _mapToWalkRecord(targetRecord);
+          LoggerService.debug('✅ WalkAPIBackend: 산책 기록 조회 성공 - ID: $id');
+          return Result.success('산책 기록을 가져왔습니다', record);
+        }
       }
 
       LoggerService.debug('⚠️ WalkAPIBackend: 산책 기록 없음 - ID: $id');
-      return Result.failure(result.message);
+      return Result.failure('산책 기록을 찾을 수 없습니다');
     } catch (e, stackTrace) {
       LoggerService.debug('❌ WalkAPIBackend: 산책 기록 조회 실패 - ID: $id, Error: $e');
       LoggerService.debug('StackTrace: $stackTrace');
@@ -150,7 +151,7 @@ class WalkApiServiceBackend {
     try {
       LoggerService.debug('🌐 WalkAPIBackend: 산책 종료 요청 - ID: $walkId');
 
-      // 종료 시간 계산
+      // 종료 시간과 상태 계산
       final endTime = DateTime.now();
 
       final result = await BackendWalkApiService.updateWalk(
@@ -191,7 +192,6 @@ class WalkApiServiceBackend {
       final result = await BackendWalkApiService.updateWalk(
         petId: walkRecord.petId,
         walkId: walkRecord.id,
-        startTime: walkRecord.startTime,
         endTime: walkRecord.endTime,
         durationMinutes: walkRecord.duration?.inMinutes,
         distanceMeters: walkRecord.distance != null
@@ -249,12 +249,26 @@ class WalkApiServiceBackend {
 
   /// 산책 통계 조회
   Future<Result<WalkStatistics>> getWalkStatistics({
-    required String petId,
+    String? petId,
     DateTime? startDate,
     DateTime? endDate,
   }) async {
     try {
       LoggerService.debug('🌐 WalkAPIBackend: 산책 통계 조회 요청');
+
+      if (petId == null || petId.isEmpty) {
+        LoggerService.debug('⚠️ WalkAPIBackend: petId가 없어 빈 통계 반환');
+        return Result.success(
+          '통계 데이터를 가져왔습니다',
+          const WalkStatistics(
+            totalWalks: 0,
+            totalDistance: 0.0,
+            totalDuration: Duration.zero,
+            averageDistance: 0.0,
+            averageDuration: Duration.zero,
+          ),
+        );
+      }
 
       final result = await BackendWalkApiService.getWalkStats(petId: petId);
 
@@ -274,13 +288,14 @@ class WalkApiServiceBackend {
     }
   }
 
-  /// 현재 진행 중인 산책 조회
+  /// 현재 진행 중인 산책 조회 (petId 필요)
   Future<Result<WalkRecordEntity?>> getCurrentWalk({String? petId}) async {
     try {
       LoggerService.debug('🌐 WalkAPIBackend: 현재 산책 조회 요청');
 
       if (petId == null || petId.isEmpty) {
-        return Result.success('petId가 필요합니다', null);
+        LoggerService.debug('⚠️ WalkAPIBackend: petId가 없어 null 반환');
+        return Result.success('진행 중인 산책이 없습니다', null);
       }
 
       // 전체 산책 목록에서 in_progress 상태 찾기
@@ -311,82 +326,42 @@ class WalkApiServiceBackend {
 
   /// 백엔드 응답을 WalkRecordEntity로 변환
   WalkRecordEntity _mapToWalkRecord(Map<String, dynamic> json) {
-    // duration 계산 (durationMinutes가 있으면 사용, 없으면 startTime과 endTime에서 계산)
-    Duration? duration;
-    if (json['durationMinutes'] != null) {
-      duration = Duration(minutes: json['durationMinutes'] as int);
-    } else if (json['duration_minutes'] != null) {
-      duration = Duration(minutes: json['duration_minutes'] as int);
-    } else if (json['start_time'] != null && json['end_time'] != null) {
-      final start = DateTime.parse(json['start_time']);
-      final end = DateTime.parse(json['end_time']);
-      duration = end.difference(start);
-    }
-
-    // distance 변환 (meters → km)
-    double? distance;
-    if (json['distanceMeters'] != null) {
-      distance = (json['distanceMeters'] as num).toDouble() / 1000.0;
-    } else if (json['distance_meters'] != null) {
-      distance = (json['distance_meters'] as num).toDouble() / 1000.0;
-    } else if (json['distance'] != null) {
-      distance = (json['distance'] as num).toDouble();
-    }
-
     return WalkRecordEntity(
       id: json['id']?.toString() ?? '',
-      petId: json['pet_id']?.toString() ?? json['petId']?.toString() ?? '',
-      petName:
-          json['pet_name']?.toString() ?? json['petName']?.toString() ?? '',
+      petId: json['pet_id']?.toString() ?? '',
+      petName: json['pet_name']?.toString() ?? '',
       startTime: DateTime.parse(
-        json['start_time'] ??
-            json['startTime'] ??
-            DateTime.now().toIso8601String(),
+        json['start_time'] ?? DateTime.now().toIso8601String(),
       ),
       endTime: json['end_time'] != null
           ? DateTime.parse(json['end_time'])
-          : (json['endTime'] != null ? DateTime.parse(json['endTime']) : null),
-      duration: duration,
-      distance: distance,
-      status: _parseWalkStatus(json['status']?.toString()),
+          : null,
+      duration: json['duration'] != null
+          ? Duration(seconds: json['duration'] as int)
+          : null,
+      distance: (json['distance'] as num?)?.toDouble(),
+      status: _parseWalkStatus(json['status']),
       notes: json['notes']?.toString(),
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'])
-          : (json['createdAt'] != null
-                ? DateTime.parse(json['createdAt'])
-                : DateTime.now()),
+          : DateTime.now(),
       updatedAt: json['updated_at'] != null
           ? DateTime.parse(json['updated_at'])
-          : (json['updatedAt'] != null
-                ? DateTime.parse(json['updatedAt'])
-                : DateTime.now()),
+          : DateTime.now(),
     );
   }
 
   /// 백엔드 응답을 WalkStatistics로 변환
   WalkStatistics _mapToWalkStatistics(Map<String, dynamic> json) {
     return WalkStatistics(
-      totalWalks:
-          (json['total_walks'] ?? json['totalWalks'] as num?)?.toInt() ?? 0,
-      totalDistance:
-          (json['total_distance'] ?? json['totalDistance'] as num?)
-              ?.toDouble() ??
-          0.0,
+      totalWalks: (json['total_walks'] as num?)?.toInt() ?? 0,
+      totalDistance: (json['total_distance'] as num?)?.toDouble() ?? 0.0,
       totalDuration: Duration(
-        seconds:
-            (json['total_duration'] ?? json['totalDuration'] as num?)
-                ?.toInt() ??
-            0,
+        seconds: (json['total_duration'] as num?)?.toInt() ?? 0,
       ),
-      averageDistance:
-          (json['average_distance'] ?? json['averageDistance'] as num?)
-              ?.toDouble() ??
-          0.0,
+      averageDistance: (json['average_distance'] as num?)?.toDouble() ?? 0.0,
       averageDuration: Duration(
-        seconds:
-            (json['average_duration'] ?? json['averageDuration'] as num?)
-                ?.toInt() ??
-            0,
+        seconds: (json['average_duration'] as num?)?.toInt() ?? 0,
       ),
     );
   }
@@ -395,7 +370,6 @@ class WalkApiServiceBackend {
   WalkStatus _parseWalkStatus(String? status) {
     switch (status?.toLowerCase()) {
       case 'in_progress':
-      case 'inprogress':
         return WalkStatus.inProgress;
       case 'completed':
         return WalkStatus.completed;

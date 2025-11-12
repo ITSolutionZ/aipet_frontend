@@ -323,6 +323,80 @@ class BackendNotificationApiService {
     );
   }
 
+  /// 알림 설정 조회
+  ///
+  /// GET /notifications/settings
+  static Future<Result<Map<String, dynamic>>> getNotificationSettings() async {
+    try {
+      final response = await _apiClient.get('/notifications/settings');
+
+      if (response.statusCode == 200) {
+        final data = response.data;
+        if (data is Map<String, dynamic>) {
+          final settings = data['data'] ?? data;
+          return Result.success('通知設定を取得しました', settings);
+        }
+      }
+      return Result.failure('通知設定の取得に失敗しました');
+    } on DioException catch (e) {
+      return _handleDioError('알림 설정 조회', e);
+    } catch (e) {
+      return Result.failure('通知設定の取得に失敗しました');
+    }
+  }
+
+  /// 알림 설정 업데이트
+  ///
+  /// PUT /notifications/settings
+  static Future<Result<void>> updateNotificationSettings({
+    bool? pushEnabled,
+    bool? emailEnabled,
+    Map<String, dynamic>? notificationTypes,
+  }) async {
+    try {
+      final response = await _apiClient.put(
+        '/notifications/settings',
+        data: {
+          if (pushEnabled != null) 'pushEnabled': pushEnabled,
+          if (emailEnabled != null) 'emailEnabled': emailEnabled,
+          if (notificationTypes != null)
+            'notificationTypes': notificationTypes,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return Result.success('通知設定を更新しました');
+      }
+      return Result.failure('通知設定の更新に失敗しました');
+    } on DioException catch (e) {
+      return _handleDioError('알림 설정 업데이트', e);
+    } catch (e) {
+      return Result.failure('通知設定の更新に失敗しました');
+    }
+  }
+
+  /// 알림 통계 조회
+  ///
+  /// GET /notifications/stats
+  static Future<Result<Map<String, dynamic>>> getNotificationStats() async {
+    try {
+      final response = await _apiClient.get('/notifications/stats');
+
+      if (response.statusCode == 200) {
+        final data = response.data;
+        if (data is Map<String, dynamic>) {
+          final stats = data['data'] ?? data;
+          return Result.success('通知統計を取得しました', stats);
+        }
+      }
+      return Result.failure('通知統計の取得に失敗しました');
+    } on DioException catch (e) {
+      return _handleDioError('알림 통계 조회', e);
+    } catch (e) {
+      return Result.failure('通知統計の取得に失敗しました');
+    }
+  }
+
   /// DioException 에러 처리
   static Result<T> _handleDioError<T>(String operation, DioException e) {
     String errorMessage = 'エラーが発生しました';
