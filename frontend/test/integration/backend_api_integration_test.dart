@@ -265,16 +265,14 @@ void main() {
       }
 
       try {
-        final result = await BackendHealthApiService.createHealthRecord(
+        final result = await BackendHealthApiService.createVaccination(
           petId: testPetId,
-          recordType: 'vaccination',
-          recordDate: DateTime.now().toIso8601String().split('T')[0],
-          vetName: 'テスト動物病院',
+          vaccineName: '狂犬病ワクチン',
+          vaccineType: 'core',
+          vaccinationDate: DateTime.now(),
+          nextDueDate: DateTime.now().add(const Duration(days: 365)),
+          clinicName: 'テスト動物病院',
           notes: '狂犬病ワクチン接種',
-          nextScheduledDate: DateTime.now()
-              .add(const Duration(days: 365))
-              .toIso8601String()
-              .split('T')[0],
         );
 
         if (result.isSuccess) {
@@ -300,7 +298,7 @@ void main() {
       }
 
       try {
-        final result = await BackendHealthApiService.getPetHealthRecords(testPetId);
+        final result = await BackendHealthApiService.getVaccinations(petId: testPetId);
 
         if (result.isSuccess) {
           print('✅ Health records retrieved successfully');
@@ -1071,7 +1069,10 @@ void main() {
       // Delete test health record
       if (testHealthRecordId.isNotEmpty) {
         try {
-          final result = await BackendHealthApiService.deleteHealthRecord(testHealthRecordId);
+          final result = await BackendHealthApiService.deleteVaccination(
+            petId: testPetId,
+            vaccinationId: testHealthRecordId,
+          );
           if (result.isSuccess) {
             print('✅ Test health record deleted');
           }
