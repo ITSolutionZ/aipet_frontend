@@ -1,39 +1,72 @@
-# 📚 AIPet Frontend Documentation
+# 📚 AIPet Documentation
 
 ## 개요
 
-이 디렉토리는 AI Pet Frontend 프로젝트의 모든 기술 문서를 포함합니다.
+이 디렉토리는 AI Pet 프로젝트의 모든 기술 문서를 포함합니다.
 
 ---
 
-## 📋 문서 목록
+## 📋 문서 구성
 
-### 아키텍처 및 분석
+### 📁 api/ - Backend API 연동
 
-- **[CODEBASE_ANALYSIS.md](./CODEBASE_ANALYSIS.md)** - 코드베이스 전체 분석 (한국어)
-- **[CODEBASE_ANALYSIS_JA.md](./CODEBASE_ANALYSIS_JA.md)** - コードベース分析 (日本語)
+- **[API_INTEGRATION_ANALYSIS.md](./api/API_INTEGRATION_ANALYSIS.md)** - API 통합 분석
+- **[API_INTEGRATION_STATUS.md](./api/API_INTEGRATION_STATUS.md)** - API 통합 상태
+- **[API_SERVICES_CREATED.md](./api/API_SERVICES_CREATED.md)** - 생성된 API 서비스
+- **[BACKEND_INTEGRATION.md](./api/BACKEND_INTEGRATION.md)** - Backend 통합 가이드
+
+### 📁 architecture/ - 아키텍처 및 설계
+
+- **[ARCHITECTURE_SEPARATION.md](./architecture/ARCHITECTURE_SEPARATION.md)** - 아키텍처 분리 가이드
+
+### 📁 analysis/ - 코드베이스 분석
+
+- **[CODEBASE_ANALYSIS.md](./analysis/CODEBASE_ANALYSIS.md)** - 코드베이스 전체 분석 (한국어)
+- **[CODEBASE_ANALYSIS_JA.md](./analysis/CODEBASE_ANALYSIS_JA.md)** - コードベース分析 (日本語)
 - **[CODE_IMPROVEMENT_GUIDE.md](../document/CODE_IMPROVEMENT_GUIDE.md)** - 코드 개선 가이드 (한국어)
 - **[CODE_IMPROVEMENT_GUIDE_JA.md](../document/CODE_IMPROVEMENT_GUIDE_JA.md)** - コード改善ガイド (日本語)
 
-### 마이그레이션 가이드
+### 📁 guides/ - 개발 가이드
 
-- **[SHARED_CODE_MIGRATION_GUIDE.md](./SHARED_CODE_MIGRATION_GUIDE.md)** ⭐ NEW
+- **[REFACTORING_PLAN.md](./guides/REFACTORING_PLAN.md)** - 리팩토링 계획
+- **[RESPONSIVE_GUIDE.md](./guides/RESPONSIVE_GUIDE.md)** - 반응형 디자인 가이드
+- **[RESPONSIVE_IMPLEMENTATION.md](./guides/RESPONSIVE_IMPLEMENTATION.md)** - 반응형 구현 가이드
 
+### 📁 마이그레이션 가이드
+
+- **[SHARED_CODE_MIGRATION_GUIDE.md](./SHARED_CODE_MIGRATION_GUIDE.md)** ⭐
   - `features/` → `shared/` 코드 통합 가이드
   - 중복 코드 제거 및 공통 모듈 활용
   - 실제 측정 통계 포함
 
 - **[LOCAL_TO_API_MIGRATION_PLAN.md](./LOCAL_TO_API_MIGRATION_PLAN.md)**
-
   - 로컬 데이터 → API 전환 계획
   - Mock 데이터 → 실제 백엔드 연동
 
 - **[walk_migration.md](./walk_migration.md)**
   - Walk 기능 마이그레이션 상세 가이드
 
-### 프로젝트 자료
+### 📁 프로젝트 자료
 
 - **[AIPET.pptx](./AIPET.pptx)** - 프로젝트 발표 자료
+- **[MIGRATION_PHASE1_REPORT.md](./MIGRATION_PHASE1_REPORT.md)** - 마이그레이션 페이즈 1 보고서
+
+---
+
+## 🏠 루트 디렉토리 문서
+
+- **[README.md](../README.md)** - 프로젝트 메인 README
+- **[CLAUDE.md](../CLAUDE.md)** - Claude AI 개발 가이드
+- **[README_APP_ICON.md](../README_APP_ICON.md)** - 앱 아이콘 가이드
+
+## 🔧 Backend 문서
+
+Backend 관련 상세 문서는 `backend/` 디렉토리에 있습니다:
+
+- **[backend/README.md](../backend/README.md)** - Backend 셋업 가이드
+- **[backend/API_DOCS.md](../backend/API_DOCS.md)** - API 엔드포인트 문서
+- **[backend/SWAGGER_GUIDE.md](../backend/SWAGGER_GUIDE.md)** - Swagger 사용 가이드
+- **[backend/QUICK_START.md](../backend/QUICK_START.md)** - 빠른 시작 가이드
 
 ---
 
