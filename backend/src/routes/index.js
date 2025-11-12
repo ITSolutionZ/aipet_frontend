@@ -9,6 +9,7 @@ import dailyHealthRoutes from './daily-health.routes.js';
 import bookingRoutes from './booking.routes.js';
 import scheduleRoutes from './schedule.routes.js';
 import settingsRoutes from './settings.routes.js';
+import allergyRoutes from './allergy.routes.js';
 
 const router = express.Router();
 
@@ -37,5 +38,6 @@ router.use('/daily-health', dailyHealthRoutes);
 router.use('/bookings', bookingRoutes);
 router.use('/schedules', scheduleRoutes);
 router.use('/settings', settingsRoutes);
+router.use('/allergy', allergyRoutes);
 
 export default router;
