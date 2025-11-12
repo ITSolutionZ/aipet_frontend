@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-
 import '../../../../../shared/shared.dart';
+
 /// アラーム時間選択セクション
 ///
 /// AM/PM選択と時間・分ホイールを提供
@@ -263,9 +263,7 @@ class _AlarmTimePickerSectionState extends State<AlarmTimePickerSection> {
           fontWeight: FontWeight.w300,
           color: AppColors.pointDark,
         ),
-        inputFormatters: [
-          FilteringTextInputFormatter.digitsOnly,
-        ],
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         decoration: const InputDecoration(
           border: InputBorder.none,
           counterText: '',
@@ -322,4 +320,3 @@ class _AlarmTimePickerSectionState extends State<AlarmTimePickerSection> {
     );
   }
 }
-

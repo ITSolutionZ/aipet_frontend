@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../domain/domain.dart';
 
-
 /// NotificationType UI Extensions (Presentation Layer)
 extension NotificationTypeUIExtension on NotificationType {
   /// 알림 타입별 색상

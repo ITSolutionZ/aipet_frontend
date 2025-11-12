@@ -3,7 +3,6 @@ import '../../../../shared/shared.dart';
 import '../entities/entities.dart';
 import '../repositories/notification_repository.dart';
 
-
 /// 알림 읽음 처리 UseCase
 class MarkNotificationAsReadUseCase {
   final NotificationRepository _repository;

@@ -5,7 +5,6 @@ import '../../data/data.dart';
 import '../../domain/domain.dart';
 import '../components/cards/notification_card_component.dart';
 
-
 /// 알림 아이템 위젯 (UI와 로직 분리된 깨끗한 버전)
 class NotificationItemWidget extends StatelessWidget {
   final NotificationModel notification;

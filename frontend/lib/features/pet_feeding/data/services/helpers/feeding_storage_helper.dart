@@ -2,7 +2,6 @@ import '../../../../../shared/shared.dart';
 
 import 'dart:convert';
 
-
 /// 급여 저장소 헬퍼
 class FeedingStorageHelper {
   static const String _keyFeedingRecords = 'pet_feeding_records';
@@ -89,18 +88,20 @@ class FeedingStorageHelper {
   }
 
   /// 급여 기록 삭제
-  static Future<void> deleteFeedingRecord(String recordId) async {
+  /// Backend API 요구사항에 맞춰 petId 파라미터 추가
+  static Future<void> deleteFeedingRecord(String petId, String recordId) async {
     try {
       await _init();
       final records = _cache.getStringList(_keyFeedingRecords) ?? [];
 
       records.removeWhere((r) {
         final recordData = jsonDecode(r) as Map<String, dynamic>;
-        return recordData['id'] == recordId;
+        // petId와 recordId 모두 확인 (백엔드 API와 동일한 동작)
+        return recordData['id'] == recordId && recordData['petId'] == petId;
       });
 
       await _cache.setStringList(_keyFeedingRecords, records);
-      LoggerService.debug('급여 기록 삭제 성공: $recordId');
+      LoggerService.debug('급여 기록 삭제 성공: $recordId (petId: $petId)');
     } catch (e) {
       LoggerService.debug('급여 기록 삭제 실패: $e');
       rethrow;

@@ -1,9 +1,7 @@
 import 'package:flutter/foundation.dart';
 
-
 import '../../../../shared/shared.dart';
 import 'helpers/helpers.dart';
-
 
 /// 펫 급여 로컬 저장소 서비스 (리팩토링됨)
 ///
@@ -31,8 +29,9 @@ class PetFeedingLocalStorageService {
   }
 
   /// 급여 기록 삭제 (헬퍼 위임)
-  static Future<void> deleteFeedingRecord(String recordId) async {
-    return FeedingStorageHelper.deleteFeedingRecord(recordId);
+  /// Backend API 요구사항에 맞춰 petId 파라미터 추가
+  static Future<void> deleteFeedingRecord(String petId, String recordId) async {
+    return FeedingStorageHelper.deleteFeedingRecord(petId, recordId);
   }
 
   /// 날짜별 급여 기록 가져오기 (헬퍼 위임)

@@ -103,27 +103,31 @@ class PetFeedingRepositoryImpl implements PetFeedingRepository {
   }
 
   @override
-  Future<void> deleteFeedingRecord(String recordId) async {
-    // ⚠️ Backend API는 petId도 필요하지만, interface에는 recordId만 있음
-    // Controller에서 petId를 함께 전달하도록 수정 필요
-    // 임시로 에러 처리 - interface 변경 필요
-    throw UnimplementedError(
-      'deleteFeedingRecord는 petId가 필요합니다. '
-      'Repository interface를 deleteFeedingRecord(String petId, String recordId)로 변경해주세요.',
+  Future<void> deleteFeedingRecord(String petId, String recordId) async {
+    final result = await BackendFeedingApiService.deleteFeeding(
+      petId: petId,
+      feedingId: recordId,
     );
+
+    if (result.isSuccess) {
+      LoggerService.debug(
+        '✅ PetFeedingRepository: 급여 기록 삭제 - ID: $recordId (Backend API)',
+      );
+    } else {
+      LoggerService.error(
+        '❌ PetFeedingRepository: 급여 기록 삭제 실패 - ${result.error}',
+      );
+      throw Exception(result.error);
+    }
   }
 
   @override
   Future<FeedingStatistics> getFeedingStatistics(String petId) async {
-    final result = await BackendFeedingApiService.getFeedingStats(
-      petId: petId,
-    );
+    final result = await BackendFeedingApiService.getFeedingStats(petId: petId);
 
     if (result.isSuccess) {
       final stats = result.dataOrNull!;
-      LoggerService.debug(
-        '✅ PetFeedingRepository: 급여 통계 조회 (Backend API)',
-      );
+      LoggerService.debug('✅ PetFeedingRepository: 급여 통계 조회 (Backend API)');
       return stats;
     } else {
       LoggerService.error(

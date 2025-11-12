@@ -1,163 +1,284 @@
-import '../../../../../features/pet_health/data/services/pet_health_local_storage_service.dart';
-import '../../../../../features/pet_health/domain/entities/vaccine_record_entity.dart';
-import '../../../../../features/pet_health/domain/entities/weight_record_entity.dart';
-import '../../../../../features/pet_health/domain/repositories/pet_health_repository.dart';
+import '../../../../shared/shared.dart';
+import '../services/backend_health_api_service.dart';
+import '../../domain/entities/vaccine_record_entity.dart';
+import '../../domain/entities/weight_record_entity.dart';
+import '../../domain/repositories/pet_health_repository.dart';
 
+/// Pet Health Repository 구현체
+/// Backend API 연동 (BackendHealthApiService 사용)
 class PetHealthRepositoryImpl implements PetHealthRepository {
   PetHealthRepositoryImpl();
 
+  // =========================================================================
+  // Vaccine Records
+  // =========================================================================
+
   @override
   Future<List<VaccineRecordEntity>> getVaccineRecords(String petId) async {
-    await Future.delayed(const Duration(milliseconds: 300));
+    final result = await BackendHealthApiService.getVaccinations(petId: petId);
 
-    final recordsData = await PetHealthLocalStorageService.getVaccineRecords(
-      petId: petId,
-    );
+    if (result.isSuccess) {
+      final vaccinations = result.dataOrNull ?? [];
+      final records = vaccinations.map((data) {
+        return _mapToVaccineEntity(data);
+      }).toList();
 
-    return recordsData.map((data) {
-      return VaccineRecordEntity(
-        id: data['id'] as String,
-        name: data['vaccineName'] as String,
-        date: DateTime.parse(data['vaccineDate'] as String),
-        doctor: data['veterinarian'] as String,
-        notes: data['notes'] as String?,
+      LoggerService.debug(
+        '✅ PetHealthRepository: 예방접종 기록 ${records.length}개 조회 (Backend API)',
       );
-    }).toList();
+      return records;
+    } else {
+      LoggerService.error(
+        '❌ PetHealthRepository: 예방접종 기록 조회 실패 - ${result.error}',
+      );
+      throw Exception(result.error);
+    }
   }
 
   @override
   Future<VaccineRecordEntity> addVaccineRecord(
+    String petId,
     VaccineRecordEntity record,
   ) async {
-    await Future.delayed(const Duration(milliseconds: 500));
+    final result = await BackendHealthApiService.createVaccination(
+      petId: petId,
+      vaccineName: record.name,
+      vaccinationDate: record.date,
+      nextDueDate: record.validUntil,
+      veterinarianName: record.doctor,
+      notes: record.notes,
+    );
 
-    final recordData = {
-      'id': record.id,
-      'petId': 'default',
-      'vaccineName': record.name,
-      'vaccineDate': record.date.toIso8601String(),
-      'veterinarian': record.doctor,
-      'notes': record.notes,
-    };
+    if (result.isSuccess) {
+      final data = result.dataOrNull!;
+      final createdRecord = _mapToVaccineEntity(data);
 
-    await PetHealthLocalStorageService.addVaccineRecord(recordData);
-
-    return record;
+      LoggerService.debug(
+        '✅ PetHealthRepository: 예방접종 기록 추가 - ID: ${createdRecord.id} (Backend API)',
+      );
+      return createdRecord;
+    } else {
+      LoggerService.error(
+        '❌ PetHealthRepository: 예방접종 기록 추가 실패 - ${result.error}',
+      );
+      throw Exception(result.error);
+    }
   }
 
   @override
   Future<VaccineRecordEntity> updateVaccineRecord(
+    String petId,
     VaccineRecordEntity record,
   ) async {
-    await Future.delayed(const Duration(milliseconds: 500));
+    final result = await BackendHealthApiService.updateVaccination(
+      petId: petId,
+      vaccinationId: record.id,
+      vaccineName: record.name,
+      vaccinationDate: record.date,
+      nextDueDate: record.validUntil,
+      veterinarianName: record.doctor,
+      notes: record.notes,
+    );
 
-    final recordData = {
-      'id': record.id,
-      'petId': 'default',
-      'vaccineName': record.name,
-      'vaccineDate': record.date.toIso8601String(),
-      'veterinarian': record.doctor,
-      'notes': record.notes,
-    };
+    if (result.isSuccess) {
+      final data = result.dataOrNull!;
+      final updatedRecord = _mapToVaccineEntity(data);
 
-    await PetHealthLocalStorageService.updateVaccineRecord(recordData);
-
-    return record;
+      LoggerService.debug(
+        '✅ PetHealthRepository: 예방접종 기록 업데이트 - ID: ${updatedRecord.id} (Backend API)',
+      );
+      return updatedRecord;
+    } else {
+      LoggerService.error(
+        '❌ PetHealthRepository: 예방접종 기록 업데이트 실패 - ${result.error}',
+      );
+      throw Exception(result.error);
+    }
   }
 
   @override
-  Future<void> deleteVaccineRecord(String recordId) async {
-    await Future.delayed(const Duration(milliseconds: 400));
+  Future<void> deleteVaccineRecord(String petId, String recordId) async {
+    final result = await BackendHealthApiService.deleteVaccination(
+      petId: petId,
+      vaccinationId: recordId,
+    );
 
-    await PetHealthLocalStorageService.deleteVaccineRecord(recordId);
+    if (result.isSuccess) {
+      LoggerService.debug(
+        '✅ PetHealthRepository: 예방접종 기록 삭제 - ID: $recordId (Backend API)',
+      );
+    } else {
+      LoggerService.error(
+        '❌ PetHealthRepository: 예방접종 기록 삭제 실패 - ${result.error}',
+      );
+      throw Exception(result.error);
+    }
   }
+
+  // =========================================================================
+  // Weight Records
+  // =========================================================================
 
   @override
   Future<List<WeightRecordEntity>> getWeightRecords(String petId) async {
-    await Future.delayed(const Duration(milliseconds: 300));
+    final result = await BackendHealthApiService.getWeightHistory(petId: petId);
 
-    final recordsData = await PetHealthLocalStorageService.getWeightRecords(
-      petId: petId,
-    );
+    if (result.isSuccess) {
+      final weights = result.dataOrNull ?? [];
+      final records = weights.map((data) {
+        return _mapToWeightEntity(data, petId);
+      }).toList();
 
-    return recordsData.map((data) {
-      return WeightRecordEntity(
-        id: data['id'] as String,
-        petId: data['petId'] as String,
-        petName: data['petName'] as String? ?? 'Unknown',
-        recordedDate: DateTime.parse(data['measurementDate'] as String),
-        weight: (data['weight'] as num).toDouble(),
-        notes: data['notes'] as String?,
-        createdAt: DateTime.parse(data['measurementDate'] as String),
+      LoggerService.debug(
+        '✅ PetHealthRepository: 체중 기록 ${records.length}개 조회 (Backend API)',
       );
-    }).toList();
+      return records;
+    } else {
+      LoggerService.error(
+        '❌ PetHealthRepository: 체중 기록 조회 실패 - ${result.error}',
+      );
+      throw Exception(result.error);
+    }
   }
 
   @override
   Future<WeightRecordEntity> addWeightRecord(WeightRecordEntity record) async {
-    await Future.delayed(const Duration(milliseconds: 500));
+    final result = await BackendHealthApiService.createWeightRecord(
+      petId: record.petId,
+      weight: record.weight,
+      measuredAt: record.recordedDate,
+      notes: record.notes,
+    );
 
-    final recordData = {
-      'id': record.id,
-      'petId': record.petId,
-      'petName': record.petName,
-      'measurementDate': record.recordedDate.toIso8601String(),
-      'weight': record.weight,
-      'notes': record.notes,
-    };
+    if (result.isSuccess) {
+      final data = result.dataOrNull!;
+      final createdRecord = _mapToWeightEntity(data, record.petId);
 
-    await PetHealthLocalStorageService.addWeightRecord(recordData);
-
-    return record;
+      LoggerService.debug(
+        '✅ PetHealthRepository: 체중 기록 추가 - ID: ${createdRecord.id} (Backend API)',
+      );
+      return createdRecord;
+    } else {
+      LoggerService.error(
+        '❌ PetHealthRepository: 체중 기록 추가 실패 - ${result.error}',
+      );
+      throw Exception(result.error);
+    }
   }
 
   @override
   Future<WeightRecordEntity> updateWeightRecord(
     WeightRecordEntity record,
   ) async {
-    await Future.delayed(const Duration(milliseconds: 500));
+    // Backend API에는 체중 기록 업데이트 엔드포인트가 없음
+    // 임시로 로컬에서 처리하거나, 삭제 후 재생성으로 구현
+    LoggerService.warning(
+      '⚠️ PetHealthRepository: 체중 기록 업데이트는 Backend API에서 지원하지 않음',
+    );
 
-    final recordData = {
-      'id': record.id,
-      'petId': record.petId,
-      'petName': record.petName,
-      'measurementDate': record.recordedDate.toIso8601String(),
-      'weight': record.weight,
-      'notes': record.notes,
-    };
-
-    await PetHealthLocalStorageService.updateWeightRecord(recordData);
-
+    // 임시로 record를 그대로 반환
+    // TODO: 백엔드에 업데이트 API 추가 요청 또는 삭제+재생성 로직 구현
     return record;
   }
 
   @override
-  Future<void> deleteWeightRecord(String recordId) async {
-    await Future.delayed(const Duration(milliseconds: 400));
+  Future<void> deleteWeightRecord(String petId, String recordId) async {
+    // Backend API에는 체중 기록 삭제 엔드포인트가 없음
+    LoggerService.warning(
+      '⚠️ PetHealthRepository: 체중 기록 삭제는 Backend API에서 지원하지 않음',
+    );
 
-    await PetHealthLocalStorageService.deleteWeightRecord(recordId);
+    // TODO: 백엔드에 삭제 API 추가 요청
+    throw UnimplementedError('체중 기록 삭제 기능은 아직 구현되지 않았습니다');
   }
+
+  // =========================================================================
+  // Health Statistics
+  // =========================================================================
 
   @override
   Future<List<VaccineRecordEntity>> getUpcomingVaccines(String petId) async {
-    await Future.delayed(const Duration(milliseconds: 300));
-
     final records = await getVaccineRecords(petId);
 
-    return records
+    final upcomingVaccines = records
         .where((record) => record.isExpiringSoon || record.isExpired)
         .toList();
+
+    LoggerService.debug(
+      '✅ PetHealthRepository: 예정된 예방접종 ${upcomingVaccines.length}개 조회',
+    );
+
+    return upcomingVaccines;
   }
 
   @override
   Future<WeightRecordEntity?> getLatestWeight(String petId) async {
-    await Future.delayed(const Duration(milliseconds: 300));
-
     final petWeights = await getWeightRecords(petId);
 
-    if (petWeights.isEmpty) return null;
+    if (petWeights.isEmpty) {
+      LoggerService.debug('⚠️ PetHealthRepository: 체중 기록이 없음');
+      return null;
+    }
 
     petWeights.sort((a, b) => b.recordedDate.compareTo(a.recordedDate));
-    return petWeights.first;
+    final latestWeight = petWeights.first;
+
+    LoggerService.debug(
+      '✅ PetHealthRepository: 최근 체중 기록 조회 - ${latestWeight.weight}kg',
+    );
+
+    return latestWeight;
+  }
+
+  // =========================================================================
+  // Private Helper Methods
+  // =========================================================================
+
+  /// Backend API 응답을 VaccineRecordEntity로 변환
+  VaccineRecordEntity _mapToVaccineEntity(Map<String, dynamic> data) {
+    return VaccineRecordEntity(
+      id: data['id']?.toString() ?? data['vaccinationId']?.toString() ?? '',
+      name: data['vaccineName'] as String? ?? '',
+      date: _parseDateTime(data['vaccinationDate']) ?? DateTime.now(),
+      doctor: data['veterinarianName'] as String? ?? '',
+      lot: data['lot'] as String?,
+      expiryDate: _parseDateTime(data['expiryDate']),
+      validUntil: _parseDateTime(data['nextDueDate']),
+      notes: data['notes'] as String?,
+    );
+  }
+
+  /// Backend API 응답을 WeightRecordEntity로 변환
+  WeightRecordEntity _mapToWeightEntity(
+    Map<String, dynamic> data,
+    String petId,
+  ) {
+    final measuredAt = _parseDateTime(data['measuredAt']) ?? DateTime.now();
+
+    return WeightRecordEntity(
+      id: data['id']?.toString() ?? data['weightId']?.toString() ?? '',
+      petId: petId,
+      petName: data['petName'] as String? ?? 'Unknown',
+      recordedDate: measuredAt,
+      weight: (data['weight'] as num?)?.toDouble() ?? 0.0,
+      notes: data['notes'] as String?,
+      createdAt: _parseDateTime(data['createdAt']) ?? measuredAt,
+      updatedAt: _parseDateTime(data['updatedAt']),
+    );
+  }
+
+  /// DateTime 파싱 헬퍼
+  DateTime? _parseDateTime(dynamic value) {
+    if (value == null) return null;
+    if (value is DateTime) return value;
+    if (value is String) {
+      try {
+        return DateTime.parse(value);
+      } catch (e) {
+        LoggerService.warning('⚠️ DateTime 파싱 실패: $value');
+        return null;
+      }
+    }
+    return null;
   }
 }

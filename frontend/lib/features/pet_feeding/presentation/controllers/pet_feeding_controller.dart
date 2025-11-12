@@ -29,7 +29,11 @@ class PetFeedingController extends _$PetFeedingController {
 
   /// 급여 기록 삭제
   Future<void> deleteFeedingRecord(String recordId) async {
-    await PetFeedingLocalStorageService.deleteFeedingRecord(recordId);
+    // Backend API 요구사항: petId도 함께 전달
+    await PetFeedingLocalStorageService.deleteFeedingRecord(
+      state.petId,
+      recordId,
+    );
     await loadFeedingRecords(state.petId);
   }
 }

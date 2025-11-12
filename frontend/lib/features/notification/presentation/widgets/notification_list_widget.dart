@@ -4,13 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:go_router/go_router.dart';
 
-
 import '../../../../shared/shared.dart';
 import '../../data/providers/notification_providers.dart';
 import '../../domain/entities/entities.dart';
 import 'notification_list_item.dart';
 import 'notification_states.dart';
-
 
 /// 通知リストウィジェット
 ///
@@ -53,7 +51,9 @@ class _NotificationListWidgetState
   }
 
   Widget _buildNotificationList(List<NotificationModel> notifications) {
-    LoggerService.debug('📱 NotificationListWidget - 受信した通知数: ${notifications.length}');
+    LoggerService.debug(
+      '📱 NotificationListWidget - 受信した通知数: ${notifications.length}',
+    );
 
     // フィルタリング適用
     final filteredNotifications = _applyFilters(notifications);

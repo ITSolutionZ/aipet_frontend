@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'package:go_router/go_router.dart';
 
-
 import '../../../../shared/shared.dart';
 import '../../../../app/router/routes/route_constants.dart';
 import '../../domain/entities/entities.dart';
 import '../utils/notification_ui_utils.dart';
-
 
 /// 通知リストアイテムウィジェット
 ///
@@ -16,8 +14,7 @@ class NotificationListItem extends StatelessWidget {
   final NotificationModel notification;
   final VoidCallback onMarkAsRead;
   final VoidCallback onDelete;
-  final Future<bool?> Function(BuildContext, NotificationModel)
-      onDeleteConfirm;
+  final Future<bool?> Function(BuildContext, NotificationModel) onDeleteConfirm;
 
   const NotificationListItem({
     super.key,
@@ -146,4 +143,3 @@ class NotificationListItem extends StatelessWidget {
     );
   }
 }
-

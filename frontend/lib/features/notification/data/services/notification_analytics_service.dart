@@ -2,15 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-
 import '../../../../shared/shared.dart';
 import '../../domain/domain.dart';
 import 'helpers/notification_analytics_calculator_helper.dart';
 import 'helpers/notification_analytics_storage_helper.dart';
 import 'helpers/notification_analytics_trend_helper.dart';
 import 'notification_stats_factory.dart' as data_factory;
-
-
 
 /// 알림 통계 분석 서비스
 class NotificationAnalyticsService {

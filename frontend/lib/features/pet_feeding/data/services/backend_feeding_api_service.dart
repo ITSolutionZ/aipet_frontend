@@ -254,8 +254,7 @@ class BackendFeedingApiService {
     // meal_type 추출 (notes에서)
     String? mealType;
     if (feeding.notes != null && feeding.notes!.contains('Meal Type:')) {
-      final match =
-          RegExp(r'Meal Type: (\w+)').firstMatch(feeding.notes!);
+      final match = RegExp(r'Meal Type: (\w+)').firstMatch(feeding.notes!);
       if (match != null) {
         mealType = match.group(1);
       }
@@ -272,18 +271,14 @@ class BackendFeedingApiService {
   }
 
   /// 백엔드 통계 데이터를 FeedingStatistics로 변환
-  static FeedingStatistics _mapToFeedingStatistics(
-    Map<String, dynamic> json,
-  ) {
+  static FeedingStatistics _mapToFeedingStatistics(Map<String, dynamic> json) {
     return FeedingStatistics(
       totalFeedings: json['totalFeedings'] ?? json['total_feedings'] ?? 0,
       completedFeedings:
           json['completedFeedings'] ?? json['completed_feedings'] ?? 0,
-      skippedFeedings:
-          json['skippedFeedings'] ?? json['skipped_feedings'] ?? 0,
-      totalAmount:
-          ((json['totalAmount'] ?? json['total_amount'] ?? 0.0) as num)
-              .toDouble(),
+      skippedFeedings: json['skippedFeedings'] ?? json['skipped_feedings'] ?? 0,
+      totalAmount: ((json['totalAmount'] ?? json['total_amount'] ?? 0.0) as num)
+          .toDouble(),
       averageAmount:
           ((json['averageAmount'] ?? json['average_amount'] ?? 0.0) as num)
               .toDouble(),
@@ -291,10 +286,9 @@ class BackendFeedingApiService {
           ((json['completionRate'] ?? json['completion_rate'] ?? 0.0) as num)
               .toDouble(),
       feedingsByHour: (json['feedingsByHour'] ?? json['feedings_by_hour'] ?? {})
-          .map<String, int>((key, value) => MapEntry(
-                key.toString(),
-                (value as num).toInt(),
-              )),
+          .map<String, int>(
+            (key, value) => MapEntry(key.toString(), (value as num).toInt()),
+          ),
     );
   }
 

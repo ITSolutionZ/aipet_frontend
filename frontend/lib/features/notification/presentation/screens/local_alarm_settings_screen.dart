@@ -1,4 +1,5 @@
-import 'package:aipet_frontend/features/notification/domain/entities/notification_schedule.dart' as notification;
+import 'package:aipet_frontend/features/notification/domain/entities/notification_schedule.dart'
+    as notification;
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

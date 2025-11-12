@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 
-
 import '../../../../../shared/shared.dart';
+
 /// アラームタイトル入力ウィジェット
 ///
 /// アラームのタイトルを入力するフィールド
 class AlarmTitleInput extends StatelessWidget {
   final TextEditingController controller;
 
-  const AlarmTitleInput({
-    super.key,
-    required this.controller,
-  });
+  const AlarmTitleInput({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -43,4 +40,3 @@ class AlarmTitleInput extends StatelessWidget {
     );
   }
 }
-

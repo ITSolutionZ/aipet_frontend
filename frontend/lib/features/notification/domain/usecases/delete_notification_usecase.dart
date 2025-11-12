@@ -2,7 +2,6 @@ import '../../../../shared/shared.dart';
 
 import '../repositories/notification_repository.dart';
 
-
 /// 알림 삭제 UseCase
 class DeleteNotificationUseCase {
   final NotificationRepository _repository;

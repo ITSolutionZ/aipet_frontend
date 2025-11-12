@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
 import '../../../../shared/shared.dart';
 import '../../../../../features/pet_health/presentation/widgets/current_weight_summary_card.dart';
 import '../../../../../features/pet_health/presentation/widgets/weight_chart_card.dart';

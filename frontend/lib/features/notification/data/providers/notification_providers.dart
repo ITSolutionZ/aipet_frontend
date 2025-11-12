@@ -1,11 +1,9 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-
 import '../../../../shared/shared.dart';
 import '../../../../../features/scheduling/data/services/calendar_event_service.dart';
 import '../../domain/domain.dart';
 import '../repositories/notification_repository_impl.dart';
-
 
 part 'notification_providers.g.dart';
 

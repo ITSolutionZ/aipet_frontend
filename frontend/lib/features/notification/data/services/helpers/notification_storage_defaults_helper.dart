@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 /// 알림 저장소 기본값 생성 헬퍼
 class NotificationStorageDefaultsHelper {
   /// 초기 기본 알림 생성

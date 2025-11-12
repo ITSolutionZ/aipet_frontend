@@ -1,7 +1,6 @@
 import '../../../../app/controllers/base_controller.dart';
 import '../../domain/domain.dart';
 
-
 /// 알림 컨트롤러 - UseCase를 통한 클린 아키텍처 구현
 class NotificationController extends BaseController {
   final GetNotificationsUseCase _getNotificationsUseCase;

@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'package:go_router/go_router.dart';
 
-
 import '../../../../shared/shared.dart';
 import '../../../../app/controllers/base_controller.dart';
 import '../../../../../features/notification/data/providers/notification_controller_providers.dart';
 import 'notification_controller.dart';
-
 
 /// 알림 UI 컨트롤러 - UI 로직 처리
 class NotificationUIController extends BaseController {

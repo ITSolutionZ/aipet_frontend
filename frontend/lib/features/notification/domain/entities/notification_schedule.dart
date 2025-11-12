@@ -2,7 +2,6 @@ import '../../../../shared/shared.dart';
 
 import 'notification_type.dart';
 
-
 /// 알림 스케줄 타입
 enum ScheduleType {
   once, // 한 번만

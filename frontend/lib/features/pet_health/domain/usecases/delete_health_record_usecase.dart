@@ -9,9 +9,9 @@ class DeleteHealthRecordUseCase {
   DeleteHealthRecordUseCase(this.repository);
 
   /// 체중 기록 삭제
-  Future<Result<void>> deleteWeightRecord(String recordId) async {
+  Future<Result<void>> deleteWeightRecord(String petId, String recordId) async {
     try {
-      await repository.deleteWeightRecord(recordId);
+      await repository.deleteWeightRecord(petId, recordId);
       return Result.success('体重記録を削除しました', null);
     } catch (error) {
       return Result.failure('体重記録の削除に失敗しました: ${error.toString()}');
@@ -19,9 +19,12 @@ class DeleteHealthRecordUseCase {
   }
 
   /// 백신 기록 삭제
-  Future<Result<void>> deleteVaccineRecord(String recordId) async {
+  Future<Result<void>> deleteVaccineRecord(
+    String petId,
+    String recordId,
+  ) async {
     try {
-      await repository.deleteVaccineRecord(recordId);
+      await repository.deleteVaccineRecord(petId, recordId);
       return Result.success('ワクチン記録を削除しました', null);
     } catch (error) {
       return Result.failure('ワクチン記録の削除に失敗しました: ${error.toString()}');
@@ -33,7 +36,7 @@ class DeleteHealthRecordUseCase {
     try {
       final weightRecords = await repository.getWeightRecords(petId);
       for (final record in weightRecords) {
-        await repository.deleteWeightRecord(record.id);
+        await repository.deleteWeightRecord(petId, record.id);
       }
       return Result.success('ペットの体重記録をすべて削除しました', null);
     } catch (error) {
@@ -46,7 +49,7 @@ class DeleteHealthRecordUseCase {
     try {
       final vaccineRecords = await repository.getVaccineRecords(petId);
       for (final record in vaccineRecords) {
-        await repository.deleteVaccineRecord(record.id);
+        await repository.deleteVaccineRecord(petId, record.id);
       }
       return Result.success('ペットのワクチン記録をすべて削除しました', null);
     } catch (error) {
@@ -89,7 +92,7 @@ class DeleteHealthRecordUseCase {
       final weightRecords = await repository.getWeightRecords(petId);
       for (final record in weightRecords) {
         if (record.recordedDate.isBefore(cutoffDate)) {
-          await repository.deleteWeightRecord(record.id);
+          await repository.deleteWeightRecord(petId, record.id);
           deletedWeightRecords++;
         }
       }
@@ -98,7 +101,7 @@ class DeleteHealthRecordUseCase {
       final vaccineRecords = await repository.getVaccineRecords(petId);
       for (final record in vaccineRecords) {
         if (record.date.isBefore(cutoffDate) && record.isExpired) {
-          await repository.deleteVaccineRecord(record.id);
+          await repository.deleteVaccineRecord(petId, record.id);
           deletedVaccineRecords++;
         }
       }
@@ -130,7 +133,7 @@ class DeleteHealthRecordUseCase {
       for (final record in weightRecords) {
         if (record.recordedDate.isAfter(startDate) &&
             record.recordedDate.isBefore(endDate)) {
-          await repository.deleteWeightRecord(record.id);
+          await repository.deleteWeightRecord(petId, record.id);
           deletedWeightRecords++;
         }
       }
@@ -139,7 +142,7 @@ class DeleteHealthRecordUseCase {
       final vaccineRecords = await repository.getVaccineRecords(petId);
       for (final record in vaccineRecords) {
         if (record.date.isAfter(startDate) && record.date.isBefore(endDate)) {
-          await repository.deleteVaccineRecord(record.id);
+          await repository.deleteVaccineRecord(petId, record.id);
           deletedVaccineRecords++;
         }
       }

@@ -2,11 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
-
 import '../../../../../shared/shared.dart';
 import '../../../domain/domain.dart';
-
-
 
 /// 알림 분석 데이터 저장소 헬퍼
 class NotificationAnalyticsStorageHelper {

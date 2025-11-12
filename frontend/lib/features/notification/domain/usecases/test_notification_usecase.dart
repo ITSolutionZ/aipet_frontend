@@ -4,7 +4,6 @@ import '../../../../../features/notification/data/services/notification_service.
 import '../../../../../features/notification/domain/entities/notification_priority.dart';
 import '../../../../../features/notification/domain/entities/notification_type.dart';
 
-
 /// 테스트 알림 UseCase
 class TestNotificationUseCase {
   final NotificationService _notificationService;

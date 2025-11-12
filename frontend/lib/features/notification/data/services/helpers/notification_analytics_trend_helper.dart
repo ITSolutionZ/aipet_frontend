@@ -1,7 +1,6 @@
 import '../../../domain/domain.dart';
 import 'notification_analytics_calculator_helper.dart';
 
-
 /// 알림 분석 트렌드 헬퍼
 class NotificationAnalyticsTrendHelper {
   /// 변화율 계산

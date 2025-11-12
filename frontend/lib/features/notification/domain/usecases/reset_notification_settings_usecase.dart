@@ -2,7 +2,6 @@ import '../../../../shared/shared.dart';
 
 import '../repositories/notification_repository.dart';
 
-
 /// 알림 설정 초기화 UseCase
 class ResetNotificationSettingsUseCase {
   final NotificationRepository _repository;

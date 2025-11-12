@@ -3,7 +3,6 @@ import '../../../../shared/shared.dart';
 import '../../../../../features/notification/domain/usecases/get_notification_settings_usecase.dart';
 import '../repositories/notification_repository.dart';
 
-
 /// 알림 설정 저장 UseCase
 class SaveNotificationSettingsUseCase {
   final NotificationRepository _repository;

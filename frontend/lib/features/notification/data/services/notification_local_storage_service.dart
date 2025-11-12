@@ -2,11 +2,8 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 import '../../../../shared/shared.dart';
 import 'helpers/notification_storage_defaults_helper.dart';
-
-
 
 /// 알림 로컬 저장소 서비스
 ///

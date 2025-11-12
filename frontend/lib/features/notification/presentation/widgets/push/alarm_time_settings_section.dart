@@ -1,23 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
 import '../../../../../shared/shared.dart';
 import '../../../../../../features/scheduling/scheduling.dart';
 import '../../controllers/alarm_time_settings_controller.dart';
-
 
 /// アラーム時間設定セクション
 ///
 /// カテゴリ別とイベントタイプ別の時間設定を提供
 class AlarmTimeSettingsSection extends ConsumerWidget {
   final Function(BuildContext, String, TimeOfDay, Function(TimeOfDay))
-      onSelectTime;
+  onSelectTime;
 
-  const AlarmTimeSettingsSection({
-    super.key,
-    required this.onSelectTime,
-  });
+  const AlarmTimeSettingsSection({super.key, required this.onSelectTime});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -51,9 +46,7 @@ class AlarmTimeSettingsSection extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: const Center(
-        child: CircularProgressIndicator(
-          color: AppColors.pointBrown,
-        ),
+        child: CircularProgressIndicator(color: AppColors.pointBrown),
       ),
     );
   }
@@ -64,17 +57,11 @@ class AlarmTimeSettingsSection extends ConsumerWidget {
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         children: [
-          const Icon(
-            Icons.error_outline,
-            color: Colors.red,
-            size: 48,
-          ),
+          const Icon(Icons.error_outline, color: Colors.red, size: 48),
           const SizedBox(height: AppSpacing.md),
           Text(
             'アラーム時間設定の読み込みに失敗しました',
-            style: AppFonts.bodyMedium.copyWith(
-              color: Colors.red,
-            ),
+            style: AppFonts.bodyMedium.copyWith(color: Colors.red),
           ),
           const SizedBox(height: AppSpacing.md),
           ActionButton.secondary(
@@ -97,22 +84,14 @@ class AlarmTimeSettingsSection extends ConsumerWidget {
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         children: [
-          const Icon(
-            Icons.schedule,
-            color: AppColors.pointGray,
-            size: 48,
-          ),
+          const Icon(Icons.schedule, color: AppColors.pointGray, size: 48),
           const SizedBox(height: AppSpacing.md),
           Text(
             'アラーム時間設定を読み込み中...',
-            style: AppFonts.bodyMedium.copyWith(
-              color: AppColors.pointGray,
-            ),
+            style: AppFonts.bodyMedium.copyWith(color: AppColors.pointGray),
           ),
           const SizedBox(height: AppSpacing.md),
-          const CircularProgressIndicator(
-            color: AppColors.pointBrown,
-          ),
+          const CircularProgressIndicator(color: AppColors.pointBrown),
         ],
       ),
     );
@@ -124,19 +103,17 @@ class AlarmTimeSettingsSection extends ConsumerWidget {
     WidgetRef ref,
     AlarmTimeSettingsState state,
   ) {
-    return AlarmCategory.values.map(
-      (category) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildCategoryHeader(category),
-            const SizedBox(height: AppSpacing.md),
-            ..._buildEventTypeTimeTiles(context, ref, category, state),
-            const SizedBox(height: AppSpacing.lg),
-          ],
-        );
-      },
-    ).toList();
+    return AlarmCategory.values.map((category) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildCategoryHeader(category),
+          const SizedBox(height: AppSpacing.md),
+          ..._buildEventTypeTimeTiles(context, ref, category, state),
+          const SizedBox(height: AppSpacing.lg),
+        ],
+      );
+    }).toList();
   }
 
   /// カテゴリヘッダー
@@ -175,12 +152,7 @@ class AlarmTimeSettingsSection extends ConsumerWidget {
         .map(
           (type) => Column(
             children: [
-              _buildEventTypeTimeSettingTile(
-                context,
-                ref,
-                type,
-                state,
-              ),
+              _buildEventTypeTimeSettingTile(context, ref, type, state),
               const SizedBox(height: AppSpacing.md),
             ],
           ),
@@ -284,4 +256,3 @@ class AlarmTimeSettingsSection extends ConsumerWidget {
     );
   }
 }
-

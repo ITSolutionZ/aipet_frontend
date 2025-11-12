@@ -6,8 +6,6 @@ import '../../domain/domain.dart';
 import 'helpers/notification_template_storage_helper.dart';
 import 'notification_service.dart' as local;
 
-
-
 /// 알림 템플릿 서비스
 class NotificationTemplateService {
   final local.NotificationService _notificationService;

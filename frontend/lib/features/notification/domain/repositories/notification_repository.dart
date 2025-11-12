@@ -2,7 +2,6 @@ import '../../../../shared/shared.dart';
 
 import '../entities/entities.dart';
 
-
 /// 📱 알림 Repository 인터페이스
 ///
 /// 프론트엔드 중심의 API 기반 알림 관리를 위한 인터페이스입니다.

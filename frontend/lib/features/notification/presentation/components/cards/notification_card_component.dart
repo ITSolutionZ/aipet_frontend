@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-
 import '../../../../../shared/shared.dart';
+
 /// 순수 UI 전용 알림 카드 위젯
 class NotificationCardComponent extends StatelessWidget {
   final String title;

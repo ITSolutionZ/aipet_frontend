@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
-
 import '../../../../../shared/shared.dart';
 import '../../components/forms/alarm_toggle_component.dart';
-
 
 /// 通知タイプトグルセクション
 ///
@@ -95,17 +93,11 @@ class NotificationTypeTogglesSection extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.pointBrown.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(AppRadius.medium),
-        border: Border.all(
-          color: AppColors.pointBrown.withValues(alpha: 0.1),
-        ),
+        border: Border.all(color: AppColors.pointBrown.withValues(alpha: 0.1)),
       ),
       child: Row(
         children: [
-          const Icon(
-            Icons.info_outline,
-            color: AppColors.pointBrown,
-            size: 20,
-          ),
+          const Icon(Icons.info_outline, color: AppColors.pointBrown, size: 20),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
@@ -121,4 +113,3 @@ class NotificationTypeTogglesSection extends StatelessWidget {
     );
   }
 }
-

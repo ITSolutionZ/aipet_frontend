@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
-
 import '../../../../shared/shared.dart';
 import '../../domain/domain.dart';
-
 
 /// 알림 아이콘 및 색상 서비스 (UI 전용 로직)
 class NotificationIconService {

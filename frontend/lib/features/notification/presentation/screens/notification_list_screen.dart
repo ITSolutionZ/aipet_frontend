@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
 import '../../../../shared/shared.dart';
 import '../../domain/domain.dart';
 import '../components/lists/filter_chips_component.dart';
 import '../controllers/notification_list_controller.dart';
 import '../widgets/notification_list_widget.dart';
-
 
 /// 알림 목록 화면 (리팩토링됨)
 class NotificationListScreen extends ConsumerStatefulWidget {

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 
-
 import '../../../../../shared/shared.dart';
 import '../../../../../../features/notification/domain/entities/notification_model.dart';
 import '../../extensions/notification_type_ui_extension.dart';
-
 
 /// 알림 상세 헤더 컴포넌트
 class NotificationDetailHeaderComponent extends StatelessWidget {

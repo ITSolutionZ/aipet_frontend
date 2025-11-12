@@ -89,8 +89,7 @@ class BackendNotificationApiService {
         'title': title,
         'body': body,
         if (petId != null) 'petId': petId,
-        if (notificationType != null)
-          'notificationType': notificationType.name,
+        if (notificationType != null) 'notificationType': notificationType.name,
         if (scheduledAt != null) 'scheduledAt': scheduledAt.toIso8601String(),
         'sendImmediately': sendImmediately,
         if (fcmToken != null) 'fcmToken': fcmToken,
@@ -161,9 +160,7 @@ class BackendNotificationApiService {
   /// Authorization 헤더는 자동으로 추가됨
   static Future<Result<void>> markAllAsRead() async {
     try {
-      final response = await _apiClient.put(
-        '/notifications/mark-all-read',
-      );
+      final response = await _apiClient.put('/notifications/mark-all-read');
 
       if (response.statusCode == 200) {
         return Result.success('すべての通知を既読にしました', null);
@@ -207,9 +204,7 @@ class BackendNotificationApiService {
   /// Authorization 헤더는 자동으로 추가됨
   static Future<Result<int>> getUnreadCount() async {
     try {
-      final response = await _apiClient.get(
-        '/notifications/unread-count',
-      );
+      final response = await _apiClient.get('/notifications/unread-count');
 
       if (response.statusCode == 200) {
         final data = response.data;
@@ -237,10 +232,7 @@ class BackendNotificationApiService {
     try {
       final response = await _apiClient.post(
         '/notifications/fcm-token',
-        data: {
-          'fcmToken': fcmToken,
-          'deviceType': deviceType,
-        },
+        data: {'fcmToken': fcmToken, 'deviceType': deviceType},
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -289,9 +281,7 @@ class BackendNotificationApiService {
   }
 
   /// 백엔드 응답 데이터를 NotificationModel로 변환
-  static NotificationModel _mapToNotificationModel(
-    Map<String, dynamic> json,
-  ) {
+  static NotificationModel _mapToNotificationModel(Map<String, dynamic> json) {
     // notification_type → notificationType
     final notificationTypeStr =
         json['notification_type'] ?? json['notificationType'] ?? 'general';
@@ -302,8 +292,7 @@ class BackendNotificationApiService {
 
     // is_read → status
     final isRead = json['is_read'] ?? json['isRead'] ?? false;
-    final status =
-        isRead ? NotificationStatus.read : NotificationStatus.unread;
+    final status = isRead ? NotificationStatus.read : NotificationStatus.unread;
 
     // priority (백엔드에 없으면 기본값)
     final priorityStr = json['priority'] ?? 'normal';

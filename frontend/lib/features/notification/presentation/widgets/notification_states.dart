@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-
 import '../../../../shared/shared.dart';
+
 /// 通知空状態ウィジェット
 ///
 /// 通知がない場合の表示

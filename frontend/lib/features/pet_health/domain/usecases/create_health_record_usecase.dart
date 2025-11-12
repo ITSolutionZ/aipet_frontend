@@ -24,10 +24,11 @@ class CreateHealthRecordUseCase {
 
   /// 백신 기록 생성
   Future<Result<VaccineRecordEntity>> createVaccineRecord(
+    String petId,
     VaccineRecordEntity vaccineRecord,
   ) async {
     try {
-      final result = await repository.addVaccineRecord(vaccineRecord);
+      final result = await repository.addVaccineRecord(petId, vaccineRecord);
       return Result.success('ワクチン記録を作成しました', result);
     } catch (error) {
       return Result.failure('ワクチン記録の作成に失敗しました: ${error.toString()}');

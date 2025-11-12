@@ -2,7 +2,6 @@ import '../../../../shared/shared.dart';
 
 import '../repositories/notification_repository.dart';
 
-
 /// 알림 설정 조회 UseCase
 class GetNotificationSettingsUseCase {
   final NotificationRepository _repository;

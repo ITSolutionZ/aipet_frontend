@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
 import '../../../../shared/shared.dart';
 import '../../data/data.dart';
 import '../../domain/domain.dart';
@@ -10,7 +9,6 @@ import '../components/cards/notification_detail_metadata_component.dart';
 import '../components/forms/notification_detail_actions_component.dart';
 import '../controllers/notification_detail_controller.dart';
 import '../controllers/notification_ui_controller.dart';
-
 
 /// 알림 상세 화면 (리팩토링됨)
 class NotificationDetailScreen extends ConsumerStatefulWidget {

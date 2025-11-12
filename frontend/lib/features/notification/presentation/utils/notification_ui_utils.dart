@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
-
 import '../../../../shared/shared.dart';
 import '../../domain/domain.dart';
-
 
 /// 🎯 알림 UI 유틸리티
 ///

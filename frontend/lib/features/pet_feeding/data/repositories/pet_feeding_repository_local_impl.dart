@@ -99,16 +99,19 @@ class PetFeedingRepositoryLocalImpl implements PetFeedingRepository {
   }
 
   @override
-  Future<void> deleteFeedingRecord(String recordId) async {
+  Future<void> deleteFeedingRecord(String petId, String recordId) async {
     await Future.delayed(const Duration(milliseconds: 400));
 
     final recordsData = await _localDataManager.loadFeedingRecords();
 
     final initialLength = recordsData.length;
-    recordsData.removeWhere((data) => data['id'] == recordId);
+    // petId와 recordId 모두 확인 (백엔드 API와 동일한 동작)
+    recordsData.removeWhere(
+      (data) => data['id'] == recordId && data['petId'] == petId,
+    );
 
     if (recordsData.length == initialLength) {
-      throw Exception('삭제할 급여 기록을 찾을 수 없습니다: $recordId');
+      throw Exception('삭제할 급여 기록을 찾을 수 없습니다: $recordId (petId: $petId)');
     }
 
     await _localDataManager.saveFeedingRecords(recordsData);

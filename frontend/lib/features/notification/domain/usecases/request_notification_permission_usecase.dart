@@ -2,7 +2,6 @@ import '../../../../shared/shared.dart';
 
 import '../../../../../features/notification/data/services/notification_service.dart';
 
-
 /// 알림 권한 요청 UseCase
 class RequestNotificationPermissionUseCase {
   final NotificationService _notificationService;

@@ -24,9 +24,7 @@ class BackendHealthApiService {
     required String petId,
   }) async {
     try {
-      final response = await _apiClient.get(
-        '/health/pets/$petId/vaccinations',
-      );
+      final response = await _apiClient.get('/health/pets/$petId/vaccinations');
 
       if (response.statusCode == 200) {
         final data = response.data;
@@ -78,8 +76,7 @@ class BackendHealthApiService {
           'vaccineName': vaccineName,
           if (vaccineType != null) 'vaccineType': vaccineType,
           'vaccinationDate': vaccinationDate.toIso8601String(),
-          if (nextDueDate != null)
-            'nextDueDate': nextDueDate.toIso8601String(),
+          if (nextDueDate != null) 'nextDueDate': nextDueDate.toIso8601String(),
           if (veterinarianName != null) 'veterinarianName': veterinarianName,
           if (clinicName != null) 'clinicName': clinicName,
           if (notes != null) 'notes': notes,
@@ -123,8 +120,7 @@ class BackendHealthApiService {
           if (vaccineType != null) 'vaccineType': vaccineType,
           if (vaccinationDate != null)
             'vaccinationDate': vaccinationDate.toIso8601String(),
-          if (nextDueDate != null)
-            'nextDueDate': nextDueDate.toIso8601String(),
+          if (nextDueDate != null) 'nextDueDate': nextDueDate.toIso8601String(),
           if (veterinarianName != null) 'veterinarianName': veterinarianName,
           if (clinicName != null) 'clinicName': clinicName,
           if (notes != null) 'notes': notes,

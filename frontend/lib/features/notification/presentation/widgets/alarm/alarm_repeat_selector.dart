@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-
 import '../../../../../shared/shared.dart';
+
 /// アラーム繰り返しセレクター
 ///
 /// 毎日アラームトグルと曜日選択を提供
@@ -57,11 +57,7 @@ class AlarmRepeatSelector extends StatelessWidget {
   Widget _buildDateDisplay() {
     return Row(
       children: [
-        const Icon(
-          Icons.calendar_today,
-          size: 20,
-          color: AppColors.pointPink,
-        ),
+        const Icon(Icons.calendar_today, size: 20, color: AppColors.pointPink),
         const SizedBox(width: AppSpacing.sm),
         Text(
           '${selectedDate.month}月${selectedDate.day}日(${_getWeekdayName(selectedDate.weekday)})',
@@ -166,4 +162,3 @@ class AlarmRepeatSelector extends StatelessWidget {
     return weekdays[(weekday - 1) % 7];
   }
 }
-

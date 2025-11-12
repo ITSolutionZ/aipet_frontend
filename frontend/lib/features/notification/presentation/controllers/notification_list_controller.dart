@@ -4,7 +4,6 @@ import '../../data/data.dart';
 import '../../domain/domain.dart';
 import 'notification_ui_controller.dart';
 
-
 /// 알림 목록 화면 컨트롤러
 class NotificationListController {
   final NotificationUIController _uiController;

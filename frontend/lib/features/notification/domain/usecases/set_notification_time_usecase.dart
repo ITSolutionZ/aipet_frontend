@@ -2,7 +2,6 @@ import '../../../../shared/shared.dart';
 
 import '../repositories/notification_repository.dart';
 
-
 /// 알림 시간 설정 UseCase
 class SetNotificationTimeUseCase {
   final NotificationRepository _repository;

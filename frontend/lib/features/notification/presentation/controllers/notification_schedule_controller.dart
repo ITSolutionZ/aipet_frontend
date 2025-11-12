@@ -4,7 +4,6 @@ import '../../data/providers/notification_controller_providers.dart';
 import '../../data/services/notification_scheduler_service.dart';
 import '../../domain/domain.dart';
 
-
 part 'notification_schedule_controller.g.dart';
 
 /// 알림 스케줄 상태

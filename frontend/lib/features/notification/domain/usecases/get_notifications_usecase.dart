@@ -3,7 +3,6 @@ import '../../../../shared/shared.dart';
 import '../entities/entities.dart';
 import '../repositories/notification_repository.dart';
 
-
 /// 알림 목록 조회 UseCase
 class GetNotificationsUseCase {
   final NotificationRepository _repository;
