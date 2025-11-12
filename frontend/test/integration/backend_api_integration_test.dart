@@ -7,6 +7,7 @@ import 'package:aipet_frontend/features/pet_health/data/services/backend_health_
 import 'package:aipet_frontend/features/scheduling/data/services/backend_schedule_api_service.dart';
 import 'package:aipet_frontend/features/notification/data/services/backend_notification_api_service.dart';
 import 'package:aipet_frontend/features/community/data/services/backend_board_api_service.dart';
+import 'package:aipet_frontend/features/pet_health/data/services/backend_daily_health_api_service.dart';
 import 'package:aipet_frontend/shared/core/api/backend_api_client.dart';
 import 'package:aipet_frontend/shared/domain/entities/pet_profile_entity.dart';
 
@@ -36,6 +37,7 @@ void main() {
     late String testScheduleId;
     late String testPostId;
     late String testCommentId;
+    late String testDailyHealthRecordId;
 
     test('0. Backend Health Check', () async {
       final client = BackendApiClient.instance;
@@ -586,8 +588,137 @@ void main() {
       }
     }, skip: firebase_auth.FirebaseAuth.instance.currentUser == null);
 
+    test('9.9. Daily Health API - Create, Read, Update, Delete', () async {
+      print('\n=== Testing Daily Health API ===');
+
+      if (testPetId.isEmpty) {
+        print('⚠️ Skipping: No test pet ID available');
+        return;
+      }
+
+      try {
+        // Create daily health record
+        print('\n--- Create Daily Health Record ---');
+        final today = DateTime.now().toIso8601String().split('T')[0];
+        final createResult = await BackendDailyHealthApiService.createDailyHealthRecord(
+          petId: int.parse(testPetId),
+          recordDate: today,
+          mealCount: 2,
+          poopCount: 1,
+          exerciseDuration: 30,
+          sleepDuration: 480,
+          mood: 'good',
+          condition: 'excellent',
+          symptoms: [],
+          notes: 'テスト記録',
+        );
+
+        if (createResult.isSuccess) {
+          print('✅ Daily health record created successfully');
+          testDailyHealthRecordId = createResult.data!['id']?.toString() ?? '';
+          print('   Record ID: $testDailyHealthRecordId');
+          print('   Date: ${createResult.data!['record_date']}');
+        } else {
+          print('❌ Failed to create daily health record: ${createResult.message}');
+          return;
+        }
+
+        // Get record by ID
+        print('\n--- Get Daily Health Record by ID ---');
+        final getResult = await BackendDailyHealthApiService.getDailyHealthRecordById(
+          testDailyHealthRecordId,
+        );
+
+        if (getResult.isSuccess) {
+          print('✅ Daily health record retrieved successfully');
+          print('   Meal Count: ${getResult.data!['meal_count']}');
+          print('   Poop Count: ${getResult.data!['poop_count']}');
+        } else {
+          print('❌ Failed to get daily health record: ${getResult.message}');
+        }
+
+        // Get record by date
+        print('\n--- Get Daily Health Record by Date ---');
+        final getByDateResult = await BackendDailyHealthApiService.getDailyHealthRecordByDate(
+          petId: int.parse(testPetId),
+          recordDate: today,
+        );
+
+        if (getByDateResult.isSuccess) {
+          print('✅ Daily health record by date retrieved successfully');
+          print('   Mood: ${getByDateResult.data!['mood']}');
+          print('   Condition: ${getByDateResult.data!['condition']}');
+        } else {
+          print('❌ Failed to get daily health record by date: ${getByDateResult.message}');
+        }
+
+        // Update record
+        print('\n--- Update Daily Health Record ---');
+        final updateResult = await BackendDailyHealthApiService.updateDailyHealthRecord(
+          recordId: testDailyHealthRecordId,
+          mealCount: 3,
+          poopCount: 2,
+          mood: 'normal',
+          notes: 'テスト記録 (更新)',
+        );
+
+        if (updateResult.isSuccess) {
+          print('✅ Daily health record updated successfully');
+          print('   Updated Meal Count: ${updateResult.data!['meal_count']}');
+        } else {
+          print('❌ Failed to update daily health record: ${updateResult.message}');
+        }
+
+        // Get records list
+        print('\n--- Get Daily Health Records List ---');
+        final listResult = await BackendDailyHealthApiService.getDailyHealthRecords(
+          petId: int.parse(testPetId),
+          limit: 10,
+        );
+
+        if (listResult.isSuccess) {
+          print('✅ Daily health records list retrieved successfully');
+          print('   Total records: ${listResult.data!.length}');
+        } else {
+          print('❌ Failed to get daily health records list: ${listResult.message}');
+        }
+
+        // Get stats
+        print('\n--- Get Daily Health Stats ---');
+        final statsResult = await BackendDailyHealthApiService.getDailyHealthStats(
+          petId: int.parse(testPetId),
+        );
+
+        if (statsResult.isSuccess) {
+          print('✅ Daily health stats retrieved successfully');
+          final summary = statsResult.data!['summary'];
+          print('   Total Records: ${summary['total_records']}');
+          print('   Avg Meals: ${summary['avg_meals']}');
+          print('   Avg Poops: ${summary['avg_poops']}');
+        } else {
+          print('❌ Failed to get daily health stats: ${statsResult.message}');
+        }
+      } catch (e) {
+        print('❌ Exception during daily health API test: $e');
+      }
+    }, skip: firebase_auth.FirebaseAuth.instance.currentUser == null);
+
     test('10. Cleanup - Delete Test Data', () async {
       print('\n=== Cleaning up test data ===');
+
+      // Delete test daily health record
+      if (testDailyHealthRecordId.isNotEmpty) {
+        try {
+          final result = await BackendDailyHealthApiService.deleteDailyHealthRecord(
+            testDailyHealthRecordId,
+          );
+          if (result.isSuccess) {
+            print('✅ Test daily health record deleted');
+          }
+        } catch (e) {
+          print('⚠️ Failed to delete test daily health record: $e');
+        }
+      }
 
       // Delete test comment (if needed separately - but CASCADE handles it)
       if (testCommentId.isNotEmpty) {
