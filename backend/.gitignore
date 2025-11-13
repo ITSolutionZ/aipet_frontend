@@ -1,11 +1,16 @@
 # Dependencies
 node_modules/
 package-lock.json
+yarn.lock
 
-# Environment variables
+# Environment Variables
 .env
 .env.local
 .env.*.local
+
+# Firebase Service Account
+firebase-service-account.json
+serviceAccountKey.json
 
 # Logs
 logs/
@@ -13,18 +18,6 @@ logs/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-# Firebase service account (sensitive)
-firebase-service-account.json
-*-service-account.json
-
-# Uploads
-uploads/
-temp/
-
-# Build output
-build/
-dist/
 
 # IDE
 .vscode/
@@ -37,6 +30,18 @@ dist/
 .DS_Store
 Thumbs.db
 
-# Test coverage
+# Testing
 coverage/
 .nyc_output/
+
+# Build
+dist/
+build/
+
+# Uploads
+uploads/
+!uploads/.gitkeep
+
+# Database
+*.sqlite
+*.db

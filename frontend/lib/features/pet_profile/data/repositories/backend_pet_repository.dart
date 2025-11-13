@@ -1,4 +1,5 @@
 import '../../../../shared/core/domain/result.dart';
+import '../../../../shared/core/services/logger_service.dart';
 import '../../../../shared/domain/entities/pet_profile_entity.dart';
 import '../../domain/repositories/pet_profile_repository.dart';
 import '../services/backend_pet_api_service.dart';
@@ -10,17 +11,32 @@ import '../services/backend_pet_api_service.dart';
 class BackendPetRepository implements PetProfileRepository {
   @override
   Future<Result<List<PetProfileEntity>>> getAllPets() async {
-    return BackendPetApiService.getAllPets();
+    LoggerService.debug('📡 BackendPetRepository.getAllPets() 호출');
+    final result = await BackendPetApiService.getAllPets();
+    LoggerService.debug('📡 getAllPets 결과: ${result.isSuccess ? "성공 (${result.dataOrNull?.length}개)" : "실패 - ${result.error}"}');
+    return result;
   }
 
   @override
   Future<Result<PetProfileEntity?>> getPetById(String id) async {
-    return BackendPetApiService.getPetById(id);
+    LoggerService.debug('📡 BackendPetRepository.getPetById($id) 호출');
+    final result = await BackendPetApiService.getPetById(id);
+    LoggerService.debug('📡 getPetById 결과: ${result.isSuccess ? "성공" : "실패 - ${result.error}"}');
+    return result;
   }
 
   @override
   Future<Result<PetProfileEntity>> createPet(PetProfileEntity pet) async {
-    return BackendPetApiService.createPet(pet);
+    print('📡 BackendPetRepository.createPet() 호출');
+    print('   펫 이름: ${pet.name}');
+    print('   펫 타입: ${pet.type}');
+    LoggerService.debug('📡 BackendPetRepository.createPet() 호출');
+    LoggerService.debug('   펫 이름: ${pet.name}');
+    LoggerService.debug('   펫 타입: ${pet.type}');
+    final result = await BackendPetApiService.createPet(pet);
+    print('📡 createPet 결과: ${result.isSuccess ? "성공 - ID: ${result.dataOrNull?.id}" : "실패 - ${result.error}"}');
+    LoggerService.debug('📡 createPet 결과: ${result.isSuccess ? "성공 - ID: ${result.dataOrNull?.id}" : "실패 - ${result.error}"}');
+    return result;
   }
 
   @override

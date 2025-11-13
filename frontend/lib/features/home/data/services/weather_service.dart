@@ -167,14 +167,8 @@ class WeatherService extends BaseLoggingService {
       return estimatedCity;
     }
 
-    // 좌표 기반 표시 (fallback)
-    final latStr = lat.abs().toStringAsFixed(2);
-    final lonStr = lon.abs().toStringAsFixed(2);
-    final latDir = lat >= 0 ? 'N' : 'S';
-    final lonDir = lon >= 0 ? 'E' : 'W';
-
-    final locationName = '$latStr°$latDir $lonStr°$lonDir';
-    return locationName;
+    // 좌표 기반 표시 대신 일본어로 표시
+    return '現在地';
   }
 
   // 좌표로 대략적인 도시 추정 (주요 도시만)
@@ -186,8 +180,8 @@ class WeatherService extends BaseLoggingService {
       {'name': '名古屋', 'lat': 35.18, 'lon': 136.91, 'range': 0.5},
       {'name': '福岡', 'lat': 33.59, 'lon': 130.40, 'range': 0.5},
       {'name': '札幌', 'lat': 43.06, 'lon': 141.35, 'range': 0.6},
-      {'name': 'Seoul', 'lat': 37.57, 'lon': 126.98, 'range': 0.8},
-      {'name': 'Busan', 'lat': 35.18, 'lon': 129.08, 'range': 0.5},
+      {'name': 'ソウル', 'lat': 37.57, 'lon': 126.98, 'range': 0.8},
+      {'name': '釜山', 'lat': 35.18, 'lon': 129.08, 'range': 0.5},
     ];
 
     for (final city in cities) {

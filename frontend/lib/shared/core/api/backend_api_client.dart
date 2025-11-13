@@ -18,8 +18,23 @@ class BackendApiClient {
   }
 
   static BackendApiClient get instance {
-    _instance ??= BackendApiClient._();
+    if (_instance == null) {
+      _instance = BackendApiClient._();
+    } else if (kDebugMode) {
+      // Hot Restart 시 Base URL이 변경되었으면 재설정
+      if (_instance!._dio.options.baseUrl != ApiConfig.fullApiUrl) {
+        LoggerService.debug('🔄 API Base URL 변경 감지, Dio 재설정 중...');
+        LoggerService.debug('   이전: ${_instance!._dio.options.baseUrl}');
+        LoggerService.debug('   현재: ${ApiConfig.fullApiUrl}');
+        _instance!._setupDio();
+      }
+    }
     return _instance!;
+  }
+
+  /// 싱글톤 인스턴스 재설정 (주로 테스트용)
+  static void resetInstance() {
+    _instance = null;
   }
 
   Dio get dio => _dio;
@@ -35,6 +50,17 @@ class BackendApiClient {
         'Accept': 'application/json',
       },
     );
+
+    // API 설정 출력
+    if (kDebugMode) {
+      LoggerService.debug('🌐 ===== Backend API Configuration =====');
+      LoggerService.debug('   Base URL: ${ApiConfig.baseUrl}');
+      LoggerService.debug('   Full API URL: ${ApiConfig.fullApiUrl}');
+      LoggerService.debug('   Platform: ${defaultTargetPlatform.name}');
+      LoggerService.debug('   Environment: ${ApiConfig.currentEnvironment.name}');
+      LoggerService.debug('   Timeout: ${ApiConfig.defaultTimeout.inSeconds}s');
+      LoggerService.debug('=====================================');
+    }
 
     // Firebase ID Token 인터셉터 추가
     _dio.interceptors.addAll([
@@ -161,9 +187,38 @@ class FirebaseTokenInterceptor extends Interceptor {
       if (token != null) {
         // Authorization 헤더에 Bearer 토큰 추가
         options.headers['Authorization'] = 'Bearer $token';
+        print('🔑 Firebase ID Token 헤더 추가: ${token.substring(0, 20)}...');
+        if (kDebugMode) {
+          LoggerService.debug('🔑 Firebase ID Token 헤더 추가: ${token.substring(0, 20)}...');
+        }
+      } else {
+        print('⚠️ Firebase ID Token이 없습니다. 로그인이 필요할 수 있습니다.');
+        if (kDebugMode) {
+          LoggerService.debug('⚠️ Firebase ID Token이 없습니다. 로그인이 필요할 수 있습니다.');
+        }
+        // 토큰이 없으면 에러 반환
+        handler.reject(
+          DioException(
+            requestOptions: options,
+            type: DioExceptionType.cancel,
+            error: 'Firebase認証が必要です。ログインしてください。',
+          ),
+        );
+        return;
       }
     } catch (e) {
-      // 에러 무시
+      print('❌ Firebase Token 획득 실패: $e');
+      if (kDebugMode) {
+        LoggerService.debug('❌ Firebase Token 획득 실패: $e');
+      }
+      handler.reject(
+        DioException(
+          requestOptions: options,
+          type: DioExceptionType.cancel,
+          error: 'Firebase認証エラーが発生しました: $e',
+        ),
+      );
+      return;
     }
 
     handler.next(options);
@@ -207,19 +262,34 @@ class FirebaseTokenInterceptor extends Interceptor {
 class LoggingInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    // 로깅 비활성화
+    print('📡 [API Request] ${options.method} ${options.uri}');
+    print('   Headers: ${options.headers}');
+    if (kDebugMode) {
+      LoggerService.debug('📡 [API Request] ${options.method} ${options.uri}');
+      LoggerService.debug('   Headers: ${options.headers}');
+    }
     handler.next(options);
   }
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    // 로깅 비활성화
+    print('✅ [API Response] ${response.statusCode}');
+    if (kDebugMode) {
+      LoggerService.debug('✅ [API Response] ${response.statusCode} ${response.requestOptions.uri}');
+    }
     handler.next(response);
   }
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
-    // 로깅 비활성화
+    print('❌ [API Error] ${err.response?.statusCode} ${err.requestOptions.uri}');
+    print('   Error: ${err.message}');
+    print('   Response: ${err.response?.data}');
+    if (kDebugMode) {
+      LoggerService.debug('❌ [API Error] ${err.response?.statusCode} ${err.requestOptions.uri}');
+      LoggerService.debug('   Error: ${err.message}');
+      LoggerService.debug('   Response: ${err.response?.data}');
+    }
     handler.next(err);
   }
 }

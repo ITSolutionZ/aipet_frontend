@@ -7,10 +7,11 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'pet_profile_providers.g.dart';
 
-/// PetProfileRepository 프로바이더 (백엔드 API 사용)
+/// PetProfileRepository 프로바이더 (Backend API 사용)
+/// 로컬 저장소를 사용하려면 PetProfileRepositoryImpl()로 변경하세요
 @riverpod
 PetProfileRepository petProfileRepository(Ref ref) {
-  LoggerService.debug('🚀 [PetProfile] BackendPetRepository 초기화');
+  LoggerService.debug('🚀 [PetProfile] BackendPetRepository (API) 초기화');
   return BackendPetRepository();
 }
 
@@ -58,28 +59,59 @@ class PetProfilesNotifier extends _$PetProfilesNotifier {
 
   /// 펫 생성
   Future<PetProfileEntity> createPet(PetProfileEntity pet) async {
+    print('🎯 ===== PetProfilesNotifier.createPet 시작 =====');
+    print('🎯 펫 정보:');
+    print('   - ID: ${pet.id}');
+    print('   - 이름: ${pet.name}');
+    print('   - 타입: ${pet.type}');
+    print('   - 품종: ${pet.breed}');
+    print('   - 성별: ${pet.gender}');
+    print('   - 체중: ${pet.weight}');
+    print('   - 생일: ${pet.birthDate}');
+    LoggerService.debug('🎯 ===== PetProfilesNotifier.createPet 시작 =====');
+    LoggerService.debug('🎯 펫 정보:');
+    LoggerService.debug('   - ID: ${pet.id}');
+    LoggerService.debug('   - 이름: ${pet.name}');
+    LoggerService.debug('   - 타입: ${pet.type}');
+    LoggerService.debug('   - 품종: ${pet.breed}');
+    LoggerService.debug('   - 성별: ${pet.gender}');
+    LoggerService.debug('   - 체중: ${pet.weight}');
+    LoggerService.debug('   - 생일: ${pet.birthDate}');
+
     if (!ref.mounted) {
-      LoggerService.debug(
-        '⚠️ PetProfilesNotifier.createPet: Provider is disposed, skipping creation',
-      );
+      LoggerService.debug('⚠️ Provider가 이미 disposed됨');
       throw Exception('Provider disposed');
     }
 
+    print('🎯 Repository로 펫 생성 요청...');
+    LoggerService.debug('🎯 Repository로 펫 생성 요청...');
     final repository = ref.read(petProfileRepositoryProvider);
+    print('🎯 Repository 타입: ${repository.runtimeType}');
     final result = await repository.createPet(pet);
+    print('🎯 Repository 응답 받음: ${result.isSuccess}');
+
     if (result.isSuccess) {
+      print('✅ Repository에서 펫 생성 성공!');
+      print('   생성된 펫 ID: ${result.dataOrNull?.id}');
+      LoggerService.debug('✅ Repository에서 펫 생성 성공!');
+      LoggerService.debug('   생성된 펫 ID: ${result.dataOrNull?.id}');
+
       if (ref.mounted) {
         try {
+          LoggerService.debug('🔄 펫 목록 새로고침 중...');
           await refresh();
+          LoggerService.debug('✅ 펫 목록 새로고침 완료');
         } catch (e) {
-          LoggerService.debug(
-            '⚠️ PetProfilesNotifier.createPet: Refresh failed (provider disposed): $e',
-          );
+          LoggerService.debug('⚠️ 새로고침 실패 (무시): $e');
           // Provider가 disposed된 경우 무시하고 계속 진행
         }
       }
       return result.dataOrNull!;
     } else {
+      print('❌ Repository에서 펫 생성 실패');
+      print('   에러: ${result.error}');
+      LoggerService.debug('❌ Repository에서 펫 생성 실패');
+      LoggerService.debug('   에러: ${result.error}');
       throw Exception(result.error);
     }
   }

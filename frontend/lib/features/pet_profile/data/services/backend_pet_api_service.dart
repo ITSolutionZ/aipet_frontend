@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 
 import '../../../../shared/core/api/backend_api_client.dart';
 import '../../../../shared/core/domain/result.dart';
+import '../../../../shared/core/services/logger_service.dart';
 import '../../../../shared/domain/entities/pet_profile_entity.dart';
 
 /// 백엔드 Pet API 서비스
@@ -90,25 +91,73 @@ class BackendPetApiService {
     PetProfileEntity pet,
   ) async {
     try {
+      print('🐾 ===== Backend Pet API Create 시작 =====');
+      print('🐾 펫 이름: ${pet.name}');
+      print('🐾 펫 타입: ${pet.type}');
+      print('🐾 펫 품종: ${pet.breed}');
+      print('🐾 원본 gender: ${pet.gender}');
+      LoggerService.debug('🐾 ===== Backend Pet Create 시작 =====');
+      LoggerService.debug('🐾 펫 이름: ${pet.name}');
+      LoggerService.debug('🐾 펫 타입: ${pet.type}');
+      LoggerService.debug('🐾 펫 품종: ${pet.breed}');
+      LoggerService.debug('🐾 원본 gender: ${pet.gender}');
+
       final petData = _petEntityToMap(pet);
+      print('🐾 전송할 데이터: $petData');
+      print('🐾 변환된 gender: ${petData['gender']}');
+      LoggerService.debug('🐾 전송할 데이터: $petData');
+      LoggerService.debug('🐾 변환된 gender: ${petData['gender']}');
+
+      print('🐾 API 호출 중: POST /pets');
       final response = await _apiClient.post('/pets', data: petData);
+
+      print('🐾 Response Status: ${response.statusCode}');
+      print('🐾 Response Data: ${response.data}');
+      LoggerService.debug('🐾 Response Status: ${response.statusCode}');
+      LoggerService.debug('🐾 Response Data: ${response.data}');
 
       if (response.statusCode == 201 || response.statusCode == 200) {
         final data = response.data;
 
         if (data is Map<String, dynamic>) {
-          final createdPet = _mapToPetEntity(data['data'] ?? data);
-          return Result.success('ペットを作成しました', createdPet);
+          try {
+            print('🔍 변환 시작 - data[\'data\']: ${data['data']}');
+            final createdPet = _mapToPetEntity(data['data'] ?? data);
+            print('✅ Backend API - 펫 생성 성공: ${createdPet.id}');
+            LoggerService.debug('✅ 펫 생성 성공: ${createdPet.id}');
+            return Result.success('ペットを作成しました', createdPet);
+          } catch (e, stackTrace) {
+            print('❌ 펫 엔티티 변환 실패: $e');
+            print('   Stack trace: ${stackTrace.toString().split('\n').take(5).join('\n')}');
+            LoggerService.debug('❌ 펫 엔티티 변환 실패: $e');
+            return Result.failure('ペットの作成に失敗しました: 데이터 변환 오류');
+          }
         }
 
+        print('❌ Response data 형식 오류');
+        LoggerService.debug('❌ Response data 형식 오류');
         return Result.failure('ペットの作成に失敗しました');
       } else {
+        print('❌ Status Code 오류: ${response.statusCode}');
+        LoggerService.debug('❌ Status Code 오류: ${response.statusCode}');
         return Result.failure('ペットの作成に失敗しました');
       }
     } on DioException catch (e) {
+      print('❌ DioException 발생');
+      print('   Status: ${e.response?.statusCode}');
+      print('   Message: ${e.message}');
+      print('   Response: ${e.response?.data}');
+      LoggerService.debug('❌ DioException 발생');
+      LoggerService.debug('   Status: ${e.response?.statusCode}');
+      LoggerService.debug('   Message: ${e.message}');
+      LoggerService.debug('   Response: ${e.response?.data}');
       return _handleDioError('펫 생성', e);
     } catch (e) {
-      return Result.failure('ペットの作成に失敗しました');
+      print('❌ 알 수 없는 에러: $e');
+      print('   Type: ${e.runtimeType}');
+      LoggerService.debug('❌ 알 수 없는 에러: $e');
+      LoggerService.debug('   Type: ${e.runtimeType}');
+      return Result.failure('ペットの作成に失敗しました: $e');
     }
   }
 
@@ -164,52 +213,123 @@ class BackendPetApiService {
 
   /// 백엔드 응답 데이터를 PetProfileEntity로 변환
   static PetProfileEntity _mapToPetEntity(Map<String, dynamic> json) {
+    // 백엔드는 snake_case를 사용하므로 두 가지 형식 모두 지원
     return PetProfileEntity(
       id: json['id']?.toString() ?? '',
       name: json['name']?.toString() ?? '',
       type: json['type']?.toString() ?? json['species']?.toString() ?? 'dog',
       breed: json['breed']?.toString(),
-      birthDate: json['birthDate'] != null
-          ? DateTime.tryParse(json['birthDate']) ?? DateTime.now()
-          : DateTime.now(),
+      birthDate: (json['birthDate'] != null
+              ? DateTime.tryParse(json['birthDate'])
+              : json['birth_date'] != null
+                  ? DateTime.tryParse(json['birth_date'])
+                  : null) ??
+          DateTime.now(),
       gender: json['gender']?.toString() ?? 'male',
-      weight: (json['weight'] as num?)?.toDouble() ?? 0.0,
+      weight: _parseDouble(json['weight']) ?? 0.0,
       size: json['size']?.toString(),
-      microchipNumber: json['microchipNumber']?.toString(),
+      microchipNumber: json['microchipNumber']?.toString() ??
+          json['microchip_number']?.toString(),
       arrivalDate: json['arrivalDate'] != null
           ? DateTime.tryParse(json['arrivalDate'])
-          : null,
-      neutered: json['neutered'] as bool?,
-      imagePath: json['imageUrl']?.toString() ?? json['imagePath']?.toString(),
-      ownerId: json['ownerId']?.toString() ?? '',
-      createdAt: json['createdAt'] != null
-          ? DateTime.tryParse(json['createdAt']) ?? DateTime.now()
-          : DateTime.now(),
-      updatedAt: json['updatedAt'] != null
-          ? DateTime.tryParse(json['updatedAt']) ?? DateTime.now()
-          : DateTime.now(),
-      isActive: json['isActive'] as bool? ?? true,
-      additionalInfo: json['additionalInfo'] as Map<String, dynamic>?,
+          : json['arrival_date'] != null
+              ? DateTime.tryParse(json['arrival_date'])
+              : null,
+      // 백엔드는 0/1을 사용, 프론트엔드는 bool 사용
+      neutered: json['neutered'] != null
+          ? (json['neutered'] is bool
+              ? json['neutered'] as bool
+              : (json['neutered'] as num) == 1)
+          : json['is_neutered'] != null
+              ? (json['is_neutered'] is bool
+                  ? json['is_neutered'] as bool
+                  : (json['is_neutered'] as num) == 1)
+              : null,
+      imagePath: json['imageUrl']?.toString() ??
+          json['image_url']?.toString() ??
+          json['photo_url']?.toString() ??
+          json['imagePath']?.toString(),
+      ownerId: json['ownerId']?.toString() ??
+          json['owner_id']?.toString() ??
+          '',
+      createdAt: (json['createdAt'] != null
+              ? DateTime.tryParse(json['createdAt'])
+              : json['created_at'] != null
+                  ? DateTime.tryParse(json['created_at'])
+                  : null) ??
+          DateTime.now(),
+      updatedAt: (json['updatedAt'] != null
+              ? DateTime.tryParse(json['updatedAt'])
+              : json['updated_at'] != null
+                  ? DateTime.tryParse(json['updated_at'])
+                  : null) ??
+          DateTime.now(),
+      // 백엔드는 0/1을 사용, 프론트엔드는 bool 사용
+      isActive: json['isActive'] != null
+          ? (json['isActive'] is bool
+              ? json['isActive'] as bool
+              : (json['isActive'] as num) == 1)
+          : json['is_active'] != null
+              ? (json['is_active'] is bool
+                  ? json['is_active'] as bool
+                  : (json['is_active'] as num) == 1)
+              : true,
+      additionalInfo: json['additionalInfo'] as Map<String, dynamic>? ??
+          json['additional_info'] as Map<String, dynamic>?,
     );
   }
 
   /// PetProfileEntity를 백엔드 요청 데이터로 변환
   static Map<String, dynamic> _petEntityToMap(PetProfileEntity pet) {
-    return {
+    // gender 값을 영문으로 변환 (일본어 → 영문)
+    final genderMap = {
+      'オス': 'male',
+      'メス': 'female',
+      '未確認': 'unknown',
+      'male': 'male',
+      'female': 'female',
+      'unknown': 'unknown',
+    };
+    final normalizedGender = genderMap[pet.gender] ?? 'unknown';
+
+    final data = {
       'name': pet.name,
       'type': pet.type,
       'breed': pet.breed,
       'birthDate': pet.birthDate.toIso8601String(),
-      'gender': pet.gender,
+      'gender': normalizedGender,
       'weight': pet.weight,
-      'size': pet.size,
-      'microchipNumber': pet.microchipNumber,
-      'arrivalDate': pet.arrivalDate?.toIso8601String(),
-      'neutered': pet.neutered,
-      'imageUrl': pet.imagePath,
       'additionalInfo': pet.additionalInfo,
       // ownerId는 백엔드에서 토큰으로 자동 설정되므로 전송하지 않음
     };
+
+    // null이 아닌 선택적 필드만 추가
+    if (pet.size != null) {
+      data['size'] = pet.size;
+    }
+    if (pet.microchipNumber != null && pet.microchipNumber!.isNotEmpty) {
+      data['microchipNumber'] = pet.microchipNumber;
+    }
+    if (pet.arrivalDate != null) {
+      data['arrivalDate'] = pet.arrivalDate!.toIso8601String();
+    }
+    if (pet.neutered != null) {
+      data['neutered'] = pet.neutered;
+    }
+    if (pet.imagePath != null && pet.imagePath!.isNotEmpty) {
+      data['imageUrl'] = pet.imagePath;
+    }
+
+    return data;
+  }
+
+  /// 안전한 double 파싱 헬퍼
+  static double? _parseDouble(dynamic value) {
+    if (value == null) return null;
+    if (value is double) return value;
+    if (value is int) return value.toDouble();
+    if (value is String) return double.tryParse(value);
+    return null;
   }
 
   /// DioException 에러 처리
@@ -217,18 +337,45 @@ class BackendPetApiService {
     String errorMessage = 'エラーが発生しました';
 
     switch (e.type) {
+      case DioExceptionType.cancel:
+        // Firebase 인증 에러
+        if (e.error is String) {
+          errorMessage = e.error as String;
+        } else {
+          errorMessage = 'リクエストがキャンセルされました';
+        }
+        break;
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.sendTimeout:
       case DioExceptionType.receiveTimeout:
         errorMessage = 'タイムアウトが発生しました';
         break;
       case DioExceptionType.connectionError:
-        errorMessage = 'ネットワーク接続を確認してください';
+        if (e.message?.contains('Connection refused') == true) {
+          errorMessage = 'サーバーに接続できません。サーバーが起動しているか確認してください。';
+        } else {
+          errorMessage = 'ネットワーク接続を確認してください';
+        }
         break;
       case DioExceptionType.badResponse:
         final statusCode = e.response?.statusCode;
-        if (statusCode == 401) {
-          errorMessage = '認証に失敗しました';
+        if (statusCode == 400) {
+          // 백엔드 유효성 검증 에러 메시지 추출
+          final data = e.response?.data;
+          if (data is Map<String, dynamic> && data['error'] != null) {
+            errorMessage = data['error'] as String;
+            // 상세 에러가 있으면 추가
+            if (data['errors'] is List && (data['errors'] as List).isNotEmpty) {
+              final firstError = (data['errors'] as List).first;
+              if (firstError is Map<String, dynamic> && firstError['message'] != null) {
+                errorMessage += ': ${firstError['message']}';
+              }
+            }
+          } else {
+            errorMessage = '入力データが正しくありません';
+          }
+        } else if (statusCode == 401) {
+          errorMessage = '認証に失敗しました。再度ログインしてください。';
         } else if (statusCode == 403) {
           errorMessage = 'アクセスが拒否されました';
         } else if (statusCode == 404) {

@@ -140,7 +140,7 @@ class OpenWeatherMapService {
       return '東京都品川区';
     }
     // 기본값
-    return '현재 위치';
+    return '現在地';
   }
 
   /// OpenWeatherMap 아이콘 코드를 Meteocons 파일명으로 매핑

@@ -80,15 +80,19 @@ class RegistrationFormHandlers {
     void Function(bool) setLoading, {
     String? editPetId,
   }) async {
+    print('🚀 ===== FORM SUBMIT 버튼 클릭됨 =====');
+    print('🚀 편집 모드: ${editPetId != null}');
     setLoading(true);
 
     try {
+      print('🚀 submitPetRegistration() 호출 시작...');
       // 펫 등록/편집 및 등록된 펫 ID 받기
       final petId = await logic.submitPetRegistration(
         formKey: formKey,
         controller: controller,
         petId: editPetId, // 편집 모드용 petId 전달
       );
+      print('✅ submitPetRegistration() 완료! 펫 ID: $petId');
 
       if (context.mounted) {
         final isEditMode = editPetId != null && editPetId.isNotEmpty;
@@ -97,12 +101,16 @@ class RegistrationFormHandlers {
         // 잠시 대기 후 펫 프로필 화면으로 이동 (데이터 저장 완료 대기)
         await Future.delayed(const Duration(milliseconds: 500));
 
+        print('🚀 펫 프로필 화면으로 이동: /home/pet-profile/$petId');
         // 등록된 펫의 프로필 화면으로 이동
         context.go('/home/pet-profile/$petId');
       }
     } catch (error) {
+      print('❌ SUBMIT ERROR 발생!');
+      print('   에러: $error');
       if (context.mounted) {
         final errorMessage = logic.getErrorMessage(error);
+        print('🚨 에러 메시지: $errorMessage');
         LoggerService.debug('🚨 Registration error: $errorMessage');
         LoggerService.debug('🚨 Error details: $error');
         _showErrorMessage(errorMessage);

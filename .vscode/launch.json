@@ -1,49 +1,55 @@
 {
-  "version": "0.2.0",
-  "configurations": [
-    {
-      "name": "Flutter (Debug Mode)",
-      "request": "launch",
-      "type": "dart",
-      "program": "lib/main.dart",
-      "args": ["--debug"],
-      "console": "debugConsole",
-      "outputCapture": "std"
-    },
-    {
-      "name": "Flutter (Profile Mode)",
-      "request": "launch",
-      "type": "dart",
-      "program": "lib/main.dart",
-      "args": ["--profile"]
-    },
-    {
-      "name": "Flutter (Release Mode)",
-      "request": "launch",
-      "type": "dart",
-      "program": "lib/main.dart",
-      "args": ["--release"]
-    },
-    {
-      "name": "Flutter (Web)",
-      "request": "launch",
-      "type": "dart",
-      "program": "lib/main.dart",
-      "args": ["-d", "chrome"]
-    },
-    {
-      "name": "Flutter (iOS Simulator)",
-      "request": "launch",
-      "type": "dart",
-      "program": "lib/main.dart",
-      "args": ["-d", "ios"]
-    },
-    {
-      "name": "Flutter (Android Emulator)",
-      "request": "launch",
-      "type": "dart",
-      "program": "lib/main.dart",
-      "args": ["-d", "android"]
-    }
-  ]
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Flutter (Debug Mode)",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main.dart",
+            "cwd": "${workspaceFolder}/frontend",
+            "args": ["--debug"],
+            "console": "debugConsole",
+            "outputCapture": "std"
+        },
+        {
+            "name": "Flutter (Profile Mode)",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main.dart",
+            "cwd": "${workspaceFolder}/frontend",
+            "args": ["--profile"]
+        },
+        {
+            "name": "Flutter (Release Mode)",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main.dart",
+            "cwd": "${workspaceFolder}/frontend",
+            "args": ["--release"]
+        },
+        {
+            "name": "Flutter (Web)",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main.dart",
+            "cwd": "${workspaceFolder}/frontend",
+            "args": ["-d", "chrome"]
+        },
+        {
+            "name": "Flutter (iOS Simulator)",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main.dart",
+            "cwd": "${workspaceFolder}/frontend",
+            "args": ["-d", "4C0DA192-9E69-4869-BDA9-4BF2719D815B"]
+        },
+        {
+            "name": "Flutter (Android Emulator)",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main.dart",
+            "cwd": "${workspaceFolder}/frontend",
+            "args": ["-d", "R3CN815LCAB"]
+        }
+    ]
 }

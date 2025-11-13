@@ -479,44 +479,69 @@ class PetRegistrationController extends _$PetRegistrationController {
       LoggerService.debug('📋 ================================');
 
       // 펫 프로필 저장
-      final createdPet = await petProfilesNotifier.createPet(petEntity);
+      print('💾 ===== PET REGISTRATION START =====');
+      print('💾 펫 이름: ${petEntity.name}');
+      print('💾 펫 타입: ${petEntity.type}');
+      LoggerService.debug('💾 PetProfilesNotifier.createPet() 호출 시작...');
 
-      // 비동기 작업 후 ref 상태 확인
-      if (!ref.mounted) {
+      try {
+        print('💾 createPet() 호출 중...');
+        final createdPet = await petProfilesNotifier.createPet(petEntity);
+        print('✅ createPet() 성공! ID: ${createdPet.id}');
+
+        LoggerService.debug('✅ PetProfilesNotifier.createPet() 완료!');
+        LoggerService.debug('   생성된 펫 ID: ${createdPet.id}');
+        LoggerService.debug('   생성된 펫 이름: ${createdPet.name}');
+
+        // 비동기 작업 후 ref 상태 확인
+        if (!ref.mounted) {
+          LoggerService.debug('⚠️ Controller disposed, 펫 ID 반환');
+          return createdPet.id;
+        }
+
+        // 펫-사용자 관계 생성 (소유자로 등록)
+        LoggerService.debug('🔗 펫-사용자 관계 생성 시도...');
+        final relationSuccess = await relationService.addUserToPet(
+          petId: createdPet.id,
+          userId: 'local_user', // 현재 로컬 사용자 ID
+          role: 'owner',
+          permissions: 'full_access',
+        );
+
+        if (relationSuccess) {
+          LoggerService.debug('✅ Pet-user relation created successfully');
+        } else {
+          LoggerService.debug('⚠️ Pet-user relation creation failed');
+        }
+
+        // Mock 데이터 처리 로그
+        LoggerService.debug(
+          'ペット登録完了: ${state.petName}, ${state.petType}, ${state.breed}, ${state.gender}, ${state.isNeutered}',
+        );
+
+        // 성공적으로 등록된 후 로컬 저장 데이터 삭제
+        await clearSavedFormData();
+
+        LoggerService.debug('✅ ===== Pet registration completed successfully =====');
+
+        // 등록된 펫 ID 반환 (실제 생성된 ID 사용)
         return createdPet.id;
+      } catch (creationError) {
+        print('❌ ===== PetProfilesNotifier.createPet() 실패 =====');
+        print('   에러 타입: ${creationError.runtimeType}');
+        print('   에러 내용: $creationError');
+        LoggerService.debug('❌ ===== PetProfilesNotifier.createPet() 실패 =====');
+        LoggerService.debug('   에러 타입: ${creationError.runtimeType}');
+        LoggerService.debug('   에러 내용: $creationError');
+        rethrow;
       }
-
-      LoggerService.debug('✅ Pet profile saved successfully to repository');
-      LoggerService.debug('✅ Created pet ID: ${createdPet.id}');
-
-      // 펫-사용자 관계 생성 (소유자로 등록)
-      final relationSuccess = await relationService.addUserToPet(
-        petId: createdPet.id,
-        userId: 'local_user', // 현재 로컬 사용자 ID
-        role: 'owner',
-        permissions: 'full_access',
-      );
-
-      if (relationSuccess) {
-        LoggerService.debug('✅ Pet-user relation created successfully');
-      } else {
-        LoggerService.debug('⚠️ Pet-user relation creation failed');
-      }
-
-      // Mock 데이터 처리 로그
-      LoggerService.debug(
-        'ペット登録完了: ${state.petName}, ${state.petType}, ${state.breed}, ${state.gender}, ${state.isNeutered}',
-      );
-
-      // 성공적으로 등록된 후 로컬 저장 데이터 삭제
-      await clearSavedFormData();
-
-      LoggerService.debug('✅ Pet registration completed successfully');
-
-      // 등록된 펫 ID 반환 (실제 생성된 ID 사용)
-      return createdPet.id;
     } catch (e) {
-      LoggerService.debug('❌ Pet registration failed: $e');
+      print('❌ ===== Pet registration FAILED =====');
+      print('   최종 에러: $e');
+      print('   에러 타입: ${e.runtimeType}');
+      LoggerService.debug('❌ ===== Pet registration failed =====');
+      LoggerService.debug('   최종 에러: $e');
+      LoggerService.debug('   에러 타입: ${e.runtimeType}');
       rethrow;
     }
   }
