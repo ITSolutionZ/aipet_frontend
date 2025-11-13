@@ -1,14 +1,11 @@
 import 'dart:io';
 
+import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
+import 'package:aipet_frontend/shared/services/image_storage_service.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:go_router/go_router.dart';
-
-
-import '../../../../shared/shared.dart';
-import '../../../../../features/pet_profile/data/providers/pet_profile_providers.dart';
-
 
 class PetSelectorWidget extends ConsumerWidget {
   final String? selectedPetId;
@@ -56,7 +53,6 @@ class PetSelectorWidget extends ConsumerWidget {
                   Container(
                     width: 40,
                     height: 40,
-                    clipBehavior: Clip.antiAlias,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(
@@ -66,7 +62,7 @@ class PetSelectorWidget extends ConsumerWidget {
                         width: 2,
                       ),
                     ),
-                    child: _buildPetImage(pet),
+                    child: ClipOval(child: _buildPetImage(pet)),
                   ),
                   const SizedBox(height: 2),
                   Text(

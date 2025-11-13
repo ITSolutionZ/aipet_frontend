@@ -1,10 +1,9 @@
+import 'package:aipet_frontend/features/pet_profile/data/repositories/backend_pet_repository.dart';
+import 'package:aipet_frontend/features/pet_profile/data/services/pet_local_storage_service.dart';
+import 'package:aipet_frontend/features/pet_profile/domain/repositories/pet_profile_repository.dart';
+import 'package:aipet_frontend/shared/core/services/logger_service.dart';
+import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-
-import '../../../../shared/shared.dart';
-import '../../../../../features/pet_profile/data/repositories/backend_pet_repository.dart';
-import '../../../../../features/pet_profile/data/services/pet_local_storage_service.dart';
-import '../../../../../features/pet_profile/domain/repositories/pet_profile_repository.dart';
 
 part 'pet_profile_providers.g.dart';
 
@@ -67,16 +66,7 @@ class PetProfilesNotifier extends _$PetProfilesNotifier {
     }
 
     final repository = ref.read(petProfileRepositoryProvider);
-    LoggerService.debug('🔄 [PetProfile] createPet 호출 - petName: ${pet.name}');
-
     final result = await repository.createPet(pet);
-
-    LoggerService.debug('📡 [PetProfile] createPet 결과:');
-    LoggerService.debug('   - isSuccess: ${result.isSuccess}');
-    LoggerService.debug('   - message: ${result.message}');
-    LoggerService.debug('   - error: ${result.error}');
-    LoggerService.debug('   - data: ${result.dataOrNull}');
-
     if (result.isSuccess) {
       if (ref.mounted) {
         try {
@@ -90,9 +80,7 @@ class PetProfilesNotifier extends _$PetProfilesNotifier {
       }
       return result.dataOrNull!;
     } else {
-      final errorMsg = result.error ?? result.message ?? 'ペットの作成に失敗しました';
-      LoggerService.debug('❌ [PetProfile] createPet 실패: $errorMsg');
-      throw Exception(errorMsg);
+      throw Exception(result.error);
     }
   }
 

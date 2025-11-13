@@ -1,10 +1,8 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-
-import '../../../../shared/shared.dart';
 part 'watering_schedule_edit_screen.g.dart';
 
 /// 급수 스케줄 편집 화면 컨트롤러
@@ -338,13 +336,7 @@ class _WateringScheduleEditScreenState
         ),
         child: state.isLoading
             ? const CircularProgressIndicator(color: Colors.white)
-            : Text(
-                '保存',
-                style: AppFonts.bodyMedium.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
+            : const Text('保存'),
       ),
     );
   }

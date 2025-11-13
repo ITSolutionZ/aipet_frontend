@@ -1,10 +1,8 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
-import '../../../../shared/shared.dart';
 import '../providers/pet_selection_provider.dart';
-
 
 /// 펫 선택 모달
 class PetSelectionModal extends ConsumerWidget {
@@ -133,11 +131,7 @@ class PetSelectionModal extends ConsumerWidget {
                             child:
                                 pet.imagePath != null &&
                                     pet.imagePath!.isNotEmpty
-                                ? Container(
-                                    clipBehavior: Clip.antiAlias,
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                    ),
+                                ? ClipOval(
                                     child: Image.asset(
                                       pet.imagePath!,
                                       fit: BoxFit.cover,

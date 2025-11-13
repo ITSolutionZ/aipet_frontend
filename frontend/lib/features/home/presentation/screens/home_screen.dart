@@ -1,19 +1,16 @@
+import 'package:aipet_frontend/app/widgets/widgets.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 
-
-import '../../../../shared/shared.dart';
-import '../../../../app/widgets/widgets.dart';
 import '../../data/data.dart';
 import '../../domain/domain.dart';
 import '../mixins/scroll_tracking_mixin.dart';
 import '../widgets/auto_banner_carousel.dart';
 import '../widgets/pet_profile_banner.dart';
 import '../widgets/widgets.dart';
-
 
 /// 🏠 홈 스크린
 ///
@@ -152,13 +149,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             child: HomeSearchBarWidget(onTap: _handleSearchTap),
           ),
           const SizedBox(height: AppSpacing.md), // 간격 줄임
-
-          // 날씨 정보 (항상 표시)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-            child: _buildWeatherCard(dashboard.weather),
-          ),
-          const SizedBox(height: AppSpacing.lg),
+          // 날씨 정보 (펫이 등록되어 있을 때만 표시)
+          if (dashboard.hasPets) ...[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+              child: _buildWeatherCard(dashboard.weather),
+            ),
+            const SizedBox(height: AppSpacing.lg),
+          ],
 
           // 빠른 메뉴 그리드
           Padding(

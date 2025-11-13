@@ -5,7 +5,11 @@
 *.swp
 .DS_Store
 .atom/
+
+# Build directories
 frontend/build/
+frontend/.dart_tool/
+frontend/coverage/
 backend/build/
 
 .buildlog/
@@ -31,6 +35,7 @@ migrate_working_dir/
 
 # Environment variables (환경 변수, 배포시 제외)
 .env
+.env.backup
 # .env.local
 # .env.*.local
 
@@ -59,7 +64,8 @@ app.*.map.json
 *.config.dart
 PR_DESCRIPTION_JA.md
 
+# Sentry configuration
 sentry.properties
-# .env
-.env.backup
-# *.apk
+
+# APK files
+*.apk

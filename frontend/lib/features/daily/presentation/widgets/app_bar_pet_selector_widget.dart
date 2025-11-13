@@ -1,12 +1,10 @@
 import 'dart:io';
 
+import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
+import 'package:aipet_frontend/shared/services/image_storage_service.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-
-import '../../../../shared/shared.dart';
-import '../../../../../features/pet_profile/data/providers/pet_profile_providers.dart';
-
 
 /// 앱바용 펫 셀렉터 위젯 (흰색 테마)
 class AppBarPetSelectorWidget extends ConsumerWidget {
@@ -23,13 +21,10 @@ class AppBarPetSelectorWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final petsAsync = ref.watch(petProfilesProvider);
 
-    return Padding(
-      padding: const EdgeInsets.only(left: AppSpacing.md),
-      child: petsAsync.when(
-        data: (pets) => _buildPetSelector(pets),
-        loading: () => _buildLoadingState(),
-        error: (error, stack) => _buildErrorState(error, ref),
-      ),
+    return petsAsync.when(
+      data: (pets) => _buildPetSelector(pets),
+      loading: () => _buildLoadingState(),
+      error: (error, stack) => _buildErrorState(error, ref),
     );
   }
 
@@ -55,7 +50,6 @@ class AppBarPetSelectorWidget extends ConsumerWidget {
               child: Container(
                 width: 40,
                 height: 40,
-                clipBehavior: Clip.antiAlias,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: isSelected
@@ -68,7 +62,7 @@ class AppBarPetSelectorWidget extends ConsumerWidget {
                     width: 2,
                   ),
                 ),
-                child: _buildPetImage(pet),
+                child: ClipOval(child: _buildPetImage(pet)),
               ),
             ),
           );
@@ -150,7 +144,7 @@ class AppBarPetSelectorWidget extends ConsumerWidget {
         break;
     }
 
-    return imageWidget;
+    return ClipOval(child: imageWidget);
   }
 
   Widget _buildDefaultPetIcon() {

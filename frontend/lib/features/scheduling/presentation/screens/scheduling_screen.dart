@@ -1,22 +1,19 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
+import 'package:aipet_frontend/features/scheduling/data/services/calendar_event_service.dart';
+import 'package:aipet_frontend/features/scheduling/domain/entities/calendar_event_entity.dart';
+import 'package:aipet_frontend/shared/services/image_storage_service.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-
-import '../../../../shared/shared.dart';
-import '../../../../../features/pet_profile/data/providers/pet_profile_providers.dart';
-import '../../../../../features/scheduling/data/services/calendar_event_service.dart';
-import '../../../../../features/scheduling/domain/entities/calendar_event_entity.dart';
 import '../widgets/add_event_bottom_sheet.dart';
 import '../widgets/calendar_event_item.dart';
-
-
 
 /// 스케줄링 메인 화면
 /// 식사, 학습, 급수 카테고리와 알람 설정을 제공합니다.
@@ -47,24 +44,6 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
     _scrollController = ScrollController();
     _selectedDay = DateTime.now();
     unawaited(_loadEventsFromDatabase());
-
-    // 펫이 1마리일 때 자동 선택
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _autoSelectSinglePet();
-    });
-  }
-
-  /// 펫이 1마리일 때 자동으로 선택
-  void _autoSelectSinglePet() {
-    final petsAsync = ref.read(petProfilesProvider);
-    petsAsync.whenData((pets) {
-      if (pets.length == 1 && _selectedPetId == null) {
-        setState(() {
-          _selectedPetId = pets.first.id;
-        });
-        LoggerService.debug('🐾 펫 1마리 자동 선택: ${pets.first.name}');
-      }
-    });
   }
 
   @override
@@ -106,9 +85,6 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
               eventLoader: _getEventsForDay,
               startingDayOfWeek: StartingDayOfWeek.sunday, // 日曜日始まり
               locale: 'ja_JP',
-              // 캘린더 높이 축소
-              rowHeight: 48, // 기본값 52에서 48로 축소
-              daysOfWeekHeight: 32, // 기본값 16에서 32로 적절히 설정
               calendarStyle: CalendarStyle(
                 outsideDaysVisible: false,
                 weekendTextStyle: const TextStyle(
@@ -282,7 +258,7 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
   /// 특정 날짜의 이벤트 가져오기 (펫 필터링 적용)
   List<CalendarEventEntity> _getEventsForDay(DateTime day) {
     final allEvents = _events[DateTime(day.year, day.month, day.day)] ?? [];
-
+    
     // 펫 필터링 적용
     if (_selectedPetId == null) {
       return allEvents; // 전체 보기
@@ -617,11 +593,9 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
 
     return petsAsync.when(
       data: (pets) {
-        // 펫이 없거나 1마리만 있으면 선택 UI를 표시하지 않음
-        if (pets.isEmpty || pets.length == 1) {
-          return const SizedBox.shrink();
-        }
+        if (pets.isEmpty) return const SizedBox.shrink();
 
+        // ペットが1匹でも「全て」タブは表示
         LoggerService.debug('🐾 ペットタブ: ${pets.length}匹のペット');
 
         return Container(

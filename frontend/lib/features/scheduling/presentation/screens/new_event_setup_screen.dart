@@ -1,14 +1,11 @@
+import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
+import 'package:aipet_frontend/features/scheduling/data/services/calendar_event_service.dart';
+import 'package:aipet_frontend/features/scheduling/domain/entities/calendar_event_entity.dart';
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-
-
-import '../../../../shared/shared.dart';
-import '../../../../../features/pet_profile/data/providers/pet_profile_providers.dart';
-import '../../../../../features/scheduling/data/services/calendar_event_service.dart';
-import '../../../../../features/scheduling/domain/entities/calendar_event_entity.dart';
 
 class NewEventSetupScreen extends ConsumerStatefulWidget {
   final DateTime? initialDate;
@@ -853,12 +850,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
           Expanded(
             child: OutlinedButton(
               onPressed: () => context.pop(),
-              child: Text(
-                'キャンセル',
-                style: AppFonts.bodyMedium.copyWith(
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
+              child: const Text('キャンセル'),
             ),
           ),
           const SizedBox(width: AppSpacing.md),
@@ -872,13 +864,7 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
                   borderRadius: BorderRadius.circular(AppRadius.large),
                 ),
               ),
-              child: Text(
-                '保存',
-                style: AppFonts.bodyMedium.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.pureWhite,
-                ),
-              ),
+              child: Text('保存', style: AppFonts.titleMedium),
             ),
           ),
         ],

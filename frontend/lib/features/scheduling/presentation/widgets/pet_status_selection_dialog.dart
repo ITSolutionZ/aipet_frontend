@@ -1,11 +1,9 @@
+import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-
-import '../../../../shared/shared.dart';
 part 'pet_status_selection_dialog.g.dart';
 
 /// 🎯 Pet Status Selection State
@@ -348,7 +346,7 @@ class _PetStatusSelectionDialogContentState
                     ),
                     child: Text(
                       '保存',
-                      style: AppFonts.bodySmall.copyWith(
+                      style: AppFonts.bodyMedium.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
