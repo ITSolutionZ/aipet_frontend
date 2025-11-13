@@ -338,7 +338,13 @@ class _WateringScheduleEditScreenState
         ),
         child: state.isLoading
             ? const CircularProgressIndicator(color: Colors.white)
-            : const Text('保存'),
+            : Text(
+                '保存',
+                style: AppFonts.bodyMedium.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
       ),
     );
   }

@@ -23,10 +23,13 @@ class AppBarPetSelectorWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final petsAsync = ref.watch(petProfilesProvider);
 
-    return petsAsync.when(
-      data: (pets) => _buildPetSelector(pets),
-      loading: () => _buildLoadingState(),
-      error: (error, stack) => _buildErrorState(error, ref),
+    return Padding(
+      padding: const EdgeInsets.only(left: AppSpacing.md),
+      child: petsAsync.when(
+        data: (pets) => _buildPetSelector(pets),
+        loading: () => _buildLoadingState(),
+        error: (error, stack) => _buildErrorState(error, ref),
+      ),
     );
   }
 
@@ -52,6 +55,7 @@ class AppBarPetSelectorWidget extends ConsumerWidget {
               child: Container(
                 width: 40,
                 height: 40,
+                clipBehavior: Clip.antiAlias,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: isSelected
@@ -64,7 +68,7 @@ class AppBarPetSelectorWidget extends ConsumerWidget {
                     width: 2,
                   ),
                 ),
-                child: ClipOval(child: _buildPetImage(pet)),
+                child: _buildPetImage(pet),
               ),
             ),
           );
@@ -146,7 +150,7 @@ class AppBarPetSelectorWidget extends ConsumerWidget {
         break;
     }
 
-    return ClipOval(child: imageWidget);
+    return imageWidget;
   }
 
   Widget _buildDefaultPetIcon() {

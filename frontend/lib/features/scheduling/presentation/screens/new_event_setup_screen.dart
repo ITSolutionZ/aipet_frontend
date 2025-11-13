@@ -853,7 +853,12 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
           Expanded(
             child: OutlinedButton(
               onPressed: () => context.pop(),
-              child: const Text('キャンセル'),
+              child: Text(
+                'キャンセル',
+                style: AppFonts.bodyMedium.copyWith(
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ),
           ),
           const SizedBox(width: AppSpacing.md),
@@ -867,7 +872,13 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
                   borderRadius: BorderRadius.circular(AppRadius.large),
                 ),
               ),
-              child: Text('保存', style: AppFonts.titleMedium),
+              child: Text(
+                '保存',
+                style: AppFonts.bodyMedium.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.pureWhite,
+                ),
+              ),
             ),
           ),
         ],

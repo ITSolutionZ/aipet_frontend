@@ -56,6 +56,7 @@ class PetSelectorWidget extends ConsumerWidget {
                   Container(
                     width: 40,
                     height: 40,
+                    clipBehavior: Clip.antiAlias,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(
@@ -65,7 +66,7 @@ class PetSelectorWidget extends ConsumerWidget {
                         width: 2,
                       ),
                     ),
-                    child: ClipOval(child: _buildPetImage(pet)),
+                    child: _buildPetImage(pet),
                   ),
                   const SizedBox(height: 2),
                   Text(

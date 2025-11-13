@@ -152,14 +152,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             child: HomeSearchBarWidget(onTap: _handleSearchTap),
           ),
           const SizedBox(height: AppSpacing.md), // 간격 줄임
-          // 날씨 정보 (펫이 등록되어 있을 때만 표시)
-          if (dashboard.hasPets) ...[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-              child: _buildWeatherCard(dashboard.weather),
-            ),
-            const SizedBox(height: AppSpacing.lg),
-          ],
+
+          // 날씨 정보 (항상 표시)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+            child: _buildWeatherCard(dashboard.weather),
+          ),
+          const SizedBox(height: AppSpacing.lg),
 
           // 빠른 메뉴 그리드
           Padding(

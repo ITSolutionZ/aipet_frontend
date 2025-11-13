@@ -348,7 +348,7 @@ class _PetStatusSelectionDialogContentState
                     ),
                     child: Text(
                       '保存',
-                      style: AppFonts.bodyMedium.copyWith(
+                      style: AppFonts.bodySmall.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),

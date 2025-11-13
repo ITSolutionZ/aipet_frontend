@@ -133,7 +133,11 @@ class PetSelectionModal extends ConsumerWidget {
                             child:
                                 pet.imagePath != null &&
                                     pet.imagePath!.isNotEmpty
-                                ? ClipOval(
+                                ? Container(
+                                    clipBehavior: Clip.antiAlias,
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                    ),
                                     child: Image.asset(
                                       pet.imagePath!,
                                       fit: BoxFit.cover,

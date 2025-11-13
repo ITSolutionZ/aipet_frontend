@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 
 import '../../../../../shared/shared.dart';
+import '../../../../../../features/home/data/home_providers.dart';
 import '../../../../../../features/daily/presentation/controllers/pet_registration_controller.dart';
 import '../../../../../../features/daily/presentation/logic/pet_registration_logic.dart';
 
@@ -99,6 +100,14 @@ class RegistrationFormHandlers {
 
         // 잠시 대기 후 펫 프로필 화면으로 이동 (데이터 저장 완료 대기)
         await Future.delayed(const Duration(milliseconds: 500));
+
+        // 홈 dashboard 갱신 (weather card 표시를 위해)
+        try {
+          controller.ref.invalidate(homeDashboardProvider);
+          LoggerService.debug('✅ 홈 dashboard 갱신 완료');
+        } catch (e) {
+          LoggerService.debug('⚠️ 홈 dashboard 갱신 실패: $e');
+        }
 
         // 등록된 펫의 프로필 화면으로 이동
         context.go('/home/pet-profile/$petId');

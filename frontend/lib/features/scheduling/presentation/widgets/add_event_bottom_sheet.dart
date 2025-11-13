@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:intl/intl.dart';
-
 
 import '../../../../shared/shared.dart';
 import '../../domain/entities/calendar_event_entity.dart';
-
 
 class AddEventBottomSheet extends ConsumerStatefulWidget {
   final DateTime selectedDate;
@@ -290,54 +287,76 @@ class _AddEventBottomSheetState extends ConsumerState<AddEventBottomSheet> {
             ),
             const SizedBox(height: 24),
 
-            // 카테고리 카드
+            // 카테고리 선택 (펫 선택과 동일한 방식)
             _buildCard(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildSectionTitle('카테고리'),
-                  const SizedBox(height: AppSpacing.sm),
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: AppColors.pointGray),
-                      borderRadius: BorderRadius.circular(AppRadius.medium),
-                    ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<CalendarEventType>(
-                        value: _selectedType,
-                        isExpanded: true,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.md,
-                        ),
-                        items: CalendarEventType.values.map((type) {
-                          return DropdownMenuItem(
-                            value: type,
-                            child: Row(
-                              children: [
-                                Text(
-                                  type.emoji,
-                                  style: const TextStyle(fontSize: 20),
+                  _buildSectionTitle('カテゴリー選択'),
+                  const SizedBox(height: AppSpacing.md),
+                  Wrap(
+                    spacing: AppSpacing.sm,
+                    runSpacing: AppSpacing.sm,
+                    children: CalendarEventType.values.map((type) {
+                      final isSelected = _selectedType == type;
+                      return InkWell(
+                        onTap: () {
+                          setState(() {
+                            _selectedType = type;
+                          });
+                          _updateAlarmForEventType(type);
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.md,
+                            vertical: AppSpacing.sm,
+                          ),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? AppColors.pointBrown.withValues(alpha: 0.1)
+                                : Colors.white,
+                            borderRadius: BorderRadius.circular(
+                              AppRadius.small,
+                            ),
+                            border: Border.all(
+                              color: isSelected
+                                  ? AppColors.pointBrown
+                                  : AppColors.pointGray.withValues(alpha: 0.3),
+                              width: isSelected ? 2 : 1,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                type.emoji,
+                                style: const TextStyle(fontSize: 18),
+                              ),
+                              const SizedBox(width: AppSpacing.xs),
+                              Text(
+                                type.displayName,
+                                style: AppFonts.bodySmall.copyWith(
+                                  color: isSelected
+                                      ? AppColors.pointBrown
+                                      : AppColors.pointDark,
+                                  fontWeight: isSelected
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
                                 ),
-                                const SizedBox(width: AppSpacing.sm),
-                                Text(
-                                  type.displayName,
-                                  style: AppFonts.bodyMedium,
+                              ),
+                              if (isSelected) ...[
+                                const SizedBox(width: AppSpacing.xs),
+                                const Icon(
+                                  Icons.check_circle,
+                                  size: 16,
+                                  color: AppColors.pointBrown,
                                 ),
                               ],
-                            ),
-                          );
-                        }).toList(),
-                        onChanged: (value) {
-                          if (value != null) {
-                            setState(() {
-                              _selectedType = value;
-                            });
-                            // 이벤트 타입 변경 시 알람 설정 업데이트
-                            _updateAlarmForEventType(value);
-                          }
-                        },
-                      ),
-                    ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
                   ),
                 ],
               ),
@@ -525,8 +544,9 @@ class _AddEventBottomSheetState extends ConsumerState<AddEventBottomSheet> {
                 ),
                 child: Text(
                   isEditing ? 'スケジュール修正' : 'スケジュール追加',
-                  style: AppFonts.titleMedium.copyWith(
+                  style: AppFonts.bodyMedium.copyWith(
                     fontWeight: FontWeight.bold,
+                    color: AppColors.pureWhite,
                   ),
                 ),
               ),

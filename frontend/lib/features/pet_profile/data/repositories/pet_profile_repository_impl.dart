@@ -76,7 +76,7 @@ class PetProfileRepositoryImpl implements PetProfileRepository {
     }
 
     final pet = petResult.data!;
-    final updatedAdditionalInfo = {...pet.additionalInfo, 'isPublic': isPublic};
+    final updatedAdditionalInfo = {...?pet.additionalInfo, 'isPublic': isPublic};
     final updatedPet = pet.copyWith(additionalInfo: updatedAdditionalInfo);
     final updateResult = await BackendPetApiService.updatePet(updatedPet);
 

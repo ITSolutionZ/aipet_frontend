@@ -93,25 +93,37 @@ class BackendPetApiService {
     PetProfileEntity pet,
   ) async {
     try {
+      LoggerService.debug('📡 [PetAPI] createPet 호출 - name: ${pet.name}');
+
       final petData = _petEntityToMap(pet);
+      LoggerService.debug('📤 [PetAPI] Request data: $petData');
+
       final response = await _apiClient.post('/pets', data: petData);
+
+      LoggerService.debug('📥 [PetAPI] Response: statusCode=${response.statusCode}');
 
       if (response.statusCode == 201 || response.statusCode == 200) {
         final data = response.data;
 
         if (data is Map<String, dynamic>) {
           final createdPet = _mapToPetEntity(data['data'] ?? data);
+          LoggerService.debug('✅ [PetAPI] Pet created: ${createdPet.id}');
           return Result.success('ペットを作成しました', createdPet);
         }
 
+        LoggerService.debug('⚠️ [PetAPI] Invalid response format');
         return Result.failure('ペットの作成に失敗しました');
       } else {
+        LoggerService.debug('❌ [PetAPI] Bad status code: ${response.statusCode}');
         return Result.failure('ペットの作成に失敗しました');
       }
     } on DioException catch (e) {
+      LoggerService.debug('❌ [PetAPI] DioException: ${e.type}, ${e.message}');
+      LoggerService.debug('   Response: ${e.response?.data}');
       return _handleDioError('펫 생성', e);
     } catch (e) {
-      return Result.failure('ペットの作成に失敗しました');
+      LoggerService.debug('❌ [PetAPI] Unexpected error: $e');
+      return Result.failure('ペットの作成に失敗しました: $e');
     }
   }
 
@@ -176,7 +188,7 @@ class BackendPetApiService {
       birthDate: (json['birth_date'] ?? json['birthDate']) != null
           ? DateTime.tryParse((json['birth_date'] ?? json['birthDate']).toString()) ?? DateTime.now()
           : DateTime.now(),
-      gender: json['gender']?.toString() ?? 'unknown',
+      gender: _convertGenderFromBackend(json['gender']?.toString() ?? 'unknown'),
       weight: _parseDouble(json['weight']) ?? 0.0,
       size: json['size']?.toString(),
       microchipNumber: (json['microchip_number'] ?? json['microchipNumber'])?.toString(),
@@ -229,22 +241,54 @@ class BackendPetApiService {
       'type': pet.type,
       if (pet.breed != null) 'breed': pet.breed,
       'birthDate': pet.birthDate.toIso8601String().split('T')[0], // YYYY-MM-DD
-      'gender': pet.gender,
+      'gender': _convertGenderToBackend(pet.gender),
       if (pet.weight > 0) 'weight': pet.weight,
       if (pet.imagePath != null) 'photoUrl': pet.imagePath,
       if (pet.microchipNumber != null) 'microchipNumber': pet.microchipNumber,
       if (pet.neutered != null) 'isNeutered': pet.neutered,
-      if (pet.additionalInfo['color'] != null)
-        'color': pet.additionalInfo['color'],
-      if (pet.additionalInfo['notes'] != null)
-        'notes': pet.additionalInfo['notes'],
+      if (pet.additionalInfo?['color'] != null)
+        'color': pet.additionalInfo!['color'],
+      if (pet.additionalInfo?['notes'] != null)
+        'notes': pet.additionalInfo!['notes'],
       // ownerId는 백엔드에서 토큰으로 자동 설정되므로 전송하지 않음
     };
+  }
+
+  /// 일본어 gender를 백엔드 형식으로 변환
+  /// オス -> male, メス -> female, その他 -> unknown
+  static String _convertGenderToBackend(String gender) {
+    switch (gender) {
+      case 'オス':
+        return 'male';
+      case 'メス':
+        return 'female';
+      default:
+        return 'unknown';
+    }
+  }
+
+  /// 백엔드 gender를 일본어로 변환
+  /// male -> オス, female -> メス, unknown -> その他
+  static String _convertGenderFromBackend(String gender) {
+    switch (gender.toLowerCase()) {
+      case 'male':
+        return 'オス';
+      case 'female':
+        return 'メス';
+      default:
+        return 'その他';
+    }
   }
 
   /// DioException 에러 처리
   static Result<T> _handleDioError<T>(String operation, DioException e) {
     String errorMessage = 'エラーが発生しました';
+
+    LoggerService.debug('❌ [PetAPI] $operation 에러 발생');
+    LoggerService.debug('   - Type: ${e.type}');
+    LoggerService.debug('   - Message: ${e.message}');
+    LoggerService.debug('   - StatusCode: ${e.response?.statusCode}');
+    LoggerService.debug('   - Response: ${e.response?.data}');
 
     switch (e.type) {
       case DioExceptionType.connectionTimeout:
@@ -257,7 +301,18 @@ class BackendPetApiService {
         break;
       case DioExceptionType.badResponse:
         final statusCode = e.response?.statusCode;
-        if (statusCode == 401) {
+        final responseData = e.response?.data;
+
+        if (statusCode == 400 && responseData is Map<String, dynamic>) {
+          // Validation 에러 상세 정보 표시
+          if (responseData['errors'] != null) {
+            final errors = responseData['errors'] as List;
+            final errorFields = errors.map((err) => '${err['field']}: ${err['message']}').join('\n');
+            errorMessage = '入力データエラー:\n$errorFields';
+          } else if (responseData['error'] != null) {
+            errorMessage = responseData['error'].toString();
+          }
+        } else if (statusCode == 401) {
           errorMessage = '認証に失敗しました';
         } else if (statusCode == 403) {
           errorMessage = 'アクセスが拒否されました';
@@ -271,6 +326,7 @@ class BackendPetApiService {
         errorMessage = '予期しないエラーが発生しました';
     }
 
+    LoggerService.debug('   - Final error message: $errorMessage');
     return Result.failure(errorMessage);
   }
 }

@@ -67,7 +67,16 @@ class PetProfilesNotifier extends _$PetProfilesNotifier {
     }
 
     final repository = ref.read(petProfileRepositoryProvider);
+    LoggerService.debug('🔄 [PetProfile] createPet 호출 - petName: ${pet.name}');
+
     final result = await repository.createPet(pet);
+
+    LoggerService.debug('📡 [PetProfile] createPet 결과:');
+    LoggerService.debug('   - isSuccess: ${result.isSuccess}');
+    LoggerService.debug('   - message: ${result.message}');
+    LoggerService.debug('   - error: ${result.error}');
+    LoggerService.debug('   - data: ${result.dataOrNull}');
+
     if (result.isSuccess) {
       if (ref.mounted) {
         try {
@@ -81,7 +90,9 @@ class PetProfilesNotifier extends _$PetProfilesNotifier {
       }
       return result.dataOrNull!;
     } else {
-      throw Exception(result.error);
+      final errorMsg = result.error ?? result.message ?? 'ペットの作成に失敗しました';
+      LoggerService.debug('❌ [PetProfile] createPet 실패: $errorMsg');
+      throw Exception(errorMsg);
     }
   }
 
