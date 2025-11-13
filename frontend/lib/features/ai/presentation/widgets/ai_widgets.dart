@@ -7,6 +7,7 @@ export 'ai_message_input.dart';
 export 'ai_pet_selection.dart';
 export 'ai_pet_selection_bubble.dart';
 export 'ai_question_request_bubble.dart';
+export 'ai_subcategory_selection_bubble.dart';
 export 'ai_suggested_questions.dart';
 export 'ai_typing_indicator.dart';
 export 'chat_history_widgets.dart';

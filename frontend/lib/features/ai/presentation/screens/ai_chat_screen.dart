@@ -78,7 +78,14 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
     // 노티파이어를 통해 메시지 전송
     await ref.read(aiChatProvider.notifier).sendMessage(content);
 
-    // AI 응답 완료 후 다시 스크롤
+    // AI 응답 완료 후 UI 갱신을 위해 여러 번 스크롤 시도
+    _scrollToBottom();
+
+    // 추가 딜레이 후 다시 스크롤 (후속 질문 버블이 렌더링될 시간 확보)
+    await Future.delayed(const Duration(milliseconds: 100));
+    _scrollToBottom();
+
+    await Future.delayed(const Duration(milliseconds: 300));
     _scrollToBottom();
   }
 
@@ -158,6 +165,15 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
         !chatState.hasCategorySelected &&
         chatState.messages.isNotEmpty) {
       count += 1; // 카테고리 선택 메시지
+    }
+
+    // 카테고리는 선택했지만 서브카테고리가 필요하고 아직 선택되지 않은 경우
+    if (chatState.selectedCategory != null &&
+        !chatState.hasCategorySelected &&
+        !chatState.hasSubCategorySelected &&
+        chatState.selectedCategory!.subCategories != null &&
+        chatState.selectedCategory!.subCategories!.isNotEmpty) {
+      count += 1; // 서브카테고리 선택 메시지
     }
 
     // 구체적인 질문 요청 버블 (카테고리 선택 완료 후, 실제 질문 전 단계)
@@ -247,6 +263,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
     // 3. 카테고리 선택 버블 (메시지들 뒤에 표시)
     if (chatState.hasPetSelected &&
         !chatState.hasCategorySelected &&
+        chatState.selectedCategory == null &&
         chatState.messages.isNotEmpty) {
       if (index == currentIndex) {
         return AiCategorySelectionBubble(
@@ -265,6 +282,24 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
               color: AppColors.pointBlue,
             );
             ref.read(aiChatProvider.notifier).selectCategory(generalCategory);
+          },
+        );
+      }
+      currentIndex++;
+    }
+
+    // 3-1. 서브카테고리 선택 버블 (카테고리 선택 직후 표시)
+    if (chatState.selectedCategory != null &&
+        !chatState.hasCategorySelected &&
+        !chatState.hasSubCategorySelected &&
+        chatState.selectedCategory!.subCategories != null &&
+        chatState.selectedCategory!.subCategories!.isNotEmpty) {
+      if (index == currentIndex) {
+        return AiSubCategorySelectionBubble(
+          selectedCategory: chatState.selectedCategory!,
+          selectedSubCategory: chatState.selectedSubCategory,
+          onSubCategorySelected: (subCategory) {
+            ref.read(aiChatProvider.notifier).selectSubCategory(subCategory);
           },
         );
       }
@@ -317,10 +352,16 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
     LoggerService.debug(
       '  - hasCategorySelected: ${chatState.hasCategorySelected}',
     );
+    LoggerService.debug(
+      '  - hasSubCategorySelected: ${chatState.hasSubCategorySelected}',
+    );
     LoggerService.debug('  - messages count: ${chatState.messages.length}');
     LoggerService.debug('  - selectedPet: ${chatState.selectedPet?.name}');
     LoggerService.debug(
       '  - selectedCategory: ${chatState.selectedCategory?.name}',
+    );
+    LoggerService.debug(
+      '  - selectedSubCategory: ${chatState.selectedSubCategory?.name}',
     );
 
     return Scaffold(

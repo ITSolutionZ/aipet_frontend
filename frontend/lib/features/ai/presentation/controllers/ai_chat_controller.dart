@@ -32,6 +32,8 @@ class AiChatState {
   final bool hasPetSelected;
   final AiCategoryEntity? selectedCategory;
   final bool hasCategorySelected;
+  final AiSubCategoryEntity? selectedSubCategory;
+  final bool hasSubCategorySelected;
   final List<String> favoriteMessageIds;
   final List<AiFavoriteQaEntity> favoriteQAs;
 
@@ -45,6 +47,8 @@ class AiChatState {
     this.hasPetSelected = false,
     this.selectedCategory,
     this.hasCategorySelected = false,
+    this.selectedSubCategory,
+    this.hasSubCategorySelected = false,
     this.favoriteMessageIds = const [],
     this.favoriteQAs = const [],
   }) : messageStats = messageStats ?? MessageStatistics.empty();
@@ -59,6 +63,8 @@ class AiChatState {
     bool? hasPetSelected,
     AiCategoryEntity? selectedCategory,
     bool? hasCategorySelected,
+    AiSubCategoryEntity? selectedSubCategory,
+    bool? hasSubCategorySelected,
     List<String>? favoriteMessageIds,
     List<AiFavoriteQaEntity>? favoriteQAs,
   }) {
@@ -76,6 +82,8 @@ class AiChatState {
       hasPetSelected: hasPetSelected ?? this.hasPetSelected,
       selectedCategory: selectedCategory ?? this.selectedCategory,
       hasCategorySelected: hasCategorySelected ?? this.hasCategorySelected,
+      selectedSubCategory: selectedSubCategory ?? this.selectedSubCategory,
+      hasSubCategorySelected: hasSubCategorySelected ?? this.hasSubCategorySelected,
       favoriteMessageIds: favoriteMessageIds ?? this.favoriteMessageIds,
       favoriteQAs: favoriteQAs ?? this.favoriteQAs,
     );
@@ -211,6 +219,19 @@ class AiChatNotifier extends _$AiChatNotifier {
   }
 
   Future<void> selectCategory(AiCategoryEntity category) async {
+    // 카테고리 선택 시 서브카테고리가 있는지 확인하고, 서브카테고리가 있다면 먼저 선택 버블만 표시
+    if (category.subCategories != null && category.subCategories!.isNotEmpty) {
+      // 서브카테고리가 있는 경우: 카테고리만 설정하고 메시지는 추가하지 않음
+      state = state.copyWith(
+        selectedCategory: category,
+        hasCategorySelected: false, // 아직 완전히 선택되지 않음
+        hasSubCategorySelected: false,
+      );
+      LoggerService.debug('✅ カテゴリ選択: ${category.name} (サブカテゴリあり)');
+      return;
+    }
+
+    // 서브카테고리가 없는 경우: 기존 로직대로 진행
     final useCase = ref.read(selectCategoryUseCaseProvider);
 
     final result = await useCase(
@@ -241,6 +262,52 @@ class AiChatNotifier extends _$AiChatNotifier {
           AiChatStateManager.setErrorState(
             currentState: state,
             error: result.error?.toString() ?? 'Category selection failed',
+          ).dataOrNull ??
+          state;
+    }
+  }
+
+  /// 서브카테고리 선택 처리
+  Future<void> selectSubCategory(AiSubCategoryEntity subCategory) async {
+    if (state.selectedCategory == null) {
+      LoggerService.debug('❌ カテゴリが選択されていません');
+      return;
+    }
+
+    final useCase = ref.read(selectCategoryUseCaseProvider);
+
+    final result = await useCase(
+      category: state.selectedCategory!,
+      selectedPet: state.selectedPet,
+    );
+
+    if (result.isSuccess && result.dataOrNull != null) {
+      final updateResult = AiChatStateManager.updateCategorySelection(
+        currentState: state,
+        category: state.selectedCategory!,
+        newMessages: result.dataOrNull!.messages,
+        suggestedQuestions: result.dataOrNull!.suggestedQuestions,
+      );
+
+      if (updateResult.isSuccess) {
+        state = updateResult.dataOrNull!.copyWith(
+          selectedSubCategory: subCategory,
+          hasSubCategorySelected: true,
+        );
+        LoggerService.debug('✅ サブカテゴリ選択完了: ${subCategory.name}');
+      } else {
+        state =
+            AiChatStateManager.setErrorState(
+              currentState: state,
+              error: updateResult.error?.toString() ?? 'Update failed',
+            ).dataOrNull ??
+            state;
+      }
+    } else {
+      state =
+          AiChatStateManager.setErrorState(
+            currentState: state,
+            error: result.error?.toString() ?? 'SubCategory selection failed',
           ).dataOrNull ??
           state;
     }
