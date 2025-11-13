@@ -72,6 +72,10 @@ export const getPetById = async (req, res) => {
 export const createPet = async (req, res) => {
   try {
     const ownerId = req.user.uid;
+
+    // 요청 데이터 전체 로깅
+    console.log('📥 [Pet] createPet 요청 데이터:', JSON.stringify(req.body, null, 2));
+
     const {
       id,
       name,
@@ -87,6 +91,59 @@ export const createPet = async (req, res) => {
       notes,
     } = req.body;
 
+    // users 테이블 구조 확인 (첫 실행 시만)
+    const [tableInfo] = await pool.query(`SHOW COLUMNS FROM users`);
+    const hasFirebaseUid = tableInfo.some(col => col.Field === 'firebase_uid');
+
+    console.log(`📊 [Pet] users 테이블 구조:`, tableInfo.map(col => col.Field).join(', '));
+
+    let dbUserId;
+
+    if (hasFirebaseUid) {
+      // 새로운 스키마: firebase_uid 컬럼이 있는 경우
+      await pool.query(
+        `INSERT INTO users (firebase_uid, email, display_name, photo_url)
+         VALUES (?, ?, ?, ?)
+         ON DUPLICATE KEY UPDATE
+           email = VALUES(email),
+           display_name = VALUES(display_name),
+           photo_url = VALUES(photo_url),
+           updated_at = CURRENT_TIMESTAMP`,
+        [
+          ownerId,
+          req.user.email || null,
+          req.user.name || req.user.email?.split('@')[0] || '익명',
+          req.user.picture || null,
+        ]
+      );
+
+      const [userRows] = await pool.query(
+        'SELECT id FROM users WHERE firebase_uid = ?',
+        [ownerId]
+      );
+      dbUserId = userRows[0]?.id;
+    } else {
+      // 기존 스키마: id가 PK이고 Firebase UID를 직접 저장
+      await pool.query(
+        `INSERT INTO users (id, email, display_name, photo_url)
+         VALUES (?, ?, ?, ?)
+         ON DUPLICATE KEY UPDATE
+           email = VALUES(email),
+           display_name = VALUES(display_name),
+           photo_url = VALUES(photo_url),
+           updated_at = CURRENT_TIMESTAMP`,
+        [
+          ownerId,
+          req.user.email || null,
+          req.user.name || req.user.email?.split('@')[0] || '익명',
+          req.user.picture || null,
+        ]
+      );
+      dbUserId = ownerId;
+    }
+
+    console.log(`✅ [Pet] 사용자 확인/생성 완료: ${req.user.email} (firebase_uid: ${ownerId}, db_id: ${dbUserId})`);
+
     // 펫 ID 생성 (프론트엔드에서 제공한 ID가 있으면 사용, 없으면 생성)
     const petId = id || `pet_${Date.now()}_${uuidv4().split('-')[0]}`;
 
@@ -98,7 +155,7 @@ export const createPet = async (req, res) => {
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         petId,
-        ownerId,
+        dbUserId,
         name,
         type,
         breed || null,
@@ -125,10 +182,14 @@ export const createPet = async (req, res) => {
     });
   } catch (error) {
     console.error('❌ [Pet] 펫 생성 에러:', error);
+    console.error('   - Error stack:', error.stack);
+    console.error('   - Request body:', JSON.stringify(req.body, null, 2));
+
     res.status(500).json({
       success: false,
       error: '펫 생성 중 오류 발생',
       message: error.message,
+      details: error.stack,
     });
   }
 };
