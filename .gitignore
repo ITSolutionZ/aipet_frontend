@@ -28,7 +28,7 @@ migrate_working_dir/
 **/ios/Flutter/.last_build_id
 
 # Environment variables (환경 변수, 배포시 제외)
-# .env
+.env
 # .env.local
 # .env.*.local
 
@@ -38,6 +38,9 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+frontend/build/
+/ios/
+/lib/
 
 # Symbolication related
 app.*.symbols
@@ -58,6 +61,6 @@ app.*.map.json
 PR_DESCRIPTION_JA.md
 
 sentry.properties
-.env
+# .env
 .env.backup
 *.apk
