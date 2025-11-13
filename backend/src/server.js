@@ -2,7 +2,6 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
-import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
 import swaggerUi from 'swagger-ui-express';
@@ -16,6 +15,18 @@ import {
   startDailyReminderScheduler,
 } from './services/notification.scheduler.js';
 import pool from './config/database.js';
+// 새로운 고급 미들웨어 시스템
+import {
+  createLoggingMiddleware,
+  errorLoggingMiddleware,
+  performanceMonitoringMiddleware,
+  requestIdMiddleware,
+  securityLoggingMiddleware,
+  requestSizeLoggingMiddleware,
+  statsMiddleware,
+  getStats,
+} from './middlewares/logging.middleware.js';
+import { globalErrorHandler } from './utils/error-handler.js';
 
 // 환경 변수 로드
 dotenv.config();
@@ -56,14 +67,27 @@ app.use(helmet());
 // 압축
 app.use(compression());
 
-// 로깅 (개발 환경)
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'));
-}
+// Request ID 추가 (추적용)
+app.use(requestIdMiddleware);
 
 // Body parser
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// 고급 로깅 시스템
+app.use(createLoggingMiddleware());
+
+// 성능 모니터링
+app.use(performanceMonitoringMiddleware);
+
+// 보안 패턴 감지
+app.use(securityLoggingMiddleware);
+
+// 요청 크기 모니터링
+app.use(requestSizeLoggingMiddleware);
+
+// 통계 수집
+app.use(statsMiddleware);
 
 // Rate limiting
 const limiter = rateLimit({
@@ -139,15 +163,28 @@ app.get('/api-docs.json', (req, res) => {
 // API 라우트
 app.use(`/api/${API_VERSION}`, routes);
 
+// 통계 조회 엔드포인트 (관리용)
+app.get('/api/stats', (req, res) => {
+  const stats = getStats();
+  res.json({
+    success: true,
+    message: '서버 통계를 조회했습니다',
+    data: stats,
+  });
+});
+
 // ===========================
 // 에러 핸들링
 // ===========================
 
+// 에러 로깅 미들웨어
+app.use(errorLoggingMiddleware);
+
 // 404 처리
 app.use(notFoundHandler);
 
-// 전역 에러 핸들러
-app.use(errorHandler);
+// 전역 에러 핸들러 (새로운 고급 에러 핸들러)
+app.use(globalErrorHandler);
 
 // ===========================
 // 서버 시작
@@ -189,6 +226,7 @@ const startServer = async () => {
       console.log(`   GET  / - 헬스 체크`);
       console.log(`   GET  /api/${API_VERSION} - API 정보`);
       console.log(`   GET  /api-docs - Swagger API ドキュメント`);
+      console.log(`   GET  /api/stats - 서버 통계 (관리용)`);
       console.log(`   POST /api/${API_VERSION}/auth/verify-token - 토큰 검증`);
       console.log(`   POST /api/${API_VERSION}/users - 사용자 동기화`);
       console.log(`   GET  /api/${API_VERSION}/auth/me - 현재 사용자`);
