@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aipet_frontend/app/services/app_tracking_transparency_service.dart';
 import 'package:aipet_frontend/app/services/local_storage_service.dart';
 import 'package:aipet_frontend/app/services/preload_service.dart';
 import 'package:aipet_frontend/features/auth/data/services/firebase_token_service.dart';
@@ -120,6 +121,12 @@ class AppBootstrap {
 
     // 홈 데이터 프리로딩 시작 (백그라운드)
     unawaited(PreloadService().startPreloading());
+
+    // App Tracking Transparency 권한 요청 (iOS 14.5+)
+    // 앱이 완전히 로드된 후에 요청하므로 약간의 지연을 둠
+    Future.delayed(const Duration(seconds: 1), () {
+      AppTrackingTransparencyService.requestTrackingPermission();
+    });
 
     // NOTE:
     // 웹/멀티플랫폼에서 옵션이 필요하다면 아래 주석을 해제하고

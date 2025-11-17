@@ -61,6 +61,7 @@ dependencies:
     googleapis_auth: ^2.0.0
     extension_google_sign_in_as_googleapis_auth: ^3.0.0
     local_auth: ^2.3.0
+    app_tracking_transparency: ^2.0.6+1
 
     mockito: ^5.4.4
     freezed_annotation: ^3.1.0
