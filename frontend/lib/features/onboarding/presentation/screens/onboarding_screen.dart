@@ -72,10 +72,17 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 
   Future<void> _completeOnboarding() async {
+    LoggerService.debug('📱 [OnboardingScreen] 온보딩 완료 시작');
+
     final result = await _controller.finishOnboarding();
+    LoggerService.debug('📱 [OnboardingScreen] finishOnboarding 결과: ${result.isSuccess}');
+
     if (result.isSuccess && mounted) {
       // 로그인 화면으로 이동
+      LoggerService.debug('🔐 [OnboardingScreen] 로그인 화면으로 이동: ${AppRouter.loginRoute}');
       context.go(AppRouter.loginRoute);
+    } else {
+      LoggerService.debug('❌ [OnboardingScreen] 온보딩 완료 실패: ${result.message}');
     }
   }
 

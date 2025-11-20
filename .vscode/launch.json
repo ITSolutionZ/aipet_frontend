@@ -27,21 +27,14 @@
             "cwd": "${workspaceFolder}/frontend",
             "args": ["--release"]
         },
-        {
-            "name": "Flutter (Web)",
-            "request": "launch",
-            "type": "dart",
-            "program": "lib/main.dart",
-            "cwd": "${workspaceFolder}/frontend",
-            "args": ["-d", "chrome"]
-        },
+
         {
             "name": "Flutter (iOS Simulator)",
             "request": "launch",
             "type": "dart",
             "program": "lib/main.dart",
             "cwd": "${workspaceFolder}/frontend",
-            "args": ["-d", "3A79CF44-A523-4BFB-A33A-F119FB684B94"]
+            "args": ["-d", "ios"]
         },
         {
             "name": "Flutter (Android Emulator)",
@@ -49,7 +42,7 @@
             "type": "dart",
             "program": "lib/main.dart",
             "cwd": "${workspaceFolder}/frontend",
-            "args": ["-d", "R3CN815LCAB"]
+            "args": ["-d", "android"]
         }
     ]
 }

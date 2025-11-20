@@ -132,6 +132,13 @@ post_install do |installer|
         # 互換性のための追加設定
         config.build_settings['CLANG_ANALYZER_NONNULL'] = 'NO'
       end
+
+      # app_tracking_transparency ヘッダーサーチパス設定
+      if target.name == 'Runner'
+        config.build_settings['HEADER_SEARCH_PATHS'] = '$(inherited) $(PODS_ROOT)/app_tracking_transparency'
+        # モジュール検索パス設定
+        config.build_settings['MODULEMAP_FILE'] = ''
+      end
     end
   end
 end

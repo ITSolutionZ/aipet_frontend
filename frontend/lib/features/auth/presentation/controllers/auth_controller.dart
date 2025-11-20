@@ -153,13 +153,11 @@ class AuthController extends Notifier<AuthFormState> {
       );
 
       if (result.isSuccess) {
-        // 로그인 성공 시 펫 데이터 로드
-        final userId = currentState.email; // 임시로 이메일을 사용자 ID로 사용
-        final pets = await loadUserPetsOnLogin(userId);
+        // ✅ 로그인 즉시 성공 반환 (펫 데이터는 백그라운드로 로드)
+        LoggerService.debug('✅ AuthController: 로그인 성공');
 
-        LoggerService.debug(
-          '✅ AuthController: 로그인 성공 - 펫 ${pets.length}마리 로드됨',
-        );
+        // 펫 데이터는 백그라운드에서 비동기로 로드 (로그인 화면에서 기다리지 않음)
+        _loadUserPetsInBackground();
 
         return Result.success('ログインが完了しました', '');
       } else {
@@ -458,6 +456,21 @@ class AuthController extends Notifier<AuthFormState> {
     } else {
       return 'エラーが発生しました';
     }
+  }
+
+  /// 백그라운드에서 펫 데이터 로드 (로그인 완료 후 비동기 처리)
+  ///
+  /// 로그인 화면에서 기다리지 않으므로 무한 로딩 방지
+  void _loadUserPetsInBackground() {
+    // Fire and forget - 로그인 완료 후 백그라운드에서 실행
+    loadUserPetsOnLogin(currentState.email).then(
+      (pets) {
+        LoggerService.debug('🐾 백그라운드 펫 로드 완료: ${pets.length}마리');
+      },
+      onError: (error) {
+        LoggerService.debug('⚠️ 백그라운드 펫 로드 실패: $error');
+      },
+    );
   }
 
   /// 로컬 펫 데이터를 백엔드로 마이그레이션

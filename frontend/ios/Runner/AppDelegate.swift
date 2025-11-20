@@ -1,6 +1,9 @@
 import Flutter
 import UIKit
+
+#if canImport(GoogleMaps)
 import GoogleMaps
+#endif
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
@@ -14,7 +17,9 @@ import GoogleMaps
 
     // Google Maps API 키 설정 (플러그인 등록 후)
     // .env에서 GOOGLE_PUBLIC_API_KEY 사용
+    #if canImport(GoogleMaps)
     GMSServices.provideAPIKey("AIzaSyDgutqY6sdUtjQ_nCZOfb5_GwZmz7mHiAY")
+    #endif
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }

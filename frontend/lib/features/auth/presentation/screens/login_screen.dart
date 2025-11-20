@@ -29,8 +29,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   void initState() {
     super.initState();
+    // ✅ 로그인 화면 로드 진단
+    LoggerService.debug('🔐 [LoginScreen] initState - 로그인 화면 초기화');
+
     // 저장된 로그인 정보 불러오기
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      LoggerService.debug('🔐 [LoginScreen] addPostFrameCallback - 저장된 정보 로드 시작');
+
       ref.read(authFormStateNotifierProvider.notifier).loadSavedCredentials();
 
       // 앱 잠금이 설정되어 있으면 잠금 해제 다이얼로그 표시
@@ -110,6 +115,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // ✅ 로그인 화면 빌드 진단
+    LoggerService.debug('🔐 [LoginScreen] build - 화면 렌더링 중');
+
     final authState = ref.watch(authFormStateNotifierProvider);
 
     // 저장된 이메일이 있으면 컨트롤러에 설정
@@ -341,6 +349,26 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                     const SizedBox(height: AppSpacing.sm),
 
+                    // Apple Sign-In 동의 메시지
+                    Container(
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      decoration: BoxDecoration(
+                        color: Colors.blue.withValues(alpha: 0.05),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: Colors.blue.withValues(alpha: 0.2),
+                        ),
+                      ),
+                      child: Text(
+                        'このアプリはサインインにAppleを利用します。Appleがあなたの身元を確認するための情報（名前・メールアドレス）の提供を許可してください。',
+                        style: AppFonts.bodySmall.copyWith(
+                          color: Colors.grey.shade700,
+                          height: 1.5,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+
                     // LINE 로그인 버튼
                     SocialLoginButton(
                       onPressed: _isLoading ? null : () => _handleLineLogin(),
@@ -403,27 +431,35 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     try {
       final authController = ref.read(authControllerProvider.notifier);
+
+      // ✅ 타임아웃 설정 (30초) - 무한 로딩 방지
       final result = await authController.login(
         password: _passwordController.text,
+      ).timeout(
+        const Duration(seconds: 30),
+        onTimeout: () {
+          LoggerService.debug('❌ ログイン処理がタイムアウト');
+          return Result.failure('ログイン処理がタイムアウトしました。インターネット接続を確認してください。');
+        },
       );
 
       if (result.isSuccess) {
-        // 로그인 성공
+        // ロ グイン成功
         if (mounted) {
-          // ✅ Shared SnackBarService 사용
+          // ✅ Shared SnackBarService 使用
           SnackBarService.showSuccess(context, result.data ?? 'ログインしました');
           context.go(AppRouter.homeRoute);
         }
       } else {
-        // 로그인 실패
+        // ログイン失敗
         if (mounted) {
-          // ✅ Shared SnackBarService 사용
+          // ✅ Shared SnackBarService 使用
           SnackBarService.showError(context, result.message);
         }
       }
     } catch (e) {
       if (mounted) {
-        // ✅ Shared SnackBarService 사용
+        // ✅ Shared SnackBarService 使用
         SnackBarService.showError(context, 'ログインに失敗しました: ${e.toString()}');
       }
     } finally {
@@ -443,23 +479,31 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     try {
       final authController = ref.read(authControllerProvider.notifier);
-      final result = await authController.loginWithGoogle();
+
+      // ✅ 타임아웃 설정 (45초) - Google OAuth는 더 오래 걸릴 수 있음
+      final result = await authController.loginWithGoogle().timeout(
+        const Duration(seconds: 45),
+        onTimeout: () {
+          LoggerService.debug('❌ Google ログイン処理がタイムアウト');
+          return Result.failure('Googleログイン処理がタイムアウトしました。インターネット接続を確認してください。');
+        },
+      );
 
       if (result.isSuccess) {
         if (mounted) {
-          // ✅ Shared SnackBarService 사용
+          // ✅ Shared SnackBarService 使用
           SnackBarService.showSuccess(context, result.data ?? 'ログインしました');
           context.go(AppRouter.homeRoute);
         }
       } else {
         if (mounted) {
-          // ✅ Shared SnackBarService 사용
+          // ✅ Shared SnackBarService 使用
           SnackBarService.showError(context, result.message);
         }
       }
     } catch (e) {
       if (mounted) {
-        // ✅ Shared SnackBarService 사용
+        // ✅ Shared SnackBarService 使用
         SnackBarService.showError(
           context,
           'Googleログインに失敗しました: ${e.toString()}',
@@ -482,23 +526,31 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     try {
       final authController = ref.read(authControllerProvider.notifier);
-      final result = await authController.loginWithApple();
+
+      // ✅ 타임아웃 설정 (45초) - Apple OAuth는 더 오래 걸릴 수 있음
+      final result = await authController.loginWithApple().timeout(
+        const Duration(seconds: 45),
+        onTimeout: () {
+          LoggerService.debug('❌ Apple ログイン処理がタイムアウト');
+          return Result.failure('Appleログイン処理がタイムアウトしました。インターネット接続を確認してください。');
+        },
+      );
 
       if (result.isSuccess) {
         if (mounted) {
-          // ✅ Shared SnackBarService 사용
+          // ✅ Shared SnackBarService 使用
           SnackBarService.showSuccess(context, result.data ?? 'ログインしました');
           context.go(AppRouter.homeRoute);
         }
       } else {
         if (mounted) {
-          // ✅ Shared SnackBarService 사용
+          // ✅ Shared SnackBarService 使用
           SnackBarService.showError(context, result.message);
         }
       }
     } catch (e) {
       if (mounted) {
-        // ✅ Shared SnackBarService 사용
+        // ✅ Shared SnackBarService 使用
         SnackBarService.showError(context, 'Appleログインに失敗しました: ${e.toString()}');
       }
     } finally {
@@ -518,23 +570,31 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     try {
       final authController = ref.read(authControllerProvider.notifier);
-      final result = await authController.loginWithLine();
+
+      // ✅ 타임아웃 설정 (45초) - LINE OAuth는 더 오래 걸릴 수 있음
+      final result = await authController.loginWithLine().timeout(
+        const Duration(seconds: 45),
+        onTimeout: () {
+          LoggerService.debug('❌ LINE ログイン処理がタイムアウト');
+          return Result.failure('LINEログイン処理がタイムアウトしました。インターネット接続を確認してください。');
+        },
+      );
 
       if (result.isSuccess) {
         if (mounted) {
-          // ✅ Shared SnackBarService 사용
+          // ✅ Shared SnackBarService 使用
           SnackBarService.showSuccess(context, result.data ?? 'ログインしました');
           context.go(AppRouter.homeRoute);
         }
       } else {
         if (mounted) {
-          // ✅ Shared SnackBarService 사용
+          // ✅ Shared SnackBarService 使用
           SnackBarService.showError(context, result.message);
         }
       }
     } catch (e) {
       if (mounted) {
-        // ✅ Shared SnackBarService 사용
+        // ✅ Shared SnackBarService 使用
         SnackBarService.showError(context, 'LINEログインに失敗しました: ${e.toString()}');
       }
     } finally {
