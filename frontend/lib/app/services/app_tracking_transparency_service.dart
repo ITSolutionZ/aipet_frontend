@@ -3,92 +3,92 @@ import 'dart:io';
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:flutter/foundation.dart';
 
-/// App Tracking Transparency (ATT) 서비스
+/// App Tracking Transparency (ATT) サービス
 ///
-/// iOS 14.5 이상에서 사용자 추적 권한을 요청하는 서비스를 제공합니다.
+/// iOS 14.5 以上でユーザー追跡権限を要求するサービスを提供します。
 class AppTrackingTransparencyService {
   static final AppTrackingTransparencyService _instance =
       AppTrackingTransparencyService._internal();
   factory AppTrackingTransparencyService() => _instance;
   AppTrackingTransparencyService._internal();
 
-  /// ATT 권한 요청
+  /// ATT 権限要求
   ///
-  /// iOS에서만 동작하며, Android에서는 아무 작업도 수행하지 않습니다.
-  /// 권한 요청은 앱이 완전히 로드된 후에 호출해야 합니다.
+  /// iOSでのみ動作し、Androidでは何も行いません。
+  /// 権限要求はアプリが完全にロードされた後に呼び出す必要があります。
   static Future<void> requestTrackingPermission() async {
-    // iOS에서만 실행
+    // iOSでのみ実行
     if (!Platform.isIOS) {
       if (kDebugMode) {
-        debugPrint('ℹ️ ATT: Android 플랫폼이므로 권한 요청을 건너뜁니다.');
+        debugPrint('ℹ️ ATT: Android プラットフォームのため権限要求をスキップします。');
       }
       return;
     }
 
     try {
-      // iOS 14.5 이상에서만 사용 가능
+      // iOS 14.5 以上でのみ使用可能
       final status = await AppTrackingTransparency.trackingAuthorizationStatus;
 
       if (kDebugMode) {
-        debugPrint('📱 ATT 현재 상태: $status');
+        debugPrint('📱 ATT 現在の状態: $status');
       }
 
-      // 권한이 아직 요청되지 않은 경우에만 요청
+      // 権限がまだ要求されていない場合のみ要求
       if (status == TrackingStatus.notDetermined) {
         if (kDebugMode) {
-          debugPrint('📱 ATT 권한 요청 시작...');
+          debugPrint('📱 ATT 権限要求開始...');
         }
 
         final newStatus = await AppTrackingTransparency.requestTrackingAuthorization();
 
         if (kDebugMode) {
-          debugPrint('📱 ATT 권한 요청 결과: $newStatus');
+          debugPrint('📱 ATT 権限要求結果: $newStatus');
         }
 
-        // 권한 상태에 따른 처리
+        // 権限状態に応じた処理
         switch (newStatus) {
           case TrackingStatus.authorized:
             if (kDebugMode) {
-              debugPrint('✅ ATT: 사용자가 추적 권한을 허용했습니다.');
+              debugPrint('✅ ATT: ユーザーが追跡権限を許可しました。');
             }
             break;
           case TrackingStatus.denied:
             if (kDebugMode) {
-              debugPrint('⚠️ ATT: 사용자가 추적 권한을 거부했습니다.');
+              debugPrint('⚠️ ATT: ユーザーが追跡権限を拒否しました。');
             }
             break;
           case TrackingStatus.restricted:
             if (kDebugMode) {
-              debugPrint('⚠️ ATT: 추적 권한이 제한되어 있습니다.');
+              debugPrint('⚠️ ATT: 追跡権限が制限されています。');
             }
             break;
           case TrackingStatus.notDetermined:
             if (kDebugMode) {
-              debugPrint('ℹ️ ATT: 추적 권한 상태가 결정되지 않았습니다.');
+              debugPrint('ℹ️ ATT: 追跡権限の状態が決定されていません。');
             }
             break;
           case TrackingStatus.notSupported:
             if (kDebugMode) {
-              debugPrint('ℹ️ ATT: 이 기기에서 추적이 지원되지 않습니다.');
+              debugPrint('ℹ️ ATT: このデバイスでは追跡がサポートされていません。');
             }
             break;
         }
       } else {
         if (kDebugMode) {
-          debugPrint('ℹ️ ATT: 이미 권한 상태가 결정되었습니다: $status');
+          debugPrint('ℹ️ ATT: すでに権限状態が決定されています: $status');
         }
       }
     } catch (e) {
-      // ATT 권한 요청 실패 시에도 앱은 계속 실행
+      // ATT 権限要求失敗時にもアプリは続行
       if (kDebugMode) {
-        debugPrint('⚠️ ATT 권한 요청 실패: $e');
+        debugPrint('⚠️ ATT 権限要求失敗: $e');
       }
     }
   }
 
-  /// 현재 추적 권한 상태 확인
+  /// 現在の追跡権限状態を確認
   ///
-  /// iOS에서만 동작하며, Android에서는 null을 반환합니다.
+  /// iOSでのみ動作し、Androidではnullを返します。
   static Future<TrackingStatus?> getTrackingStatus() async {
     if (!Platform.isIOS) {
       return null;
@@ -98,13 +98,13 @@ class AppTrackingTransparencyService {
       return await AppTrackingTransparency.trackingAuthorizationStatus;
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('⚠️ ATT 상태 확인 실패: $e');
+        debugPrint('⚠️ ATT 状態確認失敗: $e');
       }
       return null;
     }
   }
 
-  /// 추적 권한이 허용되었는지 확인
+  /// 追跡権限が許可されているかを確認
   static Future<bool> isTrackingAuthorized() async {
     final status = await getTrackingStatus();
     return status == TrackingStatus.authorized;

@@ -258,7 +258,7 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
   /// 특정 날짜의 이벤트 가져오기 (펫 필터링 적용)
   List<CalendarEventEntity> _getEventsForDay(DateTime day) {
     final allEvents = _events[DateTime(day.year, day.month, day.day)] ?? [];
-    
+
     // 펫 필터링 적용
     if (_selectedPetId == null) {
       return allEvents; // 전체 보기
@@ -665,7 +665,7 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
         GestureDetector(
           onTap: () {
             LoggerService.debug(
-              '🐾 ペット選択: ${petId == null ? "全て" : "ID=$petId (${label})"}',
+              '🐾 ペット選択: ${petId == null ? "全て" : "ID=$petId ($label)"}',
             );
             setState(() {
               _selectedPetId = petId;
