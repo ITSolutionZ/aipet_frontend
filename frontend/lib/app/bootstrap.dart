@@ -124,9 +124,14 @@ class AppBootstrap {
 
     // App Tracking Transparency 권한 요청 (iOS 14.5+)
     // 앱이 완전히 로드된 후에 요청하므로 약간의 지연을 둠
+    // TEMPORARY: TestFlightで無限ローディング問題を解決するため一時的に無効化
+    // TODO: 問題解決後に有効化
+    /*
     Future.delayed(const Duration(seconds: 1), () {
       AppTrackingTransparencyService.requestTrackingPermission();
     });
+    */
+    debugPrint('⚠️ ATT: 一時的に無効化されています (TestFlight問題調査中)');
 
     // NOTE:
     // 웹/멀티플랫폼에서 옵션이 필요하다면 아래 주석을 해제하고
