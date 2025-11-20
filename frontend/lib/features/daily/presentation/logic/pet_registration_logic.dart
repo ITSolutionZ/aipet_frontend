@@ -212,18 +212,40 @@ class PetRegistrationLogic {
     if (errorString.contains('network') ||
         errorString.contains('接続') ||
         errorString.contains('timeout') ||
-        errorString.contains('タイムアウト')) {
-      return 'ネットワーク接続を確認してください。';
+        errorString.contains('タイムアウト') ||
+        errorString.contains('connection')) {
+      return 'ネットワーク接続を確認してください。インターネット接続を確認してから再度お試しください。';
     }
 
-    // 서버 에러
+    // 서버 에러 (500번대)
     if (errorString.contains('server') ||
         errorString.contains('サーバー') ||
-        errorString.contains('500')) {
+        errorString.contains('500') ||
+        errorString.contains('502') ||
+        errorString.contains('503') ||
+        errorString.contains('504')) {
       return 'サーバーエラーが発生しました。しばらくしてから再度お試しください。';
     }
 
-    // 기본 에러 메시지
+    // DioException 에러 처리
+    if (errorString.contains('dioexception')) {
+      if (errorString.contains('timeout')) {
+        return 'リクエストがタイムアウトしました。ネットワーク接続を確認してから再度お試しください。';
+      }
+      if (errorString.contains('connection')) {
+        return 'サーバーに接続できません。ネットワーク接続を確認してください。';
+      }
+    }
+
+    // 기본 에러 메시지 (더 구체적인 정보 포함)
+    final errorDetail = error.toString();
+    LoggerService.debug('❌ 펫 등록 에러 상세: $errorDetail');
+
+    // 에러 타입에 따른 메시지
+    if (errorDetail.contains('Exception')) {
+      return 'ペット登録中にエラーが発生しました。入力内容を確認してから再度お試しください。';
+    }
+
     return 'ペット登録に失敗しました。もう一度お試しください。';
   }
 

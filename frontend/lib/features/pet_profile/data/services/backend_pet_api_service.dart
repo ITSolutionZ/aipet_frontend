@@ -109,7 +109,15 @@ class BackendPetApiService {
       LoggerService.debug('🐾 변환된 gender: ${petData['gender']}');
 
       print('🐾 API 호출 중: POST /pets');
-      final response = await _apiClient.post('/pets', data: petData);
+      // 타임아웃을 더 길게 설정 (TestFlight 환경 고려)
+      final response = await _apiClient.post(
+        '/pets',
+        data: petData,
+        options: Options(
+          sendTimeout: const Duration(seconds: 60),
+          receiveTimeout: const Duration(seconds: 60),
+        ),
+      );
 
       print('🐾 Response Status: ${response.statusCode}');
       print('🐾 Response Data: ${response.data}');
@@ -144,19 +152,33 @@ class BackendPetApiService {
       }
     } on DioException catch (e) {
       print('❌ DioException 발생');
+      print('   Type: ${e.type}');
       print('   Status: ${e.response?.statusCode}');
       print('   Message: ${e.message}');
       print('   Response: ${e.response?.data}');
+      print('   Request Path: ${e.requestOptions.path}');
       LoggerService.debug('❌ DioException 발생');
+      LoggerService.debug('   Type: ${e.type}');
       LoggerService.debug('   Status: ${e.response?.statusCode}');
       LoggerService.debug('   Message: ${e.message}');
       LoggerService.debug('   Response: ${e.response?.data}');
+      LoggerService.debug('   Request Path: ${e.requestOptions.path}');
+
+      // 타임아웃 에러인 경우 더 구체적인 메시지
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.sendTimeout ||
+          e.type == DioExceptionType.receiveTimeout) {
+        LoggerService.debug('⏰ 타임아웃 에러 - 네트워크 연결 확인 필요');
+      }
+
       return _handleDioError('펫 생성', e);
-    } catch (e) {
+    } catch (e, stackTrace) {
       print('❌ 알 수 없는 에러: $e');
       print('   Type: ${e.runtimeType}');
+      print('   StackTrace: ${stackTrace.toString().split('\n').take(3).join('\n')}');
       LoggerService.debug('❌ 알 수 없는 에러: $e');
       LoggerService.debug('   Type: ${e.runtimeType}');
+      LoggerService.debug('   StackTrace: ${stackTrace.toString().split('\n').take(5).join('\n')}');
       return Result.failure('ペットの作成に失敗しました: $e');
     }
   }
