@@ -149,18 +149,29 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
   /// 스플래시 초기화
   void _initializeSplash() async {
-    // 앱 부트스트랩 초기화 실행
-    await AppBootstrap.initialize();
+    try {
+      // 앱 부트스트랩 초기화 실행
+      await AppBootstrap.initialize();
+      LoggerService.debug('✅ AppBootstrap initialized successfully');
 
-    // 이미지 프리로딩
-    await _preloadImages();
+      // 이미지 프리로딩
+      await _preloadImages();
 
-    // 애니메이션 초기화
-    ref.read(splashAnimationProvider.notifier).initializeAnimations(this);
-    ref.read(splashAnimationProvider.notifier).startAnimation();
+      // 애니메이션 초기화
+      ref.read(splashAnimationProvider.notifier).initializeAnimations(this);
+      ref.read(splashAnimationProvider.notifier).startAnimation();
 
-    // 스플래시 시퀀스 시작
-    _startSplashSequence();
+      // 스플래시 시퀀스 시작
+      _startSplashSequence();
+    } catch (error, stackTrace) {
+      // 초기화 실패 시 로그 출력하고 fallback 시퀀스 시작
+      LoggerService.debug('❌ Splash initialization error: $error');
+      LoggerService.debug('Stack trace: $stackTrace');
+
+      if (mounted) {
+        _startFallbackSequence();
+      }
+    }
   }
 
   /// 스플래시 시퀀스 시작
@@ -235,14 +246,20 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     if (!mounted) return;
 
     try {
-      // 앱 부트스트랩 초기화 완료 확인
-      if (!AppBootstrap.isInitialized) {
-        LoggerService.debug('⚠️ App bootstrap not completed, initializing...');
-        await AppBootstrap.initialize();
-      }
-
-      // 앱 초기화 상태 확인
+      // 앱 초기화 상태 확인 (초기화 대기)
       final initState = ref.read(appInitializationProvider);
+
+      // 초기화가 아직 진행 중이면 대기
+      if (!initState.isInitialized && initState.isLoading) {
+        LoggerService.debug('⏳ Waiting for app initialization...');
+        await Future.delayed(const Duration(milliseconds: 500));
+
+        // 재귀 호출로 다시 확인
+        if (mounted) {
+          return _navigateToNext();
+        }
+        return;
+      }
 
       if (initState.isInitialized) {
         // 온보딩 완료 상태에 따라 라우팅 결정
@@ -256,13 +273,16 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
           }
         }
       } else {
-        // 초기화가 완료되지 않은 경우 온보딩으로 이동
+        // 초기화가 완료되지 않은 경우에도 온보딩으로 이동
+        LoggerService.debug('⚠️ App not fully initialized, navigating to onboarding');
         if (mounted) {
           context.go(AppRouter.onboardingRoute);
         }
       }
-    } catch (error) {
-      LoggerService.debug('Navigation error: $error');
+    } catch (error, stackTrace) {
+      LoggerService.debug('❌ Navigation error: $error');
+      LoggerService.debug('Stack trace: $stackTrace');
+
       // 에러 발생 시 기본 경로로 이동
       if (mounted) {
         context.go(AppRouter.onboardingRoute);

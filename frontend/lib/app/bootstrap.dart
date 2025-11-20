@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:aipet_frontend/app/services/app_tracking_transparency_service.dart';
 import 'package:aipet_frontend/app/services/local_storage_service.dart';
 import 'package:aipet_frontend/app/services/preload_service.dart';
 import 'package:aipet_frontend/features/auth/data/services/firebase_token_service.dart';
@@ -77,6 +76,8 @@ class AppBootstrap {
   ///
   /// 환경별 설정을 초기화하고 앱 실행에 필요한 기본 설정을 로드합니다.
   static Future<void> initialize() async {
+    // Release 모드에서도 로그 출력 (TestFlight 디버깅용)
+    print('🚀 [Bootstrap] App initialization started');
     debugPrint('🚀 App initialization started');
 
     // 동기 초기화 작업들 (빠른 작업들)
@@ -99,10 +100,13 @@ class AppBootstrap {
     ];
 
     // 모든 비동기 초기화 작업을 병렬로 실행
+    print('📦 [Bootstrap] Running parallel initialization tasks...');
     final results = await Future.wait(futures, eagerError: false);
+    print('✅ [Bootstrap] Parallel tasks completed');
 
     // Firebase 초기화 결과 확인 (두 번째 결과)
     final isFirebaseInitialized = results[1] as bool;
+    print('🔥 [Bootstrap] Firebase initialized: $isFirebaseInitialized');
 
     // 설정 완료 후 로그 출력 (개발 모드에서만)
     if (AppConfig.current.isDebugMode) {
@@ -113,13 +117,16 @@ class AppBootstrap {
     if (isFirebaseInitialized) {
       try {
         FirebaseTokenService.setupAuthStateListener();
+        print('✅ [Bootstrap] Firebase Auth State Listener setup');
         debugPrint('✅ Firebase Auth State Listener setup');
       } catch (e) {
+        print('⚠️ [Bootstrap] Firebase Auth State Listener setup failed: $e');
         debugPrint('⚠️ Firebase Auth State Listener setup failed: $e');
       }
     }
 
     // 홈 데이터 프리로딩 시작 (백그라운드)
+    print('📚 [Bootstrap] Starting preload service...');
     unawaited(PreloadService().startPreloading());
 
     // App Tracking Transparency 권한 요청 (iOS 14.5+)
@@ -131,7 +138,11 @@ class AppBootstrap {
       AppTrackingTransparencyService.requestTrackingPermission();
     });
     */
+    print('⚠️ [Bootstrap] ATT: 一時的に無効化されています (TestFlight問題調査中)');
     debugPrint('⚠️ ATT: 一時的に無効化されています (TestFlight問題調査中)');
+
+    print('🎉 [Bootstrap] App initialization completed successfully');
+    debugPrint('🎉 App initialization completed successfully');
 
     // NOTE:
     // 웹/멀티플랫폼에서 옵션이 필요하다면 아래 주석을 해제하고
