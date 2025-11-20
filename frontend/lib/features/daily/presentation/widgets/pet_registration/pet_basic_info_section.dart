@@ -1,5 +1,6 @@
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 /// 펫 기본 정보 입력 섹션
 class PetBasicInfoSection extends StatelessWidget {
@@ -142,7 +143,10 @@ class PetBasicInfoSection extends StatelessWidget {
                 controller: weightController,
                 label: '',
                 hint: '例）3.23',
-                keyboardType: TextInputType.number,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+                ],
                 validator: weightValidator,
               ),
             ),

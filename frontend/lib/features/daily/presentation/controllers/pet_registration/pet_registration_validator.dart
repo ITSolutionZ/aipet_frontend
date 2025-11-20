@@ -64,6 +64,19 @@ class PetRegistrationValidator with ValidationMixin {
   /// 체중 검증 (shared ValidationMixin 사용)
   String? validateWeight(String? value) {
     LoggerService.debug('🔍 Validating weight: "$value"');
+
+    // 빈 값 체크
+    if (value == null || value.trim().isEmpty) {
+      return '体重を入力してください';
+    }
+
+    // 숫자와 소수점(.)만 허용하는지 확인
+    final numericPattern = RegExp(r'^\d*\.?\d*$');
+    if (!numericPattern.hasMatch(value.trim())) {
+      return '体重は数字と小数点(.)のみ入力できます';
+    }
+
+    // 숫자 범위 검증
     final result = validateMultiple(value, [
       (v) => validateRequired(v, fieldName: '体重'),
       (v) => validateNumberRange(v, min: 0.1, max: 100, fieldName: '体重'),

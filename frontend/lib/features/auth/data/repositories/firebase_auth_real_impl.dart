@@ -106,34 +106,39 @@ class FirebaseAuthRealImpl implements AuthRepository {
   @override
   Future<Result<AuthUser>> signInWithGoogle() async {
     try {
-      // Google Sign-In 초기화
-      await _googleSignIn.initialize();
-
       // Google Sign-In 인증 시작
       final GoogleSignInAccount? googleUser;
       try {
-        googleUser = await _googleSignIn.authenticate(
-          scopeHint: [
-            'email',
-            'https://www.googleapis.com/auth/userinfo.profile',
-          ],
-        );
-      } catch (authError) {
-        if (kDebugMode) {
-          LoggerService.debug('❌ Google Sign-In 에러: $authError');
-        }
-        
-        // 사용자 취소 에러인 경우
-        if (authError.toString().contains('canceled') ||
-            authError.toString().contains('cancelled')) {
+        // ✅ 최신 google_sign_in API 사용
+        googleUser = await _googleSignIn.signIn();
+
+        // 사용자가 로그인을 취소한 경우
+        if (googleUser == null) {
+          print('⚠️ [Google Sign-In] ユーザーがログインをキャンセルしました');
+          LoggerService.debug('⚠️ Google Sign-In がキャンセルされました');
           return Result.failure('Googleログインがキャンセルされました');
         }
-        
-        rethrow;
+
+        print('✅ [Google Sign-In] ログイン成功: ${googleUser.email}');
+        LoggerService.debug('✅ Google Sign-In ログイン成功: ${googleUser.email}');
+      } catch (authError) {
+        print('❌ [Google Sign-In] エラー: $authError');
+        if (kDebugMode) {
+          LoggerService.debug('❌ Google Sign-In エラー: $authError');
+        }
+
+        // 사용자 취소 에러인 경우
+        if (authError.toString().contains('canceled') ||
+            authError.toString().contains('cancelled') ||
+            authError.toString().contains('SIGN_IN_CANCELED')) {
+          return Result.failure('Googleログインがキャンセルされました');
+        }
+
+        return Result.failure('Googleログインに失敗しました: ${authError.toString()}');
       }
 
       // Google 인증 토큰 획득
-      final GoogleSignInAuthentication googleAuth = googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
       if (googleAuth.idToken == null) {
         throw Exception('Google idTokenを獲得できませんでした');
@@ -178,6 +183,9 @@ class FirebaseAuthRealImpl implements AuthRepository {
   @override
   Future<Result<AuthUser>> signInWithApple() async {
     try {
+      print('🍎 [Apple Sign-In] ログイン開始...');
+      LoggerService.debug('🍎 Apple Sign-In ログイン開始');
+
       // Apple Sign-In 플로우
       final credential = await SignInWithApple.getAppleIDCredential(
         scopes: [
@@ -186,10 +194,16 @@ class FirebaseAuthRealImpl implements AuthRepository {
         ],
       );
 
+      print('✅ [Apple Sign-In] 認証情報取得成功');
+      LoggerService.debug('✅ Apple Sign-In 認証情報取得成功');
+
       final oauthCredential = OAuthProvider('apple.com').credential(
         idToken: credential.identityToken,
         accessToken: credential.authorizationCode,
       );
+
+      print('🔥 [Apple Sign-In] Firebaseにログイン中...');
+      LoggerService.debug('🔥 Apple Sign-In Firebaseにログイン中');
 
       final userCredential = await _firebaseAuth.signInWithCredential(
         oauthCredential,
@@ -197,13 +211,28 @@ class FirebaseAuthRealImpl implements AuthRepository {
 
       if (userCredential.user != null) {
         final user = _mapFirebaseUserToAuthUser(userCredential.user!);
+        print('✅ [Apple Sign-In] ログイン成功: ${user.email}');
+        LoggerService.debug('✅ Apple Sign-In ログイン成功: ${user.email}');
         return Result.success('Appleログインが完了しました', user);
       } else {
+        print('❌ [Apple Sign-In] ユーザー情報がありません');
+        LoggerService.debug('❌ Apple Sign-In ユーザー情報なし');
         return Result.failure('Apple ログインに失敗しました');
       }
     } on FirebaseAuthException catch (e) {
+      print('❌ [Apple Sign-In] Firebase エラー: ${e.code} - ${e.message}');
+      LoggerService.debug('❌ Apple Sign-In Firebase エラー: ${e.code}');
       return Result.failure(_getFirebaseErrorMessage(e));
     } catch (e) {
+      print('❌ [Apple Sign-In] エラー: $e');
+      LoggerService.debug('❌ Apple Sign-In エラー: $e');
+
+      // 사용자 취소 에러 처리
+      if (e.toString().contains('AuthorizationErrorCode.canceled') ||
+          e.toString().contains('canceled')) {
+        return Result.failure('Appleログインがキャンセルされました');
+      }
+
       return Result.failure('Apple ログインに失敗しました: ${e.toString()}');
     }
   }
@@ -216,11 +245,17 @@ class FirebaseAuthRealImpl implements AuthRepository {
   @override
   Future<Result<AuthUser>> signInWithLine() async {
     try {
+      print('💚 [LINE Login] ログイン開始...');
+      LoggerService.debug('💚 LINE Login ログイン開始');
+
       // LINE OAuth 서비스를 통한 로그인
       final result = await _lineOAuthService.loginWithLine();
 
       if (result.isSuccess && result.dataOrNull != null) {
         final lineUserInfo = result.dataOrNull!;
+
+        print('✅ [LINE Login] 認証成功: ${lineUserInfo.displayName}');
+        LoggerService.debug('✅ LINE Login 認証成功: ${lineUserInfo.displayName}');
 
         // LINE 사용자 정보를 AuthUser로 변환
         final user = AuthUser(
@@ -241,9 +276,20 @@ class FirebaseAuthRealImpl implements AuthRepository {
 
         return Result.success('LINEログインが完了しました', user);
       } else {
+        print('❌ [LINE Login] 認証失敗: ${result.error}');
+        LoggerService.debug('❌ LINE Login 認証失敗: ${result.error}');
         return Result.failure(result.error?.toString() ?? 'LINE ログインに失敗しました');
       }
     } catch (e) {
+      print('❌ [LINE Login] エラー: $e');
+      LoggerService.debug('❌ LINE Login エラー: $e');
+
+      // 사용자 취소 에러 처리
+      if (e.toString().contains('canceled') ||
+          e.toString().contains('cancelled')) {
+        return Result.failure('LINEログインがキャンセルされました');
+      }
+
       return Result.failure('LINE ログインに失敗しました: ${e.toString()}');
     }
   }

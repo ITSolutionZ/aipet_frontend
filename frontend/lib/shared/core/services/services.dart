@@ -8,6 +8,8 @@ export 'encryption_service.dart';
 export 'error_handler_service.dart';
 export 'error_handling_service.dart';
 export 'error_service.dart';
+export 'firebase_token_service.dart';
+export 'firestore_pet_service.dart';
 export 'http_client_service.dart' show ApiResponse;
 export 'image_cache_service.dart';
 export 'image_management_service.dart';

@@ -388,17 +388,42 @@ class BackendPetApiService {
         if (statusCode == 400) {
           // 백엔드 유효성 검증 에러 메시지 추출
           final data = e.response?.data;
-          if (data is Map<String, dynamic> && data['error'] != null) {
-            errorMessage = data['error'] as String;
-            // 상세 에러가 있으면 추가
+          if (data is Map<String, dynamic>) {
+            // errors 배열에서 구체적인 필드별 에러 메시지 추출
             if (data['errors'] is List && (data['errors'] as List).isNotEmpty) {
-              final firstError = (data['errors'] as List).first;
-              if (firstError is Map<String, dynamic> && firstError['message'] != null) {
-                errorMessage += ': ${firstError['message']}';
+              final errors = data['errors'] as List;
+              final errorMessages = <String>[];
+
+              for (final error in errors) {
+                if (error is Map<String, dynamic>) {
+                  final field = error['field'] as String? ?? '';
+                  final message = error['message'] as String? ?? error['msg'] as String? ?? '';
+
+                  // 필드명을 일본어로 변환
+                  final fieldName = _getFieldNameInJapanese(field);
+
+                  if (message.isNotEmpty) {
+                    errorMessages.add('$fieldName: $message');
+                  } else if (field.isNotEmpty) {
+                    errorMessages.add('$fieldNameが正しくありません');
+                  }
+                }
               }
+
+              if (errorMessages.isNotEmpty) {
+                errorMessage = '入力内容を確認してください:\n• ${errorMessages.join('\n• ')}';
+              } else {
+                errorMessage = data['error'] as String? ?? '入力データが正しくありません';
+              }
+            } else if (data['error'] != null) {
+              errorMessage = data['error'] as String;
+            } else if (data['message'] != null) {
+              errorMessage = data['message'] as String;
+            } else {
+              errorMessage = '入力データが正しくありません。入力内容を確認してから再度お試しください。';
             }
           } else {
-            errorMessage = '入力データが正しくありません';
+            errorMessage = '入力データが正しくありません。入力内容を確認してから再度お試しください。';
           }
         } else if (statusCode == 401) {
           errorMessage = '認証に失敗しました。再度ログインしてください。';
@@ -415,5 +440,32 @@ class BackendPetApiService {
     }
 
     return Result.failure(errorMessage);
+  }
+
+  /// 필드명을 일본어로 변환하는 헬퍼 메서드
+  static String _getFieldNameInJapanese(String field) {
+    final fieldMap = {
+      'name': 'ペットの名前',
+      'type': 'ペットの種類',
+      'breed': '品種',
+      'birthDate': '生年月日',
+      'birth_date': '生年月日',
+      'gender': '性別',
+      'weight': '体重',
+      'size': 'サイズ',
+      'microchipNumber': 'マイクロチップ番号',
+      'microchip_number': 'マイクロチップ番号',
+      'arrivalDate': '家にきた日',
+      'arrival_date': '家にきた日',
+      'neutered': '去勢・避妊',
+      'is_neutered': '去勢・避妊',
+      'imageUrl': '画像',
+      'image_url': '画像',
+      'photo_url': '画像',
+      'additionalInfo': '追加情報',
+      'additional_info': '追加情報',
+    };
+
+    return fieldMap[field] ?? field;
   }
 }

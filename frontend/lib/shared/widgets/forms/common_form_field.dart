@@ -1,5 +1,6 @@
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 /// 공통 폼 필드 컴포넌트
 ///
@@ -12,6 +13,7 @@ class CommonFormField extends StatelessWidget {
   final IconData? prefixIcon;
   final IconData? suffixIcon;
   final TextInputType? keyboardType;
+  final List<TextInputFormatter>? inputFormatters;
   final int? maxLines;
   final int? maxLength;
   final bool obscureText;
@@ -34,6 +36,7 @@ class CommonFormField extends StatelessWidget {
     this.prefixIcon,
     this.suffixIcon,
     this.keyboardType,
+    this.inputFormatters,
     this.maxLines = 1,
     this.maxLength,
     this.obscureText = false,
@@ -69,6 +72,7 @@ class CommonFormField extends StatelessWidget {
         TextFormField(
           controller: controller,
           keyboardType: keyboardType,
+          inputFormatters: inputFormatters,
           maxLines: maxLines,
           maxLength: maxLength,
           obscureText: obscureText,
