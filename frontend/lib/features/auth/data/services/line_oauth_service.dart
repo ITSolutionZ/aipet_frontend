@@ -1,10 +1,14 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
 import 'package:aipet_frontend/app/config/app_config.dart';
 import 'package:aipet_frontend/shared/core/domain/result.dart';
-// import 'package:flutter_web_auth/flutter_web_auth.dart'; // 의존성 충돌로 임시 비활성화
+import 'package:aipet_frontend/shared/shared.dart';
+import 'package:app_links/app_links.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
 /// 🎯 LINE OAuth 서비스
 ///
@@ -20,6 +24,9 @@ class LineOAuthService {
   String get _clientId => AppConfig.current.lineClientId;
   String get _clientSecret => AppConfig.current.lineClientSecret;
   String get _redirectUri => AppConfig.current.lineRedirectUri;
+
+  // AppLinks 인스턴스 (URL Scheme 콜백 처리)
+  final AppLinks _appLinks = AppLinks();
 
   /// LINE OAuth 로그인 시작
   ///
@@ -86,12 +93,77 @@ class LineOAuthService {
     return uri.toString();
   }
 
-  /// OAuth URL 실행 (임시 비활성화)
+  /// OAuth URL 실행
   ///
-  /// flutter_web_auth 패키지 의존성 충돌로 임시 비활성화
+  /// url_launcher와 app_links를 사용하여 LINE OAuth 인증을 진행합니다.
   Future<String> _launchOAuthUrl(String authUrl) async {
-    // 임시로 에러 반환 (LINE OAuth 기능 비활성화)
-    throw Exception('LINE OAuth機能は現在利用できません');
+    try {
+      // URL Scheme 콜백을 위한 스트림 리스너 설정
+      final completer = Completer<String>();
+      StreamSubscription<Uri>? linkSubscription;
+
+      // URL Scheme 콜백 리스너 설정
+      linkSubscription = _appLinks.uriLinkStream.listen(
+        (Uri uri) {
+          if (kDebugMode) {
+            LoggerService.debug('📱 LINE OAuth 콜백 수신: $uri');
+          }
+
+          // LINE OAuth 콜백 URL 확인 (aipet://로 시작)
+          if (uri.scheme == 'aipet') {
+            linkSubscription?.cancel();
+            if (!completer.isCompleted) {
+              completer.complete(uri.toString());
+            }
+          }
+        },
+        onError: (error) {
+          if (kDebugMode) {
+            LoggerService.debug('❌ LINE OAuth 콜백 에러: $error');
+          }
+          linkSubscription?.cancel();
+          if (!completer.isCompleted) {
+            completer.completeError(error);
+          }
+        },
+      );
+
+      // 타임아웃 설정 (60초)
+      Timer(const Duration(seconds: 60), () {
+        if (!completer.isCompleted) {
+          linkSubscription?.cancel();
+          completer.completeError(
+            TimeoutException('LINE OAuthタイムアウト', const Duration(seconds: 60)),
+          );
+        }
+      });
+
+      // OAuth URL을 브라우저에서 열기
+      final uri = Uri.parse(authUrl);
+      final canLaunch = await canLaunchUrl(uri);
+      if (!canLaunch) {
+        linkSubscription.cancel();
+        throw Exception('LINE OAuth URLを開けませんでした');
+      }
+
+      await launchUrl(
+        uri,
+        mode: LaunchMode.externalApplication, // 외부 브라우저에서 열기
+      );
+
+      if (kDebugMode) {
+        LoggerService.debug('🌐 LINE OAuth URL 열림: $authUrl');
+      }
+
+      // 콜백 URL 대기
+      final callbackUrl = await completer.future;
+      return callbackUrl;
+    } catch (e) {
+      if (kDebugMode) {
+        LoggerService.debug('❌ LINE OAuth URL 실행 에러: $e');
+      }
+      rethrow;
+    }
   }
 
   /// 콜백 URL에서 인증 코드 추출

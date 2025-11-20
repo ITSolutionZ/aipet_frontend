@@ -196,11 +196,16 @@ class FirebaseTokenInterceptor extends Interceptor {
         if (kDebugMode) {
           LoggerService.debug('⚠️ Firebase ID Token이 없습니다. 로그인이 필요할 수 있습니다.');
         }
-        // 토큰이 없으면 에러 반환
+        // 토큰이 없으면 에러 반환 (TestFlight 환경에서도 명확한 에러 메시지)
         handler.reject(
           DioException(
             requestOptions: options,
-            type: DioExceptionType.cancel,
+            type: DioExceptionType.badResponse,
+            response: Response(
+              requestOptions: options,
+              statusCode: 401,
+              statusMessage: 'Firebase認証が必要です。ログインしてください。',
+            ),
             error: 'Firebase認証が必要です。ログインしてください。',
           ),
         );
@@ -211,10 +216,16 @@ class FirebaseTokenInterceptor extends Interceptor {
       if (kDebugMode) {
         LoggerService.debug('❌ Firebase Token 획득 실패: $e');
       }
+      // TestFlight 환경에서도 명확한 에러 메시지 제공
       handler.reject(
         DioException(
           requestOptions: options,
-          type: DioExceptionType.cancel,
+          type: DioExceptionType.badResponse,
+          response: Response(
+            requestOptions: options,
+            statusCode: 401,
+            statusMessage: 'Firebase認証エラーが発生しました。',
+          ),
           error: 'Firebase認証エラーが発生しました: $e',
         ),
       );

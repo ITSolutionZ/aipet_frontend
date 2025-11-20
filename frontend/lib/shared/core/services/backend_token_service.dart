@@ -22,17 +22,36 @@ class BackendTokenService {
         LoggerService.debug('🔄 백엔드로 Firebase ID Token 전송 시작...');
       }
 
-      // 1. Firebase ID Token 획득
-      final token = await FirebaseTokenService.getIdToken();
+      // 1. Firebase ID Token 획득 (강제 갱신)
+      // 소셜 로그인 직후에는 토큰이 아직 생성되지 않았을 수 있으므로
+      // 강제 갱신을 통해 최신 토큰을 확보
+      var token = await FirebaseTokenService.getIdToken(forceRefresh: true);
+
+      // 토큰이 없으면 일반 방식으로 재시도
+      if (token == null) {
+        token = await FirebaseTokenService.getIdToken(forceRefresh: false);
+      }
+
       if (token == null) {
         if (kDebugMode) {
           LoggerService.debug('❌ Firebase ID Token이 없습니다');
+          LoggerService.debug('   Firebase認証が必要です。ログインしてください。');
         }
         return false;
       }
 
       // 2. SecureStorage에 토큰 저장 (백엔드 API 호출 시 사용)
-      await FirebaseTokenService.saveTokenToStorage();
+      // 토큰 저장이 실패해도 계속 진행 (이미 저장되어 있을 수 있음)
+      try {
+        await FirebaseTokenService.saveTokenToStorage();
+        if (kDebugMode) {
+          LoggerService.debug('✅ Firebase ID Token 저장 완료');
+        }
+      } catch (e) {
+        if (kDebugMode) {
+          LoggerService.debug('⚠️ 토큰 저장 실패 (계속 진행): $e');
+        }
+      }
 
       // 3. 백엔드 API 호출 테스트 (예: /auth/verify-token)
       try {

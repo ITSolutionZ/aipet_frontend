@@ -196,7 +196,35 @@ class PetRegistrationLogic {
     if (error is PetRegistrationException) {
       return error.message;
     }
-    return 'エラーが発生しました: $error';
+
+    // TestFlight 환경에서 발생할 수 있는 다양한 에러 처리
+    final errorString = error.toString().toLowerCase();
+
+    // Firebase 인증 에러
+    if (errorString.contains('firebase') ||
+        errorString.contains('認証') ||
+        errorString.contains('authentication') ||
+        errorString.contains('401')) {
+      return '認証に失敗しました。再度ログインしてください。';
+    }
+
+    // 네트워크 에러
+    if (errorString.contains('network') ||
+        errorString.contains('接続') ||
+        errorString.contains('timeout') ||
+        errorString.contains('タイムアウト')) {
+      return 'ネットワーク接続を確認してください。';
+    }
+
+    // 서버 에러
+    if (errorString.contains('server') ||
+        errorString.contains('サーバー') ||
+        errorString.contains('500')) {
+      return 'サーバーエラーが発生しました。しばらくしてから再度お試しください。';
+    }
+
+    // 기본 에러 메시지
+    return 'ペット登録に失敗しました。もう一度お試しください。';
   }
 
   /// ダイアログメッセージ

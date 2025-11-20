@@ -338,11 +338,15 @@ class BackendPetApiService {
 
     switch (e.type) {
       case DioExceptionType.cancel:
-        // Firebase 인증 에러
+        // Firebase 인증 에러 또는 요청 취소
         if (e.error is String) {
           errorMessage = e.error as String;
         } else {
           errorMessage = 'リクエストがキャンセルされました';
+        }
+        // TestFlight 환경에서도 명확한 메시지 제공
+        if (e.response?.statusCode == 401 || e.error.toString().contains('Firebase')) {
+          errorMessage = '認証に失敗しました。再度ログインしてください。';
         }
         break;
       case DioExceptionType.connectionTimeout:

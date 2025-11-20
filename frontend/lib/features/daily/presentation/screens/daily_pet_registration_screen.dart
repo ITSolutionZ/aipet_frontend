@@ -2,7 +2,6 @@ import 'package:aipet_frontend/features/daily/presentation/controllers/pet_regis
 import 'package:aipet_frontend/features/daily/presentation/logic/pet_registration_logic.dart';
 import 'package:aipet_frontend/features/daily/presentation/screens/daily_pet_registration_screen_widgets/daily_pet_registration_screen_widgets.dart';
 import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
-import 'package:aipet_frontend/features/pet_profile/presentation/controllers/pet_profile_unified_controller.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:aipet_frontend/shared/widgets/actions/actions.dart';
 import 'package:flutter/material.dart';

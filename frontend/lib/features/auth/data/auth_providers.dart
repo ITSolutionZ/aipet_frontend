@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../domain/repositories/auth_repository.dart';
 import '../presentation/state/auth_form_state.dart';
 import 'repositories/firebase_auth_real_impl.dart';
-import 'repositories/local_auth_impl.dart';
 
 /// AuthRepository Provider
 ///
@@ -15,7 +14,7 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
   // ✅ Firebase Auth 사용 (백엔드 연동)
   LoggerService.debug('🔐 [Auth] Firebase Auth 사용 (백엔드 연동)');
   return FirebaseAuthRealImpl();
-  
+
   // 로컬 전용 (개발/테스트용)
   // return LocalAuthImpl();
 });
