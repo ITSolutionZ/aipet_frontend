@@ -68,15 +68,34 @@
 		</dict>
 		<key>io.flutter.embedded_views_preview</key>
 		<true/>
-		<!-- LINE OAuth Callback -->
+		<!-- OAuth Callbacks: LINE, Google Sign-In, Apple Sign-In -->
 		<key>CFBundleURLTypes</key>
 		<array>
+			<!-- LINE OAuth Callback -->
 			<dict>
 				<key>CFBundleURLName</key>
 				<string>aipet</string>
 				<key>CFBundleURLSchemes</key>
 				<array>
 					<string>aipet</string>
+				</array>
+			</dict>
+			<!-- Google Sign-In Callback -->
+			<dict>
+				<key>CFBundleURLName</key>
+				<string>com.googleusercontent.apps.916090550504-97vppt5jc31t90h6o260qatfrphvoc3a</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>com.googleusercontent.apps.916090550504-97vppt5jc31t90h6o260qatfrphvoc3a</string>
+				</array>
+			</dict>
+			<!-- Apple Sign-In Callback -->
+			<dict>
+				<key>CFBundleURLName</key>
+				<string>com.itz.aipet</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>com.itz.aipet</string>
 				</array>
 			</dict>
 		</array>

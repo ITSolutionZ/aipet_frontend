@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:aipet_frontend/features/pet_profile/data/services/backend_pet_api_service.dart';
-import 'package:aipet_frontend/features/pet_profile/data/services/local_pet_service.dart';
 import 'package:aipet_frontend/features/pet_profile/pet_profile.dart';
 import 'package:aipet_frontend/shared/core/services/backend_token_service.dart';
+import 'package:aipet_frontend/shared/core/services/firebase_token_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -207,14 +207,30 @@ class AuthController extends Notifier<AuthFormState> {
       final result = await _socialLoginUseCase.loginWithGoogle();
 
       if (result.isSuccess) {
-        // 2. 백엔드에 Firebase ID Token 전송
+        // 2. Firebase ID Token이 확실히 생성되고 저장되도록 보장
+        try {
+          // Firebase 토큰 강제 갱신 및 저장
+          final token = await FirebaseTokenService.getIdToken(
+            forceRefresh: true,
+          );
+          if (token != null) {
+            await FirebaseTokenService.saveTokenToStorage();
+            LoggerService.debug('✅ Firebase ID Token 저장 완료');
+          } else {
+            LoggerService.debug('⚠️ Firebase ID Token 획득 실패');
+          }
+        } catch (e) {
+          LoggerService.debug('⚠️ Firebase 토큰 저장 중 에러: $e');
+        }
+
+        // 3. 백엔드에 Firebase ID Token 전송
         try {
           final backendAuthSuccess =
               await BackendTokenService.authenticateWithBackend();
           if (backendAuthSuccess) {
             LoggerService.debug('✅ 백엔드 인증 완료');
-            
-            // 3. 로컬 펫 데이터를 백엔드로 마이그레이션
+
+            // 4. 로컬 펫 데이터를 백엔드로 마이그레이션
             await _migrateLocalPetsToBackend();
           } else {
             LoggerService.debug('⚠️ 백엔드 인증 실패 (앱은 계속 사용 가능)');
@@ -241,7 +257,23 @@ class AuthController extends Notifier<AuthFormState> {
       final result = await _socialLoginUseCase.loginWithApple();
 
       if (result.isSuccess) {
-        // 2. 백엔드에 Firebase ID Token 전송
+        // 2. Firebase ID Token이 확실히 생성되고 저장되도록 보장
+        try {
+          // Firebase 토큰 강제 갱신 및 저장
+          final token = await FirebaseTokenService.getIdToken(
+            forceRefresh: true,
+          );
+          if (token != null) {
+            await FirebaseTokenService.saveTokenToStorage();
+            LoggerService.debug('✅ Firebase ID Token 저장 완료');
+          } else {
+            LoggerService.debug('⚠️ Firebase ID Token 획득 실패');
+          }
+        } catch (e) {
+          LoggerService.debug('⚠️ Firebase 토큰 저장 중 에러: $e');
+        }
+
+        // 3. 백엔드에 Firebase ID Token 전송
         try {
           final backendAuthSuccess =
               await BackendTokenService.authenticateWithBackend();
@@ -272,18 +304,31 @@ class AuthController extends Notifier<AuthFormState> {
       final result = await _socialLoginUseCase.loginWithLine();
 
       if (result.isSuccess) {
-        // 2. 백엔드에 Firebase ID Token 전송
+        // 2. LINE 로그인은 Firebase와 연동되지 않으므로 Firebase 토큰 확인
+        // LINE 로그인 후에도 Firebase 사용자가 있는지 확인
         try {
-          final backendAuthSuccess =
-              await BackendTokenService.authenticateWithBackend();
-          if (backendAuthSuccess) {
-            LoggerService.debug('✅ 백엔드 인증 완료');
+          final token = await FirebaseTokenService.getIdToken(
+            forceRefresh: true,
+          );
+          if (token != null) {
+            await FirebaseTokenService.saveTokenToStorage();
+            LoggerService.debug('✅ Firebase ID Token 저장 완료 (LINE 로그인)');
+
+            // 3. 백엔드에 Firebase ID Token 전송
+            final backendAuthSuccess =
+                await BackendTokenService.authenticateWithBackend();
+            if (backendAuthSuccess) {
+              LoggerService.debug('✅ 백엔드 인증 완료');
+            } else {
+              LoggerService.debug('⚠️ 백엔드 인증 실패 (앱은 계속 사용 가능)');
+            }
           } else {
-            LoggerService.debug('⚠️ 백엔드 인증 실패 (앱은 계속 사용 가능)');
+            LoggerService.debug('⚠️ LINE 로グイン後、Firebaseトークンがありません');
+            LoggerService.debug('   LINEログインはFirebaseと連携されていない可能性があります');
           }
         } catch (e) {
-          LoggerService.debug('⚠️ 백엔드 인증 중 에러: $e');
-          // 백엔드 인증 실패해도 Firebase 로그인은 성공으로 처리
+          LoggerService.debug('⚠️ Firebase 토큰 처리 중 에러: $e');
+          // LINE 로그인은 Firebase와 연동되지 않을 수 있으므로 계속 진행
         }
 
         return Result.success('LINEログインが完了しました', '');
@@ -481,7 +526,7 @@ class AuthController extends Notifier<AuthFormState> {
       // 1. 로컬 스토리지에서 펫 데이터 가져오기
       final localPetService = LocalPetService();
       final localPets = await localPetService.getAllPets();
-      
+
       if (localPets.isEmpty) {
         LoggerService.debug('📭 마이그레이션할 로컬 펫이 없음');
         return;
@@ -497,16 +542,18 @@ class AuthController extends Notifier<AuthFormState> {
         try {
           // PetProfileEntity로 변환
           final petEntity = _convertLocalPetToEntity(localPet);
-          
+
           // 백엔드로 전송 (static 메서드)
           final result = await BackendPetApiService.createPet(petEntity);
-          
+
           if (result.isSuccess) {
             successCount++;
             LoggerService.debug('✅ 펫 업로드 성공: ${petEntity.name}');
           } else {
             failCount++;
-            LoggerService.debug('❌ 펫 업로드 실패: ${petEntity.name} - ${result.error}');
+            LoggerService.debug(
+              '❌ 펫 업로드 실패: ${petEntity.name} - ${result.error}',
+            );
           }
         } catch (e) {
           failCount++;
@@ -514,9 +561,7 @@ class AuthController extends Notifier<AuthFormState> {
         }
       }
 
-      LoggerService.debug(
-        '🎉 마이그레이션 완료: 성공 $successCount개, 실패 $failCount개',
-      );
+      LoggerService.debug('🎉 마이그레이션 완료: 성공 $successCount개, 실패 $failCount개');
 
       // 4. 성공한 경우 알림 (선택사항)
       if (successCount > 0) {
@@ -533,7 +578,7 @@ class AuthController extends Notifier<AuthFormState> {
     // additionalInfo JSON 파싱
     final additionalInfoStr = localPet['additionalInfo'] as String?;
     Map<String, dynamic> additionalInfo = {};
-    
+
     if (additionalInfoStr != null && additionalInfoStr.isNotEmpty) {
       try {
         additionalInfo = jsonDecode(additionalInfoStr) as Map<String, dynamic>;
@@ -552,14 +597,16 @@ class AuthController extends Notifier<AuthFormState> {
       type: localPet['species'] as String? ?? 'dog', // species → type
       breed: localPet['breed'] as String?,
       gender: localPet['gender'] as String? ?? 'male',
-      birthDate: DateTime.tryParse(localPet['birthDate'] as String? ?? '') ??
+      birthDate:
+          DateTime.tryParse(localPet['birthDate'] as String? ?? '') ??
           DateTime.now(),
       weight: (localPet['weight'] as num?)?.toDouble() ?? 0.0,
       imagePath: localPet['imagePath'] as String?,
       microchipNumber: localPet['microchipId'] as String?,
       neutered: additionalInfo['isNeutered'] as bool?,
-      arrivalDate:
-          DateTime.tryParse(additionalInfo['adoptionDate'] as String? ?? ''),
+      arrivalDate: DateTime.tryParse(
+        additionalInfo['adoptionDate'] as String? ?? '',
+      ),
       ownerId: ownerId,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),

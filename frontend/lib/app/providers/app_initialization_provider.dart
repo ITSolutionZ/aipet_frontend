@@ -33,10 +33,12 @@ class AppInitialization extends _$AppInitialization {
   /// 3. 의존성 작업: 온보딩 상태 확인 (앱 버전 후)
   /// 4. 병렬 작업: 필수 데이터, 리소스 초기화
   Future<void> initialize() async {
+    print('🔧 [AppInit] Starting app initialization...');
     state = state.copyWith(isLoading: true, error: null);
 
     try {
       // 1. 기본 서비스 초기화 (다른 작업의 의존성이므로 먼저 실행)
+      print('📋 [AppInit] Initializing basic services...');
       await _initializeServices();
 
       // 2. 병렬 실행 가능한 독립적인 작업들
@@ -48,9 +50,12 @@ class AppInitialization extends _$AppInitialization {
       ];
 
       // 병렬 실행
+      print('📦 [AppInit] Running parallel independent tasks...');
       await Future.wait(independentFutures, eagerError: false);
+      print('✅ [AppInit] Independent tasks completed');
 
       // 앱 버전이 필요한 온보딩 상태 확인
+      print('🔍 [AppInit] Checking onboarding status...');
       await _checkOnboardingStatus();
 
       // 3. 마지막 단계 병렬 실행
@@ -59,10 +64,14 @@ class AppInitialization extends _$AppInitialization {
         _initializeResources(),
       ];
 
+      print('🏁 [AppInit] Running final tasks...');
       await Future.wait(finalFutures, eagerError: false);
 
       state = state.copyWith(isInitialized: true, isLoading: false);
-    } catch (e) {
+      print('🎉 [AppInit] App initialization completed successfully');
+    } catch (e, stackTrace) {
+      print('❌ [AppInit] Initialization failed: $e');
+      print('Stack trace: $stackTrace');
       state = state.copyWith(isLoading: false, error: e.toString());
     }
   }

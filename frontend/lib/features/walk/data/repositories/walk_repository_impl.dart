@@ -119,7 +119,7 @@ class WalkRepositoryImpl implements WalkRepository {
     final currentRecord = walkRecords[currentRecordIndex];
     final endTime = DateTime.now();
 
-    LoggerService.debug('🏁 산책 종료: ID=${walkId}');
+    LoggerService.debug('🏁 산책 종료: ID=$walkId');
     LoggerService.debug('   - 현재 route 포인트: ${currentRecord.route.length}개');
     LoggerService.debug('   - 거리: ${distance ?? 0.0}km');
 
