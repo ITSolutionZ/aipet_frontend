@@ -37,73 +37,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       LoggerService.debug('🔐 [LoginScreen] addPostFrameCallback - 저장된 정보 로드 시작');
 
       ref.read(authFormStateNotifierProvider.notifier).loadSavedCredentials();
-
-      // 앱 잠금이 설정되어 있으면 잠금 해제 다이얼로그 표시
-      _checkAppLock();
     });
-  }
-
-  Future<void> _checkAppLock() async {
-    // ✅ SecureStorageService 사용으로 Clean Architecture 준수
-    final pinEnabled =
-        await SecureStorageService.getBool('pin_enabled') ?? false;
-    final biometricEnabled =
-        await SecureStorageService.getBool('biometric_enabled') ?? false;
-
-    if ((pinEnabled || biometricEnabled) && mounted) {
-      unawaited(
-        showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (context) => AppLockDialog(
-            enablePin: pinEnabled,
-            enableBiometric: biometricEnabled,
-            onSuccess: () {
-              // PIN/생체인증 성공 - 자동 로그인 수행
-              _autoLogin();
-            },
-          ),
-        ),
-      );
-    }
-  }
-
-  /// PIN/생체인증 성공 시 자동 로그인
-  Future<void> _autoLogin() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      final authController = ref.read(authControllerProvider.notifier);
-      final result = await authController.login(
-        password: '', // 개발용 빈 값으로 자동 로그인
-      );
-
-      if (result.isSuccess) {
-        if (mounted) {
-          // ✅ Shared SnackBarService 사용
-          SnackBarService.showSuccess(context, 'ログインしました');
-          context.go(AppRouter.homeRoute);
-        }
-      } else {
-        if (mounted) {
-          // ✅ Shared SnackBarService 사용
-          SnackBarService.showError(context, result.message);
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        // ✅ Shared SnackBarService 사용
-        SnackBarService.showError(context, 'ログインに失敗しました: ${e.toString()}');
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    }
   }
 
   @override
