@@ -4,7 +4,6 @@ import 'dart:math';
 
 import 'package:aipet_frontend/app/config/app_config.dart';
 import 'package:aipet_frontend/shared/shared.dart';
-import 'package:app_links/app_links.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
@@ -12,6 +11,7 @@ import 'package:url_launcher/url_launcher.dart';
 /// 🎯 LINE OAuth 서비스
 ///
 /// LINE OAuth 2.0을 통한 실제 로그인 구현
+/// ⚠️ 현재 app_links 패키지 비활성화로 인해 LINE 로그인이 임시 비활성화됨
 class LineOAuthService {
   // LINE OAuth 설정
   static const String _lineAuthUrl =
@@ -24,15 +24,17 @@ class LineOAuthService {
   String get _clientSecret => AppConfig.current.lineClientSecret;
   String get _redirectUri => AppConfig.current.lineRedirectUri;
 
-  // AppLinks 인스턴스 (URL Scheme 콜백 처리)
-  final AppLinks _appLinks = AppLinks();
+  // ⚠️ app_links 임시 비활성화
+  // final AppLinks _appLinks = AppLinks();
 
   /// LINE OAuth 로그인 시작
   ///
-  /// LINE OAuth 2.0 플로우를 통해 사용자 인증을 진행합니다.
-  ///
-  /// Returns: 인증 성공 시 LineUserInfo, 실패 시 에러 메시지
+  /// ⚠️ 현재 app_links 패키지 비활성화로 인해 임시로 비활성화됨
   Future<Result<LineUserInfo>> loginWithLine() async {
+    // ⚠️ app_links 비활성화로 인해 LINE 로그인 임시 비활성화
+    return Result.failure('LINE ログインは現在メンテナンス中です。他のログイン方法をご利用ください。');
+
+    /* 원래 코드 - app_links 활성화 시 주석 해제
     try {
       // 1. State 파라미터 생성 (CSRF 보호)
       final state = _generateState();
@@ -69,6 +71,7 @@ class LineOAuthService {
     } catch (e) {
       return Result.failure('LINE ログインに失敗しました: ${e.toString()}');
     }
+    */
   }
 
   /// State 파라미터 생성 (CSRF 보호)
@@ -94,8 +97,12 @@ class LineOAuthService {
 
   /// OAuth URL 실행
   ///
-  /// url_launcher와 app_links를 사용하여 LINE OAuth 인증을 진행합니다.
+  /// ⚠️ app_links 비활성화로 인해 임시 비활성화
   Future<String> _launchOAuthUrl(String authUrl) async {
+    // ⚠️ app_links 비활성화로 인해 임시 비활성화
+    throw UnimplementedError('LINE OAuth is temporarily disabled');
+
+    /* 원래 코드 - app_links 활성화 시 주석 해제
     try {
       // URL Scheme 콜백을 위한 스트림 리스너 설정
       final completer = Completer<String>();
@@ -163,6 +170,7 @@ class LineOAuthService {
       }
       rethrow;
     }
+    */
   }
 
   /// 콜백 URL에서 인증 코드 추출

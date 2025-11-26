@@ -303,20 +303,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                     const SizedBox(height: AppSpacing.md),
 
-                    // LINE 로그인 버튼
-                    SocialLoginButton(
-                      onPressed: _isLoading ? null : () => _handleLineLogin(),
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.chat),
-                          SizedBox(width: AppSpacing.sm),
-                          Text('LINEでログイン'),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.lg),
-
                     // 회원가입 링크
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -486,50 +472,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       if (mounted) {
         // ✅ Shared SnackBarService 使用
         SnackBarService.showError(context, 'Appleログインに失敗しました: ${e.toString()}');
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    }
-  }
-
-  /// LINE 로그인 처리
-  Future<void> _handleLineLogin() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      final authController = ref.read(authControllerProvider.notifier);
-
-      // ✅ 타임아웃 설정 (45초) - LINE OAuth는 더 오래 걸릴 수 있음
-      final result = await authController.loginWithLine().timeout(
-        const Duration(seconds: 45),
-        onTimeout: () {
-          LoggerService.debug('❌ LINE ログイン処理がタイムアウト');
-          return Result.failure('LINEログイン処理がタイムアウトしました。インターネット接続を確認してください。');
-        },
-      );
-
-      if (result.isSuccess) {
-        if (mounted) {
-          // ✅ Shared SnackBarService 使用
-          SnackBarService.showSuccess(context, result.data ?? 'ログインしました');
-          context.go(AppRouter.homeRoute);
-        }
-      } else {
-        if (mounted) {
-          // ✅ Shared SnackBarService 使用
-          SnackBarService.showError(context, result.message);
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        // ✅ Shared SnackBarService 使用
-        SnackBarService.showError(context, 'LINEログインに失敗しました: ${e.toString()}');
       }
     } finally {
       if (mounted) {

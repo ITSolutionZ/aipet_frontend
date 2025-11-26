@@ -35,7 +35,7 @@ dependencies:
     crypto: ^3.0.3
     awesome_notifications: ^0.10.1
     url_launcher: ^6.2.4
-    app_links: ^6.3.1
+    # app_links: ^7.0.0  # iOS 시뮬레이터 빌드 문제로 임시 비활성화
     share_plus: ^10.1.2
     # youtube_player_flutter: ^9.0.3  # iOS 시뮬레이터 WebKit 호환성 문제로 임시 비활성화
     # mobile_scanner: ^4.0.1  # 호환성 문제로 임시 비활성화
