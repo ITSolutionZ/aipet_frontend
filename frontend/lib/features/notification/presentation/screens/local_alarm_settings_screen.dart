@@ -3,9 +3,10 @@ import 'package:aipet_frontend/features/notification/domain/domain.dart'
 import 'package:aipet_frontend/features/notification/presentation/controllers/notification_schedule_controller.dart';
 import 'package:aipet_frontend/features/notification/presentation/screens/add_local_alarm_screen.dart';
 import 'package:aipet_frontend/shared/shared.dart';
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../data/services/helpers/notification_initialization_helper.dart';
 
 /// ローカルアラーム設定画面
 class LocalAlarmSettingsScreen extends ConsumerStatefulWidget {
@@ -27,30 +28,18 @@ class _LocalAlarmSettingsScreenState
       LoggerService.debug('🔔 [로컬알람] 스케줄 목록 로드 시작');
       ref.read(notificationScheduleControllerProvider.notifier).loadSchedules();
 
-      // 정확한 알람 권한 확인 및 요청
-      await _checkAndRequestAlarmPermissions();
+      // 알람 권한 확인
+      await _checkAlarmPermissions();
     });
   }
 
-  /// 알람 권한 확인 및 요청
-  Future<void> _checkAndRequestAlarmPermissions() async {
+  /// 알람 권한 확인
+  Future<void> _checkAlarmPermissions() async {
     try {
       // 알림 권한 확인
-      final isAllowed = await AwesomeNotifications().isNotificationAllowed();
+      final isAllowed =
+          await NotificationInitializationHelper.isNotificationAllowed();
       LoggerService.debug('🔔 [권한] 알림 권한 상태: $isAllowed');
-
-      if (!isAllowed) {
-        LoggerService.debug('🔔 [권한] 알림 권한 요청 시작');
-        final granted = await AwesomeNotifications()
-            .requestPermissionToSendNotifications();
-        LoggerService.debug('🔔 [권한] 알림 권한 요청 결과: $granted');
-      }
-
-      // Android 12+ 정확한 알람 권한 확인
-      if (mounted) {
-        LoggerService.debug('🔔 [권한] 정확한 알람 권한 체크 (Android 12+)');
-        // AwesomeNotifications가 자동으로 처리하므로 별도 요청 불필요
-      }
     } catch (e) {
       LoggerService.error('❌ [권한] 권한 확인 실패: $e');
     }

@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:aipet_frontend/shared/services/cache_service.dart';
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../domain/domain.dart' as domain;
+import 'helpers/notification_display_helper.dart';
 import 'helpers/notification_scheduler_executor_helper.dart';
 import 'helpers/notification_scheduler_storage_helper.dart';
 import 'notification_service.dart' as local;
@@ -54,13 +54,13 @@ class NotificationSchedulerService {
     }
   }
 
-  /// 스케줄러 시작 (AwesomeNotifications 사용)
+  /// 스케줄러 시작 (flutter_local_notifications 사용)
   Future<void> _startScheduler() async {
     try {
       if (kDebugMode) {
-        print('✅ [Scheduler] AwesomeNotifications 스케줄러 시작');
+        print('✅ [Scheduler] flutter_local_notifications 스케줄러 시작');
       }
-      // AwesomeNotifications는 각 알람을 개별적으로 스케줄링하므로
+      // flutter_local_notifications는 각 알람을 개별적으로 스케줄링하므로
       // 별도의 백그라운드 작업이 불필요
     } catch (e) {
       if (kDebugMode) {
@@ -76,7 +76,7 @@ class NotificationSchedulerService {
         print('⏹️ [Scheduler] 스케줄러 중지');
       }
       // 모든 예약된 알람 취소
-      await AwesomeNotifications().cancelAll();
+      await NotificationDisplayHelper.cancelAllNotifications();
     } catch (e) {
       if (kDebugMode) {
         print('❌ [Scheduler] 스케줄러 중지 오류: $e');
@@ -365,7 +365,7 @@ class NotificationSchedulerService {
   /// 리소스 정리
   void dispose() {
     // 모든 스케줄 알람 취소
-    AwesomeNotifications().cancelAll();
+    NotificationDisplayHelper.cancelAllNotifications();
     _schedulesController.close();
   }
 }

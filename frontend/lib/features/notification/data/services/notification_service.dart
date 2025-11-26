@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import '../../domain/domain.dart' as domain;
 import 'helpers/notification_display_helper.dart';
@@ -26,54 +26,14 @@ class NotificationService {
 
   /// 알림 서비스 초기화
   Future<void> initialize() async {
-    // Awesome Notifications 초기화
+    // flutter_local_notifications 초기화
     await NotificationInitializationHelper.initialize();
 
-    // 알림 탭 리스너 설정
-    AwesomeNotifications().setListeners(
-      onActionReceivedMethod: _onNotificationTapped,
-      onNotificationCreatedMethod: _onNotificationCreated,
-      onNotificationDisplayedMethod: _onNotificationDisplayed,
-    );
+    // 기본 채널 생성 (Android)
+    await NotificationInitializationHelper.createDefaultChannels();
 
     if (kDebugMode) {
-      debugPrint('✅ [$_tag] Awesome Notifications 초기화 완료');
-    }
-  }
-
-  /// 알림 생성됨
-  @pragma('vm:entry-point')
-  static Future<void> _onNotificationCreated(
-    ReceivedNotification receivedNotification,
-  ) async {
-    if (kDebugMode) {
-      debugPrint('🔔 [$_tag] 알림 생성됨: ${receivedNotification.title}');
-    }
-  }
-
-  /// 알림 표시됨
-  @pragma('vm:entry-point')
-  static Future<void> _onNotificationDisplayed(
-    ReceivedNotification receivedNotification,
-  ) async {
-    if (kDebugMode) {
-      debugPrint('🔔 [$_tag] 알림 표시됨: ${receivedNotification.title}');
-    }
-  }
-
-  /// 알림 탭 처리
-  @pragma('vm:entry-point')
-  static Future<void> _onNotificationTapped(
-    ReceivedAction receivedAction,
-  ) async {
-    if (kDebugMode) {
-      debugPrint('🔔 [$_tag] 알림 탭됨: ${receivedAction.title}');
-    }
-
-    // TODO: 알림 탭 처리 로직 구현
-    final payload = receivedAction.payload;
-    if (payload != null && payload.containsKey('scheduleId')) {
-      debugPrint('📋 스케줄 ID: ${payload['scheduleId']}');
+      debugPrint('✅ [$_tag] flutter_local_notifications 초기화 완료');
     }
   }
 
@@ -90,16 +50,36 @@ class NotificationService {
     String? imageUrl,
     String? icon,
   }) async {
-    // 즉시 알림 생성
-    await AwesomeNotifications().createNotification(
-      content: NotificationContent(
-        id: DateTime.now().millisecondsSinceEpoch % 2147483647,
-        channelKey: 'basic_channel',
-        title: title,
-        body: body,
-        payload: data?.map((key, value) => MapEntry(key, value.toString())),
-        notificationLayout: NotificationLayout.Default,
-      ),
+    final plugin = NotificationInitializationHelper.plugin;
+    final notificationId = DateTime.now().millisecondsSinceEpoch % 2147483647;
+
+    const androidDetails = AndroidNotificationDetails(
+      'basic_channel',
+      '基本通知',
+      channelDescription: '一般的な通知',
+      importance: Importance.high,
+      priority: Priority.high,
+      playSound: true,
+      enableVibration: true,
+    );
+
+    const iosDetails = DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
+
+    final details = NotificationDetails(
+      android: androidDetails,
+      iOS: iosDetails,
+    );
+
+    await plugin.show(
+      notificationId,
+      title,
+      body,
+      details,
+      payload: data?.toString(),
     );
 
     if (kDebugMode) {
@@ -168,6 +148,11 @@ class NotificationService {
       }
       rethrow;
     }
+  }
+
+  /// 권한 확인
+  Future<bool> isNotificationAllowed() async {
+    return NotificationInitializationHelper.isNotificationAllowed();
   }
 
   /// 리소스 정리

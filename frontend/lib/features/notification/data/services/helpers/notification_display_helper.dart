@@ -4,38 +4,76 @@ import 'package:aipet_frontend/features/notification/domain/entities/notificatio
     as domain;
 import 'package:aipet_frontend/features/notification/domain/entities/notification_schedule.dart'
     as domain;
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest.dart' as tz_data;
 
-/// 알림 표시 헬퍼 (Awesome Notifications)
+import 'notification_initialization_helper.dart';
+
+/// 알림 표시 헬퍼 (flutter_local_notifications)
 class NotificationDisplayHelper {
+  static bool _tzInitialized = false;
+
+  /// timezone 초기화
+  static void _initializeTimeZone() {
+    if (!_tzInitialized) {
+      tz_data.initializeTimeZones();
+      _tzInitialized = true;
+    }
+  }
+
   /// 즉시 알림 표시
   static Future<void> showLocalNotification(
-    dynamic localNotifications, // 사용하지 않음
+    dynamic localNotifications, // 호환성 유지 (사용하지 않음)
     domain.NotificationModel notification,
     DateTime? scheduledDate,
   ) async {
-    await AwesomeNotifications().createNotification(
-      content: NotificationContent(
-        id: int.parse(notification.id) % 2147483647,
-        channelKey: 'basic_channel',
-        title: notification.title,
-        body: notification.body,
-        payload: {'data': jsonEncode(notification.toJson())},
-        notificationLayout: NotificationLayout.Default,
-      ),
+    final plugin = NotificationInitializationHelper.plugin;
+    final notificationId = int.parse(notification.id) % 2147483647;
+
+    const androidDetails = AndroidNotificationDetails(
+      'basic_channel',
+      '基本通知',
+      channelDescription: '一般的な通知',
+      importance: Importance.high,
+      priority: Priority.high,
+      playSound: true,
+      enableVibration: true,
+    );
+
+    const iosDetails = DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
+
+    final details = NotificationDetails(
+      android: androidDetails,
+      iOS: iosDetails,
+    );
+
+    await plugin.show(
+      notificationId,
+      notification.title,
+      notification.body,
+      details,
+      payload: jsonEncode(notification.toJson()),
     );
 
     if (kDebugMode) {
-      print('✅ [AwesomeNotifications] 즉시 알림 표시 완료');
+      print('✅ [flutter_local_notifications] 즉시 알림 표시 완료');
     }
   }
 
   /// 스케줄 알람 등록 (정확한 시간에 울림)
   static Future<void> scheduleNotification(
-    dynamic localNotifications, // 사용하지 않음
+    dynamic localNotifications, // 호환성 유지 (사용하지 않음)
     domain.NotificationSchedule schedule,
   ) async {
+    _initializeTimeZone();
+
+    final plugin = NotificationInitializationHelper.plugin;
     final notificationId = int.parse(schedule.id) % 2147483647;
 
     // 다음 실행 시간 계산
@@ -44,7 +82,7 @@ class NotificationDisplayHelper {
     final timeUntilAlarm = nextTime.difference(now);
 
     if (kDebugMode) {
-      print('🔔 [AwesomeNotifications] 스케줄 알람 등록 시작');
+      print('🔔 [flutter_local_notifications] 스케줄 알람 등록 시작');
       print('   - ID: $notificationId');
       print('   - 제목: ${schedule.title}');
       print('   - 설명: ${schedule.description}');
@@ -59,111 +97,127 @@ class NotificationDisplayHelper {
       print('   - isActive: ${schedule.isActive}');
     }
 
-    final content = NotificationContent(
-      id: notificationId,
-      channelKey: 'scheduled_channel',
-      title: schedule.title,
-      body: schedule.description,
-      payload: {'scheduleId': schedule.id, 'type': schedule.type.name},
-      notificationLayout: NotificationLayout.Default,
-      wakeUpScreen: true,
-      category: NotificationCategory.Alarm,
-      autoDismissible: false,
-      displayOnForeground: true,
-      displayOnBackground: true,
-      locked: true,
+    const androidDetails = AndroidNotificationDetails(
+      'scheduled_channel',
+      'スケジュールアラーム',
+      channelDescription: '予定されたアラーム通知',
+      importance: Importance.max,
+      priority: Priority.max,
+      playSound: true,
+      enableVibration: true,
       fullScreenIntent: true,
-      criticalAlert: true,
+      category: AndroidNotificationCategory.alarm,
+      visibility: NotificationVisibility.public,
+      autoCancel: false,
+      ongoing: false,
     );
 
-    // ✅ 스케줄 타입에 따라 다르게 설정
-    final NotificationCalendar notificationSchedule;
+    const iosDetails = DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+      interruptionLevel: InterruptionLevel.timeSensitive,
+    );
 
-    if (schedule.scheduleType == domain.ScheduleType.weekly ||
-        schedule.scheduleType == domain.ScheduleType.daily) {
-      // Weekly / Daily: 매일 반복 (시간만 지정, 날짜 지정 X)
-      // ⚠️ 참고: AwesomeNotifications는 여러 요일 지정이 어려워 일단 매일 반복으로 설정
-      notificationSchedule = NotificationCalendar(
-        hour: schedule.time.hour,
-        minute: schedule.time.minute,
-        second: 0,
-        repeats: true,
-        allowWhileIdle: true,
-        preciseAlarm: true,
+    const details = NotificationDetails(
+      android: androidDetails,
+      iOS: iosDetails,
+    );
+
+    final scheduledDate = tz.TZDateTime.from(nextTime, tz.local);
+    final payload = jsonEncode({
+      'scheduleId': schedule.id,
+      'type': schedule.type.name,
+    });
+
+    // 스케줄 타입에 따라 다르게 처리
+    if (schedule.scheduleType == domain.ScheduleType.daily) {
+      // 매일 반복
+      await plugin.zonedSchedule(
+        notificationId,
+        schedule.title,
+        schedule.description,
+        scheduledDate,
+        details,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        payload: payload,
+        matchDateTimeComponents: DateTimeComponents.time,
+      );
+    } else if (schedule.scheduleType == domain.ScheduleType.weekly) {
+      // 주간 반복 (요일별로 별도 알람 등록 필요)
+      await plugin.zonedSchedule(
+        notificationId,
+        schedule.title,
+        schedule.description,
+        scheduledDate,
+        details,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        payload: payload,
+        matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
       );
     } else {
-      // Once: 특정 날짜/시간 1회
-      notificationSchedule = NotificationCalendar(
-        year: nextTime.year,
-        month: nextTime.month,
-        day: nextTime.day,
-        hour: schedule.time.hour,
-        minute: schedule.time.minute,
-        second: 0,
-        repeats: false,
-        allowWhileIdle: true,
-        preciseAlarm: true,
+      // 1회성 알람
+      await plugin.zonedSchedule(
+        notificationId,
+        schedule.title,
+        schedule.description,
+        scheduledDate,
+        details,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        payload: payload,
       );
     }
 
     if (kDebugMode) {
-      print('📋 [알람등록] NotificationCalendar 상세:');
-      print('   - hour: ${notificationSchedule.hour}');
-      print('   - minute: ${notificationSchedule.minute}');
-      print('   - repeats: ${notificationSchedule.repeats}');
-      print('   - scheduleType: ${schedule.scheduleType}');
-      if (notificationSchedule.year != null) {
-        print('   - year: ${notificationSchedule.year}');
-        print('   - month: ${notificationSchedule.month}');
-        print('   - day: ${notificationSchedule.day}');
-      }
-    }
-
-    final success = await AwesomeNotifications().createNotification(
-      content: content,
-      schedule: notificationSchedule,
-    );
-
-    if (kDebugMode) {
-      print('✅ [AwesomeNotifications] 스케줄 알람 등록 결과: $success');
+      print('✅ [flutter_local_notifications] 스케줄 알람 등록 완료');
       print(
         '   ⏰ 알람이 ${schedule.time.hour.toString().padLeft(2, '0')}:${schedule.time.minute.toString().padLeft(2, '0')}에 울립니다',
       );
-      print('   🔊 사운드: 시스템 기본');
 
-      // 등록 직후 확인
-      final scheduledList = await AwesomeNotifications()
-          .listScheduledNotifications();
-      final justScheduled = scheduledList
-          .where((n) => n.content?.id == notificationId)
+      // 등록된 알람 확인
+      final pendingNotifications = await plugin.pendingNotificationRequests();
+      final justScheduled = pendingNotifications
+          .where((n) => n.id == notificationId)
           .toList();
 
       if (justScheduled.isNotEmpty) {
-        print('✅ [AwesomeNotifications] 알람이 시스템에 등록됨!');
-        final scheduleMap = justScheduled.first.schedule?.toMap();
-        print('   📋 스케줄 상세: $scheduleMap');
-        if (scheduleMap != null) {
-          print(
-            '   ✅ 시스템 등록 시간 확인: ${scheduleMap['hour']}:${scheduleMap['minute']}',
-          );
-        }
+        print('✅ [flutter_local_notifications] 알람이 시스템에 등록됨!');
+        print('   📋 제목: ${justScheduled.first.title}');
       } else {
-        print('❌ [AwesomeNotifications] 알람이 시스템에 등록되지 않음!');
-        print('   📋 전체 등록된 알람: ${scheduledList.length}개');
+        print('❌ [flutter_local_notifications] 알람이 시스템에 등록되지 않음!');
+        print('   📋 전체 등록된 알람: ${pendingNotifications.length}개');
       }
     }
   }
 
   /// 스케줄 알람 취소
   static Future<void> cancelScheduledNotification(
-    dynamic localNotifications, // 사용하지 않음
+    dynamic localNotifications, // 호환성 유지 (사용하지 않음)
     String scheduleId,
   ) async {
+    final plugin = NotificationInitializationHelper.plugin;
     final notificationId = int.parse(scheduleId) % 2147483647;
-    await AwesomeNotifications().cancel(notificationId);
+
+    await plugin.cancel(notificationId);
 
     if (kDebugMode) {
-      print('🔔 [AwesomeNotifications] 스케줄 알람 취소 - ID: $notificationId');
+      print('🔔 [flutter_local_notifications] 스케줄 알람 취소 - ID: $notificationId');
     }
+  }
+
+  /// 모든 알람 취소
+  static Future<void> cancelAllNotifications() async {
+    final plugin = NotificationInitializationHelper.plugin;
+    await plugin.cancelAll();
+
+    if (kDebugMode) {
+      print('🔔 [flutter_local_notifications] 모든 알람 취소됨');
+    }
+  }
+
+  /// 등록된 알람 목록 가져오기
+  static Future<List<PendingNotificationRequest>> getPendingNotifications() async {
+    final plugin = NotificationInitializationHelper.plugin;
+    return plugin.pendingNotificationRequests();
   }
 }

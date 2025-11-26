@@ -33,7 +33,7 @@ dependencies:
     http: ^1.5.0
     path_provider: ^2.1.4
     crypto: ^3.0.3
-    awesome_notifications: ^0.10.1
+    # awesome_notifications: ^0.10.1  # iOS 빌드 문제로 임시 비활성화
     url_launcher: ^6.2.4
     # app_links: ^7.0.0  # iOS 시뮬레이터 빌드 문제로 임시 비활성화
     share_plus: ^10.1.2
@@ -72,6 +72,7 @@ dependencies:
     mobile_scanner: ^7.1.2
     uuid: any
     flutter_local_notifications: ^19.5.0
+    timezone: ^0.10.1
 dev_dependencies:
     sentry_dart_plugin: ^3.1.1
     flutter_test:
