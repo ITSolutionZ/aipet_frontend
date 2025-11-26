@@ -1,4 +1,4 @@
-import 'package:aipet_frontend/features/settings/data/repositories/settings_repository_impl.dart';
+import 'package:aipet_frontend/features/settings/data/repositories/firestore_settings_repository.dart';
 import 'package:aipet_frontend/features/settings/domain/entities/settings_entity.dart';
 import 'package:aipet_frontend/features/settings/domain/usecases/change_password_usecase.dart';
 import 'package:aipet_frontend/features/settings/domain/usecases/clear_app_cache_usecase.dart';
@@ -15,10 +15,10 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'settings_providers.g.dart';
 
-// Repository 프로바이더
+// Repository 프로바이더 (Firebase)
 @riverpod
-SettingsRepositoryImpl settingsRepository(Ref ref) {
-  return SettingsRepositoryImpl();
+FirestoreSettingsRepository settingsRepository(Ref ref) {
+  return FirestoreSettingsRepository();
 }
 
 // UseCase 프로바이더들

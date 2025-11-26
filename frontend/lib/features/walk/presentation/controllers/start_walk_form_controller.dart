@@ -1,13 +1,22 @@
+import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'start_walk_form_controller.g.dart';
 
-/// 🎯 Start Walk Form Controller
+/// 🎯 Start Walk Form Controller (Firebase 연동)
 @riverpod
 class StartWalkFormController extends _$StartWalkFormController {
   @override
   StartWalkFormState build() {
-    return const StartWalkFormState(title: '', selectedPetId: 'pet1');
+    // ✅ Firebase에서 첫 번째 펫을 기본값으로 사용
+    final petsAsync = ref.watch(petProfilesProvider);
+    final firstPetId = petsAsync.when(
+      data: (pets) => pets.isNotEmpty ? pets.first.id : '',
+      loading: () => '',
+      error: (_, __) => '',
+    );
+
+    return StartWalkFormState(title: '', selectedPetId: firstPetId);
   }
 
   void updateTitle(String title) {

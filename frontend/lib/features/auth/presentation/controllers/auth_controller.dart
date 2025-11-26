@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:aipet_frontend/features/pet_profile/data/services/backend_pet_api_service.dart';
 import 'package:aipet_frontend/features/pet_profile/pet_profile.dart';
 import 'package:aipet_frontend/shared/core/services/backend_token_service.dart';
-import 'package:aipet_frontend/shared/core/services/firebase_token_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

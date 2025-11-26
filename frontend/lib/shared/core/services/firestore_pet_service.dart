@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../domain/result.dart';
 import '../../domain/entities/pet_profile_entity.dart';
+import '../domain/result.dart';
 import 'firebase_token_service.dart';
 import 'logger_service.dart';
 
@@ -50,7 +50,9 @@ class FirestorePetService {
       return Result.success('ペットリストを取得しました', pets);
     } catch (e, stackTrace) {
       LoggerService.debug('❌ Firestore: 펫 목록 조회 실패: $e');
-      LoggerService.debug('   StackTrace: ${stackTrace.toString().split('\n').take(5).join('\n')}');
+      LoggerService.debug(
+        '   StackTrace: ${stackTrace.toString().split('\n').take(5).join('\n')}',
+      );
       return Result.failure('ペットリストの取得に失敗しました: $e');
     }
   }
@@ -90,7 +92,9 @@ class FirestorePetService {
       return Result.success('ペット情報を取得しました', pet);
     } catch (e, stackTrace) {
       LoggerService.debug('❌ Firestore: 펫 조회 실패 (id: $id): $e');
-      LoggerService.debug('   StackTrace: ${stackTrace.toString().split('\n').take(5).join('\n')}');
+      LoggerService.debug(
+        '   StackTrace: ${stackTrace.toString().split('\n').take(5).join('\n')}',
+      );
       return Result.failure('ペット情報の取得に失敗しました: $e');
     }
   }
@@ -134,7 +138,9 @@ class FirestorePetService {
       return Result.success('ペットを作成しました', createdPet);
     } catch (e, stackTrace) {
       LoggerService.debug('❌ Firestore: 펫 생성 실패: $e');
-      LoggerService.debug('   StackTrace: ${stackTrace.toString().split('\n').take(5).join('\n')}');
+      LoggerService.debug(
+        '   StackTrace: ${stackTrace.toString().split('\n').take(5).join('\n')}',
+      );
       return Result.failure('ペットの作成に失敗しました: $e');
     }
   }
@@ -154,7 +160,10 @@ class FirestorePetService {
       LoggerService.debug('📡 Firestore: 펫 업데이트 시작 (id: ${pet.id})');
 
       // 소유자 확인
-      final doc = await _firestore.collection(_collectionName).doc(pet.id).get();
+      final doc = await _firestore
+          .collection(_collectionName)
+          .doc(pet.id)
+          .get();
       if (!doc.exists) {
         return Result.failure('ペットが見つかりません');
       }
@@ -174,7 +183,10 @@ class FirestorePetService {
       await _firestore.collection(_collectionName).doc(pet.id).update(petData);
 
       // 업데이트된 문서 조회
-      final updatedDoc = await _firestore.collection(_collectionName).doc(pet.id).get();
+      final updatedDoc = await _firestore
+          .collection(_collectionName)
+          .doc(pet.id)
+          .get();
       final updatedData = updatedDoc.data();
       if (updatedData == null) {
         return Result.failure('ペット情報の更新に失敗しました');
@@ -186,7 +198,9 @@ class FirestorePetService {
       return Result.success('ペット情報を更新しました', updatedPet);
     } catch (e, stackTrace) {
       LoggerService.debug('❌ Firestore: 펫 업데이트 실패 (id: ${pet.id}): $e');
-      LoggerService.debug('   StackTrace: ${stackTrace.toString().split('\n').take(5).join('\n')}');
+      LoggerService.debug(
+        '   StackTrace: ${stackTrace.toString().split('\n').take(5).join('\n')}',
+      );
       return Result.failure('ペット情報の更新に失敗しました: $e');
     }
   }
@@ -220,15 +234,20 @@ class FirestorePetService {
       return Result.success('ペットを削除しました', null);
     } catch (e, stackTrace) {
       LoggerService.debug('❌ Firestore: 펫 삭제 실패 (id: $id): $e');
-      LoggerService.debug('   StackTrace: ${stackTrace.toString().split('\n').take(5).join('\n')}');
+      LoggerService.debug(
+        '   StackTrace: ${stackTrace.toString().split('\n').take(5).join('\n')}',
+      );
       return Result.failure('ペットの削除に失敗しました: $e');
     }
   }
 
   /// Firestore 데이터를 PetProfileEntity로 변환
-  static PetProfileEntity _mapToPetEntity(String id, Map<String, dynamic> data) {
+  static PetProfileEntity _mapToPetEntity(
+    String id,
+    Map<String, dynamic> data,
+  ) {
     // Timestamp를 DateTime으로 변환
-    DateTime? _parseTimestamp(dynamic value) {
+    DateTime? parseTimestamp(dynamic value) {
       if (value == null) return null;
       if (value is Timestamp) return value.toDate();
       if (value is DateTime) return value;
@@ -241,19 +260,19 @@ class FirestorePetService {
       name: data['name']?.toString() ?? '',
       type: data['type']?.toString() ?? 'dog',
       breed: data['breed']?.toString(),
-      birthDate: _parseTimestamp(data['birthDate']) ?? DateTime.now(),
+      birthDate: parseTimestamp(data['birthDate']) ?? DateTime.now(),
       gender: data['gender']?.toString() ?? 'male',
       weight: _parseDouble(data['weight']) ?? 0.0,
       size: data['size']?.toString(),
       microchipNumber: data['microchipNumber']?.toString(),
-      arrivalDate: _parseTimestamp(data['arrivalDate']),
+      arrivalDate: parseTimestamp(data['arrivalDate']),
       neutered: data['neutered'] is bool
           ? data['neutered'] as bool
           : (data['neutered'] as num?)?.toInt() == 1,
       imagePath: data['imageUrl']?.toString() ?? data['imagePath']?.toString(),
       ownerId: data['ownerId']?.toString() ?? '',
-      createdAt: _parseTimestamp(data['createdAt']) ?? DateTime.now(),
-      updatedAt: _parseTimestamp(data['updatedAt']) ?? DateTime.now(),
+      createdAt: parseTimestamp(data['createdAt']) ?? DateTime.now(),
+      updatedAt: parseTimestamp(data['updatedAt']) ?? DateTime.now(),
       isActive: data['isActive'] is bool
           ? data['isActive'] as bool
           : (data['isActive'] as num?)?.toInt() != 0,

@@ -1,8 +1,10 @@
+import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// 산책 시작 시 펫 선택 위젯
-class StartWalkPetSelector extends StatelessWidget {
+/// 산책 시작 시 펫 선택 위젯 (Firebase 연동)
+class StartWalkPetSelector extends ConsumerWidget {
   final String selectedPetId;
   final Function(String) onSelectPet;
 
@@ -13,7 +15,9 @@ class StartWalkPetSelector extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final petsAsync = ref.watch(petProfilesProvider);
+
     return Container(
       padding: const EdgeInsets.all(AppSpacing.sm),
       decoration: BoxDecoration(
@@ -21,26 +25,57 @@ class StartWalkPetSelector extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadius.medium),
         border: Border.all(color: Colors.grey[200]!),
       ),
-      child: Column(
-        children: [
-          _buildPetOption(
-            'pet1',
-            'Maxi',
-            Icons.pets,
-            '元気な柴犬',
-            selectedPetId,
-            onSelectPet,
+      child: petsAsync.when(
+        data: (pets) {
+          if (pets.isEmpty) {
+            return Padding(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              child: Text(
+                'ペットを登録してください',
+                style: AppFonts.base(
+                  fontSize: AppFonts.baseSize,
+                  color: Colors.grey[600],
+                ),
+                textAlign: TextAlign.center,
+              ),
+            );
+          }
+
+          return Column(
+            children: pets.map((pet) {
+              return Padding(
+                padding: EdgeInsets.only(
+                  bottom: pet == pets.last ? 0 : AppSpacing.sm,
+                ),
+                child: _buildPetOption(
+                  pet.id,
+                  pet.name,
+                  Icons.pets,
+                  pet.breed ?? pet.type,
+                  selectedPetId,
+                  onSelectPet,
+                ),
+              );
+            }).toList(),
+          );
+        },
+        loading: () => const Center(
+          child: Padding(
+            padding: EdgeInsets.all(AppSpacing.md),
+            child: CircularProgressIndicator(),
           ),
-          const SizedBox(height: AppSpacing.sm),
-          _buildPetOption(
-            'pet2',
-            'Luna',
-            Icons.pets,
-            '優しいゴールデン',
-            selectedPetId,
-            onSelectPet,
+        ),
+        error: (error, stack) => Padding(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          child: Text(
+            'ペット情報の読み込みに失敗しました',
+            style: AppFonts.base(
+              fontSize: AppFonts.sm,
+              color: Colors.red,
+            ),
+            textAlign: TextAlign.center,
           ),
-        ],
+        ),
       ),
     );
   }

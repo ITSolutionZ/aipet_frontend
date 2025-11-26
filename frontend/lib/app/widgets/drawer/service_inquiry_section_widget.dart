@@ -1,11 +1,14 @@
-import 'package:aipet_frontend/app/router/routes/route_constants.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// サービスお問い合わせセクションウィジェット
 /// サービスお問い合わせ機能へのアクセスを提供
 class ServiceInquirySectionWidget extends StatelessWidget {
   const ServiceInquirySectionWidget({super.key});
+
+  /// Google Form URL
+  static const String _googleFormUrl =
+      'https://docs.google.com/forms/d/e/1FAIpQLScCCXFO2Uie5vNCye0UUpBnQtOCvXSiXpT97tzZisJjxmrS8w/viewform?usp=dialog';
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +22,7 @@ class ServiceInquirySectionWidget extends StatelessWidget {
           const SizedBox(height: 16),
           // サービスお問い合わせヘッダー（クリック可能）
           InkWell(
-            onTap: () => _navigateToContactForm(context),
+            onTap: () => _openGoogleForm(context),
             borderRadius: BorderRadius.circular(8),
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
@@ -33,7 +36,7 @@ class ServiceInquirySectionWidget extends StatelessWidget {
                   SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      'サービスお問い合わせ',
+                      'お問い合わせ',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -42,7 +45,7 @@ class ServiceInquirySectionWidget extends StatelessWidget {
                     ),
                   ),
                   Icon(
-                    Icons.arrow_forward_ios,
+                    Icons.open_in_new,
                     color: Colors.white,
                     size: 16,
                   ),
@@ -67,8 +70,11 @@ class ServiceInquirySectionWidget extends StatelessWidget {
     );
   }
 
-  /// お問い合わせフォーム画面へ遷移
-  void _navigateToContactForm(BuildContext context) {
-    context.push(RouteConstants.contactFormRoute);
+  /// Google Formを開く
+  Future<void> _openGoogleForm(BuildContext context) async {
+    final url = Uri.parse(_googleFormUrl);
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    }
   }
 }

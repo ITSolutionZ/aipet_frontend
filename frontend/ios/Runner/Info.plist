@@ -60,6 +60,8 @@
 		<key>UIBackgroundModes</key>
 		<array>
 			<string>location</string>
+			<string>remote-notification</string>
+			<string>fetch</string>
 		</array>
 		<key>NSLocationTemporaryUsageDescriptionDictionary</key>
 		<dict>
@@ -103,9 +105,6 @@
 		<true/>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<!-- App Tracking Transparency -->
-	<key>NSUserTrackingUsageDescription</key>
-	<string>広告のパーソナライズとアプリの改善のために、デバイスIDを使用してトラッキングします。</string>
 	<!-- Developer Information (Guideline 1.5.0) -->
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2025 アイティーソリューションズ株式会社（ITZ）. All rights reserved.</string>

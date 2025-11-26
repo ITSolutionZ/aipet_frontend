@@ -55,67 +55,26 @@ class NotificationDisplayHelper {
       print(
         '   - 남은 시간: ${timeUntilAlarm.inMinutes}분 ${timeUntilAlarm.inSeconds % 60}초',
       );
-      print(
-        '   - 알람 소리: ${schedule.sound.displayName} (리소스: ${schedule.sound.resourcePath})',
-      );
-      print('   - customSound 값: ${schedule.sound.resourcePath}');
+      print('   - 알람 소리: 시스템 기본');
       print('   - isActive: ${schedule.isActive}');
-
-      // raw 리소스 파일 존재 확인을 위한 로그
-      if (schedule.sound.resourcePath != null) {
-        print(
-          '   ⚠️  확인: android/app/src/main/res/raw/${schedule.sound.resourcePath}.mp3 파일 존재 필요',
-        );
-      }
     }
 
-    // NotificationContent 생성 (customSound null 처리)
-    final NotificationContent content;
-
-    if (schedule.sound.resourcePath != null) {
-      // 커스텀 사운드가 있는 경우
-      if (kDebugMode) {
-        print('🔊 [사운드] 커스텀 사운드 사용: ${schedule.sound.resourcePath}');
-      }
-      content = NotificationContent(
-        id: notificationId,
-        channelKey: 'scheduled_channel',
-        title: schedule.title,
-        body: schedule.description,
-        payload: {'scheduleId': schedule.id, 'type': schedule.type.name},
-        notificationLayout: NotificationLayout.Default,
-        wakeUpScreen: true,
-        category: NotificationCategory.Alarm,
-        customSound: schedule.sound.resourcePath,
-        autoDismissible: false,
-        displayOnForeground: true,
-        displayOnBackground: true,
-        locked: true,
-        fullScreenIntent: true,
-        criticalAlert: true,
-      );
-    } else {
-      // 기본 사운드 사용
-      if (kDebugMode) {
-        print('🔊 [사운드] 기본 사운드 사용');
-      }
-      content = NotificationContent(
-        id: notificationId,
-        channelKey: 'scheduled_channel',
-        title: schedule.title,
-        body: schedule.description,
-        payload: {'scheduleId': schedule.id, 'type': schedule.type.name},
-        notificationLayout: NotificationLayout.Default,
-        wakeUpScreen: true,
-        category: NotificationCategory.Alarm,
-        autoDismissible: false,
-        displayOnForeground: true,
-        displayOnBackground: true,
-        locked: true,
-        fullScreenIntent: true,
-        criticalAlert: true,
-      );
-    }
+    final content = NotificationContent(
+      id: notificationId,
+      channelKey: 'scheduled_channel',
+      title: schedule.title,
+      body: schedule.description,
+      payload: {'scheduleId': schedule.id, 'type': schedule.type.name},
+      notificationLayout: NotificationLayout.Default,
+      wakeUpScreen: true,
+      category: NotificationCategory.Alarm,
+      autoDismissible: false,
+      displayOnForeground: true,
+      displayOnBackground: true,
+      locked: true,
+      fullScreenIntent: true,
+      criticalAlert: true,
+    );
 
     // ✅ 스케줄 타입에 따라 다르게 설정
     final NotificationCalendar notificationSchedule;
@@ -168,9 +127,9 @@ class NotificationDisplayHelper {
     if (kDebugMode) {
       print('✅ [AwesomeNotifications] 스케줄 알람 등록 결과: $success');
       print(
-        '   ⏰ 알람이 ${schedule.time.hour.toString().padLeft(2, '0')}:${schedule.time.minute.toString().padLeft(2, '0')}에 울립니다 (수정된 시간)',
+        '   ⏰ 알람이 ${schedule.time.hour.toString().padLeft(2, '0')}:${schedule.time.minute.toString().padLeft(2, '0')}에 울립니다',
       );
-      print('   🔊 content.customSound 실제 값: ${content.customSound}');
+      print('   🔊 사운드: 시스템 기본');
 
       // 등록 직후 확인
       final scheduledList = await AwesomeNotifications()

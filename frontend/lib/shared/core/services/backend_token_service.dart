@@ -28,9 +28,7 @@ class BackendTokenService {
       var token = await FirebaseTokenService.getIdToken(forceRefresh: true);
 
       // 토큰이 없으면 일반 방식으로 재시도
-      if (token == null) {
-        token = await FirebaseTokenService.getIdToken(forceRefresh: false);
-      }
+      token ??= await FirebaseTokenService.getIdToken(forceRefresh: false);
 
       if (token == null) {
         if (kDebugMode) {

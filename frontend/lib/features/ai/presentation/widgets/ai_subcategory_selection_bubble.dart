@@ -8,12 +8,14 @@ class AiSubCategorySelectionBubble extends StatelessWidget {
   final AiCategoryEntity selectedCategory;
   final AiSubCategoryEntity? selectedSubCategory;
   final Function(AiSubCategoryEntity) onSubCategorySelected;
+  final VoidCallback? onSkip;
 
   const AiSubCategorySelectionBubble({
     super.key,
     required this.selectedCategory,
     this.selectedSubCategory,
     required this.onSubCategorySelected,
+    this.onSkip,
   });
 
   @override
@@ -85,6 +87,12 @@ class AiSubCategorySelectionBubble extends StatelessWidget {
                   if (selectedCategory.subCategories != null &&
                       selectedCategory.subCategories!.isNotEmpty)
                     _buildSubCategorySelection(),
+
+                  // スキップボタン
+                  if (onSkip != null) ...[
+                    const SizedBox(height: AppSpacing.sm),
+                    _buildSkipButton(),
+                  ],
 
                   const SizedBox(height: AppSpacing.sm),
 
@@ -176,6 +184,45 @@ class AiSubCategorySelectionBubble extends StatelessWidget {
                 ),
               ),
             ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSkipButton() {
+    return GestureDetector(
+      onTap: onSkip,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm,
+        ),
+        decoration: BoxDecoration(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(AppRadius.medium),
+          border: Border.all(
+            color: AppColors.pointGray.withValues(alpha: 0.3),
+            width: 1,
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.arrow_forward,
+              size: 16,
+              color: AppColors.pointGray,
+            ),
+            const SizedBox(width: AppSpacing.xs),
+            Text(
+              'スキップして直接質問する',
+              style: AppFonts.bodySmall.copyWith(
+                color: AppColors.pointGray,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
           ],
         ),
       ),

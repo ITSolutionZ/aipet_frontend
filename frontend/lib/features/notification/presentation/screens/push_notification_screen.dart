@@ -354,8 +354,8 @@ class _PushNotificationScreenState
                       }
 
                       // データがロードされていない場合のフォールバック
-                      if (alarmState.morningTime.hour == 0 &&
-                          alarmState.morningTime.minute == 0) {
+                      if (alarmState.morningTime?.hour == 0 &&
+                          alarmState.morningTime?.minute == 0) {
                         return Container(
                           padding: const EdgeInsets.all(AppSpacing.lg),
                           child: Column(
@@ -469,13 +469,13 @@ class _PushNotificationScreenState
     // イベントタイプ別デフォルト時間設定
     switch (eventType) {
       case CalendarEventType.feeding:
-        defaultTime = state.morningTime;
+        defaultTime = state.morningTime ?? const TimeOfDay(hour: 9, minute: 0);
         break;
       case CalendarEventType.medication:
         defaultTime = const TimeOfDay(hour: 9, minute: 0);
         break;
       case CalendarEventType.walking:
-        defaultTime = state.walkTime;
+        defaultTime = state.walkTime ?? const TimeOfDay(hour: 17, minute: 0);
         break;
       case CalendarEventType.exercise:
         defaultTime = const TimeOfDay(hour: 17, minute: 0);

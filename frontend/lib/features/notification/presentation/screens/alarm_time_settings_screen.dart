@@ -150,39 +150,30 @@ class _AlarmTimeSettingsScreenState
     CalendarEventType eventType,
     dynamic state,
   ) {
-    // 기본값 설정 (실제 구현에서는 state에서 가져와야 함)
-    TimeOfDay defaultTime = const TimeOfDay(hour: 9, minute: 0);
+    // ✅ 목업 데이터 제거 - 유저가 설정한 시간만 사용
+    TimeOfDay? currentTime;
 
-    // 이벤트 타입별 기본 시간 설정
+    // 이벤트 타입별 시간 가져오기
     switch (eventType) {
       case CalendarEventType.feeding:
-        defaultTime = state.morningTime ?? const TimeOfDay(hour: 8, minute: 0);
-        break;
-      case CalendarEventType.medication:
-        defaultTime = const TimeOfDay(hour: 9, minute: 0);
+        currentTime = state.morningTime;
         break;
       case CalendarEventType.walking:
-        defaultTime = state.walkTime ?? const TimeOfDay(hour: 7, minute: 0);
-        break;
-      case CalendarEventType.exercise:
-        defaultTime = const TimeOfDay(hour: 17, minute: 0);
-        break;
-      case CalendarEventType.system:
-        defaultTime = const TimeOfDay(hour: 10, minute: 0);
+        currentTime = state.walkTime;
         break;
       default:
-        defaultTime = const TimeOfDay(hour: 9, minute: 0);
+        currentTime = null;
         break;
     }
 
     return _buildTimeSettingTile(
       title: '${eventType.emoji} ${eventType.displayName}',
       subtitle: '${eventType.displayName}アラーム時間',
-      time: defaultTime,
+      time: currentTime,
       onTap: () => _selectTime(
         context,
         '${eventType.displayName}時間',
-        defaultTime,
+        currentTime ?? const TimeOfDay(hour: 9, minute: 0),
         (time) {
           ref
               .read(alarmTimeSettingsControllerProvider.notifier)
@@ -195,7 +186,7 @@ class _AlarmTimeSettingsScreenState
   Widget _buildTimeSettingTile({
     required String title,
     required String subtitle,
-    required TimeOfDay time,
+    required TimeOfDay? time,
     required VoidCallback onTap,
   }) {
     return GlassCard(
@@ -226,7 +217,9 @@ class _AlarmTimeSettingsScreenState
             borderRadius: BorderRadius.circular(AppSpacing.sm),
           ),
           child: Text(
-            '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}',
+            time != null
+                ? '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}'
+                : '未設定',
             style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.w600,

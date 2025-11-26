@@ -158,7 +158,7 @@ class HomeRepositoryImpl implements HomeRepository {
   @override
   Future<List<PetSummaryEntity>> getPetSummaries() async {
     try {
-      LoggerService.debug('🐾 getPetSummaries: 시작');
+      LoggerService.debug('🐾 getPetSummaries: 시작 (Firebase 사용)');
 
       // 캐시에서 펫 요약 정보 확인
       final cachedPetSummaries = _cacheService.getCache<List<PetSummaryEntity>>(
@@ -170,42 +170,52 @@ class HomeRepositoryImpl implements HomeRepository {
         return cachedPetSummaries;
       }
 
-      // 로컬 스토리지 초기화 확인
-      await _localStorageService.initialize();
-      LoggerService.debug('🐾 getPetSummaries: 로컬 스토리지 초기화 완료');
+      // ✅ Firebase Firestore에서 펫 정보 가져오기
+      LoggerService.debug('📡 getPetSummaries: Firebase에서 펫 데이터 조회 시작');
+      final result = await FirestorePetService.getAllPets();
 
-      // 로컬 스토리지에서 펫 정보 가져오기 (실제 데이터)
-      final petProfiles = await _localStorageService.pet.getAllPets();
-      LoggerService.debug(
-        '🐾 getPetSummaries: 로컬에서 ${petProfiles.length}개 펫 데이터 조회',
-      );
-
-      // 빈 데이터인 경우 빈 리스트 반환
-      if (petProfiles.isEmpty) {
-        LoggerService.debug('🐾 getPetSummaries: 펫 데이터가 없음 - 빈 리스트 반환');
+      if (!result.isSuccess || result.dataOrNull == null) {
+        LoggerService.debug('⚠️ getPetSummaries: Firebase 조회 실패 또는 데이터 없음');
         final emptySummaries = <PetSummaryEntity>[];
 
-        // 빈 리스트도 캐시에 저장
+        // 빈 리스트도 캐시에 저장 (1분 TTL - 펫 등록 후 빠른 반영)
         await _cacheService.setCache(
           CacheKeys.petProfiles,
           emptySummaries,
-          ttl: CacheTTL.long,
+          ttl: const Duration(minutes: 1),
         );
 
         return emptySummaries;
       }
 
+      final petProfiles = result.dataOrNull!;
+      LoggerService.debug(
+        '📡 getPetSummaries: Firebase에서 ${petProfiles.length}개 펫 데이터 조회 완료',
+      );
+
       // 펫 데이터를 요약 엔티티로 변환
-      final petSummaries = PetMapper.toSummaryEntityListFromMaps(petProfiles);
+      final petSummaries = petProfiles.map((pet) {
+        return PetSummaryEntity(
+          id: pet.id,
+          name: pet.name,
+          typeName: pet.type,
+          breed: pet.breed,
+          age: _calculateAge(pet.birthDate),
+          birthDate: pet.birthDate,
+          createdAt: pet.createdAt,
+          profileImageUrl: pet.imagePath,
+        );
+      }).toList();
+
       LoggerService.debug(
         '🐾 getPetSummaries: ${petSummaries.length}개 펫 요약 정보 생성 완료',
       );
 
-      // 펫 요약 정보 캐시 저장 (1시간 TTL)
+      // 펫 요약 정보 캐시 저장 (3분 TTL - 펫 등록 후 빠른 업데이트)
       await _cacheService.setCache(
         CacheKeys.petProfiles,
         petSummaries,
-        ttl: CacheTTL.long,
+        ttl: const Duration(minutes: 3),
       );
 
       return petSummaries;
@@ -216,6 +226,17 @@ class HomeRepositoryImpl implements HomeRepository {
       // 에러 발생 시 빈 리스트 반환 (앱 크래시 방지)
       return <PetSummaryEntity>[];
     }
+  }
+
+  /// 나이 계산 헬퍼 메서드
+  int _calculateAge(DateTime birthDate) {
+    final now = DateTime.now();
+    int age = now.year - birthDate.year;
+    if (now.month < birthDate.month ||
+        (now.month == birthDate.month && now.day < birthDate.day)) {
+      age--;
+    }
+    return age;
   }
 
   // 기존 호환성을 위해 유지
@@ -239,9 +260,6 @@ class HomeRepositoryImpl implements HomeRepository {
         LoggerService.debug('⚡ getWalkSummary: 캐시에서 산책 요약 정보 반환');
         return cachedWalkSummary;
       }
-
-      // 로컬 스토리지 초기화 확인
-      await _localStorageService.initialize();
 
       // 로컬 스토리지에서 산책 기록 가져오기 (실제 데이터)
       final pets = await _localStorageService.pet.getAllPets();
@@ -334,9 +352,6 @@ class HomeRepositoryImpl implements HomeRepository {
 
       await Future.delayed(_mockDelay);
 
-      // 로컬 스토리지 초기화 확인
-      await _localStorageService.initialize();
-
       // 로컬 스토리지에서 펫 정보와 건강 기록 가져오기
       final pets = await _localStorageService.pet.getAllPets();
       LoggerService.debug('🏥 getPetHealthSummary: ${pets.length}개 펫 데이터 조회');
@@ -425,9 +440,6 @@ class HomeRepositoryImpl implements HomeRepository {
         LoggerService.debug('⚡ getUpcomingAppointments: 캐시에서 예약 정보 반환');
         return cachedAppointments;
       }
-
-      // 로컬 스토리지 초기화 확인
-      await _localStorageService.initialize();
 
       // 로컬 스토리지에서 스케줄 정보 가져오기 (실제 데이터)
       final schedules = await _localStorageService.schedule

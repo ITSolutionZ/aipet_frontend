@@ -71,16 +71,19 @@ class NotificationTimeOfDay {
 }
 
 /// 알림 소리 타입
+/// 모든 알람은 시스템 기본 소리를 사용합니다.
 enum AlarmSound {
-  dog('dog', 'Dog', 'resource://raw/alarm_dog'), // Android raw 리소스 형식
-  cat('cat', 'Cat', 'resource://raw/alarm_cat'), // Android raw 리소스 형식
-  defaultSound('default', 'Default', null);
+  dog('dog', 'Dog'),
+  cat('cat', 'Cat'),
+  defaultSound('default', 'Default');
 
   final String key;
   final String displayName;
-  final String? resourcePath;
 
-  const AlarmSound(this.key, this.displayName, this.resourcePath);
+  const AlarmSound(this.key, this.displayName);
+
+  /// 플랫폼에 맞는 사운드 경로 반환 (항상 null - 시스템 기본 사운드 사용)
+  String? get resourcePath => null;
 
   static AlarmSound fromKey(String key) {
     return AlarmSound.values.firstWhere(

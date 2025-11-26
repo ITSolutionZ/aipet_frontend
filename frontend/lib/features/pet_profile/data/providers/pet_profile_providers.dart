@@ -1,9 +1,10 @@
-import 'package:aipet_frontend/features/pet_profile/data/repositories/backend_pet_repository.dart';
+import 'package:aipet_frontend/app/services/ultra_fast_cache_service.dart';
 import 'package:aipet_frontend/features/pet_profile/data/repositories/firestore_pet_repository.dart';
 import 'package:aipet_frontend/features/pet_profile/data/services/pet_local_storage_service.dart';
 import 'package:aipet_frontend/features/pet_profile/domain/repositories/pet_profile_repository.dart';
 import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
+import 'package:aipet_frontend/shared/services/cache_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'pet_profile_providers.g.dart';
@@ -30,14 +31,38 @@ class PetProfilesNotifier extends _$PetProfilesNotifier {
   @override
   Future<List<PetProfileEntity>> build() async {
     try {
+      LoggerService.debug('🐾 PetProfilesNotifier.build() 시작');
+
+      // ✅ 1단계: 로컬 캐시 확인 (1회 이상 로그인한 유저)
+      final cachedPets = await PetLocalStorageService.getPets();
+      if (cachedPets.isNotEmpty) {
+        LoggerService.debug('✅ 로컬 캐시에서 ${cachedPets.length}개 펫 로드 (빠른 로딩)');
+        return cachedPets;
+      }
+
+      // ✅ 2단계: 첫 로그인 - Firebase에서 펫 데이터 로드
+      LoggerService.debug('📡 첫 로그인 감지 - Firebase에서 펫 데이터 로드');
       final repository = ref.read(petProfileRepositoryProvider);
       final result = await repository.getAllPets();
+
       if (result.isSuccess) {
-        return result.dataOrNull ?? [];
+        final pets = result.dataOrNull ?? [];
+        LoggerService.debug('✅ Firebase에서 ${pets.length}개 펫 로드 완료');
+
+        // ✅ Firebase 데이터를 로컬 캐시에 저장 (다음 로그인에서 사용)
+        if (pets.isNotEmpty) {
+          for (final pet in pets) {
+            await PetLocalStorageService.addPet(pet);
+          }
+          LoggerService.debug('✅ Firebase 데이터를 로컬 캐시에 저장 (${pets.length}개)');
+        }
+
+        return pets;
       } else {
         throw Exception(result.error);
       }
     } catch (e) {
+      LoggerService.debug('❌ PetProfilesNotifier.build() 에러: $e');
       rethrow;
     }
   }
@@ -51,6 +76,9 @@ class PetProfilesNotifier extends _$PetProfilesNotifier {
       return;
     }
 
+    // ✅ 홈 화면 캐시 무효화
+    _invalidateHomeCache();
+
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       if (!ref.mounted) {
@@ -59,24 +87,40 @@ class PetProfilesNotifier extends _$PetProfilesNotifier {
       final repository = ref.read(petProfileRepositoryProvider);
       final result = await repository.getAllPets();
       if (result.isSuccess) {
-        return result.dataOrNull ?? [];
+        final pets = result.dataOrNull ?? [];
+
+        // ✅ Firestore 데이터를 로컬 캐시에 저장 (다음 로딩 속도 향상)
+        if (pets.isNotEmpty) {
+          for (final pet in pets) {
+            await PetLocalStorageService.updatePet(pet);
+          }
+          LoggerService.debug('✅ 새로고침 데이터를 로컬 캐시에 저장 (${pets.length}개)');
+        }
+
+        return pets;
       } else {
         throw Exception(result.error);
       }
     });
   }
 
+  /// 홈 화면 캐시 무효화
+  void _invalidateHomeCache() {
+    try {
+      // CacheService의 펫 프로필 캐시 무효화
+      CacheService().invalidateCache(CacheKeys.petProfiles);
+
+      // UltraFastCache 무효화
+      UltraFastCacheService().invalidateCache();
+
+      LoggerService.debug('✅ 홈 화면 캐시 무효화 완료');
+    } catch (e) {
+      LoggerService.debug('⚠️ 캐시 무효화 실패 (무시): $e');
+    }
+  }
+
   /// 펫 생성
   Future<PetProfileEntity> createPet(PetProfileEntity pet) async {
-    print('🎯 ===== PetProfilesNotifier.createPet 시작 =====');
-    print('🎯 펫 정보:');
-    print('   - ID: ${pet.id}');
-    print('   - 이름: ${pet.name}');
-    print('   - 타입: ${pet.type}');
-    print('   - 품종: ${pet.breed}');
-    print('   - 성별: ${pet.gender}');
-    print('   - 체중: ${pet.weight}');
-    print('   - 생일: ${pet.birthDate}');
     LoggerService.debug('🎯 ===== PetProfilesNotifier.createPet 시작 =====');
     LoggerService.debug('🎯 펫 정보:');
     LoggerService.debug('   - ID: ${pet.id}');
@@ -92,33 +136,35 @@ class PetProfilesNotifier extends _$PetProfilesNotifier {
       throw Exception('Provider disposed');
     }
 
-    print('🎯 Repository로 펫 생성 요청...');
     LoggerService.debug('🎯 Repository로 펫 생성 요청...');
     final repository = ref.read(petProfileRepositoryProvider);
-    print('🎯 Repository 타입: ${repository.runtimeType}');
+    LoggerService.debug('🎯 Repository 타입: ${repository.runtimeType}');
     final result = await repository.createPet(pet);
-    print('🎯 Repository 응답 받음: ${result.isSuccess}');
+    LoggerService.debug('🎯 Repository 응답 받음: ${result.isSuccess}');
 
     if (result.isSuccess) {
-      print('✅ Repository에서 펫 생성 성공!');
-      print('   생성된 펫 ID: ${result.dataOrNull?.id}');
       LoggerService.debug('✅ Repository에서 펫 생성 성공!');
       LoggerService.debug('   생성된 펫 ID: ${result.dataOrNull?.id}');
 
+      final createdPet = result.dataOrNull!;
+
+      // ✅ 로컬 캐시에 즉시 저장
+      await PetLocalStorageService.addPet(createdPet);
+      LoggerService.debug('✅ 생성된 펫을 로컬 캐시에 저장: ${createdPet.id}');
+
+      // ✅ 홈 화면 캐시 무효화 (다음 로딩 시 새 데이터 표시)
+      _invalidateHomeCache();
+
       if (ref.mounted) {
-        try {
-          LoggerService.debug('🔄 펫 목록 새로고침 중...');
-          await refresh();
-          LoggerService.debug('✅ 펫 목록 새로고침 완료');
-        } catch (e) {
-          LoggerService.debug('⚠️ 새로고침 실패 (무시): $e');
-          // Provider가 disposed된 경우 무시하고 계속 진행
-        }
+        // ✅ 상태에 새 펫 추가 (Firebase 재조회 없이 즉시 반영)
+        final currentPets = state.asData?.value ?? [];
+        final updatedPets = [...currentPets, createdPet];
+        state = AsyncValue.data(updatedPets);
+        LoggerService.debug('✅ 상태에 새 펫 추가 완료 (${updatedPets.length}개)');
       }
-      return result.dataOrNull!;
+
+      return createdPet;
     } else {
-      print('❌ Repository에서 펫 생성 실패');
-      print('   에러: ${result.error}');
       LoggerService.debug('❌ Repository에서 펫 생성 실패');
       LoggerService.debug('   에러: ${result.error}');
       throw Exception(result.error);
@@ -138,15 +184,19 @@ class PetProfilesNotifier extends _$PetProfilesNotifier {
     final repository = ref.read(petProfileRepositoryProvider);
     final result = await repository.updatePet(pet);
     if (result.isSuccess) {
+      // ✅ 로컬 캐시 즉시 업데이트
+      await PetLocalStorageService.updatePet(pet);
+      LoggerService.debug('✅ 업데이트된 펫을 로컬 캐시에 저장: ${pet.id}');
+
+      // ✅ 홈 화면 캐시 무효화
+      _invalidateHomeCache();
+
       if (ref.mounted) {
-        try {
-          await refresh();
-        } catch (e) {
-          LoggerService.debug(
-            '⚠️ PetProfilesNotifier.updatePet: Refresh failed (provider disposed): $e',
-          );
-          // Provider가 disposed된 경우 무시하고 계속 진행
-        }
+        // ✅ 상태에서 펫 업데이트 (Firebase 재조회 없이 즉시 반영)
+        final currentPets = state.asData?.value ?? [];
+        final updatedPets = currentPets.map((p) => p.id == pet.id ? pet : p).toList();
+        state = AsyncValue.data(updatedPets);
+        LoggerService.debug('✅ 상태에서 펫 업데이트 완료');
       }
     } else {
       throw Exception(result.error);
@@ -165,15 +215,19 @@ class PetProfilesNotifier extends _$PetProfilesNotifier {
     final repository = ref.read(petProfileRepositoryProvider);
     final result = await repository.deletePet(id);
     if (result.isSuccess) {
+      // ✅ 로컬 캐시에서 즉시 삭제
+      await PetLocalStorageService.deletePet(id);
+      LoggerService.debug('✅ 펫을 로컬 캐시에서 삭제: $id');
+
+      // ✅ 홈 화면 캐시 무효화
+      _invalidateHomeCache();
+
       if (ref.mounted) {
-        try {
-          await refresh();
-        } catch (e) {
-          LoggerService.debug(
-            '⚠️ PetProfilesNotifier.deletePet: Refresh failed (provider disposed): $e',
-          );
-          // Provider가 disposed된 경우 무시하고 계속 진행
-        }
+        // ✅ 상태에서 펫 삭제 (Firebase 재조회 없이 즉시 반영)
+        final currentPets = state.asData?.value ?? [];
+        final updatedPets = currentPets.where((p) => p.id != id).toList();
+        state = AsyncValue.data(updatedPets);
+        LoggerService.debug('✅ 상태에서 펫 삭제 완료 (${updatedPets.length}개)');
       }
     } else {
       throw Exception(result.error);

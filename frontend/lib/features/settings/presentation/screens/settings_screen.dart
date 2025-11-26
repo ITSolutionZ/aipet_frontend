@@ -9,6 +9,7 @@ import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -155,7 +156,14 @@ class SettingsScreen extends ConsumerWidget {
             title: 'お問い合わせ',
             backgroundColor: const Color(0xFFB8A5A5),
             tileColor: AppColors.pureWhite,
-            onTap: () {},
+            onTap: () async {
+              final url = Uri.parse(
+                'https://docs.google.com/forms/d/e/1FAIpQLScCCXFO2Uie5vNCye0UUpBnQtOCvXSiXpT97tzZisJjxmrS8w/viewform?usp=dialog',
+              );
+              if (await canLaunchUrl(url)) {
+                await launchUrl(url, mode: LaunchMode.externalApplication);
+              }
+            },
           ),
           const SizedBox(height: AppSpacing.xs),
           SettingsTileWidget(

@@ -1,10 +1,8 @@
-// ✅ 사용하지 않는 import 제거
-// import 'package:aipet_frontend/app/router/app_router.dart';
+import 'package:aipet_frontend/app/router/app_router.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-// import 'package:go_router/go_router.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../domain/entities/entities.dart'; // ✅ 추가
 import '../controllers/ai_chat_controller.dart';
@@ -105,45 +103,42 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
     await ref.read(aiChatProvider.notifier).clearChatHistory();
   }
 
-  // ✅ 저장 기능 비활성화
-  // Future<void> _saveCurrentChat() async {
-  //   final chatState = ref.read(aiChatProvider);
-  //   if (chatState.messages.isEmpty) {
-  //     if (mounted) {
-  //       ScaffoldMessenger.of(
-  //         context,
-  //       ).showSnackBar(const SnackBar(content: Text('保存する会話がありません')));
-  //     }
-  //     return;
-  //   }
+  Future<void> _saveCurrentChat() async {
+    final chatState = ref.read(aiChatProvider);
+    if (chatState.messages.isEmpty) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('保存する会話がありません')));
+      }
+      return;
+    }
 
-  //   try {
-  //     await ref
-  //         .read(aiChatProvider.notifier)
-  //         .saveCurrentChatToHistory(isManualSave: true);
-  //     if (mounted) {
-  //       ScaffoldMessenger.of(
-  //         context,
-  //       ).showSnackBar(const SnackBar(content: Text('会話を保存しました')));
-  //     }
-  //   } catch (error) {
-  //     if (mounted) {
-  //       ScaffoldMessenger.of(
-  //         context,
-  //       ).showSnackBar(SnackBar(content: Text('保存に失敗しました: $error')));
-  //     }
-  //   }
-  // }
+    try {
+      await ref
+          .read(aiChatProvider.notifier)
+          .saveCurrentChatToHistory(isManualSave: true);
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('会話を保存しました')));
+      }
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('保存に失敗しました: $error')));
+      }
+    }
+  }
 
-  // ✅ 즐겨찾기 화면 네비게이션 비활성화
-  // void _navigateToFavoriteMessages() {
-  //   context.push(AppRouter.aiFavoriteMessagesRoute);
-  // }
+  void _navigateToFavoriteMessages() {
+    context.push(AppRouter.aiFavoriteMessagesRoute);
+  }
 
-  // ✅ 히스토리 화면 네비게이션 비활성화
-  // void _navigateToChatHistory() {
-  //   context.push(AppRouter.aiChatHistoryRoute);
-  // }
+  void _navigateToChatHistory() {
+    context.push(AppRouter.aiChatHistoryRoute);
+  }
 
   Widget _buildDateSeparator(DateTime date) {
     return DateSeparatorWidget(date: date);
@@ -160,9 +155,10 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
     // 실제 메시지들
     count += chatState.messages.length;
 
-    // 펫은 선택했지만 카테고리 선택이 완료되지 않은 경우, 메시지 뒤에 카테고리 선택 버블 추가
+    // 펫은 선택했지만 카테고리가 아직 선택되지 않은 경우, 카테고리 선택 버블 추가
     if (chatState.hasPetSelected &&
         !chatState.hasCategorySelected &&
+        chatState.selectedCategory == null &&
         chatState.messages.isNotEmpty) {
       count += 1; // 카테고리 선택 메시지
     }
@@ -260,7 +256,7 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
     }
     currentIndex += chatState.messages.length;
 
-    // 3. 카테고리 선택 버블 (메시지들 뒤에 표시)
+    // 3. 카테고리 선택 버블 (카테고리가 아직 선택되지 않은 경우)
     if (chatState.hasPetSelected &&
         !chatState.hasCategorySelected &&
         chatState.selectedCategory == null &&
@@ -300,6 +296,10 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
           selectedSubCategory: chatState.selectedSubCategory,
           onSubCategorySelected: (subCategory) {
             ref.read(aiChatProvider.notifier).selectSubCategory(subCategory);
+          },
+          onSkip: () {
+            // スキップ時は一般的なサブカテゴリとして扱う
+            ref.read(aiChatProvider.notifier).skipSubCategorySelection();
           },
         );
       }
@@ -371,25 +371,22 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
         foregroundColor: AppColors.pointBrown,
         elevation: 0,
         title: null, // タイトルを削除
-        // ✅ 히스토리 기능 비활성화
-        // leading: IconButton(
-        //   onPressed: _navigateToChatHistory,
-        //   icon: const Icon(Icons.history, color: AppColors.pointDark),
-        //   tooltip: 'チャット履歴',
-        // ),
+        leading: IconButton(
+          onPressed: _navigateToChatHistory,
+          icon: const Icon(Icons.history, color: AppColors.pointDark),
+          tooltip: 'チャット履歴',
+        ),
         actions: [
-          // ✅ 즐겨찾기 기능 비활성화
-          // IconButton(
-          //   onPressed: _navigateToFavoriteMessages,
-          //   icon: const Icon(Icons.star, color: AppColors.pointDark),
-          //   tooltip: 'お気に入り',
-          // ),
-          // ✅ 저장 기능 비활성화
-          // IconButton(
-          //   onPressed: _saveCurrentChat,
-          //   icon: const Icon(Icons.save, color: AppColors.pointDark),
-          //   tooltip: '会話を保存',
-          // ),
+          IconButton(
+            onPressed: _navigateToFavoriteMessages,
+            icon: const Icon(Icons.star, color: AppColors.pointDark),
+            tooltip: 'お気に入り',
+          ),
+          IconButton(
+            onPressed: _saveCurrentChat,
+            icon: const Icon(Icons.save, color: AppColors.pointDark),
+            tooltip: '会話を保存',
+          ),
           IconButton(
             onPressed: _clearChatHistory,
             icon: const Icon(Icons.refresh, color: AppColors.pointDark),
@@ -397,29 +394,40 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
           ),
         ],
       ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            // 메시지 리스트
-            Expanded(
-              child: ListView.builder(
-                controller: _scrollController,
-                padding: const EdgeInsets.all(AppSpacing.md),
-                reverse: false,
-                itemCount: _getTotalItemCount(chatState),
-                itemBuilder: (context, index) {
-                  return _buildChatItem(context, ref, chatState, index);
-                },
+      body: GestureDetector(
+        // 화면 탭 시 키보드 닫기
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: SafeArea(
+          child: Column(
+            children: [
+              // 메시지 리스트
+              Expanded(
+                child: ListView.builder(
+                  controller: _scrollController,
+                  padding: const EdgeInsets.only(
+                    left: AppSpacing.md,
+                    right: AppSpacing.md,
+                    top: AppSpacing.md,
+                    bottom: AppSpacing.xl * 2, // 하단 여백 증가
+                  ),
+                  reverse: false,
+                  itemCount: _getTotalItemCount(chatState),
+                  itemBuilder: (context, index) {
+                    return _buildChatItem(context, ref, chatState, index);
+                  },
+                ),
               ),
-            ),
 
-            // 메시지 입력 영역 (항상 표시)
-            AiMessageInput(
-              controller: _messageController,
-              onSendMessage: _sendMessage,
-              isLoading: chatState.isTyping,
-            ),
-          ],
+              // 메시지 입력 영역 (항상 표시)
+              AiMessageInput(
+                controller: _messageController,
+                onSendMessage: _sendMessage,
+                isLoading: chatState.isTyping,
+              ),
+            ],
+          ),
         ),
       ),
     );

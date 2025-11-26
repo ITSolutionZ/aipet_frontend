@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:aipet_frontend/app/config/app_config.dart';
-import 'package:aipet_frontend/shared/core/domain/result.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:app_links/app_links.dart';
 import 'package:flutter/foundation.dart';

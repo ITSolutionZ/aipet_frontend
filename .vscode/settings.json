@@ -109,7 +109,7 @@
 
     // 테마 설정
     "workbench.colorTheme": "Cursor Dark Midnight",
-    "workbench.iconTheme": "material-icon-theme",
+    "workbench.iconTheme": "catppuccin-macchiato",
 
     // 확장 프로그램 권장 설정
     "extensions.ignoreRecommendations": false,

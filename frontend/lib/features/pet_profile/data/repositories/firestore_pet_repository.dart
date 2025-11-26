@@ -1,4 +1,5 @@
 import '../../../../shared/core/domain/result.dart';
+import '../../../../shared/core/services/firebase_storage_service.dart';
 import '../../../../shared/core/services/firestore_pet_service.dart';
 import '../../../../shared/core/services/logger_service.dart';
 import '../../../../shared/domain/entities/pet_profile_entity.dart';
@@ -63,8 +64,42 @@ class FirestorePetRepository implements PetProfileRepository {
 
   @override
   Future<Result<String>> uploadPetImage(String petId, String imagePath) async {
-    // TODO: Firebase Storage를 사용한 이미지 업로드 구현
-    return Result.failure('画像アップロード機能は開発中です');
+    LoggerService.debug('📡 FirestorePetRepository.uploadPetImage() 호출');
+    LoggerService.debug('   Pet ID: $petId');
+    LoggerService.debug('   Image Path: $imagePath');
+
+    // Firebase Storage를 사용한 이미지 업로드
+    final result = await FirebaseStorageService.uploadPetImage(petId, imagePath);
+
+    if (result.isSuccess && result.dataOrNull != null) {
+      // 이미지 URL을 Firestore Pet 문서에 업데이트
+      try {
+        final imageUrl = result.dataOrNull!;
+        await FirestorePetService.updatePet(
+          PetProfileEntity(
+            id: petId,
+            name: '', // 업데이트 시 name은 무시됨
+            type: '', // 업데이트 시 type은 무시됨
+            birthDate: DateTime.now(), // 업데이트 시 birthDate는 무시됨
+            gender: '', // 업데이트 시 gender는 무시됨
+            weight: 0.0, // 업데이트 시 weight는 무시됨
+            imagePath: imageUrl, // ✅ imageUrl만 업데이트
+            ownerId: '',
+            createdAt: DateTime.now(),
+            updatedAt: DateTime.now(),
+          ),
+        );
+
+        LoggerService.debug('✅ uploadPetImage 성공 - URL: $imageUrl');
+      } catch (e) {
+        LoggerService.debug('⚠️ Firestore 업데이트 실패 (이미지는 업로드됨): $e');
+        // 이미지는 업로드되었으므로 성공으로 간주
+      }
+    } else {
+      LoggerService.debug('❌ uploadPetImage 실패: ${result.error}');
+    }
+
+    return result;
   }
 
   @override

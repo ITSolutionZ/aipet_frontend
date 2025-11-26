@@ -32,7 +32,9 @@ class FirebaseAuthRealImpl implements AuthRepository {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   /// Google Sign-In 인스턴스
-  final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: ['email', 'https://www.googleapis.com/auth/userinfo.profile'],
+  );
 
   /// LINE OAuth 서비스 인스턴스
   final LineOAuthService _lineOAuthService = LineOAuthService();
@@ -109,7 +111,7 @@ class FirebaseAuthRealImpl implements AuthRepository {
       // Google Sign-In 인증 시작
       final GoogleSignInAccount? googleUser;
       try {
-        // ✅ 최신 google_sign_in API 사용
+        // ✅ google_sign_in 사용
         googleUser = await _googleSignIn.signIn();
 
         // 사용자가 로그인을 취소한 경우

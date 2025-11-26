@@ -146,8 +146,11 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
   @override
   void initState() {
     super.initState();
-    // 폼 컨트롤러 초기화 (프로필은 자동으로 로드됨)
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    // 프로필 데이터 먼저 로드 후 폼 컨트롤러 초기화
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      // 프로필 로드
+      await ref.read(userProfileControllerProvider.notifier).loadProfile();
+      // 폼 컨트롤러 초기화 (프로필 데이터가 로드된 후)
       ref.read(profileEditFormControllerProvider.notifier).initialize();
     });
   }

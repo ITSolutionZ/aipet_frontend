@@ -1,13 +1,13 @@
-import 'package:aipet_frontend/features/scheduling/data/repositories/feeding_repository_impl.dart';
+import 'package:aipet_frontend/features/scheduling/data/repositories/firestore_feeding_repository.dart';
 import 'package:aipet_frontend/features/scheduling/domain/repositories/feeding_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'feeding_providers.g.dart';
 
-/// 급여 관리 Repository Provider
+/// 급여 관리 Repository Provider (Firebase)
 @riverpod
 FeedingRepository feedingRepository(Ref ref) {
-  return FeedingRepositoryImpl();
+  return FirestoreFeedingRepository();
 }
 
 /// 펫 사이즈 급여량 정보 Provider

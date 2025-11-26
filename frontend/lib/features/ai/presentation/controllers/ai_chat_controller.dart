@@ -313,6 +313,53 @@ class AiChatNotifier extends _$AiChatNotifier {
     }
   }
 
+  /// 서브카테고리 선택 스킵 (바로 질문 입력 가능하도록)
+  Future<void> skipSubCategorySelection() async {
+    if (state.selectedCategory == null) {
+      LoggerService.debug('❌ カテゴリが選択されていません');
+      return;
+    }
+
+    LoggerService.debug('⏭️ サブカテゴリ選択をスキップ');
+
+    final useCase = ref.read(selectCategoryUseCaseProvider);
+
+    final result = await useCase(
+      category: state.selectedCategory!,
+      selectedPet: state.selectedPet,
+    );
+
+    if (result.isSuccess && result.dataOrNull != null) {
+      final updateResult = AiChatStateManager.updateCategorySelection(
+        currentState: state,
+        category: state.selectedCategory!,
+        newMessages: result.dataOrNull!.messages,
+        suggestedQuestions: result.dataOrNull!.suggestedQuestions,
+      );
+
+      if (updateResult.isSuccess) {
+        state = updateResult.dataOrNull!.copyWith(
+          hasSubCategorySelected: true, // スキップしたので選択完了扱い
+        );
+        LoggerService.debug('✅ サブカテゴリスキップ完了 - 直接質問可能');
+      } else {
+        state =
+            AiChatStateManager.setErrorState(
+              currentState: state,
+              error: updateResult.error?.toString() ?? 'Update failed',
+            ).dataOrNull ??
+            state;
+      }
+    } else {
+      state =
+          AiChatStateManager.setErrorState(
+            currentState: state,
+            error: result.error?.toString() ?? 'Skip failed',
+          ).dataOrNull ??
+          state;
+    }
+  }
+
   // ✅ 즐겨찾기 토글 기능 비활성화 (Notifier)
   // Future<void> toggleFavorite(AiMessageEntity message) async {
   //   // 사용자 질문 찾기
@@ -655,19 +702,18 @@ class AiChatNotifier extends _$AiChatNotifier {
   //   }
   // }
 
-  // ✅ 히스토리 저장 기능 비활성화
-  // Future<void> saveCurrentChatToHistory({bool isManualSave = false}) async {
-  //   if (state.messages.isEmpty) return;
+  Future<void> saveCurrentChatToHistory({bool isManualSave = false}) async {
+    if (state.messages.isEmpty) return;
 
-  //   final useCase = ref.read(saveChatHistoryUseCaseProvider);
+    final useCase = ref.read(saveChatHistoryUseCaseProvider);
 
-  //   await useCase(
-  //     messages: state.messages,
-  //     selectedPet: state.selectedPet,
-  //     selectedCategory: state.selectedCategory,
-  //     isManualSave: isManualSave,
-  //   );
-  // }
+    await useCase(
+      messages: state.messages,
+      selectedPet: state.selectedPet,
+      selectedCategory: state.selectedCategory,
+      isManualSave: isManualSave,
+    );
+  }
 
   /// 현재 대화 ID 생성 또는 가져오기
   String _getCurrentConversationId() {

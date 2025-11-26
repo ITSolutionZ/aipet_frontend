@@ -1,5 +1,6 @@
 import 'package:aipet_frontend/features/daily/presentation/controllers/pet_registration/pet_registration.dart';
 import 'package:aipet_frontend/features/pet_profile/data/data.dart';
+import 'package:aipet_frontend/shared/core/services/firebase_token_service.dart';
 import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:aipet_frontend/shared/core/services/snackbar_service.dart';
 import 'package:aipet_frontend/shared/core/utils/date_time_utils.dart';
@@ -398,6 +399,15 @@ class PetRegistrationController extends _$PetRegistrationController {
     if (!ref.mounted) {
       throw Exception('컨트롤러가 이미 제거되었습니다');
     }
+
+    // ✅ Firebase Auth 로그인 확인
+    final currentUserId = FirebaseTokenService.getCurrentUserId();
+    if (currentUserId == null) {
+      LoggerService.debug('❌ submitForm - Firebase Auth 로그인 필요');
+      throw Exception('ペット登録にはログインが必要です。ログインしてから再度お試しください。');
+    }
+    LoggerService.debug('✅ Firebase Auth 로그인 확인 완료: $currentUserId');
+
     final petProfilesNotifier = ref.read(petProfilesProvider.notifier);
     final relationService = PetUserRelationService.instance;
 
@@ -433,7 +443,7 @@ class PetRegistrationController extends _$PetRegistrationController {
         gender: state.gender,
         weight: state.weight!,
         imagePath: state.petImagePath,
-        ownerId: 'local_user', // 로컬 사용자 ID (로컬 전용)
+        ownerId: currentUserId, // ✅ Firebase Auth 사용자 ID 사용
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
         isActive: true,
@@ -552,6 +562,15 @@ class PetRegistrationController extends _$PetRegistrationController {
     if (!ref.mounted) {
       throw Exception('컨트롤러가 이미 제거되었습니다');
     }
+
+    // ✅ Firebase Auth 로그인 확인
+    final currentUserId = FirebaseTokenService.getCurrentUserId();
+    if (currentUserId == null) {
+      LoggerService.debug('❌ updatePetForm - Firebase Auth 로그인 필요');
+      throw Exception('ペット情報の更新にはログインが必要です。');
+    }
+    LoggerService.debug('✅ Firebase Auth 로그인 확인 완료: $currentUserId');
+
     final petProfilesNotifier = ref.read(petProfilesProvider.notifier);
 
     try {
@@ -567,7 +586,7 @@ class PetRegistrationController extends _$PetRegistrationController {
         gender: state.gender,
         weight: state.weight!,
         imagePath: state.petImagePath,
-        ownerId: 'local_user', // 로컬 사용자 ID
+        ownerId: currentUserId, // ✅ Firebase Auth 사용자 ID 사용
         createdAt: DateTime.now(), // 기존 생성일 유지할 수 있지만 편의상 현재 시간 사용
         updatedAt: DateTime.now(),
         isActive: true,

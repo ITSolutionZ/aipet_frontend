@@ -8,6 +8,7 @@ import 'package:aipet_frontend/features/notification/data/services/helpers/notif
 import 'package:aipet_frontend/features/pet_profile/data/data.dart';
 import 'package:aipet_frontend/features/pet_profile/presentation/utils/utils.dart';
 import 'package:aipet_frontend/firebase_options.dart';
+import 'package:aipet_frontend/shared/core/services/data_migration_service.dart';
 import 'package:aipet_frontend/shared/core/services/http_client_service.dart';
 import 'package:aipet_frontend/shared/design/design.dart';
 import 'package:aipet_frontend/shared/services/image_storage_service.dart';
@@ -121,16 +122,36 @@ class AppBootstrap {
     // 홈 데이터 프리로딩 시작 (백그라운드)
     unawaited(PreloadService().startPreloading());
 
-    // App Tracking Transparency 권한 요청 (iOS 14.5+)
-    // 앱이 완전히 로드된 후에 요청하므로 약간의 지연을 둠
-    // TEMPORARY: TestFlightで無限ローディング問題を解決するため一時的に無効化
-    // TODO: 問題解決後に有効化
-    /*
-    Future.delayed(const Duration(seconds: 1), () {
-      AppTrackingTransparencyService.requestTrackingPermission();
-    });
-    */
-    debugPrint('⚠️ ATT: 一時的に無効化されています (TestFlight問題調査中)');
+    // 데이터 마이그레이션: 로컬 SQLite → Firestore
+    if (isFirebaseInitialized) {
+      debugPrint('🔄 [Bootstrap] Checking data migration need...');
+      unawaited(
+        DataMigrationService.needsMigration()
+            .then((needsMigration) async {
+              if (needsMigration) {
+                debugPrint('📦 [Bootstrap] Starting data migration...');
+                final result =
+                    await DataMigrationService.migratePetsToFirestore();
+                if (result.isSuccess) {
+                  debugPrint(
+                    '✅ [Bootstrap] Data migration completed: ${result.message}',
+                  );
+                  debugPrint('   Result: ${result.dataOrNull}');
+                } else {
+                  debugPrint(
+                    '⚠️ [Bootstrap] Data migration failed: ${result.error}',
+                  );
+                }
+              } else {
+                debugPrint('📭 [Bootstrap] No migration needed');
+              }
+            })
+            .catchError((e) {
+              debugPrint('⚠️ [Bootstrap] Data migration error: $e');
+              // 에러가 나도 앱 시작은 계속 진행
+            }),
+      );
+    }
 
     // NOTE:
     // 웹/멀티플랫폼에서 옵션이 필요하다면 아래 주석을 해제하고
