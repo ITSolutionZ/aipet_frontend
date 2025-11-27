@@ -13,10 +13,10 @@ dependencies:
     flutter_localizations:
         sdk: flutter
     cupertino_icons: ^1.0.8
-    firebase_core: ^3.6.0 # Firebase SDK 11.x (Swift 5 호환)
-    firebase_auth: ^5.3.0 # Firebase SDK 11.x (Swift 5 호환)
-    cloud_firestore: ^5.4.4 # Firebase Firestore
-    firebase_storage: ^12.3.4 # Firebase Storage (이미지 업로드용)
+    firebase_core: ^4.2.1 # Firebase SDK (최신 버전)
+    firebase_auth: ^6.1.2 # Firebase Auth (최신 버전)
+    cloud_firestore: ^6.1.0 # Firebase Firestore (최신 버전)
+    firebase_storage: ^13.0.4 # Firebase Storage (최신 버전)
     google_sign_in: ^6.2.1 # Google Sign-In (7.x는 API 변경으로 호환성 문제)
     sign_in_with_apple: ^7.0.1
     # flutter_web_auth: ^0.4.3  # 네임스페이스 문제로 임시 비활성화
