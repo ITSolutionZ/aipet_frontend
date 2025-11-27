@@ -4,9 +4,6 @@ platform :ios, '15.0'
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 
-# Firebase SDK バージョンを11.5.0に固定 (Swift 6の問題を回避)
-$FirebaseSDKVersion = '11.5.0'
-
 project 'Runner', {
   'Debug' => :debug,
   'Profile' => :release,
@@ -32,7 +29,6 @@ flutter_ios_podfile_setup
 
 target 'Runner' do
   use_frameworks! :linkage => :static
-  use_modular_headers!
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
   target 'RunnerTests' do
     inherit! :search_paths
@@ -81,9 +77,8 @@ post_install do |installer|
       config.build_settings['SWIFT_EMIT_MODULE_INTERFACE'] = 'NO'
       config.build_settings['DEFINES_MODULE'] = 'YES'
 
-      # Swift言語バージョンをSwift 5に固定
-      # Firebase SDKはSwift 6の新機能を使用しているが、Xcode 16ではまだ完全にサポートされていない
-      config.build_settings['SWIFT_VERSION'] = '5.0'
+      # Swift言語バージョンは自動設定に任せる
+      # config.build_settings['SWIFT_VERSION'] = '5.0'
 
       # ビルド時間最適化設定（全ターゲットに適用）
       if config.name == 'Debug'
