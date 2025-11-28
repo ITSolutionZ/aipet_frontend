@@ -97,7 +97,10 @@ class PetBasicInfoController extends _$PetBasicInfoController {
 
   /// 선택된 이미지 경로 업데이트
   void updateSelectedImage(String? imagePath) {
-    state = state.copyWith(selectedImagePath: imagePath);
+    state = state.copyWith(
+      selectedImagePath: imagePath,
+      imageUpdateTimestamp: DateTime.now().millisecondsSinceEpoch,
+    );
   }
 
   /// 건강 상태 토글

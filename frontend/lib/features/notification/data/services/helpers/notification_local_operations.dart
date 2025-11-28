@@ -80,15 +80,9 @@ class NotificationLocalOperations {
 
       await _cache.setStringList(_notificationsKey, updatedNotifications);
 
-      // 로컬 알림도 취소 (ID가 숫자인 경우에만)
-      try {
-        final id = int.parse(notificationId);
-        await localNotifications.cancel(id);
-      } catch (e) {
-        if (kDebugMode) {
-          LoggerService.debug('[$_tag] ℹ️ 로컬 알림 취소 건너뛰기 (ID가 숫자가 아님)');
-        }
-      }
+      // 로컬 알림도 취소 (문자열 ID를 정수로 변환)
+      final id = int.tryParse(notificationId) ?? notificationId.hashCode.abs();
+      await localNotifications.cancel(id % 2147483647);
     } catch (e) {
       if (kDebugMode) {
         LoggerService.debug('[$_tag] ❌ 알림 삭제 실패: $e');

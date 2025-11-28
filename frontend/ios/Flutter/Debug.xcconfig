@@ -1,6 +1,9 @@
 #include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"
 #include "Generated.xcconfig"
 
+// Google Maps API Key
+GOOGLE_MAPS_API_KEY=AIzaSyB9GTITyjOmgp-WtKYZVKLEbNtHikRmQ48
+
 // ビルド時間最適化設定
 COMPILER_INDEX_STORE_ENABLE = NO
 SWIFT_COMPILATION_MODE = singlefile

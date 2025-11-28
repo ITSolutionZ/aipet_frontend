@@ -1,4 +1,5 @@
 // Notification Data Services
+export 'firestore_schedule_service.dart';
 export 'notification_analytics_service.dart';
 export 'notification_api_service.dart';
 export 'notification_cache_service.dart';

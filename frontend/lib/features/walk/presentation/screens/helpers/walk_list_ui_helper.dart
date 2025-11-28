@@ -1,6 +1,4 @@
-import 'dart:io';
-
-import 'package:aipet_frontend/shared/services/image_storage_service.dart';
+import 'package:aipet_frontend/features/pet_profile/presentation/widgets/tabs/helpers/pet_info_image_helper.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
@@ -107,7 +105,7 @@ class WalkListUiHelper {
     );
   }
 
-  /// 펫 아바타 빌드
+  /// 펫 아바타 빌드 - PetInfoImageHelper 사용 (백업 복원 지원)
   static Widget _buildPetAvatar(dynamic pet, bool isSelected) {
     return Container(
       width: 50,
@@ -124,82 +122,38 @@ class WalkListUiHelper {
       ),
       child: ClipOval(
         child: pet.imagePath?.isNotEmpty == true
-            ? _buildImageWidget(pet.imagePath!, isSelected)
-            : Icon(
-                Icons.pets,
-                color: isSelected ? AppColors.pointPink : AppColors.pointGray,
-                size: 22,
-              ),
+            ? PetInfoImageHelper.buildImageWidget(pet.imagePath!)
+            : _buildDefaultPetImage(pet.type, isSelected),
       ),
     );
   }
 
-  /// 이미지 타입에 따라 적절한 이미지 위젯 빌드 - 강화된 로컬 저장 지원
-  static Widget _buildImageWidget(String imagePath, bool isSelected) {
-    try {
-      LoggerService.debug('🖼️ WalkListUIHelper - imagePath: $imagePath');
+  /// 펫 타입에 따른 기본 이미지 빌드
+  static Widget _buildDefaultPetImage(String? petType, bool isSelected) {
+    final type = petType?.toLowerCase() ?? 'dog';
+    String imagePath;
 
-      // 상대 경로를 절대 경로로 변환
-      final storageService = ImageStorageService();
-      final absolutePath =
-          storageService.getAbsolutePath(imagePath) ?? imagePath;
-      LoggerService.debug('🖼️ WalkListUIHelper - absolutePath: $absolutePath');
-
-      final imageType = ImageService.getImageType(absolutePath);
-      LoggerService.debug('🖼️ WalkListUIHelper - imageType: $imageType');
-
-      switch (imageType) {
-        case ImageType.file:
-          final file = File(absolutePath);
-          final fileExists = file.existsSync();
-          LoggerService.debug('🖼️ WalkListUIHelper - File exists: $fileExists');
-
-          if (!fileExists) {
-            LoggerService.debug(
-              '❌ WalkListUIHelper - File does not exist: $absolutePath',
-            );
-            return _buildDefaultIcon(isSelected);
-          }
-
-          return Image.file(
-            file,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) {
-              LoggerService.debug('🖼️ WalkListUIHelper - File image error: $error');
-              return _buildDefaultIcon(isSelected);
-            },
-          );
-        case ImageType.network:
-          return Image.network(
-            absolutePath,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) {
-              LoggerService.debug('🖼️ WalkListUIHelper - Network image error: $error');
-              return _buildDefaultIcon(isSelected);
-            },
-          );
-        case ImageType.asset:
-          return Image.asset(
-            absolutePath,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) {
-              LoggerService.debug('🖼️ WalkListUIHelper - Asset image error: $error');
-              return _buildDefaultIcon(isSelected);
-            },
-          );
-      }
-    } catch (e) {
-      LoggerService.debug('❌ WalkListUIHelper - Image load error: $e');
-      return _buildDefaultIcon(isSelected);
+    switch (type) {
+      case 'dog':
+        imagePath = 'assets/images/dogs/dogs.png';
+        break;
+      case 'cat':
+        imagePath = 'assets/images/cats/cats.png';
+        break;
+      default:
+        imagePath = 'assets/images/pets/default.png';
     }
-  }
 
-  /// 기본 펫 아이콘 빌드
-  static Widget _buildDefaultIcon(bool isSelected) {
-    return Icon(
-      Icons.pets,
-      color: isSelected ? AppColors.pointPink : AppColors.pointGray,
-      size: 22,
+    return Image.asset(
+      imagePath,
+      fit: BoxFit.cover,
+      errorBuilder: (context, error, stackTrace) {
+        return Icon(
+          Icons.pets,
+          color: isSelected ? AppColors.pointPink : AppColors.pointGray,
+          size: 22,
+        );
+      },
     );
   }
 

@@ -1,3 +1,4 @@
+import 'package:aipet_frontend/features/pet_profile/presentation/widgets/tabs/helpers/pet_info_image_helper.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
@@ -42,10 +43,7 @@ class PetSelectionCard extends StatelessWidget {
         ),
         child: Column(
           children: [
-            CircleAvatar(
-              radius: 25,
-              backgroundImage: AssetImage(petInfo['imagePath']),
-            ),
+            _buildPetAvatar(petInfo['imagePath']),
             const SizedBox(height: AppSpacing.xs),
             Text(
               petInfo['name'],
@@ -85,6 +83,29 @@ class PetSelectionCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  /// 펫 아바타 위젯 - PetInfoImageHelper 사용 (백업 복원 지원)
+  Widget _buildPetAvatar(String? imagePath) {
+    if (imagePath == null || imagePath.isEmpty) {
+      return CircleAvatar(
+        radius: 25,
+        backgroundColor: AppColors.pointGray.withValues(alpha: 0.2),
+        child: Icon(
+          Icons.pets,
+          color: isSelected ? AppColors.pointBrown : AppColors.pointGray,
+          size: 25,
+        ),
+      );
+    }
+
+    return Container(
+      width: 50,
+      height: 50,
+      decoration: const BoxDecoration(shape: BoxShape.circle),
+      clipBehavior: Clip.antiAlias,
+      child: PetInfoImageHelper.buildImageWidget(imagePath),
     );
   }
 }

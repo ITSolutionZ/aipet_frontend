@@ -129,21 +129,22 @@ class NotificationSchedulerService {
     }
   }
 
-  /// 스케줄 추가
+  /// 스케줄 추가 (Firebase + 로컬)
   Future<void> addSchedule(domain.NotificationSchedule schedule) async {
     try {
       if (kDebugMode) {
         print('🔔 [Scheduler] 스케줄 추가 시작 - ID: ${schedule.id}');
       }
 
-      final schedules = await getSchedules();
+      // Firebase + 로컬에 저장
+      final savedSchedule = await NotificationSchedulerStorageHelper.saveSchedule(schedule);
 
       if (kDebugMode) {
-        print('🔔 [Scheduler] 현재 스케줄 개수: ${schedules.length}');
+        print('✅ [Scheduler] 스케줄 저장 완료 - ID: ${savedSchedule?.id}');
       }
 
-      schedules.add(schedule);
-      await NotificationSchedulerStorageHelper.saveSchedules(schedules);
+      // 스케줄 목록 새로고침
+      final schedules = await getSchedules();
       _schedulesController.add(schedules);
 
       if (kDebugMode) {
@@ -155,7 +156,7 @@ class NotificationSchedulerService {
         if (kDebugMode) {
           print('🔔 [Scheduler] 실제 알람 등록 시작...');
         }
-        await _notificationService.scheduleNotification(schedule);
+        await _notificationService.scheduleNotification(savedSchedule ?? schedule);
         if (kDebugMode) {
           print('✅ [Scheduler] 실제 알람 등록 완료!');
         }
@@ -168,38 +169,32 @@ class NotificationSchedulerService {
     }
   }
 
-  /// 스케줄 업데이트
+  /// 스케줄 업데이트 (Firebase + 로컬)
   Future<void> updateSchedule(domain.NotificationSchedule schedule) async {
     try {
       if (kDebugMode) {
         print('🔔 [Scheduler] 스케줄 업데이트 시작 - ID: ${schedule.id}');
       }
 
+      // Firebase + 로컬 업데이트
+      await NotificationSchedulerStorageHelper.updateSchedule(schedule);
+
+      // 스케줄 목록 새로고침
       final schedules = await getSchedules();
-      final index = schedules.indexWhere((s) => s.id == schedule.id);
+      _schedulesController.add(schedules);
 
-      if (index != -1) {
-        schedules[index] = schedule;
-        await NotificationSchedulerStorageHelper.saveSchedules(schedules);
-        _schedulesController.add(schedules);
+      // 🔔 기존 알람 취소 후 새로 등록
+      if (kDebugMode) {
+        print('🔔 [Scheduler] 기존 알람 취소 후 새로 등록');
+      }
+      await _notificationService.cancelScheduledNotification(schedule.id);
 
-        // 🔔 기존 알람 취소 후 새로 등록
-        if (kDebugMode) {
-          print('🔔 [Scheduler] 기존 알람 취소 후 새로 등록');
-        }
-        await _notificationService.cancelScheduledNotification(schedule.id);
+      if (schedule.isActive) {
+        await _notificationService.scheduleNotification(schedule);
+      }
 
-        if (schedule.isActive) {
-          await _notificationService.scheduleNotification(schedule);
-        }
-
-        if (kDebugMode) {
-          print('✅ [Scheduler] 스케줄 업데이트 완료');
-        }
-      } else {
-        if (kDebugMode) {
-          print('⚠️ [Scheduler] 스케줄을 찾을 수 없음: ${schedule.id}');
-        }
+      if (kDebugMode) {
+        print('✅ [Scheduler] 스케줄 업데이트 완료');
       }
     } catch (e) {
       if (kDebugMode) {
@@ -209,17 +204,20 @@ class NotificationSchedulerService {
     }
   }
 
-  /// 스케줄 삭제
+  /// 스케줄 삭제 (Firebase + 로컬)
   Future<void> deleteSchedule(String scheduleId) async {
     try {
       if (kDebugMode) {
         print('🔔 [Scheduler] 스케줄 삭제 시작 - ID: $scheduleId');
       }
 
+      final beforeCount = (await getSchedules()).length;
+
+      // Firebase + 로컬에서 삭제
+      await NotificationSchedulerStorageHelper.deleteSchedule(scheduleId);
+
+      // 스케줄 목록 새로고침
       final schedules = await getSchedules();
-      final beforeCount = schedules.length;
-      schedules.removeWhere((s) => s.id == scheduleId);
-      await NotificationSchedulerStorageHelper.saveSchedules(schedules);
       _schedulesController.add(schedules);
 
       // 🔔 실제 알람 취소
@@ -239,7 +237,7 @@ class NotificationSchedulerService {
     }
   }
 
-  /// 스케줄 활성화/비활성화
+  /// 스케줄 활성화/비활성화 (Firebase + 로컬)
   Future<void> toggleSchedule(String scheduleId, bool isActive) async {
     try {
       if (kDebugMode) {
@@ -253,9 +251,13 @@ class NotificationSchedulerService {
 
       if (index != -1) {
         final schedule = schedules[index].copyWith(isActive: isActive);
-        schedules[index] = schedule;
-        await NotificationSchedulerStorageHelper.saveSchedules(schedules);
-        _schedulesController.add(schedules);
+
+        // Firebase + 로컬 업데이트
+        await NotificationSchedulerStorageHelper.updateSchedule(schedule);
+
+        // 스케줄 목록 새로고침
+        final updatedSchedules = await getSchedules();
+        _schedulesController.add(updatedSchedules);
 
         // 🔔 실제 알람 등록/취소
         if (isActive) {

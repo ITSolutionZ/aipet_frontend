@@ -301,9 +301,13 @@ class AppBootstrap {
   /// Notification 초기화 (알람 기능에 필요)
   static Future<void> _initializeNotifications() async {
     try {
-      // Awesome Notifications 초기화
+      // flutter_local_notifications 초기화
       await NotificationInitializationHelper.initialize();
-      debugPrint('✅ Awesome Notifications initialized successfully');
+
+      // Android 알림 채널 생성 (필수!)
+      await NotificationInitializationHelper.createDefaultChannels();
+
+      debugPrint('✅ Notifications initialized successfully (channels created)');
     } catch (e) {
       debugPrint('⚠️ Notification initialization failed: $e');
       // Notification 초기화 실패해도 앱은 계속 실행

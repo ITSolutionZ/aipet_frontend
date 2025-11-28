@@ -23,6 +23,18 @@ class NotificationDisplayHelper {
     }
   }
 
+  /// 문자열 ID를 정수로 안전하게 변환
+  /// - 숫자 문자열이면 파싱
+  /// - 그렇지 않으면 해시코드 사용
+  static int _stringIdToInt(String id) {
+    final parsed = int.tryParse(id);
+    if (parsed != null) {
+      return parsed % 2147483647;
+    }
+    // Firestore ID 등 문자열인 경우 해시코드 사용
+    return id.hashCode.abs() % 2147483647;
+  }
+
   /// 즉시 알림 표시
   static Future<void> showLocalNotification(
     dynamic localNotifications, // 호환성 유지 (사용하지 않음)
@@ -30,7 +42,7 @@ class NotificationDisplayHelper {
     DateTime? scheduledDate,
   ) async {
     final plugin = NotificationInitializationHelper.plugin;
-    final notificationId = int.parse(notification.id) % 2147483647;
+    final notificationId = _stringIdToInt(notification.id);
 
     const androidDetails = AndroidNotificationDetails(
       'basic_channel',
@@ -74,12 +86,38 @@ class NotificationDisplayHelper {
     _initializeTimeZone();
 
     final plugin = NotificationInitializationHelper.plugin;
-    final notificationId = int.parse(schedule.id) % 2147483647;
+    final notificationId = _stringIdToInt(schedule.id);
+
+    // Android에서 exact alarm 권한 확인
+    final androidPlugin = plugin.resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>();
+    if (androidPlugin != null) {
+      final canSchedule = await androidPlugin.canScheduleExactNotifications();
+      if (kDebugMode) {
+        print('🔔 [Alarm] canScheduleExactNotifications: $canSchedule');
+      }
+      if (canSchedule != true) {
+        if (kDebugMode) {
+          print('⚠️ [Alarm] 정확한 알람 권한이 없습니다. 권한 요청 중...');
+        }
+        await androidPlugin.requestExactAlarmsPermission();
+      }
+    }
 
     // 다음 실행 시간 계산
     final nextTime = schedule.calculateNextExecutionTime();
     final now = DateTime.now();
     final timeUntilAlarm = nextTime.difference(now);
+
+    // 과거 시간이면 알람 등록하지 않음
+    if (timeUntilAlarm.isNegative) {
+      if (kDebugMode) {
+        print('⚠️ [Alarm] 알람 시간이 과거입니다. 등록하지 않습니다.');
+        print('   - 계산된 시간: $nextTime');
+        print('   - 현재 시간: $now');
+      }
+      return;
+    }
 
     if (kDebugMode) {
       print('🔔 [flutter_local_notifications] 스케줄 알람 등록 시작');
@@ -196,7 +234,7 @@ class NotificationDisplayHelper {
     String scheduleId,
   ) async {
     final plugin = NotificationInitializationHelper.plugin;
-    final notificationId = int.parse(scheduleId) % 2147483647;
+    final notificationId = _stringIdToInt(scheduleId);
 
     await plugin.cancel(notificationId);
 

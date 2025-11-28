@@ -1,3 +1,4 @@
+import 'package:aipet_frontend/features/pet_profile/presentation/widgets/tabs/helpers/pet_info_image_helper.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
@@ -144,17 +145,20 @@ class AiPetSelection extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (pet.imagePath != null && pet.imagePath!.isNotEmpty)
-              CircleAvatar(
-                radius: 12,
-                backgroundImage: AssetImage(pet.imagePath!),
-              )
-            else
-              Icon(
-                pet.type == 'dog' ? Icons.pets : Icons.pets_outlined,
-                size: 20,
-                color: isSelected ? AppColors.pureWhite : AppColors.pointBrown,
-              ),
+            // PetInfoImageHelper를 사용하여 백업 복원 지원
+            Container(
+              width: 24,
+              height: 24,
+              decoration: const BoxDecoration(shape: BoxShape.circle),
+              clipBehavior: Clip.antiAlias,
+              child: pet.imagePath != null && pet.imagePath!.isNotEmpty
+                  ? PetInfoImageHelper.buildImageWidget(pet.imagePath!)
+                  : Icon(
+                      pet.type == 'dog' ? Icons.pets : Icons.pets_outlined,
+                      size: 20,
+                      color: isSelected ? AppColors.pureWhite : AppColors.pointBrown,
+                    ),
+            ),
             const SizedBox(width: AppSpacing.xs),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,

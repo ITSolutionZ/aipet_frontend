@@ -895,20 +895,29 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
   }
 
   Future<void> _saveEvent() async {
+    LoggerService.debug('📝 NewEventSetupScreen: 保存ボタンが押されました');
+
     // BuildContext를 미리 저장 (비동기 작업 전)
     if (!mounted) return;
     final navigator = Navigator.of(context);
     final scaffoldMessenger = ScaffoldMessenger.of(context);
 
     if (_selectedPet == null) {
+      LoggerService.debug('⚠️ ペットが選択されていません');
       SnackBarService.showWarning(context, 'ペットを選択してください');
       return;
     }
 
     if (_eventName.isEmpty) {
+      LoggerService.debug('⚠️ イベント名が入力されていません');
       SnackBarService.showWarning(context, 'イベント名を入力してください');
       return;
     }
+
+    LoggerService.debug('📝 イベント保存開始: $_eventName');
+    LoggerService.debug('   - ペット: ${_selectedPet!.name}');
+    LoggerService.debug('   - 日時: $_selectedTime');
+    LoggerService.debug('   - タイプ: ${_selectedEventType.displayName}');
 
     try {
       // 종료 시간 설정
@@ -956,12 +965,17 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
 
       // 데이터베이스에 저장 또는 업데이트
       if (widget.initialEvent != null) {
+        LoggerService.debug('📝 イベント更新中...');
         await CalendarEventService.instance.updateCalendarEvent(event);
+        LoggerService.debug('✅ イベント更新成功');
       } else {
+        LoggerService.debug('📝 新規イベント保存中...');
         await CalendarEventService.instance.saveCalendarEvent(event);
+        LoggerService.debug('✅ 新規イベント保存成功 (ID: ${event.id})');
       }
 
       if (mounted) {
+        LoggerService.debug('📤 画面を閉じてイベントを返す');
         // 먼저 화면을 닫고 (SnackBar 애니메이션 충돌 방지)
         navigator.pop(event);
 

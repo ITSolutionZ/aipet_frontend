@@ -20,20 +20,29 @@ class FirestorePetService {
   /// 모든 펫 목록 조회
   ///
   /// 현재 로그인한 사용자의 펫만 조회합니다.
+  /// 인덱스 없이 작동하도록 orderBy를 제거하고 클라이언트에서 정렬합니다.
   static Future<Result<List<PetProfileEntity>>> getAllPets() async {
     try {
       final userId = _currentUserId;
       if (userId == null) {
-        return Result.failure('ログインが必要です');
+        LoggerService.debug('⚠️ Firestore: 로그인 필요 - 빈 리스트 반환');
+        return Result.success('ペットがいません', []);
       }
 
       LoggerService.debug('📡 Firestore: 펫 목록 조회 시작 (userId: $userId)');
 
+      // 인덱스 불필요: where만 사용하고 클라이언트에서 정렬
       final querySnapshot = await _firestore
           .collection(_collectionName)
           .where('ownerId', isEqualTo: userId)
-          .orderBy('createdAt', descending: true)
-          .get();
+          .get()
+          .timeout(
+            const Duration(seconds: 5),
+            onTimeout: () {
+              LoggerService.debug('⚠️ Firestore: 펫 목록 조회 타임아웃 (5초)');
+              throw Exception('タイムアウト');
+            },
+          );
 
       final pets = <PetProfileEntity>[];
 
@@ -46,14 +55,18 @@ class FirestorePetService {
         }
       }
 
+      // 클라이언트에서 createdAt 기준 내림차순 정렬
+      pets.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
       LoggerService.debug('✅ Firestore: 펫 목록 조회 성공 (${pets.length}개)');
       return Result.success('ペットリストを取得しました', pets);
     } catch (e, stackTrace) {
       LoggerService.debug('❌ Firestore: 펫 목록 조회 실패: $e');
       LoggerService.debug(
-        '   StackTrace: ${stackTrace.toString().split('\n').take(5).join('\n')}',
+        '   StackTrace: ${stackTrace.toString().split('\n').take(3).join('\n')}',
       );
-      return Result.failure('ペットリストの取得に失敗しました: $e');
+      // 에러 발생 시 빈 리스트 반환 (앱이 크래시되지 않도록)
+      return Result.success('ペットがいません', []);
     }
   }
 

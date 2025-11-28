@@ -1,48 +1,38 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "Flutter (Debug Mode)",
-            "request": "launch",
-            "type": "dart",
-            "program": "lib/main.dart",
-            "cwd": "${workspaceFolder}/frontend",
-            "args": ["--debug"],
-            "console": "debugConsole",
-            "outputCapture": "std"
-        },
-        {
-            "name": "Flutter (Profile Mode)",
-            "request": "launch",
-            "type": "dart",
-            "program": "lib/main.dart",
-            "cwd": "${workspaceFolder}/frontend",
-            "args": ["--profile"]
-        },
-        {
-            "name": "Flutter (Release Mode)",
-            "request": "launch",
-            "type": "dart",
-            "program": "lib/main.dart",
-            "cwd": "${workspaceFolder}/frontend",
-            "args": ["--release"]
-        },
-
-        {
-            "name": "Flutter (iOS Simulator)",
-            "request": "launch",
-            "type": "dart",
-            "program": "lib/main.dart",
-            "cwd": "${workspaceFolder}/frontend",
-            "args": ["-d", "ios"]
-        },
-        {
-            "name": "Flutter (Android Emulator)",
-            "request": "launch",
-            "type": "dart",
-            "program": "lib/main.dart",
-            "cwd": "${workspaceFolder}/frontend",
-            "args": ["-d", "android"]
-        }
-    ]
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Flutter (Debug)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "cwd": "${workspaceFolder}/frontend",
+      "args": [
+        "--debug"
+      ],
+      "console": "debugConsole",
+      "outputCapture": "std"
+    },
+    {
+      "name": "Flutter (Release)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "cwd": "${workspaceFolder}/frontend",
+      "args": [
+        "--release"
+      ]
+    },
+    {
+      "name": "Flutter (Production)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "cwd": "${workspaceFolder}/frontend",
+      "args": [
+        "--release",
+        "--dart-define=ENVIRONMENT=production"
+      ]
+    }
+  ]
 }

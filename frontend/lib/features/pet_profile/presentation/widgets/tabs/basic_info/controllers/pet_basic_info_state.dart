@@ -10,6 +10,8 @@ class PetBasicInfoState {
   final double? editingWeight;
   final String? selectedImagePath;
   final List<String> editingHealthConditions;
+  // 이미지 변경 추적을 위한 타임스탬프
+  final int imageUpdateTimestamp;
 
   const PetBasicInfoState({
     this.editingName = '',
@@ -20,8 +22,10 @@ class PetBasicInfoState {
     this.editingWeight,
     this.selectedImagePath,
     this.editingHealthConditions = const [],
+    this.imageUpdateTimestamp = 0,
   });
 
+  /// copyWith with explicit null handling for selectedImagePath
   PetBasicInfoState copyWith({
     String? editingName,
     String? editingAppearance,
@@ -29,8 +33,9 @@ class PetBasicInfoState {
     String? editingMicrochip,
     String? editingGender,
     double? editingWeight,
-    String? selectedImagePath,
+    Object? selectedImagePath = _sentinel,
     List<String>? editingHealthConditions,
+    int? imageUpdateTimestamp,
   }) {
     return PetBasicInfoState(
       editingName: editingName ?? this.editingName,
@@ -39,8 +44,15 @@ class PetBasicInfoState {
       editingMicrochip: editingMicrochip ?? this.editingMicrochip,
       editingGender: editingGender ?? this.editingGender,
       editingWeight: editingWeight ?? this.editingWeight,
-      selectedImagePath: selectedImagePath ?? this.selectedImagePath,
-      editingHealthConditions: editingHealthConditions ?? this.editingHealthConditions,
+      selectedImagePath: selectedImagePath == _sentinel
+          ? this.selectedImagePath
+          : selectedImagePath as String?,
+      editingHealthConditions:
+          editingHealthConditions ?? this.editingHealthConditions,
+      imageUpdateTimestamp: imageUpdateTimestamp ?? this.imageUpdateTimestamp,
     );
   }
 }
+
+// Sentinel object for null handling in copyWith
+const _sentinel = Object();

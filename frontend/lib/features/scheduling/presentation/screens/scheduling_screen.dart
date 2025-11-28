@@ -1,10 +1,9 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
+import 'package:aipet_frontend/features/pet_profile/presentation/widgets/tabs/helpers/pet_info_image_helper.dart';
 import 'package:aipet_frontend/features/scheduling/data/services/calendar_event_service.dart';
 import 'package:aipet_frontend/features/scheduling/domain/entities/calendar_event_entity.dart';
-import 'package:aipet_frontend/shared/services/image_storage_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -752,7 +751,7 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
     );
   }
 
-  /// ペット画像を表示
+  /// ペット画像を表示 - PetInfoImageHelper 사용 (백업 복원 지원)
   Widget _buildPetImage(String petId, bool isSelected) {
     final petsAsync = ref.watch(petProfilesProvider);
 
@@ -764,25 +763,11 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
         );
 
         if (pet.imagePath != null && pet.imagePath!.isNotEmpty) {
-          final storageService = ImageStorageService();
-          final absolutePath =
-              storageService.getAbsolutePath(pet.imagePath!) ?? pet.imagePath!;
-
           return ClipOval(
-            child: Image.file(
-              File(absolutePath),
+            child: SizedBox(
               width: 54,
               height: 54,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Icon(
-                  pet.type == 'dog' ? Icons.pets : Icons.pets_outlined,
-                  size: 32,
-                  color: isSelected
-                      ? AppColors.pointBrown
-                      : AppColors.pointGray,
-                );
-              },
+              child: PetInfoImageHelper.buildImageWidget(pet.imagePath!),
             ),
           );
         } else {
@@ -998,31 +983,25 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
   /// 이벤트 추가
   Future<void> _addEvent(CalendarEventEntity event) async {
     try {
+      LoggerService.debug('📝 イベント保存開始: ${event.title}');
+      LoggerService.debug('   - ID: ${event.id}');
+      LoggerService.debug('   - 日付: ${event.startTime}');
+
       // SQLite에 저장
       await CalendarEventService.instance.saveCalendarEvent(event);
+      LoggerService.debug('✅ SQLite保存成功');
 
-      setState(() {
-        final eventDate = DateTime(
-          event.startTime.year,
-          event.startTime.month,
-          event.startTime.day,
-        );
-
-        if (_events.containsKey(eventDate)) {
-          _events[eventDate]!.add(event);
-        } else {
-          _events[eventDate] = [event];
-        }
-      });
+      // 데이터베이스에서 다시 로드하여 확인
+      await _loadEventsFromDatabase();
+      LoggerService.debug('✅ イベント再読み込み完了');
 
       if (mounted) {
-        // ✅ Shared SnackBarService 사용
         SnackBarService.showSuccess(context, '${event.title}の予定が追加されました');
       }
-    } catch (e) {
-      LoggerService.debug('이벤트 저장 실패: $e');
+    } catch (e, stackTrace) {
+      LoggerService.debug('❌ イベント保存失敗: $e');
+      LoggerService.debug('   StackTrace: $stackTrace');
       if (mounted) {
-        // ✅ Shared SnackBarService 사용
         SnackBarService.showError(context, '予定の保存に失敗しました: $e');
       }
     }
@@ -1189,12 +1168,17 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
 
   /// 알람 설정 화면 열기
   void _openAlarmSetup() async {
-    final result = await context.push(
+    LoggerService.debug('📅 イベント追加画面を開く');
+    final result = await context.push<CalendarEventEntity>(
       '/scheduling/new-event?date=${_selectedDay?.toIso8601String()}',
     );
 
+    LoggerService.debug('📅 イベント追加結果: $result');
+
     // 새 이벤트가 추가되었을 때 이벤트 목록 새로고침
-    if (result == true) {
+    // result가 CalendarEventEntity 또는 true일 때 새로고침
+    if (result != null) {
+      LoggerService.debug('✅ イベントが追加されました。リストを更新します。');
       await _loadEventsFromDatabase();
       // TableCalendar의 마커 업데이트를 강제하기 위해 선택된 날짜 다시 선택
       if (_selectedDay != null) {

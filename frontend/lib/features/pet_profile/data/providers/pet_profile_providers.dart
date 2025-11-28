@@ -40,30 +40,28 @@ class PetProfilesNotifier extends _$PetProfilesNotifier {
         return cachedPets;
       }
 
-      // ✅ 2단계: 첫 로그인 - Firebase에서 펫 데이터 로드
+      // ✅ 2단계: 첫 로그인 - Firebase에서 펫 데이터 로드 (타임아웃 5초)
       LoggerService.debug('📡 첫 로그인 감지 - Firebase에서 펫 데이터 로드');
       final repository = ref.read(petProfileRepositoryProvider);
       final result = await repository.getAllPets();
 
-      if (result.isSuccess) {
-        final pets = result.dataOrNull ?? [];
-        LoggerService.debug('✅ Firebase에서 ${pets.length}개 펫 로드 완료');
+      // ✅ 성공이든 실패든 결과 반환 (빈 리스트 포함)
+      final pets = result.dataOrNull ?? [];
+      LoggerService.debug('✅ Firebase에서 ${pets.length}개 펫 로드 완료');
 
-        // ✅ Firebase 데이터를 로컬 캐시에 저장 (다음 로그인에서 사용)
-        if (pets.isNotEmpty) {
-          for (final pet in pets) {
-            await PetLocalStorageService.addPet(pet);
-          }
-          LoggerService.debug('✅ Firebase 데이터를 로컬 캐시에 저장 (${pets.length}개)');
+      // ✅ Firebase 데이터를 로컬 캐시에 저장 (다음 로그인에서 사용)
+      if (pets.isNotEmpty) {
+        for (final pet in pets) {
+          await PetLocalStorageService.addPet(pet);
         }
-
-        return pets;
-      } else {
-        throw Exception(result.error);
+        LoggerService.debug('✅ Firebase 데이터를 로컬 캐시에 저장 (${pets.length}개)');
       }
+
+      return pets;
     } catch (e) {
-      LoggerService.debug('❌ PetProfilesNotifier.build() 에러: $e');
-      rethrow;
+      LoggerService.debug('❌ PetProfilesNotifier.build() 에러: $e - 빈 리스트 반환');
+      // ✅ 에러 발생 시에도 빈 리스트 반환 (앱 크래시 방지)
+      return [];
     }
   }
 

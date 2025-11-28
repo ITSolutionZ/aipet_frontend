@@ -1,8 +1,6 @@
-import 'dart:io';
-
 import 'package:aipet_frontend/app/router/routes/route_constants.dart';
 import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
-import 'package:aipet_frontend/shared/services/image_storage_service.dart';
+import 'package:aipet_frontend/features/pet_profile/presentation/widgets/tabs/helpers/pet_info_image_helper.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -147,20 +145,15 @@ class PetCardSectionWidget extends ConsumerWidget {
               children: [
                 // 실제 펫 이미지 표시
                 Container(
-                  width: 32, // 이미지 크기 줄임
+                  width: 32,
                   height: 32,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     shape: BoxShape.circle,
                     color: Colors.white,
-                    image: _getPetImage(pet),
                   ),
-                  child: _getPetImage(pet) == null
-                      ? const Icon(
-                          Icons.pets,
-                          color: Color(0xFF7B68BE),
-                          size: 20, // 아이콘 크기 줄임
-                        )
-                      : null,
+                  child: ClipOval(
+                    child: _buildPetImageWidget(pet),
+                  ),
                 ),
                 const SizedBox(width: 8), // 간격 줄임
                 Expanded(
@@ -214,82 +207,46 @@ class PetCardSectionWidget extends ConsumerWidget {
     );
   }
 
-  /// ペット画像を取得 - 강화된 로컬 저장 지원
-  DecorationImage? _getPetImage(PetProfileEntity pet) {
-    try {
-      // pet.imagePath가 있는 경우 실제 이미지 사용
-      if (pet.imagePath != null && pet.imagePath!.isNotEmpty) {
-        LoggerService.debug(
-          '🖼️ PetCardSectionWidget - imagePath: ${pet.imagePath}',
-        );
-
-        // 상대 경로를 절대 경로로 변환
-        final storageService = ImageStorageService();
-        final absolutePath =
-            storageService.getAbsolutePath(pet.imagePath!) ?? pet.imagePath!;
-        LoggerService.debug(
-          '🖼️ PetCardSectionWidget - absolutePath: $absolutePath',
-        );
-
-        final imageType = ImageService.getImageType(absolutePath);
-        LoggerService.debug('🖼️ PetCardSectionWidget - imageType: $imageType');
-
-        switch (imageType) {
-          case ImageType.file:
-            final file = File(absolutePath);
-            final fileExists = file.existsSync();
-            LoggerService.debug(
-              '🖼️ PetCardSectionWidget - File exists: $fileExists',
-            );
-
-            if (!fileExists) {
-              LoggerService.debug(
-                '❌ PetCardSectionWidget - File does not exist: $absolutePath',
-              );
-              return _getDefaultPetImageDecoration(pet.type, pet.breed);
-            }
-
-            return DecorationImage(image: FileImage(file), fit: BoxFit.cover);
-          case ImageType.network:
-            return DecorationImage(
-              image: NetworkImage(absolutePath),
-              fit: BoxFit.cover,
-            );
-          case ImageType.asset:
-            return DecorationImage(
-              image: AssetImage(absolutePath),
-              fit: BoxFit.cover,
-            );
-        }
-      }
-
-      // 품종이나 타입에 따른 기본 이미지
-      if (pet.type.isNotEmpty) {
-        return _getDefaultPetImageDecoration(pet.type, pet.breed);
-      }
-    } catch (e) {
-      LoggerService.debug('❌ PetCardSectionWidget - Image load error: $e');
+  /// 펫 이미지 위젯 빌드 - PetInfoImageHelper 사용 (백업 복원 지원)
+  Widget _buildPetImageWidget(PetProfileEntity pet) {
+    // pet.imagePath가 없으면 기본 이미지
+    if (pet.imagePath == null || pet.imagePath!.isEmpty) {
+      return _buildDefaultPetImage(pet.type, pet.breed);
     }
-    return null;
+
+    // PetInfoImageHelper를 사용하여 백업 복원 로직 포함
+    return SizedBox(
+      width: 32,
+      height: 32,
+      child: PetInfoImageHelper.buildImageWidget(pet.imagePath!),
+    );
   }
 
-  /// 기본 펫 이미지 DecorationImage 가져오기
-  DecorationImage? _getDefaultPetImageDecoration(
-    String? petType,
-    String? breed,
-  ) {
-    final defaultImagePath = _getDefaultPetImage(petType, breed);
-    if (defaultImagePath != null) {
-      return DecorationImage(
-        image: AssetImage(defaultImagePath),
+  /// 기본 펫 이미지 위젯
+  Widget _buildDefaultPetImage(String? petType, String? breed) {
+    final defaultPath = _getDefaultPetImagePath(petType, breed);
+    if (defaultPath != null) {
+      return Image.asset(
+        defaultPath,
+        width: 32,
+        height: 32,
         fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => const Icon(
+          Icons.pets,
+          color: Color(0xFF7B68BE),
+          size: 20,
+        ),
       );
     }
-    return null;
+    return const Icon(
+      Icons.pets,
+      color: Color(0xFF7B68BE),
+      size: 20,
+    );
   }
 
   /// 기본 펫 이미지 경로 가져오기
-  String? _getDefaultPetImage(String? petType, String? breed) {
+  String? _getDefaultPetImagePath(String? petType, String? breed) {
     if (petType == 'dog') {
       switch (breed) {
         case 'shiba':

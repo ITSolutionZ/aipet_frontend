@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 import 'app/app.dart';
 
@@ -14,8 +16,17 @@ void main() async {
   // Flutter 위젯 바인딩 초기화 (Sentry 호환)
   SentryWidgetsFlutterBinding.ensureInitialized();
 
+  // 세로 모드만 지원 (가로 모드 비활성화)
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
   // 일본어 로케일 데이터 초기화
   await initializeDateFormatting('ja_JP', null);
+
+  // timezone 초기화 (스케줄 알림에 필요)
+  tz.initializeTimeZones();
 
   // .env 파일 로드
   try {

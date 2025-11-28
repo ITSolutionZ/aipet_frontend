@@ -1,7 +1,5 @@
-import 'dart:io';
-
+import 'package:aipet_frontend/features/pet_profile/presentation/widgets/tabs/helpers/pet_info_image_helper.dart';
 import 'package:aipet_frontend/features/walk/domain/entities/pet_info.dart';
-import 'package:aipet_frontend/shared/services/image_storage_service.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 
@@ -48,20 +46,7 @@ class PetSelectorWidget extends StatelessWidget {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(16),
-                child: Image.asset(
-                  selectedPet?.imageUrl ?? 'assets/images/dogs/shiba.png',
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: Colors.grey[300],
-                      child: Icon(
-                        Icons.pets,
-                        color: Colors.grey[600],
-                        size: 16,
-                      ),
-                    );
-                  },
-                ),
+                child: _buildPetImage(selectedPet?.imageUrl, size: 32),
               ),
             ),
             const SizedBox(width: AppSpacing.xs),
@@ -93,6 +78,25 @@ class PetSelectorWidget extends StatelessWidget {
         selectedPet: selectedPet,
         onPetSelected: onPetSelected,
       ),
+    );
+  }
+
+  /// 펫 이미지 위젯 빌드 - 모든 이미지 타입 지원
+  /// 펫 이미지 위젯 빌드 - PetInfoImageHelper 사용 (백업 복원 지원)
+  Widget _buildPetImage(String? imageUrl, {double size = 32}) {
+    if (imageUrl == null || imageUrl.isEmpty) {
+      return Container(
+        width: size,
+        height: size,
+        color: Colors.grey[300],
+        child: Icon(Icons.pets, color: Colors.grey[600], size: size * 0.5),
+      );
+    }
+
+    return SizedBox(
+      width: size,
+      height: size,
+      child: PetInfoImageHelper.buildImageWidget(imageUrl),
     );
   }
 }
@@ -224,7 +228,7 @@ class _PetSelectorBottomSheet extends StatelessWidget {
     );
   }
 
-  /// 펫 이미지 위젯 빌드 - 강화된 로컬 저장 지원
+  /// 펫 이미지 위젯 빌드 - PetInfoImageHelper 사용 (백업 복원 지원)
   Widget _buildPetImage(String? imageUrl) {
     if (imageUrl == null || imageUrl.isEmpty) {
       return Container(
@@ -233,67 +237,6 @@ class _PetSelectorBottomSheet extends StatelessWidget {
       );
     }
 
-    LoggerService.debug('🖼️ PetSelectorWidget - imageUrl: $imageUrl');
-
-    // 상대 경로를 절대 경로로 변환
-    final storageService = ImageStorageService();
-    final absolutePath = storageService.getAbsolutePath(imageUrl) ?? imageUrl;
-    LoggerService.debug('🖼️ PetSelectorWidget - absolutePath: $absolutePath');
-
-    final imageType = ImageService.getImageType(absolutePath);
-    LoggerService.debug('🖼️ PetSelectorWidget - imageType: $imageType');
-
-    switch (imageType) {
-      case ImageType.file:
-        final file = File(absolutePath);
-        final fileExists = file.existsSync();
-        LoggerService.debug('🖼️ PetSelectorWidget - File exists: $fileExists');
-
-        if (!fileExists) {
-          LoggerService.debug(
-            '❌ PetSelectorWidget - File does not exist: $absolutePath',
-          );
-          return Container(
-            color: Colors.grey[300],
-            child: Icon(Icons.pets, color: Colors.grey[600], size: 24),
-          );
-        }
-
-        return Image.file(
-          file,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) {
-            LoggerService.debug('🖼️ PetSelectorWidget - File image error: $error');
-            return Container(
-              color: Colors.grey[300],
-              child: Icon(Icons.pets, color: Colors.grey[600], size: 24),
-            );
-          },
-        );
-      case ImageType.network:
-        return Image.network(
-          absolutePath,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) {
-            LoggerService.debug('🖼️ PetSelectorWidget - Network image error: $error');
-            return Container(
-              color: Colors.grey[300],
-              child: Icon(Icons.pets, color: Colors.grey[600], size: 24),
-            );
-          },
-        );
-      case ImageType.asset:
-        return Image.asset(
-          absolutePath,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) {
-            LoggerService.debug('🖼️ PetSelectorWidget - Asset image error: $error');
-            return Container(
-              color: Colors.grey[300],
-              child: Icon(Icons.pets, color: Colors.grey[600], size: 24),
-            );
-          },
-        );
-    }
+    return PetInfoImageHelper.buildImageWidget(imageUrl);
   }
 }

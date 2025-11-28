@@ -1,7 +1,5 @@
-import 'dart:io';
-
 import 'package:aipet_frontend/features/pet_profile/data/providers/pet_profile_providers.dart';
-import 'package:aipet_frontend/shared/services/image_storage_service.dart';
+import 'package:aipet_frontend/features/pet_profile/presentation/widgets/tabs/helpers/pet_info_image_helper.dart';
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -154,41 +152,6 @@ class AiPetSelectionBubble extends ConsumerWidget {
     );
   }
 
-  /// 画像パスに応じた適切なImageProviderを返す（非同期）
-  Future<ImageProvider> _getImageProviderAsync(String imagePath) async {
-    LoggerService.debug('🔍 AI Pet Selection - Checking image path: $imagePath');
-
-    // アセット画像の場合
-    if (imagePath.startsWith('assets/')) {
-      LoggerService.debug('✅ Using AssetImage for: $imagePath');
-      return AssetImage(imagePath);
-    }
-
-    // URLの場合
-    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
-      LoggerService.debug('✅ Using NetworkImage for: $imagePath');
-      return NetworkImage(imagePath);
-    }
-
-    // ImageStorageServiceを使用して絶対パスに変換
-    final storageService = ImageStorageService();
-    final absolutePath = storageService.getAbsolutePath(imagePath) ?? imagePath;
-    LoggerService.debug('📁 Resolved path: $imagePath -> $absolutePath');
-
-    // ファイルの存在確認
-    final file = File(absolutePath);
-    if (file.existsSync()) {
-      LoggerService.debug('✅ Using FileImage for: $absolutePath');
-      return FileImage(file);
-    } else {
-      LoggerService.debug('⚠️ File not found at: $absolutePath');
-    }
-
-    // デフォルト（アセットとして扱う）
-    LoggerService.debug('⚠️ Using default AssetImage');
-    return const AssetImage('assets/images/pets/default.png');
-  }
-
   Widget _buildPetSelection(List<PetProfileEntity> pets) {
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -251,11 +214,6 @@ class AiPetSelectionBubble extends ConsumerWidget {
   Widget _buildPetChip(PetProfileEntity pet) {
     final isSelected = selectedPet?.id == pet.id;
 
-    // デバッグ: ペット画像パスをログ出力
-    if (pet.imagePath != null && pet.imagePath!.isNotEmpty) {
-      LoggerService.debug('🖼️ Pet image path: ${pet.imagePath}');
-    }
-
     return GestureDetector(
       onTap: () => onPetSelected(isSelected ? null : pet),
       child: Container(
@@ -285,33 +243,20 @@ class AiPetSelectionBubble extends ConsumerWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (pet.imagePath != null && pet.imagePath!.isNotEmpty)
-              FutureBuilder<ImageProvider>(
-                future: _getImageProviderAsync(pet.imagePath!),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return CircleAvatar(
-                      radius: 12,
-                      backgroundImage: snapshot.data!,
-                      onBackgroundImageError: (exception, stackTrace) {
-                        LoggerService.debug('ペット画像読み込みエラー: $exception');
-                      },
-                    );
-                  }
-                  // ローディング中はアイコン表示
-                  return Icon(
-                    pet.type == 'dog' ? Icons.pets : Icons.pets_outlined,
-                    size: 20,
-                    color: isSelected ? Colors.white : AppColors.pointBrown,
-                  );
-                },
-              )
-            else
-              Icon(
-                pet.type == 'dog' ? Icons.pets : Icons.pets_outlined,
-                size: 20,
-                color: isSelected ? Colors.white : AppColors.pointBrown,
-              ),
+            // PetInfoImageHelper를 사용하여 백업 복원 지원
+            Container(
+              width: 24,
+              height: 24,
+              decoration: const BoxDecoration(shape: BoxShape.circle),
+              clipBehavior: Clip.antiAlias,
+              child: pet.imagePath != null && pet.imagePath!.isNotEmpty
+                  ? PetInfoImageHelper.buildImageWidget(pet.imagePath!)
+                  : Icon(
+                      pet.type == 'dog' ? Icons.pets : Icons.pets_outlined,
+                      size: 20,
+                      color: isSelected ? Colors.white : AppColors.pointBrown,
+                    ),
+            ),
             const SizedBox(width: AppSpacing.xs),
             Flexible(
               child: Column(

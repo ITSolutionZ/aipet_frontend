@@ -25,6 +25,9 @@ class PetProfileFormState {
   final String? selectedImagePath;
   final DateTime? editingBirthDate;
 
+  // 이미지 변경 여부 추적
+  final bool imageChanged;
+
   const PetProfileFormState({
     required this.isEditMode,
     required this.isLoading,
@@ -37,8 +40,10 @@ class PetProfileFormState {
     this.editingWeight,
     this.selectedImagePath,
     this.editingBirthDate,
+    this.imageChanged = false,
   });
 
+  /// copyWith with explicit null handling for nullable fields
   PetProfileFormState copyWith({
     bool? isEditMode,
     bool? isLoading,
@@ -49,8 +54,9 @@ class PetProfileFormState {
     String? editingGender,
     String? editingType,
     double? editingWeight,
-    String? selectedImagePath,
+    Object? selectedImagePath = _sentinel,
     DateTime? editingBirthDate,
+    bool? imageChanged,
   }) {
     return PetProfileFormState(
       isEditMode: isEditMode ?? this.isEditMode,
@@ -62,11 +68,17 @@ class PetProfileFormState {
       editingGender: editingGender ?? this.editingGender,
       editingType: editingType ?? this.editingType,
       editingWeight: editingWeight ?? this.editingWeight,
-      selectedImagePath: selectedImagePath ?? this.selectedImagePath,
+      selectedImagePath: selectedImagePath == _sentinel
+          ? this.selectedImagePath
+          : selectedImagePath as String?,
       editingBirthDate: editingBirthDate ?? this.editingBirthDate,
+      imageChanged: imageChanged ?? this.imageChanged,
     );
   }
 }
+
+// Sentinel object for null handling in copyWith
+const _sentinel = Object();
 
 /// Pet Profile Form Controller
 @riverpod
@@ -122,6 +134,7 @@ class PetProfileFormController extends _$PetProfileFormController {
       editingWeight: null,
       selectedImagePath: null,
       editingBirthDate: null,
+      imageChanged: false,
     );
 
     // 컨트롤러 초기화
@@ -150,7 +163,10 @@ class PetProfileFormController extends _$PetProfileFormController {
 
   /// 이미지 경로 변경
   void updateImagePath(String? imagePath) {
-    state = state.copyWith(selectedImagePath: imagePath);
+    state = state.copyWith(
+      selectedImagePath: imagePath,
+      imageChanged: true,
+    );
   }
 
   /// 생년월일 변경
