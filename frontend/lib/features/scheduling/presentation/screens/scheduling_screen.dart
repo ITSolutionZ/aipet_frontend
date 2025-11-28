@@ -592,10 +592,19 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
 
     return petsAsync.when(
       data: (pets) {
-        if (pets.isEmpty) return const SizedBox.shrink();
+        // 숨김 펫과 사망 펫 필터링
+        final activePets = pets
+            .where(
+              (pet) =>
+                  pet.petStatus != PetStatus.deceased &&
+                  pet.petStatus != PetStatus.hidden,
+            )
+            .toList();
+
+        if (activePets.isEmpty) return const SizedBox.shrink();
 
         // ペットが1匹でも「全て」タブは表示
-        LoggerService.debug('🐾 ペットタブ: ${pets.length}匹のペット');
+        LoggerService.debug('🐾 ペットタブ: ${activePets.length}匹のペット');
 
         return Container(
           margin: const EdgeInsets.symmetric(
@@ -628,7 +637,7 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
                 const SizedBox(width: AppSpacing.md),
 
                 // 各ペットのタブ
-                ...pets.asMap().entries.map((entry) {
+                ...activePets.asMap().entries.map((entry) {
                   final pet = entry.value;
                   return Padding(
                     padding: const EdgeInsets.only(right: AppSpacing.md),
@@ -757,9 +766,26 @@ class _SchedulingScreenState extends ConsumerState<SchedulingScreen> {
 
     return petsAsync.when(
       data: (pets) {
-        final pet = pets.firstWhere(
+        // 숨김 펫과 사망 펫 필터링
+        final activePets = pets
+            .where(
+              (pet) =>
+                  pet.petStatus != PetStatus.deceased &&
+                  pet.petStatus != PetStatus.hidden,
+            )
+            .toList();
+
+        if (activePets.isEmpty) {
+          return Icon(
+            Icons.pets,
+            size: 32,
+            color: isSelected ? AppColors.pointBrown : AppColors.pointGray,
+          );
+        }
+
+        final pet = activePets.firstWhere(
           (p) => p.id == petId,
-          orElse: () => pets.first,
+          orElse: () => activePets.first,
         );
 
         if (pet.imagePath != null && pet.imagePath!.isNotEmpty) {

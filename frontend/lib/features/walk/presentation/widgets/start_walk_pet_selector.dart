@@ -27,7 +27,16 @@ class StartWalkPetSelector extends ConsumerWidget {
       ),
       child: petsAsync.when(
         data: (pets) {
-          if (pets.isEmpty) {
+          // 숨김 펫과 사망 펫 필터링
+          final activePets = pets
+              .where(
+                (pet) =>
+                    pet.petStatus != PetStatus.deceased &&
+                    pet.petStatus != PetStatus.hidden,
+              )
+              .toList();
+
+          if (activePets.isEmpty) {
             return Padding(
               padding: const EdgeInsets.all(AppSpacing.md),
               child: Text(
@@ -42,10 +51,10 @@ class StartWalkPetSelector extends ConsumerWidget {
           }
 
           return Column(
-            children: pets.map((pet) {
+            children: activePets.map((pet) {
               return Padding(
                 padding: EdgeInsets.only(
-                  bottom: pet == pets.last ? 0 : AppSpacing.sm,
+                  bottom: pet == activePets.last ? 0 : AppSpacing.sm,
                 ),
                 child: _buildPetOption(
                   pet.id,

@@ -22,7 +22,17 @@ class PetSelectorWidget extends ConsumerWidget {
     final petsAsync = ref.watch(petProfilesProvider);
 
     return petsAsync.when(
-      data: (pets) => _buildPetSelector(pets),
+      data: (pets) {
+        // 숨김 펫과 사망 펫 필터링
+        final activePets = pets
+            .where(
+              (pet) =>
+                  pet.petStatus != PetStatus.deceased &&
+                  pet.petStatus != PetStatus.hidden,
+            )
+            .toList();
+        return _buildPetSelector(activePets);
+      },
       loading: () => _buildLoadingState(),
       error: (error, stack) => _buildErrorState(error, ref),
     );

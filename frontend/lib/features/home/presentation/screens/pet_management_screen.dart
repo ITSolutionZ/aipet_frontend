@@ -199,10 +199,18 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
                   // 탭에 따라 펫 필터링
                   final filteredPets = _selectedTabIndex == 0
                       ? pets
-                            .where((p) => p.petStatus != PetStatus.hidden)
+                            .where(
+                              (p) =>
+                                  p.petStatus != PetStatus.hidden &&
+                                  p.petStatus != PetStatus.deceased,
+                            )
                             .toList()
                       : pets
-                            .where((p) => p.petStatus == PetStatus.hidden)
+                            .where(
+                              (p) =>
+                                  p.petStatus == PetStatus.hidden ||
+                                  p.petStatus == PetStatus.deceased,
+                            )
                             .toList();
 
                   if (filteredPets.isEmpty) {
@@ -242,17 +250,29 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
   Widget _buildPetCard(BuildContext context, PetProfileEntity pet) {
     // 非表示タブかどうか確認
     final isHiddenTab = _selectedTabIndex == 1;
+    // 사망 펫 여부 확인
+    final isDeceased = pet.petStatus == PetStatus.deceased;
 
     return Dismissible(
       key: Key('pet_${pet.id}'),
-      direction: DismissDirection.horizontal,
-      background: _buildSwipeBackground(true, isHiddenTab), // 削除背景
-      secondaryBackground: _buildSwipeBackground(
-        false,
-        isHiddenTab,
-      ), // 非表示/復元背景
+      // 사망 펫은 삭제만 가능 (왼쪽 스와이프만)
+      direction: isDeceased
+          ? DismissDirection.startToEnd
+          : DismissDirection.horizontal,
+      background: _buildSwipeBackground(true, isHiddenTab, isDeceased), // 削除背景
+      secondaryBackground: isDeceased
+          ? null
+          : _buildSwipeBackground(
+              false,
+              isHiddenTab,
+              isDeceased,
+            ), // 非表示/復元背景
       resizeDuration: const Duration(milliseconds: 200),
       confirmDismiss: (direction) async {
+        // 사망 펫은 복원 불가
+        if (isDeceased && direction == DismissDirection.endToStart) {
+          return false;
+        }
         return _showSwipeActionDialog(context, pet, direction);
       },
       onDismissed: (direction) {
@@ -260,39 +280,47 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
           _deletePet(context, pet);
         } else {
           // 非表示タブなら復元、そうでなければ非表示
-          if (isHiddenTab) {
+          if (isHiddenTab && !isDeceased) {
             _restorePet(context, pet);
-          } else {
+          } else if (!isDeceased) {
             _hidePet(context, pet);
           }
         }
       },
       child: GestureDetector(
         onTap: () => _navigateToEditScreen(context, pet),
-        child: Container(
-          margin: const EdgeInsets.only(bottom: 12),
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                AppColors.pureWhite,
-                AppColors.pointOffWhite.withValues(alpha: 0.3),
-                AppColors.pureWhite,
-              ],
-              stops: const [0.0, 0.5, 1.0],
-            ),
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.pointGray.withValues(alpha: 0.1),
-                blurRadius: 4,
-                offset: const Offset(0, 2),
+        child: Opacity(
+          opacity: isDeceased ? 0.6 : 1.0,
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: isDeceased
+                    ? [
+                        AppColors.pointGray.withValues(alpha: 0.3),
+                        AppColors.pointGray.withValues(alpha: 0.2),
+                        AppColors.pointGray.withValues(alpha: 0.3),
+                      ]
+                    : [
+                        AppColors.pureWhite,
+                        AppColors.pointOffWhite.withValues(alpha: 0.3),
+                        AppColors.pureWhite,
+                      ],
+                stops: const [0.0, 0.5, 1.0],
               ),
-            ],
-          ),
-          child: Row(
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.pointGray.withValues(alpha: 0.1),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
             children: [
               // ペット画像
               Container(
@@ -331,6 +359,32 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
                           ),
                         ),
                         const SizedBox(width: 8),
+                        if (isDeceased) ...[
+                          const Text(
+                            '🕊️',
+                            style: TextStyle(fontSize: 14),
+                          ),
+                          const SizedBox(width: 4),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.pointGray.withValues(alpha: 0.2),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: const Text(
+                              '追悼中',
+                              style: TextStyle(
+                                fontSize: 10,
+                                color: AppColors.pointGray,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                        ],
                         const Icon(
                           Icons.edit,
                           size: 16,
@@ -340,7 +394,7 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '나이 • ${pet.typeName}',
+                      '年齢 • ${pet.typeName}',
                       style: const TextStyle(
                         fontSize: 12,
                         color: AppColors.pointGray,
@@ -348,7 +402,7 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      '몸무게 • ${pet.weight}kg',
+                      '体重 • ${pet.weight}kg',
                       style: const TextStyle(
                         fontSize: 12,
                         color: AppColors.pointGray,
@@ -356,7 +410,7 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
                     ),
                     const SizedBox(height: 2),
                     const Text(
-                      '등록요청자 • 없음',
+                      '登録リクエスト者 • なし',
                       style: TextStyle(
                         fontSize: 12,
                         color: AppColors.pointGray,
@@ -364,7 +418,7 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
                     ),
                     const SizedBox(height: 2),
                     const Text(
-                      '의료병원 • 없음',
+                      '医療病院 • なし',
                       style: TextStyle(
                         fontSize: 12,
                         color: AppColors.pointGray,
@@ -409,13 +463,18 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
               ),
             ],
           ),
+          ),
         ),
       ),
     );
   }
 
   /// 스와이프 배경 위젯
-  Widget _buildSwipeBackground(bool isDelete, bool isHiddenTab) {
+  Widget _buildSwipeBackground(
+    bool isDelete,
+    bool isHiddenTab,
+    bool isDeceased,
+  ) {
     // 非表示タブでは右スワイプが「復元」
     final isRestore = !isDelete && isHiddenTab;
     final icon = isDelete
@@ -607,7 +666,7 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
 
             scaffoldMessenger.showSnackBar(
               SnackBar(
-                content: Text('복원 중 오류가 발생했습니다: ${error.toString()}'),
+                content: Text('復元中にエラーが発生しました: ${error.toString()}'),
                 backgroundColor: Colors.red,
               ),
             );
@@ -665,7 +724,7 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                '${pet.name}의 QR 코드',
+                '${pet.name}のQRコード',
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
@@ -704,13 +763,13 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
                     'assets/icons/logo_notinclude_text.png',
                   ),
                   embeddedImageStyle: const QrEmbeddedImageStyle(
-                    size: Size(40, 40), // QR 코드 크기의 약 22% (180의 22%)
+                    size: Size(40, 40), // QRコードサイズの約22% (180の22%)
                     color: AppColors.pointBrown,
                   ),
                   errorStateBuilder: (cxt, err) {
                     return const Center(
                       child: Text(
-                        'QR 코드 생성 중 오류가 발생했습니다',
+                        'QRコード生成中にエラーが発生しました',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: AppColors.pointGray,
@@ -742,7 +801,7 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
                         ),
                       ),
                       child: const Text(
-                        '닫기',
+                        '閉じる',
                         style: TextStyle(color: AppColors.pointGray),
                       ),
                     ),
@@ -751,7 +810,7 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        // QR 코드 공유 기능 구현
+                        // QRコード共有機能実装
                         Navigator.of(context).pop();
                       },
                       style: ElevatedButton.styleFrom(
@@ -761,7 +820,7 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
                         ),
                       ),
                       child: const Text(
-                        '공유',
+                        '共有',
                         style: TextStyle(color: AppColors.pureWhite),
                       ),
                     ),
@@ -777,6 +836,44 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
 
   /// 編集画面に移動（ペットプロファイル画面を編集モードで開く）
   void _navigateToEditScreen(BuildContext context, PetProfileEntity pet) {
+    // 사망 펫은 수정 불가
+    if (pet.petStatus == PetStatus.deceased) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Row(
+            children: [
+              Text('🕊️'),
+              SizedBox(width: 8),
+              Text('追悼ペット'),
+            ],
+          ),
+          content: const Text(
+            '追悼中のペットは編集できません。\n記録の閲覧のみ可能です。',
+            style: TextStyle(height: 1.5),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('閉じる'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                // 読み取り専用モードで開く
+                context.go('/home/pet-profile/${pet.id}?isEditMode=false');
+              },
+              style: TextButton.styleFrom(
+                foregroundColor: AppColors.pointBrown,
+              ),
+              child: const Text('記録を見る'),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
     context.go('/home/pet-profile/${pet.id}?isEditMode=true');
   }
 

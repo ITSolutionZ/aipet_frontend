@@ -113,7 +113,17 @@ class AiPetSelectionBubble extends ConsumerWidget {
                       // 실제 펫 데이터 사용
                       final petsAsync = ref.watch(petProfilesProvider);
                       return petsAsync.when(
-                        data: (pets) => _buildPetSelection(pets),
+                        data: (pets) {
+                          // 숨김 펫과 사망 펫 필터링
+                          final activePets = pets
+                              .where(
+                                (pet) =>
+                                    pet.petStatus != PetStatus.deceased &&
+                                    pet.petStatus != PetStatus.hidden,
+                              )
+                              .toList();
+                          return _buildPetSelection(activePets);
+                        },
                         loading: () =>
                             const Center(child: CircularProgressIndicator()),
                         error: (error, stack) => _buildPetSelection([]),

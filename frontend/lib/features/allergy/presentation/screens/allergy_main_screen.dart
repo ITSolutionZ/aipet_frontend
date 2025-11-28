@@ -48,14 +48,23 @@ class _AllergyMainScreenState extends ConsumerState<AllergyMainScreen> {
         ),
         title: petsAsync.when(
           data: (pets) {
-            if (pets.isEmpty) return const SizedBox.shrink();
+            // 숨김 펫과 사망 펫 필터링
+            final activePets = pets
+                .where(
+                  (pet) =>
+                      pet.petStatus != PetStatus.deceased &&
+                      pet.petStatus != PetStatus.hidden,
+                )
+                .toList();
+
+            if (activePets.isEmpty) return const SizedBox.shrink();
 
             // 첫 로드 시 첫 번째 펫 자동 선택
-            if (_selectedPet == null && pets.isNotEmpty) {
+            if (_selectedPet == null && activePets.isNotEmpty) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (mounted) {
                   setState(() {
-                    _selectedPet = pets.first;
+                    _selectedPet = activePets.first;
                   });
                 }
               });
@@ -63,7 +72,7 @@ class _AllergyMainScreenState extends ConsumerState<AllergyMainScreen> {
 
             return AllergyPetSelector(
               selectedPet: _selectedPet,
-              pets: pets,
+              pets: activePets,
               onPetSelected: (pet) {
                 setState(() {
                   _selectedPet = pet;

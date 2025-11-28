@@ -241,13 +241,22 @@ class _NewEventSetupScreenState extends ConsumerState<NewEventSetupScreen> {
     final petsAsync = ref.watch(petProfilesProvider);
     final pets = petsAsync.when(
       data: (data) {
+        // 숨김 펫과 사망 펫 필터링
+        final activePets = data
+            .where(
+              (pet) =>
+                  pet.petStatus != PetStatus.deceased &&
+                  pet.petStatus != PetStatus.hidden,
+            )
+            .toList();
+
         // 펫이 1마리일 때 자동 선택 (mounted 체크 추가)
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted) {
-            _autoSelectPetIfOnlyOne(data);
+            _autoSelectPetIfOnlyOne(activePets);
           }
         });
-        return data;
+        return activePets;
       },
       loading: () => <PetProfileEntity>[],
       error: (_, __) => <PetProfileEntity>[],
