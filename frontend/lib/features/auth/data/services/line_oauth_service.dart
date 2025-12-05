@@ -4,9 +4,7 @@ import 'dart:math';
 
 import 'package:aipet_frontend/app/config/app_config.dart';
 import 'package:aipet_frontend/shared/shared.dart';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:url_launcher/url_launcher.dart';
 
 /// 🎯 LINE OAuth 서비스
 ///

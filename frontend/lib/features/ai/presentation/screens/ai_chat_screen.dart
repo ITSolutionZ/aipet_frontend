@@ -99,6 +99,56 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
     });
   }
 
+  /// 医療免責事項バナーを構築
+  Widget _buildMedicalDisclaimerBanner() {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.sm,
+      ),
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFF4E6), // 警告色（オレンジ系の薄い色）
+        borderRadius: BorderRadius.circular(AppRadius.medium),
+        border: Border.all(color: const Color(0xFFFF9800), width: 1.5),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(
+            Icons.warning_amber_rounded,
+            color: Color(0xFFFF9800),
+            size: 20,
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '重要な注意事項',
+                  style: AppFonts.bodyMedium.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFFE65100),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  'このAIアシスタントは一般的なペットケアの情報を提供しますが、獣医師の診断や治療の代わりにはなりません。ペットの健康に関する深刻な問題や緊急の症状がある場合は、直ちに獣医師にご相談ください。',
+                  style: AppFonts.bodySmall.copyWith(
+                    color: const Color(0xFFE65100),
+                    height: 1.5,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<void> _clearChatHistory() async {
     await ref.read(aiChatProvider.notifier).clearChatHistory();
   }
@@ -402,6 +452,9 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
         child: SafeArea(
           child: Column(
             children: [
+              // 医療免責事項バナー
+              _buildMedicalDisclaimerBanner(),
+
               // 메시지 리스트
               Expanded(
                 child: ListView.builder(

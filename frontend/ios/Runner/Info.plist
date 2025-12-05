@@ -46,11 +46,11 @@
 		<key>UIApplicationSupportsIndirectInputEvents</key>
 		<true/>
 		<key>NSLocationWhenInUseUsageDescription</key>
-		<string>現在地の天気情報を表示し、ペットの散歩ルートを追跡するために位置情報を使用します。</string>
+		<string>現在地の天気情報を表示し、ペットの散歩ルートを追跡するために位置情報を使用します。位置情報は散歩記録の作成と天気に基づいた散歩推奨の提供にのみ使用されます。</string>
 		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-		<string>現在地の天気情報を表示し、ペットの散歩ルートをバックグラウンドで追跡するために位置情報を使用します。</string>
+		<string>ペットの散歩中に正確な散歩ルートを記録するため、バックグラウンドでの位置情報アクセスが必要です。この情報は散歩記録の作成と分析にのみ使用され、第三者と共有されることはありません。</string>
 		<key>NSLocationAlwaysUsageDescription</key>
-		<string>現在地の天気情報を表示し、ペットの散歩ルートをバックグラウンドで追跡するために位置情報を使用します。</string>
+		<string>ペットの散歩中に正確な散歩ルートを記録するため、バックグラウンドでの位置情報アクセスが必要です。この情報は散歩記録の作成と分析にのみ使用され、第三者と共有されることはありません。</string>
 		<key>GMSApiKey</key>
 		<string>${GOOGLE_MAPS_API_KEY}</string>
 		<key>UIBackgroundModes</key>
@@ -106,5 +106,24 @@
 	<string>Copyright © 2025 アイティーソリューションズ株式会社（ITZ）. All rights reserved.</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<!-- Minimum iOS Version -->
+	<key>MinimumOSVersion</key>
+	<string>13.0</string>
+	<!-- App Category for App Store -->
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.lifestyle</string>
+	<!-- Required Device Capabilities -->
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>armv7</string>
+	</array>
+	<!-- Network Security -->
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<false/>
+		<key>NSAllowsLocalNetworking</key>
+		<false/>
+	</dict>
 </dict>
 </plist>

@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 /// 알림 초기화 헬퍼 (flutter_local_notifications)
@@ -45,7 +44,8 @@ class NotificationInitializationHelper {
     await plugin.initialize(
       initSettings,
       onDidReceiveNotificationResponse: _onNotificationTapped,
-      onDidReceiveBackgroundNotificationResponse: _onBackgroundNotificationTapped,
+      onDidReceiveBackgroundNotificationResponse:
+          _onBackgroundNotificationTapped,
     );
 
     // 권한 요청 (iOS/Android 13+)
@@ -61,7 +61,8 @@ class NotificationInitializationHelper {
     if (Platform.isIOS || Platform.isMacOS) {
       await plugin
           .resolvePlatformSpecificImplementation<
-              IOSFlutterLocalNotificationsPlugin>()
+            IOSFlutterLocalNotificationsPlugin
+          >()
           ?.requestPermissions(
             alert: true,
             badge: true,
@@ -69,8 +70,10 @@ class NotificationInitializationHelper {
             critical: true,
           );
     } else if (Platform.isAndroid) {
-      final androidPlugin = plugin.resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>();
+      final androidPlugin = plugin
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >();
 
       // Android 13+ 권한 요청
       await androidPlugin?.requestNotificationsPermission();
@@ -119,7 +122,8 @@ class NotificationInitializationHelper {
 
     await plugin
         .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
+          AndroidFlutterLocalNotificationsPlugin
+        >()
         ?.createNotificationChannel(channel);
 
     if (kDebugMode) {
@@ -148,13 +152,17 @@ class NotificationInitializationHelper {
   /// 권한 확인
   static Future<bool> isNotificationAllowed() async {
     if (Platform.isIOS || Platform.isMacOS) {
-      final iosPlugin = plugin.resolvePlatformSpecificImplementation<
-          IOSFlutterLocalNotificationsPlugin>();
+      final iosPlugin = plugin
+          .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin
+          >();
       // iOS에서는 별도 확인 방법 없음, true 반환
       return iosPlugin != null;
     } else if (Platform.isAndroid) {
-      final androidPlugin = plugin.resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>();
+      final androidPlugin = plugin
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >();
       return await androidPlugin?.areNotificationsEnabled() ?? false;
     }
     return true;
