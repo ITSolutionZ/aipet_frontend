@@ -429,38 +429,38 @@ class _PetManagementScreenState extends ConsumerState<PetManagementScreen> {
               ),
 
               // 공유 버튼
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.pointBrown.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: GestureDetector(
-                  onTap: () => _showQRCode(context, pet),
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.folder_shared_outlined,
-                        size: 14,
-                        color: AppColors.pointBrown,
-                      ),
-                      SizedBox(width: 4),
-                      Text(
-                        '共同管理者を招待',
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: AppColors.pointBrown,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              // Container(
+              //   padding: const EdgeInsets.symmetric(
+              //     horizontal: 12,
+              //     vertical: 6,
+              //   ),
+              //   decoration: BoxDecoration(
+              //     color: AppColors.pointBrown.withValues(alpha: 0.1),
+              //     borderRadius: BorderRadius.circular(16),
+              //   ),
+              //   child: GestureDetector(
+              //     onTap: () => _showQRCode(context, pet),
+              //     child: const Row(
+              //       mainAxisSize: MainAxisSize.min,
+              //       children: [
+              //         Icon(
+              //           Icons.folder_shared_outlined,
+              //           size: 14,
+              //           color: AppColors.pointBrown,
+              //         ),
+              //         SizedBox(width: 4),
+              //         Text(
+              //           '共同管理者を招待',
+              //           style: TextStyle(
+              //             fontSize: 11,
+              //             color: AppColors.pointBrown,
+              //             fontWeight: FontWeight.w500,
+              //           ),
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+              // ),
             ],
           ),
           ),
