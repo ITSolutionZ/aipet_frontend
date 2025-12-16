@@ -26,7 +26,13 @@ class _PetBreedSectionState extends State<PetBreedSection> {
   Widget build(BuildContext context) {
     final petTypeData =
         PetRegistrationConstants.petTypes[widget.selectedPetType];
-    final breeds = petTypeData?['breeds'] as List<Map<String, dynamic>>? ?? [];
+
+    // breeds를 안전하게 List<Map<String, dynamic>>로 변환
+    List<Map<String, dynamic>> breeds = [];
+    final rawBreeds = petTypeData?['breeds'];
+    if (rawBreeds is List) {
+      breeds = rawBreeds.map((e) => Map<String, dynamic>.from(e as Map)).toList();
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

@@ -77,10 +77,12 @@ class FirestorePetService {
     try {
       final userId = _currentUserId;
       if (userId == null) {
+        LoggerService.debug('⚠️ Firestore: 로그인 필요 (currentUserId is null)');
         return Result.failure('ログインが必要です');
       }
 
       LoggerService.debug('📡 Firestore: 펫 조회 시작 (id: $id)');
+      LoggerService.debug('   현재 로그인 userId: $userId');
 
       final doc = await _firestore.collection(_collectionName).doc(id).get();
 
@@ -95,8 +97,10 @@ class FirestorePetService {
       }
 
       // 소유자 확인
-      if (data['ownerId'] != userId) {
-        LoggerService.debug('⚠️ Firestore: 권한 없음 (id: $id)');
+      final petOwnerId = data['ownerId'];
+      LoggerService.debug('   펫의 ownerId: $petOwnerId');
+      if (petOwnerId != userId) {
+        LoggerService.debug('⚠️ Firestore: 권한 없음 - userId($userId) != ownerId($petOwnerId)');
         return Result.failure('このペットにアクセスする権限がありません');
       }
 

@@ -34,7 +34,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     // 저장된 로그인 정보 불러오기
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      LoggerService.debug('🔐 [LoginScreen] addPostFrameCallback - 저장된 정보 로드 시작');
+      LoggerService.debug(
+        '🔐 [LoginScreen] addPostFrameCallback - 저장된 정보 로드 시작',
+      );
 
       ref.read(authFormStateNotifierProvider.notifier).loadSavedCredentials();
     });
@@ -301,34 +303,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.md),
-
-                    // 회원가입 링크
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'アカウントをお持ちでない方は',
-                          style: AppFonts.bodySmall.copyWith(
-                            color: Colors.grey.shade600,
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: _isLoading
-                              ? null
-                              : () {
-                                  context.go(AppRouter.signupRoute);
-                                },
-                          child: Text(
-                            '新規登録',
-                            style: AppFonts.bodySmall.copyWith(
-                              color: AppColors.pointBlue,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
                   ],
                 ),
               ],
@@ -353,15 +327,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       final authController = ref.read(authControllerProvider.notifier);
 
       // ✅ 타임아웃 설정 (30초) - 무한 로딩 방지
-      final result = await authController.login(
-        password: _passwordController.text,
-      ).timeout(
-        const Duration(seconds: 30),
-        onTimeout: () {
-          LoggerService.debug('❌ ログイン処理がタイムアウト');
-          return Result.failure('ログイン処理がタイムアウトしました。インターネット接続を確認してください。');
-        },
-      );
+      final result = await authController
+          .login(password: _passwordController.text)
+          .timeout(
+            const Duration(seconds: 30),
+            onTimeout: () {
+              LoggerService.debug('❌ ログイン処理がタイムアウト');
+              return Result.failure('ログイン処理がタイムアウトしました。インターネット接続を確認してください。');
+            },
+          );
 
       if (result.isSuccess) {
         // ロ グイン成功

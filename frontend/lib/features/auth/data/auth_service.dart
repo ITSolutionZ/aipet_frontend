@@ -24,8 +24,6 @@ class AuthService {
       );
 
       if (result.isSuccess && result.dataOrNull != null) {
-        // 백엔드 토큰 저장
-        await _saveBackendTokenFromUser(result.dataOrNull!);
         return Result.success('ログインが完了しました', result.dataOrNull!);
       } else {
         return Result.failure('ログインに失敗しました: ${result.error?.toString()}');
@@ -47,8 +45,6 @@ class AuthService {
       );
 
       if (result.isSuccess && result.dataOrNull != null) {
-        // 백엔드 토큰 저장
-        await _saveBackendTokenFromUser(result.dataOrNull!);
         return Result.success('会員登録が完了しました', result.dataOrNull!);
       } else {
         return Result.failure('会員登録に失敗しました: ${result.error?.toString()}');
@@ -78,8 +74,6 @@ class AuthService {
       }
 
       if (result.isSuccess && result.dataOrNull != null) {
-        // 백엔드 토큰 저장
-        await _saveBackendTokenFromUser(result.dataOrNull!);
         return Result.success('$provider ログインが完了しました', result.dataOrNull!);
       } else {
         return Result.failure(
@@ -131,23 +125,4 @@ class AuthService {
       return Result.failure('パスワードリセットメールの送信に失敗しました: ${error.toString()}');
     }
   }
-
-  /// 백엔드에서 받은 토큰을 저장합니다
-  Future<void> _saveBackendTokenFromUser(AuthUser user) async {
-    final customData = user.customData;
-    if (customData != null) {
-      // AuthToken 객체 생성
-      final token = AuthToken(
-        accessToken: customData['accessToken'] as String,
-        refreshToken: customData['refreshToken'] as String,
-        expiresAt: DateTime.parse(customData['expiresAt'] as String),
-      );
-
-      // TokenStorage에 저장
-      await TokenStorageService.saveToken(token);
-    }
-  }
-
-  // ✅ AuthResult 제거됨 - 공통 Result<T> 패턴 사용
-  // 향후 실제 API 연동시 토큰은 Result<AuthToken>으로 반환됩니다.
 }

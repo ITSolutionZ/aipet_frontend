@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "916090550504-qjqrknac2lsje1lurf6bq2s7ka78ng6t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.itz.aipet",
+            "certificate_hash": "61db3ecece32d921575820495a6c8a648e5c1d3a"
+          }
+        },
+        {
           "client_id": "916090550504-fk26u8ia66ko1kv576hkrtc9b6je5kkm.apps.googleusercontent.com",
           "client_type": 3
         }

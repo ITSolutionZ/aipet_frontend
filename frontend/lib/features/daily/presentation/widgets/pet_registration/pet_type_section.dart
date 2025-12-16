@@ -136,15 +136,14 @@ class _PetTypeSectionState extends State<PetTypeSection> {
 
   /// 펫 타입에 따른 이미지 경로 반환
   String _getPetTypeImagePath(String petTypeKey) {
-    // 개와 고양이는 대표 이미지 사용
-    if (petTypeKey == 'dog') {
-      return 'assets/images/dogs/dogs.png';
-    } else if (petTypeKey == 'cat') {
-      return 'assets/images/cats/cats.png';
-    } else {
-      // 나머지는 etc 폴더의 이미지 사용
-      return 'assets/images/etc/$petTypeKey.png';
+    // petTypes에서 이미지 경로 가져오기
+    final petTypeData = PetRegistrationConstants.petTypes[petTypeKey];
+    if (petTypeData != null && petTypeData['image'] != null) {
+      return petTypeData['image'] as String;
     }
+
+    // 기본값
+    return 'assets/images/pets/default.png';
   }
 
   Widget _buildRequiredFieldLabel(String label) {

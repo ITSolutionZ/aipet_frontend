@@ -11,18 +11,11 @@ part 'pet_profile_providers.g.dart';
 
 /// PetProfileRepository 프로바이더
 ///
-/// Firebase Firestore를 사용하려면 FirestorePetRepository()를 사용하세요
-/// Backend API를 사용하려면 BackendPetRepository()를 사용하세요
-/// 로컬 저장소를 사용하려면 PetProfileRepositoryImpl()로 변경하세요
+/// Firebase Firestore를 사용합니다
 @riverpod
 PetProfileRepository petProfileRepository(Ref ref) {
-  // Firebase Firestore 사용 (기본값)
   LoggerService.debug('🚀 [PetProfile] FirestorePetRepository (Firebase) 초기화');
   return FirestorePetRepository();
-
-  // Backend API 사용 (주석 해제하여 사용)
-  // LoggerService.debug('🚀 [PetProfile] BackendPetRepository (API) 초기화');
-  // return BackendPetRepository();
 }
 
 /// 모든 펫 목록 프로바이더

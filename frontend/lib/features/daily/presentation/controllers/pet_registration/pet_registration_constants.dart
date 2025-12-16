@@ -6,7 +6,7 @@ class PetRegistrationConstants {
 
   /// 강아지 품종 데이터
   static const List<Map<String, dynamic>> dogBreeds = [
-    {'name': '全犬種', 'image': 'assets/images/dogs/mixed.png'},
+    {'name': 'ミックス', 'image': 'assets/images/dogs/mixed.png'},
     {'name': 'チワワ', 'image': 'assets/images/dogs/chiwawa.png'},
     {'name': 'プードル', 'image': 'assets/images/dogs/poodle.png'},
     {'name': 'ダックスフンド', 'image': 'assets/images/dogs/dachshund.png'},
@@ -102,18 +102,6 @@ class PetRegistrationConstants {
       ],
       'image': 'assets/images/etc/hamster.png',
     },
-    'fish': {
-      'name': '魚',
-      'icon': Icons.water_drop,
-      'breeds': [
-        {'name': '金魚', 'image': 'assets/images/etc/bird.png'},
-        {'name': 'グッピー', 'image': 'assets/images/etc/bird.png'},
-        {'name': 'ネオンテトラ', 'image': 'assets/images/etc/bird.png'},
-        {'name': 'ベタ', 'image': 'assets/images/etc/bird.png'},
-        {'name': 'その他', 'image': 'assets/images/etc/bird.png'},
-      ],
-      'image': 'assets/images/etc/bird.png',
-    },
     'turtle': {
       'name': '亀',
       'icon': Icons.circle_outlined,
@@ -130,9 +118,9 @@ class PetRegistrationConstants {
       'name': 'その他',
       'icon': Icons.pets_outlined,
       'breeds': [
-        {'name': 'その他', 'image': 'assets/images/pets/default.png'},
+        {'name': 'その他', 'image': 'assets/images/etc/bird.png'},
       ],
-      'image': 'assets/images/pets/default.png',
+      'image': 'assets/images/etc/bird.png',
     },
   };
 }

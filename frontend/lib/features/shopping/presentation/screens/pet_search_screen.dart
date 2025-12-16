@@ -1,12 +1,9 @@
 import 'package:aipet_frontend/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../data/models/favorite_product_model.dart';
 import '../../data/models/rakuten_pet_product_model.dart';
-import '../../data/providers/favorite_products_provider.dart';
 import '../../data/providers/rakuten_brands_provider.dart';
 import '../../data/providers/rakuten_products_provider.dart';
 
@@ -69,7 +66,7 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
   final List<Map<String, dynamic>> _petTypeFilters = [
     {'name': '犬', 'keyword': 'ドッグ', 'isSelected': false},
     {'name': '猫', 'keyword': 'キャット', 'isSelected': false},
-    {'name': '小動物', 'keyword': '小動物', 'isSelected': false},
+    {'name': 'ミックス', 'keyword': 'ミックス', 'isSelected': false},
     {'name': '鳥', 'keyword': '鳥', 'isSelected': false},
   ];
 
@@ -966,26 +963,27 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
                   // アクションボタン
                   Column(
                     children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: ElevatedButton.icon(
-                              onPressed: () {
-                                // 商品を選択して戻る
-                                _selectProduct(product);
-                              },
-                              icon: const Icon(Icons.check, size: 16),
-                              label: const Text('この商品を選択'),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.pointGreen,
-                                foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(vertical: 8),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
+                      // この商品を選択ボタン (コメントアウト)
+                      // Row(
+                      //   children: [
+                      //     Expanded(
+                      //       child: ElevatedButton.icon(
+                      //         onPressed: () {
+                      //           // 商品を選択して戻る
+                      //           _selectProduct(product);
+                      //         },
+                      //         icon: const Icon(Icons.check, size: 16),
+                      //         label: const Text('この商品を選択'),
+                      //         style: ElevatedButton.styleFrom(
+                      //           backgroundColor: AppColors.pointGreen,
+                      //           foregroundColor: Colors.white,
+                      //           padding: const EdgeInsets.symmetric(vertical: 8),
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
+                      // const SizedBox(height: 8),
                       Row(
                         children: [
                           Expanded(
@@ -998,25 +996,28 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
                               label: const Text('商品ページ'),
                               style: OutlinedButton.styleFrom(
                                 foregroundColor: AppColors.pointBrown,
-                                padding: const EdgeInsets.symmetric(vertical: 8),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 8,
+                                ),
                               ),
                             ),
                           ),
                           const SizedBox(width: 8),
-                          Expanded(
-                            child: OutlinedButton.icon(
-                              onPressed: () {
-                                // お気に入り追加
-                                _addToFavorites(product);
-                              },
-                              icon: const Icon(Icons.favorite_border, size: 16),
-                              label: const Text('お気に入り'),
-                              style: OutlinedButton.styleFrom(
-                                foregroundColor: AppColors.pointBrown,
-                                padding: const EdgeInsets.symmetric(vertical: 8),
-                              ),
-                            ),
-                          ),
+                          // お気に入りボタン (コメントアウト)
+                          // Expanded(
+                          //   child: OutlinedButton.icon(
+                          //     onPressed: () {
+                          //       // お気に入り追加
+                          //       _addToFavorites(product);
+                          //     },
+                          //     icon: const Icon(Icons.favorite_border, size: 16),
+                          //     label: const Text('お気に入り'),
+                          //     style: OutlinedButton.styleFrom(
+                          //       foregroundColor: AppColors.pointBrown,
+                          //       padding: const EdgeInsets.symmetric(vertical: 8),
+                          //     ),
+                          //   ),
+                          // ),
                         ],
                       ),
                     ],
@@ -1323,48 +1324,48 @@ class _PetSearchScreenState extends ConsumerState<PetSearchScreen>
     }
   }
 
-  /// 商品を選択して戻る
-  void _selectProduct(RakutenPetProduct product) {
-    LoggerService.debug('✅ 상품 선택: ${product.itemName}');
-    context.pop(product.itemName);
-  }
+  /// 商品を選択して戻る (コメントアウト)
+  // void _selectProduct(RakutenPetProduct product) {
+  //   LoggerService.debug('✅ 상품 선택: ${product.itemName}');
+  //   context.pop(product.itemName);
+  // }
 
-  /// お気に入りに追加
-  Future<void> _addToFavorites(RakutenPetProduct product) async {
-    // RakutenPetProductをFavoriteProductに変換
-    final favoriteProduct = FavoriteProduct(
-      itemCode: product.itemCode,
-      itemName: product.itemName,
-      imageUrl: product.imageUrl,
-      itemPrice: product.itemPrice,
-      shopName: product.shopName,
-      itemUrl: product.itemUrl,
-      reviewAverage: product.reviewAverage,
-      reviewCount: product.reviewCount,
-      addedAt: DateTime.now(),
-    );
-
-    // お気に入りに追加
-    final success = await ref
-        .read(favoriteProductsProvider.notifier)
-        .addFavorite(favoriteProduct);
-
-    if (!mounted) return;
-
-    if (success) {
-      SnackBarService.showSuccess(
-        context,
-        '${product.itemName}をお気に入りに追加しました',
-        duration: const Duration(seconds: 2),
-      );
-    } else {
-      SnackBarService.showWarning(
-        context,
-        '既にお気に入りに追加されています',
-        duration: const Duration(seconds: 2),
-      );
-    }
-  }
+  /// お気に入りに追加 (コメントアウト)
+  // Future<void> _addToFavorites(RakutenPetProduct product) async {
+  //   // RakutenPetProductをFavoriteProductに変換
+  //   final favoriteProduct = FavoriteProduct(
+  //     itemCode: product.itemCode,
+  //     itemName: product.itemName,
+  //     imageUrl: product.imageUrl,
+  //     itemPrice: product.itemPrice,
+  //     shopName: product.shopName,
+  //     itemUrl: product.itemUrl,
+  //     reviewAverage: product.reviewAverage,
+  //     reviewCount: product.reviewCount,
+  //     addedAt: DateTime.now(),
+  //   );
+  //
+  //   // お気に入りに追加
+  //   final success = await ref
+  //       .read(favoriteProductsProvider.notifier)
+  //       .addFavorite(favoriteProduct);
+  //
+  //   if (!mounted) return;
+  //
+  //   if (success) {
+  //     SnackBarService.showSuccess(
+  //       context,
+  //       '${product.itemName}をお気に入りに追加しました',
+  //       duration: const Duration(seconds: 2),
+  //     );
+  //   } else {
+  //     SnackBarService.showWarning(
+  //       context,
+  //       '既にお気に入りに追加されています',
+  //       duration: const Duration(seconds: 2),
+  //     );
+  //   }
+  // }
 
   Widget _buildFilterSection(String title, List<Map<String, dynamic>> filters) {
     return Column(

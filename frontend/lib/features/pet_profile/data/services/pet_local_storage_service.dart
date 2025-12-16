@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:aipet_frontend/shared/core/services/firebase_token_service.dart';
 import 'package:aipet_frontend/shared/core/services/logger_service.dart';
 import 'package:aipet_frontend/shared/domain/entities/entities.dart';
 import 'package:aipet_frontend/shared/services/cache_service.dart';
@@ -18,6 +19,8 @@ class PetLocalStorageService {
   }
 
   /// ペットリストを取得
+  ///
+  /// 현재 로그인한 사용자의 펫만 반환합니다.
   static Future<List<PetProfileEntity>> getPets() async {
     try {
       await _init();
@@ -28,7 +31,10 @@ class PetLocalStorageService {
         return await _initializeDefaultPets();
       }
 
-      return petsJson.map((json) {
+      // 현재 로그인한 사용자 ID
+      final currentUserId = FirebaseTokenService.getCurrentUserId();
+
+      final allPets = petsJson.map((json) {
         try {
           final data = jsonDecode(json) as Map<String, dynamic>;
 
@@ -38,14 +44,6 @@ class PetLocalStorageService {
                   data['additionalInfo'] as Map<String, dynamic>,
                 )
               : <String, dynamic>{};
-
-          LoggerService.debug('📖 Loading pet: ${data['name']}');
-          LoggerService.debug(
-            '📖 additionalInfo keys: ${additionalInfo.keys.toList()}',
-          );
-          LoggerService.debug(
-            '📖 forbiddenIngredients: ${additionalInfo['forbiddenIngredients']}',
-          );
 
           return PetProfileEntity(
             id: data['id'] as String,
@@ -68,6 +66,17 @@ class PetLocalStorageService {
           rethrow;
         }
       }).toList();
+
+      // 현재 로그인한 사용자의 펫만 필터링
+      if (currentUserId != null) {
+        final userPets = allPets.where((pet) => pet.ownerId == currentUserId).toList();
+        LoggerService.debug('📖 로컬 캐시: 전체 ${allPets.length}개 중 현재 사용자($currentUserId)의 펫 ${userPets.length}개');
+        return userPets;
+      }
+
+      // 로그인하지 않은 경우 빈 리스트 반환
+      LoggerService.debug('⚠️ 로그인하지 않음 - 빈 리스트 반환');
+      return [];
     } catch (e, stackTrace) {
       LoggerService.debug('❌ ペット取得エラー: $e');
       LoggerService.debug('❌ スタックトレース: $stackTrace');
@@ -233,8 +242,10 @@ class PetLocalStorageService {
   }
 
   /// IDでペットを取得
+  ///
+  /// 현재 로그인한 사용자의 펫만 반환합니다.
   static Future<PetProfileEntity?> getPetById(String id) async {
-    final pets = await getPets();
+    final pets = await getPets(); // 이미 현재 사용자 필터링됨
     try {
       return pets.firstWhere((p) => p.id == id);
     } catch (e) {
