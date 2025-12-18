@@ -69,3 +69,7 @@ sentry.properties
 
 # APK files
 *.apk
+
+# Firebase/Google Service files
+**/GoogleService-Info.plist
+**/google-services.json
