@@ -113,7 +113,7 @@ class _HealthRecordContentView extends ConsumerWidget {
           // 병원 미등록 시 배너 표시
           if (!hasHospital) ...[
             HospitalLinkBanner(
-              onTap: () => context.push('/home/calendar'),
+              onTap: () => context.push('/calendar'),
               onDismiss: null,
             ),
             const SizedBox(height: AppSpacing.md),
@@ -220,7 +220,7 @@ class _NoPetHealthView extends ConsumerWidget {
           // 병원 미등록 시 배너 표시
           if (!hasHospital) ...[
             HospitalLinkBanner(
-              onTap: () => context.push('/home/calendar'),
+              onTap: () => context.push('/calendar'),
               onDismiss: null,
             ),
             const SizedBox(height: AppSpacing.lg),
@@ -259,7 +259,7 @@ class _NoPetHealthView extends ConsumerWidget {
                       _buildQuickActionCard(
                         icon: Icons.local_hospital,
                         title: '病院検索',
-                        onTap: () => context.push('/home/calendar'),
+                        onTap: () => context.push('/calendar'),
                       ),
                       _buildQuickActionCard(
                         icon: Icons.schedule,
@@ -270,7 +270,7 @@ class _NoPetHealthView extends ConsumerWidget {
                       _buildQuickActionCard(
                         icon: Icons.info_outline,
                         title: '健康情報',
-                        onTap: () => context.push('/home/ai'),
+                        onTap: () => context.push('/ai'),
                       ),
                     ],
                   ),

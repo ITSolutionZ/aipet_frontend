@@ -408,7 +408,7 @@ class _FullScreenMapDialog extends StatelessWidget {
           height: 48,
           decoration: BoxDecoration(
             color: facility.type == FacilityType.hospital
-                ? Colors.red
+                ? AppColors.pointRed
                 : AppColors.pointBlue,
             shape: BoxShape.circle,
             boxShadow: [

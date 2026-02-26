@@ -232,13 +232,13 @@ class PetSelectionSection extends ConsumerWidget {
           const Icon(
             Icons.error_outline,
             size: 48,
-            color: Colors.red,
+            color: AppColors.error,
           ),
           const SizedBox(height: AppSpacing.md),
           Text(
             'ペット情報の読み込み失敗',
             style: AppFonts.bodyMedium.copyWith(
-              color: Colors.red,
+              color: AppColors.error,
             ),
           ),
           const SizedBox(height: AppSpacing.sm),

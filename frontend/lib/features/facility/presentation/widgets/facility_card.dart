@@ -185,31 +185,31 @@ class FacilityCard extends StatelessWidget {
   Color _getTypeColor(FacilityType type) {
     switch (type) {
       case FacilityType.hospital:
-        return Colors.red;
+        return AppColors.pointRed;
       case FacilityType.veterinary:
-        return Colors.red;
+        return AppColors.pointRed;
       case FacilityType.grooming:
-        return Colors.purple;
+        return AppColors.pointPink;
       case FacilityType.petShop:
-        return Colors.orange;
+        return AppColors.pointOrange;
       case FacilityType.petStore:
-        return Colors.orange;
+        return AppColors.pointOrange;
       case FacilityType.dogRun:
-        return Colors.green;
+        return AppColors.pointGreen;
       case FacilityType.park:
-        return Colors.lightGreen;
+        return AppColors.pointGreen;
       case FacilityType.petPark:
-        return Colors.lightGreen;
+        return AppColors.pointGreen;
       case FacilityType.cafe:
-        return Colors.brown;
+        return AppColors.pointBrown;
       case FacilityType.hotel:
-        return Colors.blue;
+        return AppColors.pointBlue;
       case FacilityType.petFriendlyAccommodation:
-        return Colors.blue;
+        return AppColors.pointBlue;
       case FacilityType.training:
-        return Colors.indigo;
+        return AppColors.pointBlue;
       case FacilityType.other:
-        return Colors.grey;
+        return AppColors.pointGray;
     }
   }
 

@@ -112,7 +112,7 @@
     "workbench.iconTheme": "catppuccin-macchiato",
 
     // 확장 프로그램 권장 설정
-    "extensions.ignoreRecommendations": false,
+    "extensions.ignoreRecommendations": true,
 
     // Git 설정
     "git.enableSmartCommit": true,

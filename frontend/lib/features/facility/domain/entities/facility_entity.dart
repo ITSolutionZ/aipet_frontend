@@ -244,4 +244,113 @@ class Facility {
   Color get openStatusColor {
     return isOpen ? AppColors.pointGreen : AppColors.pointGray;
   }
+
+  /// 시설 타입별 뱃지 텍스트
+  String get badgeText {
+    switch (type) {
+      case FacilityType.hospital:
+      case FacilityType.veterinary:
+        return '24時間';
+      case FacilityType.grooming:
+        return '予約可';
+      case FacilityType.petShop:
+      case FacilityType.petStore:
+        return 'SALE';
+      case FacilityType.dogRun:
+      case FacilityType.park:
+      case FacilityType.petPark:
+        return '無料';
+      case FacilityType.cafe:
+        return 'ペットOK';
+      case FacilityType.hotel:
+      case FacilityType.petFriendlyAccommodation:
+        return '宿泊可';
+      case FacilityType.training:
+        return '体験可';
+      case FacilityType.other:
+        return '';
+    }
+  }
+
+  /// 시설 타입별 뱃지 색상
+  Color get badgeColor {
+    switch (type) {
+      case FacilityType.hospital:
+      case FacilityType.veterinary:
+        return const Color(0xFFE53935); // Red
+      case FacilityType.grooming:
+        return const Color(0xFF8E24AA); // Purple
+      case FacilityType.petShop:
+      case FacilityType.petStore:
+        return const Color(0xFFFF6D00); // Orange
+      case FacilityType.dogRun:
+      case FacilityType.park:
+      case FacilityType.petPark:
+        return const Color(0xFF43A047); // Green
+      case FacilityType.cafe:
+        return const Color(0xFF6D4C41); // Brown
+      case FacilityType.hotel:
+      case FacilityType.petFriendlyAccommodation:
+        return const Color(0xFF1E88E5); // Blue
+      case FacilityType.training:
+        return const Color(0xFF3949AB); // Indigo
+      case FacilityType.other:
+        return const Color(0xFF757575); // Grey
+    }
+  }
+
+  /// 시설 타입별 뱃지 아이콘
+  IconData get badgeIcon {
+    switch (type) {
+      case FacilityType.hospital:
+      case FacilityType.veterinary:
+        return Icons.emergency;
+      case FacilityType.grooming:
+        return Icons.schedule;
+      case FacilityType.petShop:
+      case FacilityType.petStore:
+        return Icons.local_offer;
+      case FacilityType.dogRun:
+      case FacilityType.park:
+      case FacilityType.petPark:
+        return Icons.nature_people;
+      case FacilityType.cafe:
+        return Icons.pets;
+      case FacilityType.hotel:
+      case FacilityType.petFriendlyAccommodation:
+        return Icons.king_bed;
+      case FacilityType.training:
+        return Icons.sports;
+      case FacilityType.other:
+        return Icons.info;
+    }
+  }
+
+  /// 시설 타입별 서브 뱃지 (추가 정보)
+  String? get subBadgeText {
+    switch (type) {
+      case FacilityType.hospital:
+      case FacilityType.veterinary:
+        return '応急処置';
+      case FacilityType.grooming:
+        return 'カット';
+      case FacilityType.petShop:
+      case FacilityType.petStore:
+        return '用品';
+      case FacilityType.dogRun:
+        return 'ドッグラン';
+      case FacilityType.park:
+      case FacilityType.petPark:
+        return '公園';
+      case FacilityType.cafe:
+        return 'カフェ';
+      case FacilityType.hotel:
+      case FacilityType.petFriendlyAccommodation:
+        return 'ホテル';
+      case FacilityType.training:
+        return 'しつけ';
+      case FacilityType.other:
+        return null;
+    }
+  }
 }

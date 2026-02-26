@@ -2,14 +2,35 @@ import 'dart:convert';
 
 import 'package:aipet_frontend/app/config/app_config.dart';
 import 'package:aipet_frontend/shared/shared.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 
 import '../../domain/domain.dart';
 
+/// 루트 정보를 담는 클래스
+class RouteInfo {
+  final List<LatLng> polylinePoints;
+  final String distanceText;
+  final String durationText;
+  final double distanceValue; // meters
+  final double durationValue; // seconds
+
+  const RouteInfo({
+    required this.polylinePoints,
+    required this.distanceText,
+    required this.durationText,
+    required this.distanceValue,
+    required this.durationValue,
+  });
+}
+
 /// Google Places API 통합 서비스
 class GooglePlacesService {
   static const String _baseUrl = 'https://maps.googleapis.com/maps/api/place';
+  static const String _directionsBaseUrl = 'https://maps.googleapis.com/maps/api/directions';
   static const Duration _timeout = Duration(seconds: 10);
 
   /// 주변 반려동물 관련 시설 검색
@@ -200,6 +221,104 @@ class GooglePlacesService {
     }
   }
 
+  /// 시설 리뷰 가져오기
+  Future<Result<FacilityReviews>> getFacilityReviews(String placeId) async {
+    try {
+      final apiKey = AppConfig.current.googleMapsApiKey;
+      if (apiKey.isEmpty) {
+        if (AppConfig.current.isMockMode) {
+          return Result.success('Mock 리뷰 데이터', _getMockReviews());
+        }
+        return Result.failure('Google Maps API 키가 설정되지 않았습니다');
+      }
+
+      final Map<String, String> params = {
+        'place_id': placeId,
+        'fields': 'rating,user_ratings_total,reviews',
+        'key': apiKey,
+        'language': 'ja',
+        'reviews_sort': 'newest', // 최신순 정렬
+      };
+
+      final uri = Uri.parse(
+        '$_baseUrl/details/json',
+      ).replace(queryParameters: params);
+
+      LoggerService.debug('📝 Google Places 리뷰 요청: $uri');
+
+      final response = await http.get(uri).timeout(_timeout);
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body) as Map<String, dynamic>;
+
+        if (data['status'] == 'OK') {
+          final result = data['result'] as Map<String, dynamic>;
+          final reviews = FacilityReviews.fromPlaceDetails(result);
+          return Result.success('リビューを取得しました', reviews);
+        } else if (data['status'] == 'ZERO_RESULTS') {
+          return Result.success('レビューがありません', FacilityReviews.empty);
+        } else {
+          final errorMessage =
+              data['error_message'] as String? ??
+              'Google Places API エラー: ${data['status']}';
+          return Result.failure(errorMessage);
+        }
+      } else {
+        return Result.failure(
+          'Google Places API 요청 실패: ${response.statusCode}',
+        );
+      }
+    } catch (error) {
+      LoggerService.debug('Google Places 리뷰 오류: $error');
+      if (AppConfig.current.isMockMode) {
+        return Result.success('Mock 리뷰 데이터', _getMockReviews());
+      }
+      return Result.failure('レビュー取得に失敗しました: ${error.toString()}');
+    }
+  }
+
+  /// Mock 리뷰 데이터
+  FacilityReviews _getMockReviews() {
+    return FacilityReviews(
+      averageRating: 4.5,
+      totalReviews: 127,
+      reviews: [
+        Review(
+          authorName: '田中太郎',
+          authorPhotoUrl: null,
+          rating: 5.0,
+          text: 'スタッフの方がとても親切で、うちの犬も安心して診察を受けられました。待ち時間も少なく、説明も丁寧でした。',
+          relativeTimeDescription: '1週間前',
+          time: DateTime.now().subtract(const Duration(days: 7)).millisecondsSinceEpoch ~/ 1000,
+        ),
+        Review(
+          authorName: '鈴木花子',
+          authorPhotoUrl: null,
+          rating: 4.0,
+          text: '清潔感があり、設備も整っています。予約制なので待ち時間が少ないのが良いです。',
+          relativeTimeDescription: '2週間前',
+          time: DateTime.now().subtract(const Duration(days: 14)).millisecondsSinceEpoch ~/ 1000,
+        ),
+        Review(
+          authorName: '佐藤健一',
+          authorPhotoUrl: null,
+          rating: 5.0,
+          text: '緊急時にも対応していただき、本当に助かりました。24時間対応は心強いです。',
+          relativeTimeDescription: '1ヶ月前',
+          time: DateTime.now().subtract(const Duration(days: 30)).millisecondsSinceEpoch ~/ 1000,
+        ),
+        Review(
+          authorName: '山田優子',
+          authorPhotoUrl: null,
+          rating: 4.0,
+          text: '料金は少し高めですが、サービスの質を考えると納得できます。',
+          relativeTimeDescription: '2ヶ月前',
+          time: DateTime.now().subtract(const Duration(days: 60)).millisecondsSinceEpoch ~/ 1000,
+        ),
+      ],
+    );
+  }
+
   /// Google Place 데이터를 Facility 엔티티로 변환
   Facility? _mapPlaceToFacility(Map<String, dynamic> place) {
     try {
@@ -290,6 +409,190 @@ class GooglePlacesService {
     }
 
     return description.isNotEmpty ? description : null;
+  }
+
+  /// 두 지점 간의 직선 거리 계산 (km)
+  static double calculateDistance({
+    required double fromLat,
+    required double fromLng,
+    required double toLat,
+    required double toLng,
+  }) {
+    final distanceInMeters = Geolocator.distanceBetween(
+      fromLat,
+      fromLng,
+      toLat,
+      toLng,
+    );
+    return distanceInMeters / 1000; // meters to km
+  }
+
+  /// 시설 목록에 현재 위치로부터의 거리 추가
+  List<Facility> addDistanceToFacilities({
+    required List<Facility> facilities,
+    required double currentLat,
+    required double currentLng,
+  }) {
+    return facilities.map((facility) {
+      final distance = calculateDistance(
+        fromLat: currentLat,
+        fromLng: currentLng,
+        toLat: facility.latitude,
+        toLng: facility.longitude,
+      );
+      return facility.copyWith(distance: distance);
+    }).toList()
+      ..sort((a, b) => (a.distance ?? 0).compareTo(b.distance ?? 0));
+  }
+
+  /// Google Directions API를 사용하여 루트 정보 가져오기
+  Future<Result<RouteInfo>> getDirections({
+    required double originLat,
+    required double originLng,
+    required double destLat,
+    required double destLng,
+    String mode = 'walking', // walking, driving, transit
+  }) async {
+    try {
+      final apiKey = AppConfig.current.googleMapsApiKey;
+      if (apiKey.isEmpty) {
+        return Result.failure('Google Maps API 키가 설정되지 않았습니다');
+      }
+
+      final Map<String, String> params = {
+        'origin': '$originLat,$originLng',
+        'destination': '$destLat,$destLng',
+        'mode': mode,
+        'key': apiKey,
+        'language': 'ja',
+      };
+
+      final uri = Uri.parse(
+        '$_directionsBaseUrl/json',
+      ).replace(queryParameters: params);
+
+      LoggerService.debug('🚶 Google Directions API 요청: $uri');
+
+      final response = await http.get(uri).timeout(_timeout);
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body) as Map<String, dynamic>;
+
+        if (data['status'] == 'OK') {
+          final routes = data['routes'] as List<dynamic>;
+          if (routes.isEmpty) {
+            return Result.failure('ルートが見つかりませんでした');
+          }
+
+          final route = routes.first as Map<String, dynamic>;
+          final legs = route['legs'] as List<dynamic>;
+          if (legs.isEmpty) {
+            return Result.failure('ルート情報が不完全です');
+          }
+
+          final leg = legs.first as Map<String, dynamic>;
+          final distance = leg['distance'] as Map<String, dynamic>;
+          final duration = leg['duration'] as Map<String, dynamic>;
+
+          // Polyline 디코딩
+          final overviewPolyline = route['overview_polyline'] as Map<String, dynamic>;
+          final encodedPoints = overviewPolyline['points'] as String;
+          final polylinePoints = _decodePolyline(encodedPoints);
+
+          final routeInfo = RouteInfo(
+            polylinePoints: polylinePoints,
+            distanceText: distance['text'] as String,
+            durationText: duration['text'] as String,
+            distanceValue: (distance['value'] as num).toDouble(),
+            durationValue: (duration['value'] as num).toDouble(),
+          );
+
+          return Result.success('ルートを取得しました', routeInfo);
+        } else if (data['status'] == 'ZERO_RESULTS') {
+          return Result.failure('この場所へのルートが見つかりませんでした');
+        } else {
+          final errorMessage =
+              data['error_message'] as String? ??
+              'Google Directions API エラー: ${data['status']}';
+          return Result.failure(errorMessage);
+        }
+      } else {
+        return Result.failure(
+          'Google Directions API 요청 실패: ${response.statusCode}',
+        );
+      }
+    } catch (error) {
+      LoggerService.debug('Google Directions API 오류: $error');
+      return Result.failure('ルート取得に失敗しました: ${error.toString()}');
+    }
+  }
+
+  /// Google Encoded Polyline을 LatLng 리스트로 디코딩
+  List<LatLng> _decodePolyline(String encoded) {
+    final List<LatLng> points = [];
+    int index = 0;
+    final int len = encoded.length;
+    int lat = 0;
+    int lng = 0;
+
+    while (index < len) {
+      int b;
+      int shift = 0;
+      int result = 0;
+
+      do {
+        b = encoded.codeUnitAt(index++) - 63;
+        result |= (b & 0x1f) << shift;
+        shift += 5;
+      } while (b >= 0x20);
+
+      final int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+      lat += dlat;
+
+      shift = 0;
+      result = 0;
+
+      do {
+        b = encoded.codeUnitAt(index++) - 63;
+        result |= (b & 0x1f) << shift;
+        shift += 5;
+      } while (b >= 0x20);
+
+      final int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+      lng += dlng;
+
+      points.add(LatLng(lat / 1E5, lng / 1E5));
+    }
+
+    return points;
+  }
+
+  /// 이동 모드에 따른 아이콘 반환
+  static IconData getModeIcon(String mode) {
+    switch (mode) {
+      case 'walking':
+        return Icons.directions_walk;
+      case 'driving':
+        return Icons.directions_car;
+      case 'transit':
+        return Icons.directions_transit;
+      default:
+        return Icons.directions;
+    }
+  }
+
+  /// 이동 모드에 따른 이름 반환
+  static String getModeName(String mode) {
+    switch (mode) {
+      case 'walking':
+        return '徒歩';
+      case 'driving':
+        return '車';
+      case 'transit':
+        return '交通機関';
+      default:
+        return '';
+    }
   }
 
   /// Mock 데이터 반환 (API 키가 없거나 테스트 환경일 때)

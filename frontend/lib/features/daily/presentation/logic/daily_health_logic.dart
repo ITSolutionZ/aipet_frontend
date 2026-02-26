@@ -94,7 +94,7 @@ class DailyHealthLogic {
 
   /// 병원 검색 화면으로 네비게이션
   void navigateToHospitalSearch(BuildContext context) {
-    context.push('/home/calendar');
+    context.push('/calendar');
   }
 
   /// 펫 등록 화면으로 네비게이션

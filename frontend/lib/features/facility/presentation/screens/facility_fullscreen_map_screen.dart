@@ -293,8 +293,8 @@ class _FacilityFullscreenMapScreenState
                   height: 40,
                   decoration: BoxDecoration(
                     color: _selectedFacility!.type == FacilityType.grooming
-                        ? Colors.purple.withValues(alpha: 0.1)
-                        : Colors.red.withValues(alpha: 0.1),
+                        ? AppColors.pointPink.withValues(alpha: 0.1)
+                        : AppColors.pointRed.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Icon(
@@ -302,8 +302,8 @@ class _FacilityFullscreenMapScreenState
                         ? Icons.content_cut
                         : Icons.local_hospital,
                     color: _selectedFacility!.type == FacilityType.grooming
-                        ? Colors.purple
-                        : Colors.red,
+                        ? AppColors.pointPink
+                        : AppColors.pointRed,
                     size: 20,
                   ),
                 ),
